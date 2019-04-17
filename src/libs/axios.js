@@ -47,8 +47,13 @@ class HttpRequest {
     // 响应拦截
     instance.interceptors.response.use(res => {
       this.destroy(url)
+      // debugger
       const { data, status } = res
-      return { data, status }
+      if (status === 200 && data.code === 0) {
+        return data
+      } else {
+        addErrorLog(res)
+      }
     }, error => {
       this.destroy(url)
       addErrorLog(error.response)
