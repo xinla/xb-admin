@@ -1,2 +1,2 @@
-# xb
+# xb-admin
 
