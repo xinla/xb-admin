@@ -1,4 +1,5 @@
 import axios from '@/libs/api.request'
+
 const controller = '/user'
 
 /**
@@ -23,23 +24,21 @@ export const login = ({ name, password }) => {
  */
 export const getUserById = (id) => {
   return axios.request({
-    url: controller + '/',
-    params: {
-      id
-    },
+    url: controller + '/' + id,
     method: 'get'
   })
 }
 
 /**
  * 添加用户
- * @param {token} token 
+ * @param {name} name 
  */
-export const addUser = (token) => {
+export const addUser = ({ name, password }) => {
   return axios.request({
     url: controller + '/save',
     data: {
-      token
+      name,
+      password
     },
     method: 'post'
   })
@@ -49,15 +48,12 @@ export const addUser = (token) => {
  * 修改用户
  * @param {id} id 
  */
-export const EditUser = (id) => {
+export const EditUser = (id, token) => {
   return axios.request({
-    url: controller + '/',
-    params: {
-      id
-    },
+    url: controller + '/' + id,
     method: 'put',
     header: {
-      token: '5sgjowaeigjweij'
+      token: 'xbkj' + token
     }
   })
 }
@@ -68,10 +64,10 @@ export const EditUser = (id) => {
  */
 export const logout = (token) => {
   return axios.request({
-    url: 'logout',
+    url: controller+ '/logout',
     method: 'post',
     header: {
-      token,
+      token: 'xbkj' + token
     }
   })
 }

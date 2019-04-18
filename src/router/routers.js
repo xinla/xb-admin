@@ -72,14 +72,14 @@ export default [
         component: () => import('@/view/basicManage/lessee')
       },
       {
-        path: 'lesseeCreate',
-        name: 'lesseeCreate',
+        path: 'addLessee',
+        name: 'addLessee',
         meta: {
           icon: 'md-funnel',
           title: '新建租户',
           hideInMenu: true,
         },
-        component: () => import('@/view/basicManage/create')
+        component: () => import('@/view/basicManage/lessee/add')
       }
     ]
   },

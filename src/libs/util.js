@@ -4,6 +4,7 @@ import config from '@/config'
 import { forEach, hasOneOf, objEqual } from '@/libs/tools'
 
 export const TOKEN_KEY = 'token'
+export const USERID_KEY = 'userId'
 
 export const setToken = (token) => {
   Cookies.set(TOKEN_KEY, token, {expires: config.cookieExpires || 1})
@@ -12,6 +13,16 @@ export const setToken = (token) => {
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
   if (token) return token
+  else return false
+}
+
+export const setUserId = (userId) => {
+  Cookies.set(USERID_KEY, userId, {expires: config.cookieExpires || 1})
+}
+
+export const getUserId = () => {
+  const userId = Cookies.get(USERID_KEY)
+  if (userId) return userId
   else return false
 }
 

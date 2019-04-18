@@ -1,10 +1,11 @@
 import { login, logout, getUserById } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+import { setToken, setUserId, getToken, getUserId } from '@/libs/util'
+import Cookies from 'js-cookie'
 
 export default {
   state: {
     userName: '',
-    userId: '',
+    userId: getUserId(),
     avatorImgPath: '',
     token: getToken(),
     access: '',
@@ -16,6 +17,7 @@ export default {
     },
     setUserId (state, id) {
       state.userId = id
+      setUserId(id)
     },
     setUserName (state, name) {
       state.userName = name
@@ -40,10 +42,10 @@ export default {
           name,
           password
         }).then(res => {
-          const data = res
-          console.log(data)
-          commit('setToken', data.token)
-          commit('setUserId', data.id)
+          const user = res.user
+          // console.log(user)
+          commit('setToken', res.token)
+          commit('setUserId', user.id)
           resolve()
         }).catch(err => {
           reject(err)
@@ -70,14 +72,13 @@ export default {
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
         try {
-          getUserById(state.id).then(data => {
-            console.log(data)
-            commit('setAvator', data.headImage)
-            commit('setUserName', data.name)
-            commit('setUserId', data.id)
-            // commit('setAccess', data.access)
+          getUserById(state.userId).then(res => {
+            commit('setAvator', res.headImage)
+            commit('setUserName', res.name)
+            commit('setUserId', res.id)
+            // commit('setAccess', res.access)
             commit('setHasGetInfo', true)
-            resolve(data)
+            resolve(res)
           }).catch(err => {
             reject(err)
           })

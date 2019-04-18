@@ -9,7 +9,7 @@ const addErrorLog = errorInfo => {
     mes: statusText,
     url: responseURL
   }
-  if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
+  // if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
 }
 
 class HttpRequest {
@@ -40,6 +40,7 @@ class HttpRequest {
         // Spin.show() // 不建议开启，因为界面不友好
       }
       this.queue[url] = true
+      console.log(config)
       return config
     }, error => {
       return Promise.reject(error)
@@ -48,9 +49,11 @@ class HttpRequest {
     instance.interceptors.response.use(res => {
       this.destroy(url)
       // debugger
+        console.log(res)
       const { data, status } = res
       if (status === 200 && data.code === 0) {
-        return data
+        console.log(data)
+        return data.result
       } else {
         addErrorLog(res)
       }
