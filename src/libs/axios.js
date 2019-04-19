@@ -40,7 +40,7 @@ class HttpRequest {
         // Spin.show() // 不建议开启，因为界面不友好
       }
       this.queue[url] = true
-      console.log(config)
+      // console.log('request config: ' + config)
       return config
     }, error => {
       return Promise.reject(error)
@@ -49,10 +49,10 @@ class HttpRequest {
     instance.interceptors.response.use(res => {
       this.destroy(url)
       // debugger
-        console.log(res)
+        // console.log('res: ' + res)
       const { data, status } = res
       if (status === 200 && data.code === 0) {
-        console.log(data)
+        // console.log(data)
         return data.result
       } else {
         addErrorLog(res)

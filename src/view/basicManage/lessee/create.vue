@@ -231,5 +231,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import url('./add.less');
+  @import url('./create.less');
 </style>

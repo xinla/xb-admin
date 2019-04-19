@@ -4,7 +4,7 @@
 
     <Row style="padding-bottom: 10px;">
         <Col span="14">
-          <Button type="info" @click="goPage('addLessee')">新建租户</Button>
+          <Button type="info" @click="goPage('createSupplier')">新建供应商</Button>
         </Col>
         <Col span="8">
           <Input v-model="query.name" placeholder="搜索公司" style="width:73%; margin-right: 10px;" />
@@ -19,8 +19,7 @@
     :data="list">
       <template slot-scope="{ row, index }" slot="action">
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
-          <Button type="error" size="small" style="margin-right: 5px" @click="goDetail(index)">详情</Button>
-          <Button type="error" size="small" @click="set(index)">停用</Button>
+          <Button type="error" size="small" style="margin-right: 5px" @click="goPage('lesseeDetail')">详情</Button>
       </template>
     </Table>
 
@@ -30,7 +29,7 @@
 </template>
 
 <script>
-import { getLesseePage, getLesseeByJB } from '@/api/lessee'
+import { getLesseePageByName, getLesseePageByJB } from '@/api/lessee'
 export default {
   name: "home",
   data() {
@@ -44,17 +43,17 @@ export default {
       },
       columns: [
         {
+            title: '序号',
             type: 'index',
-            width: 60,
             align: 'center'
         },
         {
-            title: '租户名称',
+            title: '供应商名称',
             key: 'name',
             align: 'center'
         },
         {
-            title: '租户类型',
+            title: '产品类型',
             key: 'compayAccountType',
             align: 'center',
             filters: [
@@ -89,47 +88,29 @@ export default {
             }
         },
         {
-            title: '超级管理员',
+            title: '分销渠道',
             key: 'createTime',
             align: 'center'
         },
         {
-            title: '体验账户',
+            title: '体验产品数量账户',
             key: 'email',
             align: 'center'
         },
         {
-            title: '体验截止时间',
+            title: '在售产品数',
             key: 'text',
             align: 'center'
         },
         {
-            title: '定制模块',
+            title: '合作企业数',
             key: 'text',
             align: 'center'
         },
         {
-            title: '租户状态',
+            title: '分公司数量',
             key: 'isActive',
             align: 'center',
-            filters: [
-              {
-                  label: '正常',
-                  value: 0
-              },
-              {
-                  label: '停用',
-                  value: 1
-              }
-            ],
-            filterMultiple: false,
-            filterMethod (value, row) {
-                if (value === 0) {
-                    return row.isActive == 0;
-                } else if (value === 1) {
-                    return row.isActive == 1;
-                }
-            }
         },
         {
             title: '最近更新时间',
@@ -148,9 +129,9 @@ export default {
   },
   mounted() {
     //
-    getLesseePage(this.query).then(data => {
+    getLesseePageByName(this.query).then(data => {
       // debugger
-      // console.log(data)
+      console.log(data)
       this.loading = false
       this.list = data.list
     })
@@ -160,10 +141,10 @@ export default {
       this.loading = true
       this.query.page = 1
       this.query.size = 1
-      getLesseeByJB(this.query).then(data => {
+      getLesseePageByName(this.query).then(data => {
         console.log(data)
         this.loading = false
-        // this.list = data.list
+        this.list = data.list
       })
     },
     edit() {
@@ -193,5 +174,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import url('./home.less');
+  .title{
+    padding: 0px 0px 20px 10px;
+    font-size: 20px;
+  }
 </style>

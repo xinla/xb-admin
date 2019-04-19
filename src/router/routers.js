@@ -72,14 +72,24 @@ export default [
         component: () => import('@/view/basicManage/lessee')
       },
       {
-        path: 'addLessee',
-        name: 'addLessee',
+        path: 'createLessee',
+        name: 'createLessee',
         meta: {
           icon: 'md-funnel',
           title: '新建租户',
           hideInMenu: true,
         },
-        component: () => import('@/view/basicManage/lessee/add')
+        component: () => import('@/view/basicManage/lessee/create')
+      },
+      {
+        path: 'lesseeDetail',
+        name: 'lesseeDetail',
+        meta: {
+          icon: 'md-funnel',
+          title: '租户详情',
+          hideInMenu: true,
+        },
+        component: () => import('@/view/basicManage/lessee/detail/index')
       }
     ]
   },
@@ -91,7 +101,6 @@ export default [
     meta: {
       icon: 'md-menu',
       title: '合作管理',
-      hideInMenu: false,
       notCache: true
     },
     children: [
@@ -102,8 +111,91 @@ export default [
           icon: 'md-funnel',
           title: '供应商管理'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/cooperationManage/supplierManage/home')
       },
+
+      {
+        path: 'createSupplier',
+        name: 'createSupplier',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '新建供应商'
+        },
+        component: () => import('@/view/cooperationManage/supplierManage/create')
+      },
+
+      {
+        path: 'businessInfo',
+        name: 'businessInfo',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '工商信息'
+        },
+        component: () => import('@/view/cooperationManage/supplierManage/businessInfo')
+      },
+      {
+        path: 'brandInfo',
+        name: 'brandInfo',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '品牌信息'
+        },
+        component: () => import('@/view/cooperationManage/supplierManage/brandInfo')
+      },
+      {
+        path: 'organizationalStructure',
+        name: 'organizationalStructure',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '组织架构'
+        },
+        component: () => import('@/view/cooperationManage/supplierManage/organizationalStructure')
+      },
+      {
+        path: 'productList',
+        name: 'productList',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '产品列表'
+        },
+        component: () => import('@/view/cooperationManage/supplierManage/productList')
+      },
+      {
+        path: 'news',
+        name: 'news',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '新闻资讯'
+        },
+        component: () => import('@/view/cooperationManage/supplierManage/news')
+      },
+      {
+        path: 'ascoCode',
+        name: 'ascoCode',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '职业代码表' 
+        },
+        component: () => import('@/view/cooperationManage/supplierManage/ascoCode')
+      },
+      {
+        path: 'insuranceRules',
+        name: 'insuranceRules',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '投保规则'
+        },
+        component: () => import('@/view/cooperationManage/supplierManage/insuranceRules')
+      },
+
       {
         path: 'productManage',
         name: 'productManage',
@@ -111,7 +203,7 @@ export default [
           icon: 'md-funnel',
           title: '产品管理'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/cooperationManage/productManage')
       },
       // 新建产品 & 产品详情
       {
