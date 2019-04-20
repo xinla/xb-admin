@@ -6,8 +6,12 @@ import router from './router'
 import store from './store'
 import iView from 'iview'
 import i18n from '@/locale'
+import OrgTree from 'v-org-tree'
+import 'v-org-tree/dist/v-org-tree.css'
+Vue.use(OrgTree)
 import config from '@/config'
 import importDirective from '@/directive'
+import { directive as clickOutside } from 'v-click-outside-x'
 import installPlugin from '@/plugin'
 import 'iview/dist/styles/iview.css'
 import './index.less'
@@ -36,6 +40,7 @@ Vue.prototype.$config = config
  * 注册指令
  */
 importDirective(Vue)
+Vue.directive('clickOutside', clickOutside)
 
 /* eslint-disable no-new */
 new Vue({

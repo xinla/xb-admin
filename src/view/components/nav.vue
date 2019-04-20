@@ -17,15 +17,21 @@ export default {
 </script>
 
 <style scoped>
+  nav{
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+  }
   .tab-li{
     display: inline-block;
     padding: 8px 16px;
     font-size: 12px;
+    margin-bottom: -2px;
   }
   /* .tab-li-active {
     color: #2d8cf0;
   } */
   .router-link-active{
     color: #2d8cf0;
+    border-bottom: 2px solid;
   }
 </style>

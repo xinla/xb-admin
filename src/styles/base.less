@@ -70,6 +70,12 @@ z-index: 999;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.mult-oe(@row:3){
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: @row;
+  overflow: hidden;
+}
 .title-row{
   font-size: 16px;
   font-weight: 600;

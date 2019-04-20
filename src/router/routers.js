@@ -214,7 +214,7 @@ export default [
           hideInMenu: true,
           title: '新建产品'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue'),
+        component: () => import('@/view/cooperationManage/productManage/create'),
         children: [
           {
             path: 'baseInfo',
@@ -223,7 +223,7 @@ export default [
               icon: 'md-funnel',
               title: '基本信息'
             },
-            component: () => import('@/view/multilevel/level-2-1.vue')
+            component: () => import('@/view/cooperationManage/productManage/create')
           },
           {
             path: 'InsuranceRules',
@@ -232,7 +232,7 @@ export default [
               icon: 'md-funnel',
               title: '投保规则'
             },
-            component: () => import('@/view/multilevel/level-2-1.vue')
+            component: () => import('@/view/cooperationManage/productManage/create')
           },
           {
             path: 'productExplain',
@@ -241,7 +241,7 @@ export default [
               icon: 'md-funnel',
               title: '产品说明'
             },
-            component: () => import('@/view/multilevel/level-2-1.vue')
+            component: () => import('@/view/cooperationManage/productManage/create')
           },
           {
             path: 'productAccessory',
@@ -250,7 +250,7 @@ export default [
               icon: 'md-funnel',
               title: '产品附件'
             },
-            component: () => import('@/view/multilevel/level-2-1.vue')
+            component: () => import('@/view/cooperationManage/productManage/create')
           },
         ]
       }
