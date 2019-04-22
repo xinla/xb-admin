@@ -193,5 +193,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import url('./home.less');
 </style>

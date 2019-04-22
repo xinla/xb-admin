@@ -1,69 +1,48 @@
 <template>
 <div>
   
-  <Form ref="form" :model="form" :label-width="120" inline>
-    <div class="title-row">基本信息</div>
-    <FormItem label="供应商名称" prop="form">
-        <Input type="text" v-model="form.form" placeholder="供应商名称"/>
-    </FormItem>
-    <FormItem label="供应商Logo" prop="logo">
-      <Upload action="//jsonplaceholder.typicode.com/posts/">
-          <div class="upload-icon cp">+</div>
-      </Upload>
-    </FormItem>
-    <FormItem label="供应商简称" prop="shortName">
-        <Input type="text" v-model="form.shortName" placeholder="供应商简称"/>
-    </FormItem>
-    <FormItem label="供应商类型" prop="type">
-      <RadioGroup v-model="form.type">
-          <Radio label="寿险"></Radio>
-          <Radio label="财险"></Radio>
-      </RadioGroup>
-    </FormItem>
+  <Steps :current="current">
+      <Step title="已完成" content="基本信息">
+      </Step>
+      <Step title="进行中" content="投保规则"></Step>
+      <Step title="待进行" content="产品说明"></Step>
+      <Step title="待进行" content="产品附件"></Step>
+  </Steps>
 
-    <Divider />
-    
-    <div class="title-row">基本信息</div>
-    <FormItem label="公司地址" prop="site">
-        <Input type="text" v-model="form.site" placeholder="公司地址"/>
-    </FormItem>
-    <FormItem label="公司网址" prop="website">
-        <Input type="text" v-model="form.website" placeholder="公司网址"/>
-    </FormItem>
-    <FormItem label="联系电话" prop="mobile">
-        <Input type="text" v-model="form.mobile" placeholder="联系电话"/>
-    </FormItem>
-    <FormItem label="全国统一服务电话" prop="shortName">
-        <Input type="text" v-model="form.call" placeholder="全国统一服务电话"/>
-    </FormItem>
+  <baseInfo v-show="current === 0"/>
+  <insuranceRules v-show="current === 1"/>
+  <productExplain v-show="current === 2"/>
+  <productAccessory v-show="current === 3"/>
 
-    <Button type="primary" @click="submit">确认创建</Button>
-
-  </Form>
-
+  <div class="ac">
+    <Button v-show="current > 0" type="primary" ghost @click="current--">上一步</Button>
+    <Button v-show="current !== 3" type="primary" @click="current++">下一步</Button>
+    <Button v-show="current === 3" type="primary" @click="submit">确认添加</Button>
+  </div>
 </div>
 </template>
 
 <script>
-const defaultForm = {
-  fullName: '',
-  shortName: '',
-  type: '',
-  logo: '',
-  site: '',
-  website: '',
-  mobile: '',
-  call: '',
-}
+import baseInfo from '../components/baseInfo'
+import insuranceRules from '../components/insuranceRules'
+import productExplain from '../components/productExplain'
+import productAccessory from '../components/productAccessory'
+
 export default {
+  components:{
+    baseInfo,
+    insuranceRules,
+    productExplain,
+    productAccessory,
+  },
   data() {
     return {
-      form: Object.assign({}, defaultForm)
+      current: 0,
     }
   },
   methods: {
     submit() {
-      this.$router.push({name: 'supplierManage'})
+      this.$router.push({name: 'productManage'})
     }
   }
 }

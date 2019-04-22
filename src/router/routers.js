@@ -50,7 +50,7 @@ export default [
       }
     ]
   },
-
+  // 基础管理
   {
     path: '/basicManage',
     name: 'basicManage',
@@ -93,7 +93,7 @@ export default [
       }
     ]
   },
-
+  // 合作管理
   {
     path: '/cooperationManage',
     name: 'cooperationManage',
@@ -195,7 +195,7 @@ export default [
         },
         component: () => import('@/view/cooperationManage/supplierManage/insuranceRules')
       },
-
+      // 产品管理
       {
         path: 'productManage',
         name: 'productManage',
@@ -215,45 +215,85 @@ export default [
           title: '新建产品'
         },
         component: () => import('@/view/cooperationManage/productManage/create'),
-        children: [
-          {
-            path: 'baseInfo',
-            name: 'baseInfo',
-            meta: {
-              icon: 'md-funnel',
-              title: '基本信息'
-            },
-            component: () => import('@/view/cooperationManage/productManage/create')
-          },
-          {
-            path: 'InsuranceRules',
-            name: 'InsuranceRules',
-            meta: {
-              icon: 'md-funnel',
-              title: '投保规则'
-            },
-            component: () => import('@/view/cooperationManage/productManage/create')
-          },
-          {
-            path: 'productExplain',
-            name: 'productExplain',
-            meta: {
-              icon: 'md-funnel',
-              title: '产品说明'
-            },
-            component: () => import('@/view/cooperationManage/productManage/create')
-          },
-          {
-            path: 'productAccessory',
-            name: 'productAccessory',
-            meta: {
-              icon: 'md-funnel',
-              title: '产品附件'
-            },
-            component: () => import('@/view/cooperationManage/productManage/create')
-          },
-        ]
-      }
+        // children: [
+        //   {
+        //     path: 'baseInfo',
+        //     name: 'baseInfo',
+        //     meta: {
+        //       icon: 'md-funnel',
+        //       title: '基本信息'
+        //     },
+        //     component: () => import('@/view/cooperationManage/productManage/create')
+        //   },
+        //   {
+        //     path: 'InsuranceRules',
+        //     name: 'InsuranceRules',
+        //     meta: {
+        //       icon: 'md-funnel',
+        //       title: '投保规则'
+        //     },
+        //     component: () => import('@/view/cooperationManage/productManage/create')
+        //   },
+        //   {
+        //     path: 'productExplain',
+        //     name: 'productExplain',
+        //     meta: {
+        //       icon: 'md-funnel',
+        //       title: '产品说明'
+        //     },
+        //     component: () => import('@/view/cooperationManage/productManage/create')
+        //   },
+        //   {
+        //     path: 'productAccessory',
+        //     name: 'productAccessory',
+        //     meta: {
+        //       icon: 'md-funnel',
+        //       title: '产品附件'
+        //     },
+        //     component: () => import('@/view/cooperationManage/productManage/create')
+        //   },
+        // ]
+      },
+      {
+        path: 'baseInfo',
+        name: 'baseInfo',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '基本信息'
+        },
+        component: () => import('@/view/cooperationManage/productManage/baseInfo')
+      },
+      {
+        path: 'productInsuranceRules',
+        name: 'productInsuranceRules',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '投保规则'
+        },
+        component: () => import('@/view/cooperationManage/productManage/insuranceRules')
+      },
+      {
+        path: 'productExplain',
+        name: 'productExplain',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '产品说明'
+        },
+        component: () => import('@/view/cooperationManage/productManage/productExplain')
+      },
+      {
+        path: 'productAccessory',
+        name: 'productAccessory',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '产品附件'
+        },
+        component: () => import('@/view/cooperationManage/productManage/productAccessory')
+      },
     ]
   },
 
@@ -275,7 +315,7 @@ export default [
           icon: 'md-funnel',
           title: '系统通知'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/applicationManage/systemMessage.vue')
       },
       {
         path: 'messageTemplate',
@@ -284,43 +324,54 @@ export default [
           icon: 'md-funnel',
           title: '消息模板'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue'),
-        children: [
-          {
-            path: 'commonExpressions',
-            name: 'commonExpressions',
-            meta: {
-              icon: 'md-funnel',
-              title: '常用语'
-            },
-            component: () => import('@/view/multilevel/level-2-1.vue')
-          },
-          {
-            path: 'applicationMessage',
-            name: 'applicationMessage',
-            meta: {
-              icon: 'md-funnel',
-              title: '应用消息'
-            },
-            component: () => import('@/view/multilevel/level-2-1.vue'),
-          },
-          {
-            path: 'intelligentSecretary',
-            name: 'intelligentSecretary',
-            meta: {
-              icon: 'md-funnel',
-              title: '职能秘书'
-            },
-            component: () => import('@/view/multilevel/level-2-1.vue'),
-          }
-        ]
-      }
+        redirect: 'commonExpressions',
+      },
+      {
+        path: 'commonExpressions',
+        name: 'commonExpressions',
+        meta: {
+          icon: 'md-funnel',
+          title: '常用语',
+          hideInMenu: true,
+        },
+        component: () => import('@/view/applicationManage/messageTemplate/commonExpressions.vue')
+      },
+      {
+        path: 'applicationMessage',
+        name: 'applicationMessage',
+        meta: {
+          icon: 'md-funnel',
+          title: '应用消息',
+          hideInMenu: true,
+        },
+        component: () => import('@/view/applicationManage/messageTemplate/applicationMessage.vue'),
+      },
+      {
+        path: 'intelligentSecretary',
+        name: 'intelligentSecretary',
+        meta: {
+          icon: 'md-funnel',
+          title: '职能秘书',
+          hideInMenu: true,
+        },
+        component: () => import('@/view/applicationManage/messageTemplate/intelligentSecretary.vue'),
+      },
+      {
+        path: 'menuSet',
+        name: 'menuSet',
+        meta: {
+          icon: 'md-funnel',
+          title: '菜单配置',
+          hideInMenu: true,
+        },
+        component: () => import('@/view/applicationManage/menuSet.vue'),
+      },
     ]
   },
-
+  // 规则配置
   {
-    path: '/ruleConfiguration',
-    name: 'ruleConfiguration',
+    path: '/ruleConfig',
+    name: 'ruleConfig',
     component: Main,
     meta: {
       icon: 'md-menu',
@@ -336,7 +387,7 @@ export default [
           icon: 'md-funnel',
           title: '类型规则'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/ruleConfig/type.vue')
       },
       {
         path: 'characterRule',
@@ -345,7 +396,7 @@ export default [
           icon: 'md-funnel',
           title: '角色规则'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/ruleConfig/role.vue')
       },
       {
         path: 'insureRule',
@@ -354,8 +405,9 @@ export default [
           icon: 'md-funnel',
           title: '投保规则'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/ruleConfig/insure.vue')
       },
+      // 通用数据库
       {
         path: 'commonDatabase',
         name: 'commonDatabase',
@@ -363,7 +415,7 @@ export default [
           icon: 'md-funnel',
           title: '通用数据库'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue'),
+        component: () => import('@/view/ruleConfig/type.vue'),
         children: [
           {
             path: 'nationalityTable',
@@ -415,7 +467,7 @@ export default [
           icon: 'md-funnel',
           title: '保险公司'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/industryDatabase/insuranceCompany/list.vue')
       },
       {
         path: 'agency',
@@ -424,7 +476,7 @@ export default [
           icon: 'md-funnel',
           title: '经代公司'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue'),
+        component: () => import('@/view/industryDatabase/insuranceCompany/list.vue'),
       },
       {
         path: 'insuranceProduct',
@@ -433,7 +485,7 @@ export default [
           icon: 'md-funnel',
           title: '保险产品'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue'),
+        component: () => import('@/view/industryDatabase/insuranceCompany/list.vue'),
       }
     ]
   },

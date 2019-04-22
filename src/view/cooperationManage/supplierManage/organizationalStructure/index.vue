@@ -12,7 +12,9 @@
     <div style="position:relative;">
       <div style="display:inline-block;width: 50%;">
         <div class="add-member" @click="memberFormShow = !memberFormShow">+</div>
-        <Table border :columns="columns" :data="NemberList"></Table>
+        <Table border :columns="columns" :data="NemberList">
+          
+        </Table>
       </div>
       
       <!-- 添加成员表单 -->

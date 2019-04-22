@@ -1,18 +1,26 @@
 <template>
   <nav>
-    <router-link class="tab-li" :to="{name: 'businessInfo'}">工商信息</router-link>
-    <router-link class="tab-li" :to="{name: 'brandInfo'}">品牌信息</router-link>
-    <router-link class="tab-li" :to="{name: 'organizationalStructure'}">组织架构</router-link>
-    <router-link class="tab-li" :to="{name: 'productList'}">产品列表</router-link>
-    <router-link class="tab-li" :to="{name: 'news'}">新闻资讯</router-link>
-    <router-link class="tab-li" :to="{name: 'ascoCode'}">职业代码表</router-link>
-    <router-link class="tab-li" :to="{name: 'insuranceRules'}">投保规则</router-link>
+    <router-link v-for="(item, index) of routes" :key="index" class="tab-li" :to="{name: item.name}">
+      {{item.text}}
+    </router-link>
   </nav>
 </template>
 
 <script>
 export default {
-  
+  data() {
+    return {
+      routes: [
+        {name: 'businessInfo', text: '工商信息'},
+        {name: 'brandInfo', text: '品牌信息'},
+        {name: 'organizationalStructure', text: '组织架构'},
+        {name: 'productList', text: '产品列表'},
+        {name: 'news', text: '新闻资讯'},
+        {name: 'ascoCode', text: '职业代码表'},
+        {name: 'insuranceRules', text: '投保规则'},
+      ]
+    }
+  }
 }
 </script>
 
