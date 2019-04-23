@@ -1,34 +1,22 @@
 <template>
   <div>
-    <Row style="padding-bottom: 10px;">
-      <Col span="10">
-        <Button type="info" @click="goPage('createLessee')">新建</Button>
+    <!-- <Row style="padding-bottom: 10px;">
+      <Col span="18"> 
       </Col>
-      <Col span="14">
-        所在省市
-        <Select v-model="model1" style="width:100px">
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
-        <Select v-model="model1" style="width:100px">
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
+      <Col span="6">
+      </Col>
+    </Row> -->
+    <div style="text-align:right;padding-bottom: 10px;">
         <Input v-model="query.name" placeholder="搜索公司" style="width:30%; margin-right: 10px;"/>
         <Button type="info" @click="search()">搜索</Button>
-      </Col>
-    </Row>
-
+    </div>
     <Table border :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
-        <Button
-          type="error"
-          size="small"
-          style="margin-right: 5px"
-          @click="goPage('lesseeDetail')"
-        >删除</Button>
-        <Button type="error" size="small" @click="set(index)">转移</Button>
+        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">开票</Button>
+        <Button type="error" size="small" @click="set(index)">邮寄</Button>
       </template>
     </Table>
+    <div class="ar">合计：￥13,000,000.0</div>
 
     <Page
       :total="100"
@@ -37,16 +25,31 @@
       style="text-align:center;margin-top:20px;"
       @on-Change="getListByPage"
     />
+
+    <invoiceState v-model="isInvoiceState"/>
+    <invoiceInfo v-model="isInvoiceInfo"/>
+    <mailInfo v-model="isMailInfo"/>
+
   </div>
 </template>
 
 <script>
-import { getLesseePageByName, getLesseePageByJB } from "@/api/lessee";
+import { getLesseePageByName, getLesseePageByJB } from "@/api/lessee"
+import invoiceState from './components/invoiceState'
+import invoiceInfo from './components/invoiceInfo'
+import mailInfo from './components/mailInfo'
 export default {
-  name: "home",
+  components: {
+    invoiceState,
+    invoiceInfo,
+    mailInfo
+  },
   data() {
     return {
       loading: true,
+      isInvoiceState: false,
+      isInvoiceInfo: false,
+      isMailInfo: false,
       query: {
         page: 1,
         size: 10,
@@ -55,40 +58,37 @@ export default {
       },
       columns: [
         {
-          title: "序号",
-          type: "index",
-          align: "center"
+          type: 'selection',
+          align: "center",
+          width: 50
         },
         {
-          title: "公司名称",
+          title: "租户名称",
           key: "name",
           align: "center"
         },
         {
-          title: "公司类型",
+          title: "申请时间",
+          key: "name",
+          align: "center"
+        },
+        {
+          title: "发票月份",
           key: "compayAccountType",
           align: "center",
           filters: [
             {
-              label: "体验服务",
+              label: "2019年12月",
               value: 1
             },
             {
-              label: "基础应用服务",
+              label: "2019年11月",
               value: 2
             },
             {
-              label: "高级应用服务",
+              label: "2019年10月",
               value: 1
             },
-            {
-              label: "超级应用服务",
-              value: 2
-            },
-            {
-              label: "定制服务",
-              value: 1
-            }
           ],
           filterMultiple: false,
           filterMethod(value, row) {
@@ -100,45 +100,43 @@ export default {
           }
         },
         {
-          title: "所在省",
+          title: "发票金额（元）",
           key: "createTime",
           align: "center"
         },
         {
-          title: "所在市",
+          title: "发票信息",
           key: "email",
           align: "center"
         },
         {
-          title: "公司地址",
-          key: "text",
-          align: "center"
-        },
-        {
-          title: "注册时间",
-          key: "text",
-          align: "center"
-        },
-        {
-          title: "公司状态",
-          key: "isActive",
+          title: "发票状态",
+          key: "compayAccountType",
           align: "center",
           filters: [
             {
-              label: "正常",
-              value: 0
+              label: "已申请",
+              value: 1
             },
             {
-              label: "停用",
+              label: "已开票",
+              value: 2
+            },
+            {
+              label: "已邮寄",
               value: 1
-            }
+            },
+            {
+              label: "已送达",
+              value: 2
+            },
           ],
           filterMultiple: false,
           filterMethod(value, row) {
             if (value === 0) {
-              return row.isActive == 0;
+              return row.compayAccountType == 0;
             } else if (value === 1) {
-              return row.isActive == 1;
+              return row.compayAccountType == 1;
             }
           }
         },

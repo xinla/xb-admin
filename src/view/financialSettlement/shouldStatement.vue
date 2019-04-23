@@ -1,34 +1,22 @@
 <template>
   <div>
-    <Row style="padding-bottom: 10px;">
-      <Col span="10">
-        <Button type="info" @click="goPage('createLessee')">新建</Button>
+    <!-- <Row style="padding-bottom: 10px;">
+      <Col span="18"> 
       </Col>
-      <Col span="14">
-        所在省市
-        <Select v-model="model1" style="width:100px">
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
-        <Select v-model="model1" style="width:100px">
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
+      <Col span="6">
+      </Col>
+    </Row> -->
+    <div style="text-align:right;padding-bottom: 10px;">
         <Input v-model="query.name" placeholder="搜索公司" style="width:30%; margin-right: 10px;"/>
         <Button type="info" @click="search()">搜索</Button>
-      </Col>
-    </Row>
-
+    </div>
     <Table border :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
-        <Button
-          type="error"
-          size="small"
-          style="margin-right: 5px"
-          @click="goPage('lesseeDetail')"
-        >删除</Button>
-        <Button type="error" size="small" @click="set(index)">转移</Button>
+        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">使用详情</Button>
+        <Button type="error" size="small" @click="set(index)">催收</Button>
       </template>
     </Table>
+    <div class="ar">合计：￥13,000,000.0</div>
 
     <Page
       :total="100"
@@ -55,17 +43,21 @@ export default {
       },
       columns: [
         {
-          title: "序号",
-          type: "index",
+          type: 'selection',
           align: "center"
         },
         {
-          title: "公司名称",
+          title: "系统结算时间",
           key: "name",
           align: "center"
         },
         {
-          title: "公司类型",
+          title: "租户名称",
+          key: "name",
+          align: "center"
+        },
+        {
+          title: "租户类型",
           key: "compayAccountType",
           align: "center",
           filters: [
@@ -100,47 +92,19 @@ export default {
           }
         },
         {
-          title: "所在省",
+          title: "到期时间",
           key: "createTime",
           align: "center"
         },
         {
-          title: "所在市",
+          title: "上月承保标保（万元",
           key: "email",
           align: "center"
         },
         {
-          title: "公司地址",
+          title: "上月应结账单（元）",
           key: "text",
           align: "center"
-        },
-        {
-          title: "注册时间",
-          key: "text",
-          align: "center"
-        },
-        {
-          title: "公司状态",
-          key: "isActive",
-          align: "center",
-          filters: [
-            {
-              label: "正常",
-              value: 0
-            },
-            {
-              label: "停用",
-              value: 1
-            }
-          ],
-          filterMultiple: false,
-          filterMethod(value, row) {
-            if (value === 0) {
-              return row.isActive == 0;
-            } else if (value === 1) {
-              return row.isActive == 1;
-            }
-          }
         },
         {
           title: "操作",

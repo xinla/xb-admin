@@ -2,7 +2,7 @@
   <Layout style="height: 100%" class="main">
     <Sider hide-trigger collapsible :width="256" :collapsed-width="64" v-model="collapsed" class="left-sider" :style="{overflow: 'hidden'}">
       <side-menu accordion ref="sideMenu" :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage" :menu-list="menuList">
-        <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
+        <!-- 需要放在菜单上面的内容，如Logo，写】在side-menu标签内部，如下 -->
         <div class="logo-con">
           <div class="logo" v-show="!collapsed">现保科技后台管理系统</div>
           <div class="logo" v-show="collapsed">现保后台</div>

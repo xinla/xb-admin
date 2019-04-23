@@ -56,7 +56,7 @@ export default [
     name: 'basicManage',
     component: Main,
     meta: {
-      icon: 'md-menu',
+      icon: '_Basicmanagement',
       title: '基础管理',
       hideInMenu: false,
       notCache: true
@@ -66,7 +66,7 @@ export default [
         path: 'lessee',
         name: 'lessee',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Tenantmanagement',
           title: '租户管理'
         },
         component: () => import('@/view/basicManage/lessee')
@@ -99,7 +99,7 @@ export default [
     name: 'cooperationManage',
     component: Main,
     meta: {
-      icon: 'md-menu',
+      icon: '_CooperativemanagementCooperativemanagement',
       title: '合作管理',
       notCache: true
     },
@@ -108,7 +108,7 @@ export default [
         path: 'supplierManage',
         name: 'supplierManage',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Suppliermanagement',
           title: '供应商管理'
         },
         component: () => import('@/view/cooperationManage/supplierManage/home')
@@ -200,7 +200,7 @@ export default [
         path: 'productManage',
         name: 'productManage',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Productmanagement',
           title: '产品管理'
         },
         component: () => import('@/view/cooperationManage/productManage')
@@ -302,7 +302,7 @@ export default [
     name: 'applicationManage',
     component: Main,
     meta: {
-      icon: 'md-menu',
+      icon: '_Applicationmanagement',
       title: '应用管理',
       hideInMenu: false,
       notCache: true
@@ -312,7 +312,7 @@ export default [
         path: 'systemMessage',
         name: 'systemMessage',
         meta: {
-          icon: 'md-funnel',
+          icon: '_systemnotification',
           title: '系统通知'
         },
         component: () => import('@/view/applicationManage/systemMessage.vue')
@@ -321,7 +321,7 @@ export default [
         path: 'messageTemplate',
         name: 'messageTemplate',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Messagetemplate',
           title: '消息模板'
         },
         redirect: 'commonExpressions',
@@ -374,7 +374,7 @@ export default [
     name: 'ruleConfig',
     component: Main,
     meta: {
-      icon: 'md-menu',
+      icon: '_Ruleconfiguration',
       title: '规则配置',
       hideInMenu: false,
       notCache: true
@@ -384,7 +384,7 @@ export default [
         path: 'typeRule',
         name: 'typeRule',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Typerule',
           title: '类型规则'
         },
         component: () => import('@/view/ruleConfig/type.vue')
@@ -393,7 +393,7 @@ export default [
         path: 'characterRule',
         name: 'characterRule',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Rolerule',
           title: '角色规则'
         },
         component: () => import('@/view/ruleConfig/role.vue')
@@ -402,7 +402,7 @@ export default [
         path: 'insureRule',
         name: 'insureRule',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Insurancerules',
           title: '投保规则'
         },
         component: () => import('@/view/ruleConfig/insure.vue')
@@ -412,7 +412,7 @@ export default [
         path: 'commonDatabase',
         name: 'commonDatabase',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Generalpurposedatabase',
           title: '通用数据库'
         },
         component: () => import('@/view/ruleConfig/type.vue'),
@@ -448,13 +448,13 @@ export default [
       }
     ]
   },
-
+  // 行业数据库
   {
     path: '/industryDatabase',
     name: 'industryDatabase',
     component: Main,
     meta: {
-      icon: 'md-menu',
+      icon: '_Industrydatabase',
       title: '行业数据库',
       hideInMenu: false,
       notCache: true
@@ -464,16 +464,26 @@ export default [
         path: 'insuranceCompany',
         name: 'insuranceCompany',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Insurancecompany',
           title: '保险公司'
         },
         component: () => import('@/view/industryDatabase/insuranceCompany/list.vue')
       },
       {
+        path: 'companyDetail',
+        name: 'companyDetail',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '公司详情'
+        },
+        component: () => import('@/view/industryDatabase/insuranceCompany/detail.vue')
+      },
+      {
         path: 'agency',
         name: 'agency',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Generationcompany',
           title: '经代公司'
         },
         component: () => import('@/view/industryDatabase/insuranceCompany/list.vue'),
@@ -482,20 +492,20 @@ export default [
         path: 'insuranceProduct',
         name: 'insuranceProduct',
         meta: {
-          icon: 'md-funnel',
+          icon: '_InsuranceProducts',
           title: '保险产品'
         },
         component: () => import('@/view/industryDatabase/insuranceCompany/list.vue'),
       }
     ]
   },
-
+  // 财务结算
   {
     path: '/financialSettlement',
     name: 'financialSettlement',
     component: Main,
     meta: {
-      icon: 'md-menu',
+      icon: '_Financialsettlement',
       title: '财务结算',
       hideInMenu: false,
       notCache: true
@@ -505,188 +515,139 @@ export default [
         path: 'shouldStatement',
         name: 'shouldStatement',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Billingstatement',
           title: '应结账单'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/financialSettlement/shouldStatement.vue')
       },
       {
         path: 'invoiceManage',
         name: 'invoiceManage',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Invoicemanagement',
           title: '发票管理'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue'),
+        component: () => import('@/view/financialSettlement/invoiceManage.vue'),
       },
       {
         path: 'allOrders',
         name: 'allOrders',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Allorders',
           title: '全部订单'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue'),
+        component: () => import('@/view/financialSettlement/allOrders.vue'),
       },
       {
         path: 'orderDetail',
         name: 'orderDetail',
         meta: {
           icon: 'md-funnel',
+          hideInMenu: true,
           title: '订单详情'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue'),
+        component: () => import('@/view/financialSettlement/orderDetail.vue'),
       }
     ]
   },
-
+  // 数据统计
   {
     path: '/dataStatistics',
     name: 'dataStatistics',
     component: Main,
     meta: {
-      icon: 'md-menu',
+      icon: '_Datastatistics',
       title: '数据统计',
       hideInMenu: false,
       notCache: true
     },
     children: [
       {
-        path: 'dataIndex',
-        name: 'dataIndex',
+        path: 'statistics',
+        name: 'statistics',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Datastatistics',
           title: '数据统计'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/dataStatistics')
       },
     ]
   },
-
+  // 系统设置
   {
-    path: '/setting',
-    name: 'setting',
+    path: '/systemSet',
+    name: 'systemSet',
     component: Main,
     meta: {
-      icon: 'md-menu',
+      icon: '_Systemsettings',
       title: '系统设置',
       hideInMenu: false,
       notCache: true
     },
     children: [
       {
-        path: 'helpAndFeedback',
-        name: 'helpAndFeedback',
-        meta: {
-          icon: 'md-funnel',
-          title: '帮助与反馈'
-        },
-        component: () => import('@/view/multilevel/level-2-1.vue')
-      },
-      {
         path: 'systemSetting',
         name: 'systemSetting',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Systemsettings-',
           title: '系统设置'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/systemSet/systemSet.vue')
+      },
+      {
+        path: 'help',
+        name: 'help',
+        meta: {
+          icon: '_Helpandfeedback',
+          title: '帮助'
+        },
+        component: () => import('@/view/systemSet/help.vue')
       },
       {
         path: 'createHelp',
         name: 'createHelp',
         meta: {
           icon: 'md-funnel',
+          hideInMenu: true,
           title: '新建帮助'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/systemSet/createHelp.vue')
+      },
+      {
+        path: 'feedback',
+        name: 'feedback',
+        meta: {
+          icon: '_Helpandfeedback',
+          title: '反馈'
+        },
+        component: () => import('@/view/systemSet/feedback.vue')
       },
     ]
   },
 
   {
-    path: '/service',
-    name: 'service',
+    path: '/customerService',
+    name: 'customerService',
     component: Main,
     meta: {
-      icon: 'md-menu',
+      icon: '_Customerservice',
       title: '现报云客服',
       hideInMenu: false,
       notCache: true
     },
     children: [
       {
-        path: 'serviceIndex',
-        name: 'serviceIndex',
+        path: 'service',
+        name: 'service',
         meta: {
-          icon: 'md-funnel',
-          title: '现报云客服'
+          icon: '_Customerservice',
+          title: '现保云客服'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/customerService')
       },
     ]
   },
 
-  {
-    path: '',
-    name: 'doc',
-    meta: {
-      title: '文档',
-      href: 'https://lison16.github.io/iview-admin-doc/#/',
-      icon: 'ios-book'
-    }
-  },
-  {
-    path: '/multilevel',
-    name: 'multilevel',
-    meta: {
-      icon: 'md-menu',
-      title: '多级菜单'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'level_2_1',
-        name: 'level_2_1',
-        meta: {
-          icon: 'md-funnel',
-          title: '二级-1'
-        },
-        component: () => import('@/view/multilevel/level-2-1.vue')
-      },
-      {
-        path: 'level_2_2',
-        name: 'level_2_2',
-        meta: {
-          access: ['super_admin'],
-          icon: 'md-funnel',
-          showAlways: true,
-          title: '二级-2'
-        },
-        component: parentView,
-        children: [
-          {
-            path: 'level_2_2_1',
-            name: 'level_2_2_1',
-            meta: {
-              icon: 'md-funnel',
-              title: '三级'
-            },
-            component: () => import('@/view/multilevel/level-2-2/level-3-1.vue')
-          }
-        ]
-      },
-      {
-        path: 'level_2_3',
-        name: 'level_2_3',
-        meta: {
-          icon: 'md-funnel',
-          title: '二级-3'
-        },
-        component: () => import('@/view/multilevel/level-2-3.vue')
-      }
-    ]
-  },
   {
     path: '/401',
     name: 'error_401',
