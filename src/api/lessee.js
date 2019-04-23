@@ -3,14 +3,14 @@ import axios from '@/libs/api.request'
 const controller = '/xbcompany'
 
 /**
- * getLesseePage
+ * 根据公司查询全部租户
  * @param {*} page 
  * @param {*} size 
  * @param {*} name 公司名
  */
-export const getLesseePageByName = ({page, size, name}) => {
+export const getLesseePage = ({page, size, name}) => {
   return axios.request({
-    url: controller + `/search/${page}/${size}`,
+    url: controller + `/findAll/${page}/${size}`,
     params: {
       name
     },

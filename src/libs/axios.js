@@ -55,6 +55,7 @@ class HttpRequest {
         // console.log(data)
         return data.result
       } else {
+        // console.log(1)
         addErrorLog(res)
       }
     }, error => {

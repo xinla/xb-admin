@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">租户列表</div>
+    <!-- <div class="title">租户列表</div> -->
 
     <Row style="padding-bottom: 10px;">
         <Col span="14">
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { getLesseePageByName, getLesseePageByJB } from '@/api/lessee'
+import { getLesseePage, getLesseePageByJB } from '@/api/lessee'
 export default {
   name: "home",
   data() {
@@ -95,7 +95,7 @@ export default {
         },
         {
             title: '体验账户',
-            key: 'email',
+            key: 'findexperiences',
             align: 'center'
         },
         {
@@ -148,7 +148,7 @@ export default {
   },
   mounted() {
     //
-    getLesseePageByName(this.query).then(data => {
+    getLesseePage(this.query).then(data => {
       // debugger
       console.log(data)
       this.loading = false
@@ -160,7 +160,7 @@ export default {
       this.loading = true
       this.query.page = 1
       this.query.size = 1
-      getLesseePageByName(this.query).then(data => {
+      getLesseePage(this.query).then(data => {
         console.log(data)
         this.loading = false
         this.list = data.list
