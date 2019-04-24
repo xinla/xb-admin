@@ -6,7 +6,7 @@ const controller = '/imNoticeMsg'
  * 获取全部系统消息
  * @param {*} param0 
  */
-export const getAllSystemMessage = ({page, size}) => {
+export const getSystemMessagePage = ({page, size}) => {
   return axios.request({
     url: controller + `/${page}/${size}`,
     method: 'get'

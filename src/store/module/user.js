@@ -1,6 +1,6 @@
 import { login, logout, getUserById } from '@/api/user'
 import { setToken, setUserId, getToken, getUserId } from '@/libs/util'
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie' 
 
 export default {
   state: {
@@ -13,7 +13,7 @@ export default {
   },
   mutations: {
     setAvator (state, avatorPath) {
-      state.avatorImgPath = avatorPath
+      state.avatorImgPath = avatorPath || require('@/assets/images/defaultHeader1.jpg')
     },
     setUserId (state, id) {
       state.userId = id

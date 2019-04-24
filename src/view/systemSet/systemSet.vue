@@ -7,8 +7,8 @@
                   <Input type="text" v-model="form.user" placeholder="系统名称">
                   </Input>
               </FormItem>
-              <FormItem prop="slogan" label="系统标语">
-                  <Input type="text" v-model="form.slogan" placeholder="系统标语">
+              <FormItem prop="sign" label="系统标语">
+                  <Input type="text" v-model="form.sign" placeholder="系统标语">
                   </Input>
               </FormItem>
               <FormItem prop="version" label="系统版本">
@@ -30,9 +30,10 @@
 </template>
 
 <script>
+import { getSystemSetPage } from '@/api/systemSet'
 const defaultForm = {
   name: '',
-  slogan: '',
+  sign: '',
   version: '',
   logo: '',
 }
@@ -47,7 +48,11 @@ export default {
   computed:{},
   watch:{},
   created(){},
-  mounted(){},
+  mounted(){
+    getSystemSetPage({page: 1, size: 10}).then(data => {
+      console.log(data)
+    })
+  },
   methods:{}
 }
 </script>

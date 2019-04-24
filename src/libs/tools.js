@@ -83,7 +83,7 @@ const getHandledValue = num => {
 }
 
 /**
- * @param {Number} timeStamp 传入的时间戳
+ * @param {Number} timeStamp 传入的时间（秒）戳
  * @param {Number} startType 要返回的时间字符串的格式类型，传入'year'则返回年开头的完整时间
  */
 const getDate = (timeStamp, startType) => {
@@ -212,4 +212,25 @@ export const objEqual = (obj1, obj2) => {
   else if (keysArr1.length === 0 && keysArr2.length === 0) return true
   /* eslint-disable-next-line */
   else return !keysArr1.some(key => obj1[key] != obj2[key])
+}
+
+/**
+ * 合法uri
+ * @param {String} url 路径
+ */
+export function validateURL(url) {
+  // const reg = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|xyz|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/
+  const reg = /([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|xyz|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/
+  return reg.test(url)
+}
+
+export const formatDate = (timeStamp) => {
+  const d = new Date(timeStamp)
+  const year = d.getFullYear()
+  const month = getHandledValue(d.getMonth() + 1)
+  const date = getHandledValue(d.getDate())
+  const hours = getHandledValue(d.getHours())
+  const minutes = getHandledValue(d.getMinutes())
+  const second = getHandledValue(d.getSeconds())
+  return (year + '-' + month + '-' + date + ' ' + hours + ':' + minutes)
 }

@@ -1,15 +1,16 @@
 import axios from 'axios'
 import store from '@/store'
-// import { Spin } from 'iview'
+import { Spin, Message } from 'iview'
 const addErrorLog = errorInfo => {
-  const { statusText, status, request: { responseURL } } = errorInfo
-  let info = {
-    type: 'ajax',
-    code: status,
-    mes: statusText,
-    url: responseURL
-  }
+  const { statusText, status, request: { responseText, responseURL } } = errorInfo
+  // let info = {
+  //   type: 'ajax',
+  //   code: status,
+  //   mes: statusText,
+  //   url: responseURL
+  // }
   // if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
+  Message.error(`错误: 路径: ${responseURL}, 返回值 : ${responseText}`)
 }
 
 class HttpRequest {
@@ -49,14 +50,14 @@ class HttpRequest {
     instance.interceptors.response.use(res => {
       this.destroy(url)
       // debugger
-        // console.log('res: ' + res)
+      // console.log('res: ' + res)
       const { data, status } = res
+      // code 0:成功，-1/其它:错误
       if (status === 200 && data.code === 0) {
-        // console.log(data)
-        return data.result
+        return data.result || data.data
       } else {
-        // console.log(1)
         addErrorLog(res)
+        return Promise.reject(res)
       }
     }, error => {
       this.destroy(url)
