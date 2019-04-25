@@ -360,9 +360,8 @@ export default [
         path: 'menuSet',
         name: 'menuSet',
         meta: {
-          icon: 'md-funnel',
+          icon: '_menu',
           title: '菜单配置',
-          hideInMenu: true,
         },
         component: () => import('@/view/applicationManage/menuSet.vue'),
       },
