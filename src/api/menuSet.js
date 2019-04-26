@@ -57,6 +57,6 @@ export const addMenu = (data) => {
 export const deleteMenu = (id) => {
   return axios.request({
     url: controller + `/delete/${id}`,
-    method: 'get'
+    method: 'post'
   })
 }

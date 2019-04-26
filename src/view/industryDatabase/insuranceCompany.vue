@@ -6,25 +6,29 @@
       </Col>
       <Col span="14">
         所在省市
-        <Select v-model="model1" style="width:100px">
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
-        <Select v-model="model1" style="width:100px">
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
+        <Cascader 
+        :data="districtsList" 
+        placeholder="所在省市" 
+        change-on-select 
+        style="width:200px;display:inline-block;"
+        v-model="selectDistrict"
+        ></Cascader>
         <Input v-model="query.name" placeholder="搜索公司" style="width:30%; margin-right: 10px;"/>
         <Button type="info" @click="search()">搜索</Button>
       </Col>
     </Row>
 
     <Table border :loading="loading" :columns="columns" :data="list">
+      <template slot-scope="{ row, index }" slot="establishTime">
+        {{row.establishTime | timeFormat}}
+      </template>
       <template slot-scope="{ row, index }" slot="action">
         <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
         <Button
           type="error"
           size="small"
           style="margin-right: 5px"
-          @click="goPage('lesseeDetail')"
+          @click="deleteItem(row)"
         >删除</Button>
         <Button type="error" size="small" @click="set(index)">转移</Button>
       </template>
@@ -41,23 +45,39 @@
 </template>
 
 <script>
-import { getLesseePageByName, getLesseePageByJB } from "@/api/lessee";
+import { getLesseePageByJB } from "@/api/lessee"
+import { getDistrict } from "@/api/common"
 export default {
   name: "home",
+  filters: {
+    timeFormat(val) {
+      return val.substring(0, val.indexOf('T'))
+    }
+  },
+  props:{
+    type: {
+      type: Number,
+      // required: true,
+      default: 1
+    }
+  },
   data() {
     return {
       loading: true,
       query: {
         page: 1,
         size: 10,
-        type: "1",
-        name: ""
+        type: 1,
+        name: '',
+        provinceName: '',
+        areaName: ''
       },
       columns: [
         {
           title: "序号",
           type: "index",
-          align: "center"
+          align: "center",
+          width: 60
         },
         {
           title: "公司名称",
@@ -66,7 +86,7 @@ export default {
         },
         {
           title: "公司类型",
-          key: "compayAccountType",
+          key: "companyType",
           align: "center",
           filters: [
             {
@@ -101,27 +121,27 @@ export default {
         },
         {
           title: "所在省",
-          key: "createTime",
+          key: "provinceName",
           align: "center"
         },
         {
           title: "所在市",
-          key: "email",
+          key: "areaName",
           align: "center"
         },
         {
           title: "公司地址",
-          key: "text",
+          key: "companyAddress",
           align: "center"
         },
         {
           title: "注册时间",
-          key: "text",
+          slot: 'establishTime',
           align: "center"
         },
         {
           title: "公司状态",
-          key: "isActive",
+          key: "managementStatus",
           align: "center",
           filters: [
             {
@@ -145,16 +165,54 @@ export default {
         {
           title: "操作",
           slot: "action",
-          width: 200,
+          width: 180,
           align: "center"
         }
       ],
-      list: []
+      list: [],
+      districtsList: [], // 行政区划表
+      selectDistrict: []  // 选择的省市
     };
   },
+  watch: {
+    selectDistrict() {
+      this.query.provinceName = this.selectDistrict[0] || ''
+      this.query.areaName = this.selectDistrict[1] || ''
+    }
+  },
   mounted() {
-    //
-    getLesseePageByName(this.query).then(data => {
+    getDistrict().then(data=> {
+      // console.log(data.data.districts[0].districts)
+      let districtsFull = data.data.districts[0].districts
+      recursiveExtract(this.districtsList, districtsFull)
+      // console.log(this.districtsList)
+
+      // 提取省市 （若使用递归会报：栈溢出错误，带后续探究）
+      function recursiveExtract(arr1, arr2) {
+        for (const iterator of districtsFull) {
+          arr1.push(
+            {
+              value: iterator.name,
+              label: iterator.name,
+              children: []
+            }
+          )
+          if (iterator.districts.length) {
+            for( const iterator of iterator.districts ) {
+              arr1[arr1.length - 1].children.push(
+                {
+                  value: iterator.name,
+                  label: iterator.name,
+                }
+              )
+            }
+          }
+          // iterator.districts.length && recursiveExtract(arr1[arr1.length - 1].children, iterator.districts)
+        }
+      }
+    })
+
+    getLesseePageByJB(this.query).then(data => {
       // debugger
       console.log(data);
       this.loading = false;
@@ -165,14 +223,18 @@ export default {
     search() {
       this.loading = true;
       this.query.page = 1;
-      this.query.size = 1;
-      getLesseePageByName(this.query).then(data => {
+      this.query.size = 10;
+      console.log(this.query);
+      getLesseePageByJB(this.query).then(data => {
         console.log(data);
         this.loading = false;
         this.list = data.list;
       });
     },
     edit() {},
+    deleteItem(data) {
+      
+    },
     goDetail() {},
     set() {},
     goPage(name) {
@@ -187,9 +249,10 @@ export default {
         this.loading = false;
         this.list = data.list;
       });
-    }
+    },
   }
-};
+
+}
 </script>
 
 <style lang="less" scoped>

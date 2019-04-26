@@ -13,7 +13,8 @@ export default {
    * @description api请求基础路径
    */
   baseUrl: {
-    dev: 'http://192.168.1.8',
+    dev: 'http://192.168.1.55', // 虚拟机
+    // dev: 'http://192.168.1.8', // 本地
     pro: 'https://produce.com'
   },
   /**

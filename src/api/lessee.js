@@ -35,14 +35,16 @@ export const getLesseeById = (id) => {
  * @param {*} type 1是经代,0是保险
  * @param 公司 name 经代/保险公司名
  */
-export const getLesseePageByJB = ({page, size, type, name}) => {
+export const getLesseePageByJB = ({page, size, type, name, provinceName, areaName}) => {
   return axios.request({
     url: controller + `/jdFindAll/${page}/${size}`,
-    method: 'get',
     data: {
       type,
-      name
+      name,
+      provinceName,
+      areaName
     },
+    method: 'post',
     header: {
       'Content-Type': 'application/json'
     }

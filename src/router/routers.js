@@ -466,7 +466,7 @@ export default [
           icon: '_Insurancecompany',
           title: '保险公司'
         },
-        component: () => import('@/view/industryDatabase/insuranceCompany/list.vue')
+        component: () => import('@/view/industryDatabase/insuranceCompany.vue')
       },
       {
         path: 'companyDetail',
@@ -476,7 +476,7 @@ export default [
           hideInMenu: true,
           title: '公司详情'
         },
-        component: () => import('@/view/industryDatabase/insuranceCompany/detail.vue')
+        component: () => import('@/view/industryDatabase/detail.vue')
       },
       {
         path: 'agency',
@@ -485,7 +485,7 @@ export default [
           icon: '_Generationcompany',
           title: '经代公司'
         },
-        component: () => import('@/view/industryDatabase/insuranceCompany/list.vue'),
+        component: () => import('@/view/industryDatabase/insuranceCompany.vue'),
       },
       {
         path: 'insuranceProduct',
@@ -494,7 +494,7 @@ export default [
           icon: '_InsuranceProducts',
           title: '保险产品'
         },
-        component: () => import('@/view/industryDatabase/insuranceCompany/list.vue'),
+        component: () => import('@/view/industryDatabase/insuranceCompany.vue'),
       }
     ]
   },

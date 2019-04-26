@@ -120,18 +120,22 @@ export default {
       this.isEdit = false
     },
     submit() {
-      this.isEdit 
-      ? updateMessageTemplateById(this.form).then(data => {
-        this.$Message.success('修改成功')
-        this.handleReset('form')
-        this.getSystemMessagePage()
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.isEdit 
+          ? updateMessageTemplateById(this.form).then(data => {
+            this.$Message.success('修改成功')
+            this.handleReset('form')
+            this.getSystemMessagePage()
+          })
+          : addMessageTemplate(this.form).then(data => {
+            this.$Message.success('创建成功')
+            this.handleReset('form')
+            this.getSystemMessagePage()
+          })
+          this.isEdit = false
+        }
       })
-      : addMessageTemplate(this.form).then(data => {
-        this.$Message.success('创建成功')
-        this.handleReset('form')
-        this.getSystemMessagePage()
-      })
-      this.isEdit = false
     },
     edit(mes) {
       // console.log(mes)
@@ -148,7 +152,7 @@ export default {
               this.getSystemMessagePage()
             })
           },
-      });
+      })
     },
     send(mes) {
       sendMessage(mes).then(data => {

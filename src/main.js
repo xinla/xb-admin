@@ -8,7 +8,11 @@ import iView from 'iview'
 import i18n from '@/locale'
 import OrgTree from 'v-org-tree'
 import 'v-org-tree/dist/v-org-tree.css'
+import TreeTable from 'tree-table-vue'
+
+Vue.use(TreeTable)
 Vue.use(OrgTree)
+
 import config from '@/config'
 import importDirective from '@/directive'
 import { directive as clickOutside } from 'v-click-outside-x'
