@@ -1,13 +1,14 @@
 import axios from '@/libs/api.request'
+import config from '@/config/index'
 
-const controller = '/xbBasePermissionMenu'
+const service = config.services.menuSet
 
 /**
  * 获取全部菜单
  */
 export const getAllMenu = () => {
   return axios.request({
-    url: controller + `/findAll/tree`,
+    url: service + `/findAll/tree`,
     method: 'get'
   })
 }
@@ -18,7 +19,7 @@ export const getAllMenu = () => {
  */
 export const getMenuPage = ({page, size, id, businessType, classify, isVo, name}) => {
   return axios.request({
-    url: controller + `/findAll/${page}/${size}`,
+    url: service + `/findAll/${page}/${size}`,
     params: {
       id, businessType, classify, isVo, name
     },
@@ -32,7 +33,7 @@ export const getMenuPage = ({page, size, id, businessType, classify, isVo, name}
  */
 export const modifyMenu = (data) => {
   return axios.request({
-    url: controller + `/update`,
+    url: service + `/update`,
     data,
     method: 'post'
   })
@@ -44,7 +45,7 @@ export const modifyMenu = (data) => {
  */
 export const addMenu = (data) => {
   return axios.request({
-    url: controller + `/save`,
+    url: service + `/save`,
     data,
     method: 'post'
   })
@@ -56,7 +57,7 @@ export const addMenu = (data) => {
  */
 export const deleteMenu = (id) => {
   return axios.request({
-    url: controller + `/delete/${id}`,
+    url: service + `/delete/${id}`,
     method: 'post'
   })
 }

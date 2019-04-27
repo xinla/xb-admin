@@ -1,6 +1,7 @@
 import axios from '@/libs/api.request'
+import config from '@/config/index'
 
-const controller = '/system'
+const service = config.services.system
 
 /**
  * 增加系统设置记录
@@ -8,7 +9,7 @@ const controller = '/system'
  */
 export const addSystemSet = (data) => {
   return axios.request({
-    url: controller,
+    url: service,
     data,
     method: 'post'
   })
@@ -20,7 +21,7 @@ export const addSystemSet = (data) => {
  */
 export const getSystemSetPage = ({page, size}) => {
   return axios.request({
-    url: controller + `/${page}/${size}`,
+    url: service + `/${page}/${size}`,
     method: 'get'
   })
 }
@@ -31,7 +32,7 @@ export const getSystemSetPage = ({page, size}) => {
  */
 export const modifySystemSetById = (data) => {
   return axios.request({
-    url: controller + `/${data.id}`,
+    url: service + `/${data.id}`,
     data,
     method: 'post'
   })
@@ -43,7 +44,7 @@ export const modifySystemSetById = (data) => {
  */
 export const getSystemSetById = (id) => {
   return axios.request({
-    url: controller + `/${id}`,
+    url: service + `/${id}`,
     method: 'get'
   })
 }

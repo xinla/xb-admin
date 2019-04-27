@@ -3,195 +3,238 @@
     <!-- <div class="title">租户列表</div> -->
 
     <Row style="padding-bottom: 10px;">
-        <Col span="14">
-          <Button type="info" @click="goPage('createLessee')">新建租户</Button>
-        </Col>
-        <Col span="8">
-          <Input v-model="query.name" placeholder="搜索公司" style="width:73%; margin-right: 10px;" />
-          <Button type="info" @click="search()">搜索</Button>
-        </Col>
+      <Col span="14">
+        <Button type="info" @click="goPage('createLessee')">新建租户</Button>
+      </Col>
+      <Col span="8">
+        <Input v-model="query.name" placeholder="搜索公司" style="width:73%; margin-right: 10px;"/>
+        <Button type="info" @click="search()">搜索</Button>
+      </Col>
     </Row>
 
-    <Table 
-    border
-    :loading="loading"
-    :columns="columns"
-    :data="list">
-      <template slot-scope="{ row, index }" slot="action">
-          <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
-          <Button type="error" size="small" style="margin-right: 5px" @click="goPage('lesseeDetail')">详情</Button>
-          <Button type="error" size="small" @click="set(index)">停用</Button>
+    <Table border :loading="loading" :columns="columns" :data="list">
+
+      <template slot-scope="{ row }" slot="name">
+        <div
+          class="a"
+          @click="$router.push({name: 'companyDetail', query: {id: row.companyId}})"
+        >{{row.name}}</div>
       </template>
+
+      <template slot-scope="{ row }" slot="compayAccountType">
+        {{row.compayAccountType | compayAccountType}}
+      </template>
+
+      <template slot-scope="{ row }" slot="businessType">
+        {{row.businessType | businessType}}
+      </template>
+
+      <template slot-scope="{ row }" slot="isActive">
+        {{row.isActive | isActive}}
+      </template>
+
+      <template slot-scope="{ row, index }" slot="action">
+        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row)">编辑</Button>
+        <Button
+          type="error"
+          size="small"
+          style="margin-right: 5px"
+          @click="goPage('lesseeDetail')"
+        >详情</Button>
+        <Button type="error" size="small" @click="set(row)">停用</Button>
+      </template>
+
     </Table>
 
-    <Page :total="100" show-elevator show-total style="text-align:center;margin-top:20px;" @on-Change="getListByPage"/>
-
+    <Page
+      :total="total"
+      show-elevator
+      show-total
+      style="text-align:center;margin-top:20px;"
+      @on-change="getListPage"
+    />
   </div>
 </template>
 
 <script>
-import { getLesseePage, getLesseePageByJB } from '@/api/lessee'
+import { getLesseePage } from "@/api/lessee";
+
+const compayAccountType = [
+  {
+    label: "体验",
+    value: 0
+  },
+  {
+    label: "商用",
+    value: 1
+  }
+]
+const businessType = [
+  {
+    label: "保险",
+    value: 0
+  },
+  {
+    label: "信贷",
+    value: 1
+  },
+  {
+    label: "基金",
+    value: 2
+  }
+]
+const isActive = [
+  {
+    label: "体验",
+    value: 0
+  },
+  {
+    label: "商用",
+    value: 1
+  }
+]
+
 export default {
-  name: "home",
+  filters: {
+    compayAccountType(val) {
+      return compayAccountType[val] && compayAccountType[val].label
+    },
+    businessType(val) {
+      return businessType[val] && businessType[val].label
+    },
+    isActive(val) {
+      return isActive[val] && isActive[val].label
+    }
+  },
   data() {
     return {
       loading: true,
       query: {
         page: 1,
         size: 10,
-        type: '1',
-        name: ''
+        name: ""
       },
       columns: [
         {
-            type: 'index',
-            width: 60,
-            align: 'center'
+          title: "序号",
+          type: "index",
+          width: 60,
+          align: "center"
         },
         {
-            title: '租户名称',
-            key: 'name',
-            align: 'center'
+          title: "租户名称",
+          key: "name",
+          slot: "name",
+          align: "center",
+          minWidth: 160
         },
         {
-            title: '租户类型',
-            key: 'compayAccountType',
-            align: 'center',
-            filters: [
-              {
-                  label: '体验服务',
-                  value: 1
-              },
-              {
-                  label: '基础应用服务',
-                  value: 2
-              },
-              {
-                  label: '高级应用服务',
-                  value: 1
-              },
-              {
-                  label: '超级应用服务',
-                  value: 2
-              },
-              {
-                  label: '定制服务',
-                  value: 1
-              }
-            ],
-            filterMultiple: false,
-            filterMethod (value, row) {
-                if (value === 0) {
-                    return row.compayAccountType == 0;
-                } else if (value === 1) {
-                    return row.compayAccountType == 1;
-                }
-            }
+          title: "租户类型",
+          key: "compayAccountType",
+          align: "center",
+          slot: "compayAccountType",
+          filters: compayAccountType,
+          filterMultiple: false,
+          filterMethod(value, row) {
+            return row.compayAccountType == value
+          }
         },
         {
-            title: '超级管理员',
-            key: 'createTime',
-            align: 'center'
+          title: "业务类型",
+          key: "businessType",
+          align: "center",
+          slot: "businessType",
+          filters: businessType,
+          filterMultiple: false,
+          filterMethod(value, row) {
+            return row.businessType == value
+          }
         },
         {
-            title: '体验账户',
-            key: 'findexperiences',
-            align: 'center'
+          title: "超级管理员",
+          key: "glname",
+          align: "center"
         },
         {
-            title: '体验截止时间',
-            key: 'text',
-            align: 'center'
+          title: "体验账户",
+          key: "exname",
+          align: "center"
         },
         {
-            title: '定制模块',
-            key: 'text',
-            align: 'center'
+          title: "体验截止时间",
+          key: "invaTimeEnd",
+          align: "center"
         },
         {
-            title: '租户状态',
-            key: 'isActive',
-            align: 'center',
-            filters: [
-              {
-                  label: '正常',
-                  value: 0
-              },
-              {
-                  label: '停用',
-                  value: 1
-              }
-            ],
-            filterMultiple: false,
-            filterMethod (value, row) {
-                if (value === 0) {
-                    return row.isActive == 0;
-                } else if (value === 1) {
-                    return row.isActive == 1;
-                }
-            }
+          title: "定制模块",
+          key: "mname",
+          align: "center"
         },
         {
-            title: '最近更新时间',
-            key: 'text',
-            align: 'center'
+          title: "租户状态",
+          key: "isActive",
+          align: "center",
+          slot: "isActive",
+          filters: isActive,
+          filterMultiple: false,
+          filterMethod(value, row) {
+            return row.isActive == value
+          }
         },
         {
-            title: '操作',
-            slot: 'action',
-            width: 200,
-            align: 'center',
+          title: "最近更新时间",
+          key: "updateTime",
+          align: "center",
+          minWidth: 80
+        },
+        {
+          title: "操作",
+          slot: "action",
+          width: 200,
+          align: "center"
         }
       ],
       list: [],
-    }
+      total: 0
+    };
   },
   mounted() {
-    //
-    getLesseePage(this.query).then(data => {
-      // debugger
-      console.log(data)
-      this.loading = false
-      this.list = data.list
-    })
+    this.getList();
   },
   methods: {
+    getList() {
+      getLesseePage(this.query).then(data => {
+        console.log(data);
+        this.loading = false;
+        this.list = data.list;
+        this.total = data.total;
+      });
+    },
     search() {
-      this.loading = true
-      this.query.page = 1
-      this.query.size = 1
-      getLesseePage(this.query).then(data => {
-        console.log(data)
-        this.loading = false
-        this.list = data.list
-      })
+      this.loading = true;
+      this.query.page = 1;
+      this.query.size = 10;
+      this.getList();
     },
-    edit() {
-
+    edit(data) {
+      this.$router.push({name: 'createLessee', query: {id: data.id}})
     },
-    goDetail() {
-
+    goDetail(data) {
+      this.$router.push({name: 'createLessee', query: {id: data.id}})
     },
-    set() {
-
-    },
+    set(data) {},
     goPage(name) {
-      this.$router.push({name})
+      this.$router.push({ name });
     },
-    getListByPage(page) {
-      console.log(1)
-      this.loading = true
-      this.query.page = page
-      getLesseePage(this.query).then(data => {
-        console.log(data)
-        this.loading = false
-        this.list = data.list
-      })
+    getListPage(page) {
+      this.loading = true;
+      this.query.page = page;
+      this.getList();
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-  @import url('./home.less');
+@import url("./home.less");
 </style>

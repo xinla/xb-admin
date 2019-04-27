@@ -1,33 +1,42 @@
 <template>
   <div>
-    <div class="title">创建租户</div>
     <div class="title-row">基本信息</div>
-    <Row>
-        <Col span="12">
-          租户名称
-          <Select
-            style="width:73%; margin-right: 10px;"
-            v-model="allForm.lesseeName"
-            multiple
-            filterable
-            remote
-            :remote-method="search"
-            :loading="loading">
-            <Option 
-            v-for="(option, index) in lesseeList" 
-            :value="option.value" 
-            :key="index">{{option.label}}</Option>
-        </Select>
 
-        </Col>
+    <Form ref="formAll" :model="formAll" :rules="rulesFormAll" :label-width="100">
+    
+      <Row>
         <Col span="12">
-          租户类型：
-          <RadioGroup v-model="allForm.lesseeType">
-            <Radio label="体验"></Radio>
-            <Radio label="商用"></Radio>
-          </RadioGroup>
+          <FormItem label="租户名称" prop="name">
+            <Select
+              style="width:73%; margin-right: 10px;"
+              v-model="formAll.name"
+              filterable
+              remote
+              :remote-method="search"
+              :loading="loading">
+                <Option v-for="(option, index) in lesseeList" 
+                :value="option.name" 
+                :key="index">
+                {{option.name}}
+                </Option>
+            </Select>
+        </FormItem>
         </Col>
-    </Row>
+
+        <Col span="12">
+          <FormItem label="租户类型" prop="compayAccountType">
+            <RadioGroup v-model="formAll.compayAccountType">
+              <Radio v-for="(value, key) in compayAccountType" :key="key" :label="+key">{{value}}</Radio>
+            </RadioGroup>
+          </FormItem>
+        </Col>
+      </Row>
+      <FormItem label="业务类型" prop="businessType">
+        <RadioGroup v-model="formAll.businessType">
+          <Radio v-for="(value, key) in businessType" :key="key" :label="+key">{{value}}</Radio>
+        </RadioGroup>
+      </FormItem>
+    </Form>
     
     <Divider />
     
@@ -35,7 +44,7 @@
     <Table 
       border
       :columns="roleColumns"
-      :data="allForm.roleList"
+      :data="formAll.roleList"
       style="text-align: center;">
       <template slot-scope="{ row, index }" slot="action">
           <Icon type="ios-close-circle-outline" @click="deleteRole(index)"/>
@@ -43,13 +52,13 @@
     </Table>
     <Row>
         <Col span="6">
-          <Input v-model="roleForm.name" placeholder="请输入姓名" style="width:73%; margin-right: 10px;" />
+          <Input v-model="formRole.name" placeholder="请输入姓名" style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="6">
-          <Input v-model="roleForm.mobile" placeholder="请输入手机号" style="width:73%; margin-right: 10px;" />
+          <Input v-model="formRole.mobile" placeholder="请输入手机号" style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="6">
-          <Input v-model="roleForm.duty" placeholder="请输入职务" style="width:73%; margin-right: 10px;" />
+          <Input v-model="formRole.duty" placeholder="请输入职务" style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="6">
           <Button type="info" @click="add('role')">添加</Button>
@@ -60,23 +69,23 @@
 
     <Table 
       :columns="accountColumns"
-      :data="allForm.accountList">
+      :data="formAll.accountList">
       <template slot-scope="{ row, index }" slot="action">
           <Icon type="ios-close-circle-outline" @click="deleteRole(index)"/>
       </template>
     </Table>
     <Row>
         <Col span="4">
-          <Input v-model="accountForm.name" placeholder="请输入姓名" style="width:73%; margin-right: 10px;" />
+          <Input v-model="formAccount.name" placeholder="请输入姓名" style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="4">
-          <Input v-model="accountForm.mobile" placeholder="请输入手机号" style="width:73%; margin-right: 10px;" />
+          <Input v-model="formAccount.mobile" placeholder="请输入手机号" style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="4">
-          <Input v-model="accountForm.duty" placeholder="请输入职务" style="width:73%; margin-right: 10px;" />
+          <Input v-model="formAccount.duty" placeholder="请输入职务" style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="4">
-          <Select v-model="accountForm.jurisdiction" style="width:73%; margin-right: 10px;">
+          <Select v-model="formAccount.jurisdiction" style="width:73%; margin-right: 10px;">
               <Option v-for="(value, key) in jurisdictionList" :value="value" :key="key">{{ value }}</Option>
           </Select>
         </Col>
@@ -95,25 +104,26 @@
     </Row>
 
     <Button type="info" @click="create" style="margin: 20px auto; display: block;">确认创建</Button>
-    
   </div>
 </template>
 
 <script>
-import { getLesseePageByName, getLesseePageByJB } from '@/api/lessee'
+import { getLesseePageByJB } from '@/api/lessee'
 
 const dafaultForm = {
-  lesseeName: '',
-  lesseeType: '',
-  roleList: [],
-  accountList: []
-}
-const roleDefaultForm = {
   name: '',
-  mobile: '',
-  duty: ''
+  compayAccountType: '',
+  businessType: '',
+  glmap: [],
+  exmap: []
 }
-const accountDefaultForm = {
+const defaultFormRole = {
+  uname: '',
+  mobile: '',
+  rname: '',
+  roles: []
+}
+const defaultFormAccount = {
   name: '',
   mobile: '',
   duty: '',
@@ -121,7 +131,15 @@ const accountDefaultForm = {
   timeStart: '',
   timeEnd: ''
 }
-
+const compayAccountType = {
+  0: '体验',
+  1: '商用'
+}
+const businessType= {
+  0: '保险',
+  1: '信贷',
+  2: '基金'
+}
 export default {
   name: "home",
   data() {
@@ -129,14 +147,16 @@ export default {
       query: {
         page: 1,
         size: 10,
-        type: '1',
+        type: 1,
         name: ''
       },
-      loading: true,
-      leeessList: [],
-      allForm: Object.assign({}, dafaultForm),
-      roleForm: Object.assign({}, roleDefaultForm),
-      accountForm: Object.assign({}, accountDefaultForm),
+      compayAccountType: Object.assign({}, compayAccountType),
+      businessType: Object.assign({}, businessType),
+      loading: false,
+      lesseeList: [],
+      formAll: Object.assign({}, dafaultForm),
+      formRole: Object.assign({}, defaultFormRole),
+      formAccount: Object.assign({}, defaultFormAccount),
       roleColumns: [
         {
             title: '姓名',
@@ -190,20 +210,21 @@ export default {
         1: '工作',
         2: '产品',
         3: '审批'
-      }
+      },
+      rulesFormAll:{  
+      },
     }
   },
   mounted() {
-    //
   },
   methods: {
-    search() {
+    search(query) {
+      this.query.name = query
       this.loading = true
-      getLesseePageByName(this.query).then(data => {
-        // debugger
+      getLesseePageByJB(this.query).then(data => {
         // console.log(data)
         this.loading = false
-        this.leeessList = data.list
+        this.lesseeList = data.list
       })
     },
     deleteRole() {
@@ -211,17 +232,17 @@ export default {
     },
     add(type) {
       if (type === 'role') {
-        this.allForm.roleList.push(this.roleForm)
-        this.roleForm = Object.assign({}, roleDefaultForm)
+        this.formAll.roleList.push(this.formRole)
+        this.formRole = Object.assign({}, defaultFormRole)
       } else {
-        this.allForm.accountList.push(this.accountForm)
-        this.accountForm = Object.assign({}, accountDefaultForm)
+        this.formAll.accountList.push(this.formAccount)
+        this.formAccount = Object.assign({}, defaultFormAccount)
       }
     },
     changeTime(date) {
       // console.log(date)
-      this.accountForm.timeStart = date[0]
-      this.accountForm.timeEnd = date[1]
+      this.formAccount.timeStart = date[0]
+      this.formAccount.timeEnd = date[1]
     },
     create() {
 

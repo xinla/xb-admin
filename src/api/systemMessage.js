@@ -1,6 +1,7 @@
 import axios from '@/libs/api.request'
+import config from '@/config/index'
 
-const controller = '/imNoticeMsg'
+const service = config.services.systemMessage
 
 /**
  * 获取全部系统消息
@@ -8,7 +9,7 @@ const controller = '/imNoticeMsg'
  */
 export const getSystemMessagePage = ({page, size}) => {
   return axios.request({
-    url: controller + `/${page}/${size}`,
+    url: service + `/${page}/${size}`,
     method: 'get'
   })
 }
@@ -19,7 +20,7 @@ export const getSystemMessagePage = ({page, size}) => {
  */
 export const getMessageById = ({id}) => {
   return axios.request({
-    url: controller + `/findById/${id}`,
+    url: service + `/findById/${id}`,
     method: 'get'
   })
 }
@@ -30,7 +31,7 @@ export const getMessageById = ({id}) => {
  */
 export const sendMessage = (data) => {
   return axios.request({
-    url: controller + `/push`,
+    url: service + `/push`,
     data,
     method: 'post'
   })
@@ -42,7 +43,7 @@ export const sendMessage = (data) => {
  */
 export const addMessageTemplate = (data) => {
   return axios.request({
-    url: controller,
+    url: service,
     data,
     method: 'post'
   })
@@ -54,7 +55,7 @@ export const addMessageTemplate = (data) => {
  */
 export const deleteMessageTemplateById = (data) => {
   return axios.request({
-    url: controller + '/deleteById',
+    url: service + '/deleteById',
     data,
     method: 'post'
   })
@@ -65,7 +66,7 @@ export const deleteMessageTemplateById = (data) => {
  */
 export const updateMessageTemplateById = (data) => {
   return axios.request({
-    url: controller + '/updateById',
+    url: service + '/updateById',
     data,
     method: 'post'
   })

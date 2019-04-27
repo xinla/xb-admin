@@ -1,6 +1,7 @@
 import axios from '@/libs/api.request'
+import config from '@/config'
 
-const controller = '/xbcompany'
+const service = config.services.company
 
 /**
  * 根据公司查询全部租户
@@ -10,7 +11,7 @@ const controller = '/xbcompany'
  */
 export const getLesseePage = ({page, size, name}) => {
   return axios.request({
-    url: controller + `/findAll/${page}/${size}`,
+    url: service + `/${page}/${size}`,
     params: {
       name
     },
@@ -23,7 +24,7 @@ export const getLesseePage = ({page, size, name}) => {
  */
 export const getLesseeById = (id) => {
   return axios.request({
-    url: controller + `/${id}`,
+    url: service + `/${id}`,
     method: 'get'
   })
 }
@@ -37,12 +38,12 @@ export const getLesseeById = (id) => {
  */
 export const getLesseePageByJB = ({page, size, type, name, provinceName, areaName}) => {
   return axios.request({
-    url: controller + `/jdFindAll/${page}/${size}`,
+    url: service + `/jdFindAll/${page}/${size}`,
     data: {
       type,
       name,
-      provinceName,
-      areaName
+      provinceName: provinceName || '',
+      areaName: areaName || ''
     },
     method: 'post',
     header: {
@@ -58,7 +59,7 @@ export const getLesseePageByJB = ({page, size, type, name, provinceName, areaNam
  */
 export const setState = (id, state) => {
   return axios.request({
-    url: controller + `/${id}/${state}`,
+    url: service + `/${id}/${state}`,
     method: 'put',
     header: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -73,7 +74,7 @@ export const setState = (id, state) => {
  */
 export const addLessee = (id, company) => {
   return axios.request({
-    url: controller + `/${id}`,
+    url: service + `/${id}`,
     method: 'post',
     data: company
   })
@@ -85,7 +86,7 @@ export const addLessee = (id, company) => {
  */
 export const editLessee = (id, company) => {
   return axios.request({
-    url: controller + `/${id}`,
+    url: service + `/${id}`,
     data: company,
     method: 'put'
   })
@@ -97,7 +98,7 @@ export const editLessee = (id, company) => {
  */
 export const addAdmin = (role) => {
   return axios.request({
-    url: controller + `/saveRole`,
+    url: service + `/saveRole`,
     data: role,
     method: 'post'
   })
@@ -109,7 +110,7 @@ export const addAdmin = (role) => {
  */
 export const addServiceAccount = (user) => {
   return axios.request({
-    url: controller + `/saveNumber`,
+    url: service + `/saveNumber`,
     data: user,
     method: 'post'
   })
@@ -122,7 +123,7 @@ export const addServiceAccount = (user) => {
  */
 export const searchRole = (page, size) => {
   return axios.request({
-    url: controller + `/findNumber/${page}/${size}`,
+    url: service + `/findNumber/${page}/${size}`,
     method: 'get'
   })
 }
@@ -133,7 +134,7 @@ export const searchRole = (page, size) => {
  */
 export const getLesseeBusinessInfoById = (id) => {
   return axios.request({
-    url: controller + `/BusinessInformation/findAll/${id}`,
+    url: service + `/BusinessInformation/findAll/${id}`,
     method: 'get'
   })
 }
@@ -144,7 +145,7 @@ export const getLesseeBusinessInfoById = (id) => {
  */
 export const getLesseeBrandInfoById = (id) => {
   return axios.request({
-    url: controller + `/findBrand/${id}`,
+    url: service + `/findBrand/${id}`,
     method: 'get'
   })
 }

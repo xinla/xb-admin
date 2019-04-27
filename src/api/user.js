@@ -1,6 +1,7 @@
 import axios from '@/libs/api.request'
+import config from '@/config/index'
 
-const controller = '/user'
+const service = config.services.user
 
 /**
  * 登录
@@ -12,7 +13,7 @@ export const login = ({ name, password }) => {
     password
   }
   return axios.request({
-    url: controller + '/login',
+    url: service + '/login',
     data,
     method: 'post'
   })
@@ -24,7 +25,7 @@ export const login = ({ name, password }) => {
  */
 export const getUserById = (id) => {
   return axios.request({
-    url: controller + '/' + id,
+    url: service + '/' + id,
     method: 'get'
   })
 }
@@ -35,7 +36,7 @@ export const getUserById = (id) => {
  */
 export const addUser = ({ name, password }) => {
   return axios.request({
-    url: controller + '/save',
+    url: service + '/save',
     data: {
       name,
       password
@@ -50,7 +51,7 @@ export const addUser = ({ name, password }) => {
  */
 export const EditUser = (id, token) => {
   return axios.request({
-    url: controller + '/' + id,
+    url: service + '/' + id,
     method: 'put',
     header: {
       token: 'xbkj' + token
@@ -64,7 +65,7 @@ export const EditUser = (id, token) => {
  */
 export const logout = (token) => {
   return axios.request({
-    url: controller+ '/logout',
+    url: service+ '/logout',
     method: 'post',
     header: {
       token: 'xbkj' + token

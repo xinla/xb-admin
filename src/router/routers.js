@@ -79,7 +79,7 @@ export default [
           title: '新建租户',
           hideInMenu: true,
         },
-        component: () => import('@/view/basicManage/lessee/create')
+        component: () => import('@/view/basicManage/lessee/create/index')
       },
       {
         path: 'lesseeDetail',
@@ -89,7 +89,7 @@ export default [
           title: '租户详情',
           hideInMenu: true,
         },
-        component: () => import('@/view/basicManage/lessee/detail/index')
+        component: () => import('@/view/basicManage/lessee/detail')
       }
     ]
   },

@@ -1,7 +1,9 @@
 import axios from '@/libs/api.request'
+import config from '@/config/index'
 
-const controller = '/xbSystemHelp'
-const controllerSub = 'http://192.168.1.21:8115/v1/systemHelp'
+const service = config.services.systemHelp
+
+const serviceSub = 'http://192.168.1.21:8115/v1/systemHelp'
 
 /**
  * 获取帮助分页列表
@@ -9,7 +11,7 @@ const controllerSub = 'http://192.168.1.21:8115/v1/systemHelp'
  */
 export const getHelpPage = ({page, size}) => {
   return axios.request({
-    url: controllerSub + `/list/${page}/${size}`,
+    url: serviceSub + `/list/${page}/${size}`,
     method: 'get'
   })
 }
@@ -20,7 +22,7 @@ export const getHelpPage = ({page, size}) => {
  */
 export const getHelpById = (id) => {
   return axios.request({
-    url: controllerSub + `/get`,
+    url: serviceSub + `/get`,
     params: {
       id
     },
@@ -34,7 +36,7 @@ export const getHelpById = (id) => {
  */
 export const addHelp = (data) => {
   return axios.request({
-    url: controller + '/save',
+    url: service + '/save',
     data,
     method: 'post'
   })
@@ -46,7 +48,7 @@ export const addHelp = (data) => {
  */
 export const modifyHelp = (data) => {
   return axios.request({
-    url: controller + '/update',
+    url: service + '/update',
     data,
     method: 'post'
   })
@@ -58,7 +60,7 @@ export const modifyHelp = (data) => {
  */
 export const deleteHelpById = (id) => {
   return axios.request({
-    url: controller + `/delete/${id}`,
+    url: service + `/delete/${id}`,
     method: 'post'
   })
 }
@@ -68,7 +70,7 @@ export const deleteHelpById = (id) => {
  */
 export const getHelpClassify = () => {
   return axios.request({
-    url: controller + `/findClassify`,
+    url: service + `/findClassify`,
     method: 'get'
   })
 }

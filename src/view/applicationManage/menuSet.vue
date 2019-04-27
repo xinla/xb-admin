@@ -216,7 +216,8 @@ export default {
       },
       isEdit: false,
       formShow: false,
-      isfold: false
+      isfold: false,
+      total: 0
     }
   },
   mounted(){
