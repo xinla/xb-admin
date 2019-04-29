@@ -2,6 +2,7 @@ import axios from '@/libs/api.request'
 import config from '@/config'
 
 const service = config.services.company
+const serviceSub = config.services.mCompany
 
 /**
  * 根据公司查询全部租户
@@ -81,14 +82,29 @@ export const addLessee = (id, company) => {
 }
 
 /**
- * 修改租户
+ * 修改租户（废弃）
  * @param {*} id 租户id
  */
-export const editLessee = (id, company) => {
+export const editLessee = (data) => {
   return axios.request({
-    url: service + `/${id}`,
-    data: company,
-    method: 'put'
+    url: service + `/${data.id}`,
+    data,
+    transformRequest: [function (data) {
+      // let ret = ''
+      // for (let it in data) {
+      //   if (data[it] && it !== 'actualAnniversary' && it !== 'registrationDate') {
+      //     ret += it + '=' + data[it] + '&'
+      //   }
+      // }
+      return JSON.stringify(data, function(key,value){
+        if (value && key !== 'actualAnniversary' && key !== 'registrationDate') {
+          return value
+        } else {
+          return undefined
+        }
+      })
+      }],
+    method: 'put',
   })
 }
 
@@ -121,9 +137,40 @@ export const addServiceAccount = (user) => {
  * @param {*} page 
  * @param {*} size 
  */
-export const searchRole = (page, size) => {
+export const getRoles = ({page, size, companyId}) => {
   return axios.request({
     url: service + `/findNumber/${page}/${size}`,
+    params: {
+      companyId,
+    },
+    method: 'get'
+  })
+}
+
+/**
+ * 租户管理->查询默认的角色组和角色
+ * @param {*} 公司名 
+ */
+export const getRolesAndGroups = (name) => {
+  return axios.request({
+    url: service + `/rolesAndGroups`,
+    params: {
+      name,
+    },
+    method: 'get'
+  })
+}
+
+/**
+ * 获取体验账号
+ * @param {*} name 
+ */
+export const getInvaNumber = ({page, size, companyId}) => {
+  return axios.request({
+    url: service + `/findInvaNumber/${page}/${size}`,
+    params: {
+      companyId,
+    },
     method: 'get'
   })
 }
@@ -134,7 +181,7 @@ export const searchRole = (page, size) => {
  */
 export const getLesseeBusinessInfoById = (id) => {
   return axios.request({
-    url: service + `/BusinessInformation/findAll/${id}`,
+    url: '/xbCompany' + `BusinessInformation/findAll/${id}`,
     method: 'get'
   })
 }
@@ -145,7 +192,32 @@ export const getLesseeBusinessInfoById = (id) => {
  */
 export const getLesseeBrandInfoById = (id) => {
   return axios.request({
-    url: service + `/findBrand/${id}`,
+    url: serviceSub + `/getOneCompany`,
+    params: {
+      id
+    },
     method: 'get'
   })
 }
+
+/**
+ * 修改公司品牌信息
+ * @param {object} data 公司品牌信息对象
+ */
+export const updateLessee = (data) => {
+  return axios.request({
+    url: serviceSub + `/updateById`,
+    data,
+    transformRequest: [function (data) {
+      let ret = ''
+      for (let it in data) {
+        if (data[it]) {
+          ret += it + '=' + data[it] + '&'
+        }
+      }
+      return ret
+    }],
+    method: 'post',
+  })
+}
+

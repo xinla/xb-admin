@@ -39,9 +39,9 @@
           type="error"
           size="small"
           style="margin-right: 5px"
-          @click="goPage('lesseeDetail')"
+          @click="goPage('lesseeDetail', row)"
         >详情</Button>
-        <Button type="error" size="small" @click="set(row)">停用</Button>
+        <Button type="error" size="small" @click="set(row)">{{row.isActive == 0 ? '停用' : '启用'}}</Button>
       </template>
 
     </Table>
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { getLesseePage } from "@/api/lessee";
+import { getLesseePage, setState } from "@/api/lessee";
 
 const compayAccountType = [
   {
@@ -85,11 +85,11 @@ const businessType = [
 ]
 const isActive = [
   {
-    label: "体验",
+    label: "正常",
     value: 0
   },
   {
-    label: "商用",
+    label: "停用",
     value: 1
   }
 ]
@@ -222,9 +222,18 @@ export default {
     goDetail(data) {
       this.$router.push({name: 'createLessee', query: {id: data.id}})
     },
-    set(data) {},
-    goPage(name) {
-      this.$router.push({ name });
+    set(data) {
+      data.isActive = data.isActive == 0 ? 1 : 0
+      setState(data.id, data.isActive).then(data => {
+        console.log(data)
+      })
+    },
+    goPage(name, query) {
+      if (name === 'createLessee') {
+        this.$router.push({ name });
+      } else if (name === 'lesseeDetail') {
+        this.$router.push({ name, query: {id: query.id} });
+      }
     },
     getListPage(page) {
       this.loading = true;
@@ -236,5 +245,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import url("./home.less");
+  @import url("./home.less");
 </style>

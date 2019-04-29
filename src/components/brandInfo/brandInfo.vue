@@ -11,43 +11,43 @@
       <tr>
         <th>公司名称</th>
         <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
+          <Input type="text" :disabled="disabled" v-model="form.xbCompany.name"/>
         </td>
-        <th>公司名称</th>
+        <th>公司简称</th>
         <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
+          <Input type="text" :disabled="disabled" v-model="form.xbCompany.companyForShort"/>
         </td>
-        <th>公司名称</th>
+        <th>公司类型</th>
         <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-      </tr>
-      <tr>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
+          <Input type="text" :disabled="disabled" v-model="form.xbCompany.comapnyType"/>
         </td>
       </tr>
       <tr>
-        <th>公司名称</th>
+        <th>英文名称</th>
         <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
+          <Input type="text" :disabled="disabled" v-model="form.xbCompany.englishName"/>
         </td>
-        <th>公司名称</th>
+        <th>英文简称</th>
         <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
+          <Input type="text" :disabled="disabled" v-model="form.xbCompany.englishNameForShort"/>
         </td>
-        <th>公司名称</th>
+        <th>注册地</th>
         <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
+          <Input type="text" :disabled="disabled" v-model="form.xbCompany.headquartersAddress"/>
+        </td>
+      </tr>
+      <tr>
+        <th>总部地址</th>
+        <td>
+          <Input type="text" :disabled="disabled" v-model="form.xbCompany.headquartersAddress"/>
+        </td>
+        <th>注册日期</th>
+        <td>
+          <DatePicker v-model="form.xbCompany.registrationDate" type="datetime" format="yyyy-MM-dd HH:mm"  placeholder="注册日期" :disabled="disabled"></DatePicker>
+        </td>
+        <th>实际周年日</th>
+        <td>
+          <DatePicker v-model="form.xbCompany.actualAnniversary" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="实际周年日" :disabled="disabled"></DatePicker>
         </td>
       </tr>
     </table>
@@ -61,7 +61,8 @@
     placeholder="公司介绍"
     :autosize="true"
     :disabled="disabled"
-    v-model="company.introduction" />
+    :rows="3"
+    v-model="form.xbCompany.companyContent" />
 
     <Divider />
 
@@ -70,10 +71,10 @@
     <Table 
     border
     :columns="columns"
-    :data="list">
+    :data="form.honor">
       <template slot-scope="{ row, index }" slot="action">
-        <img :src="row.img" alt="" @click="zoom(index)">
-        <img class="zoom" v-if="zoomIndex === index" :src="row.img" alt="">
+        <img :src="row.url" alt="" @click="zoom(index)">
+        <img class="zoom" v-if="zoomIndex === index" :src="row.url" alt="">
       </template>
     </Table>
 
@@ -82,25 +83,10 @@
     <div class="title-row">公司足迹
     </div>
     <Timeline>
-        <TimelineItem>
-            <p class="time">1976年</p>
-            <p class="content">Apple I 问世</p>
-        </TimelineItem>
-        <TimelineItem>
-            <p class="time">1984年</p>
-            <p class="content">发布 Macintosh</p>
-        </TimelineItem>
-        <TimelineItem>
-            <p class="time">2007年</p>
-            <p class="content">发布 iPhone</p>
-        </TimelineItem>
-        <TimelineItem>
-            <p class="time">2010年</p>
-            <p class="content">发布 iPad</p>
-        </TimelineItem>
-        <TimelineItem>
-            <p class="time">2011年10月5日</p>
-            <p class="content">史蒂夫·乔布斯去世</p>
+        <TimelineItem v-for="(item, index) in form.bigEvents" :key="index">
+          
+            <p class="time">{{item.time}}</p>
+            <p class="content">{{item.bigEvents}}</p>
         </TimelineItem>
     </Timeline>
 
@@ -108,51 +94,91 @@
 </template>
 
 <script>
+import { getLesseeBrandInfoById, updateLessee, editLessee } from "@/api/lessee"
+import { formatDate } from "@/libs/tools"
+
 export default {
   name: 'brandInfo',
+  props: {
+    id: {
+      type: [Number, String],
+      required: true
+    }
+  },
   data() {
     return {
       disabled: true,
       zoomIndex: undefined,
-      company: {
-        fullName: '',
-        shortName: '',
-        englishFullName: '',
-        englishShortName: '',
-        registerArea: '',
-        site: '',
-        registerDate: '',
-        realDate: '',
-        introduction: '安徽据说牛信息科技有限公司是一家致力于企业客户营销升级的综合创新服务公司。总部位于安徽省合肥市高新区国家大学科技园。公司成立于2018年10月9日，汇聚了来自北上广有着丰富经验的工程师们与营销团队。在短短2个月的时间内，公司就申请了数项发明专利与30余项软件著作权。公司秉着“拥抱变化，赋能创新”的核心价值观，专注于各类企业的营销升级与推广，为企业客户带来价值，重塑大数据营销领域新气象！'
+      form: {
+        xbCompany: {
+          name: '',
+          companyForShort: '',
+          comapnyType: '',
+          englishName: '',
+          englishNameForShort: '',
+          registerArea: '',
+          headquartersAddress: '',
+          registrationDate: '',
+          actualAnniversary: '',
+          companyContent: ''
+        },
+        honor: [],
+        bigEvents: []
       },
       columns: [
         {
             title: '颁发机构',
-            key: 'name',
+            key: 'certificationAuthority',
         },
         {
             title: '荣誉名称',
-            key: 'name',
+            key: 'honorName',
         },
         {
             title: '获奖时间',
-            key: 'name',
+            key: 'prizeTime',
         },
         {
             title: '图片/附件',
             slot: 'action',
-            key: 'name',
         },
       ],
-      list: []
+      
     }
   },
+  watch: {
+    'form.xbCompany.registrationDate'(data) {
+      this.form.xbCompany.registrationDate = formatDate(data)
+      // console.log(this.form.xbCompany.registrationDate)
+    },
+    'form.xbCompany.actualAnniversary'(data) {
+      this.form.xbCompany.actualAnniversary = formatDate(data)
+      // console.log(this.form.xbCompany.actualAnniversary)
+    }
+  },
+  mounted() {
+    this.init()
+  },
   methods: {
+    init() { 
+      getLesseeBrandInfoById(this.id).then(data => {
+        this.form = data
+        // this.company = data.xbCompany
+        // this.listHonor = data.honor
+        // this.listEvents = data.bigEvents
+        console.log('data5:',data)
+        // debugger
+      })
+    },
     edit() {
       this.disabled = false
     },
     save() {
-      this.disabled = true
+      console.log(this.form.xbCompany)
+      updateLessee(this.form.xbCompany).then(data => {
+        this.$Message.success('修改成功')
+        this.disabled = true
+      })
     },
     zoom(index) {
       this.zoomIndex = index

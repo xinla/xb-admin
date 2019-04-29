@@ -224,7 +224,8 @@ export function validateURL(url) {
   return reg.test(url)
 }
 
-export const formatDate = (timeStamp) => {
+// 时间戳转为**-**-**格式
+export const formatDate = (timeStamp, startType) => {
   const d = new Date(timeStamp)
   const year = d.getFullYear()
   const month = getHandledValue(d.getMonth() + 1)
@@ -232,5 +233,9 @@ export const formatDate = (timeStamp) => {
   const hours = getHandledValue(d.getHours())
   const minutes = getHandledValue(d.getMinutes())
   const second = getHandledValue(d.getSeconds())
-  return (year + '-' + month + '-' + date + ' ' + hours + ':' + minutes)
+  if (startType === 'second') {
+    return (year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + second)
+  } else {
+    return (year + '-' + month + '-' + date + ' ' + hours + ':' + minutes)
+  }
 }

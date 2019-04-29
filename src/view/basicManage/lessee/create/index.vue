@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { getLesseePageByJB } from '@/api/lessee'
+import { getLesseePageByJB, getLesseeById, getRoles, getRolesAndGroups, updateLessee } from '@/api/lessee'
 
 const dafaultForm = {
   name: '',
@@ -144,11 +144,17 @@ export default {
   name: "home",
   data() {
     return {
+      id: '',
       query: {
         page: 1,
         size: 10,
         type: 1,
         name: ''
+      },
+      queryRole: {
+        page: 1,
+        size: 10,
+        companyId: '',
       },
       compayAccountType: Object.assign({}, compayAccountType),
       businessType: Object.assign({}, businessType),
@@ -160,7 +166,7 @@ export default {
       roleColumns: [
         {
             title: '姓名',
-            key: 'name',
+            key: 'uname',
         },
         {
             title: '手机号',
@@ -168,7 +174,7 @@ export default {
         },
         {
             title: '职位',
-            key: 'duty',
+            key: 'rname',
         },
         {
             title: '操作',
@@ -216,8 +222,31 @@ export default {
     }
   },
   mounted() {
+    this.id = this.$route.query.id
+    this.queryRole.companyId = this.id
+    this.init()
   },
   methods: {
+    init() {
+      if (this.id) {
+        getLesseeById(this.id)
+        .then(data => {
+          console.log(data)
+          let {name, compayAccountType, businessType} = data
+          let _form = {name, compayAccountType, businessType}
+          this.formAll = Object.assign({}, _form)
+          return getRolesAndGroups(data.name)
+        })
+        .then(_data => {
+          console.log('data1',_data)
+          this.formAll.roleList = _data
+        })
+
+        getRoles(this.queryRole).then(data => {
+          console.log('data2',data)
+        })
+      }
+    },
     search(query) {
       this.query.name = query
       this.loading = true

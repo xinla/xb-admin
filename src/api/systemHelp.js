@@ -3,7 +3,7 @@ import config from '@/config/index'
 
 const service = config.services.systemHelp
 
-const serviceSub = 'http://192.168.1.21:8115/v1/systemHelp'
+const serviceSub = config.services.mSystemHelp
 
 /**
  * 获取帮助分页列表

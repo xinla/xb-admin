@@ -2,13 +2,13 @@
   <div>
     <Tabs type="card">
         <TabPane label="工商信息">
-          <businessInfo/>
+          <businessInfo :id="id"/>
         </TabPane>
         <TabPane label="品牌信息">
-          <brandInfo/>
+          <brandInfo :id="id"/>
         </TabPane>
         <TabPane label="账号列表">
-          <accountList/>
+          <accountList :id="id"/>
         </TabPane>
     </Tabs>
   </div>
@@ -16,12 +16,23 @@
 
 <script>
 import businessInfo from '@/components/businessInfo/index'
-import './detail.less'
+
 export default {
   components: {
     businessInfo,
     brandInfo: () => import('@/components/brandInfo'),
     accountList: () => import('@/components/accountList'),
+  },
+  data() {
+    return {
+      id: ''
+    }
+  },
+  created() {
+    this.id = this.$route.query.id
   }
 }
 </script>
+<style lang="less" scoped>
+  @import url("./detail.less");
+</style>

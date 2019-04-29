@@ -1,4 +1,4 @@
-export default {
+const config = {
   /**
    * @description token在Cookie中存储的天数，默认1天
    */
@@ -15,6 +15,7 @@ export default {
   baseUrl: {
     dev: 'http://192.168.1.55', // 虚拟机
     // dev: 'http://192.168.1.8', // 本地
+    dev2: 'http://192.168.1.21:8115/v1',
     pro: 'https://produce.com'
   },
   /**
@@ -30,12 +31,19 @@ export default {
     //   developmentOff: false // 设为true后在开发环境不会收集错误信息，方便开发中排查错误
     // }
   },
-  services:{
-    company: '/xbcompany',
-    menuSet: '/xbBasePermissionMenu',
-    systemHelp: '/xbSystemHelp',
-    system: '/system',
-    user: '/user',
-    systemMessage: '/imNoticeMsg'
-  }
+  
 }
+
+config.services = {
+  company: '/xbcompany',
+  menuSet: '/xbBasePermissionMenu',
+  systemHelp: '/xbSystemHelp',
+  system: '/system',
+  user: '/user',
+  systemMessage: '/imNoticeMsg',
+
+  mSystemHelp: config.baseUrl.dev2 + '/systemHelp',
+  mCompany: config.baseUrl.dev2 + '/company',
+}
+
+export default config

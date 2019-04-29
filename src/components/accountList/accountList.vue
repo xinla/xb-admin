@@ -5,11 +5,7 @@
     </div>
     <Table 
     :columns="columnsRole"
-    :data="roleList">
-      <template slot-scope="{ row, index }" slot="action">
-        <img :src="row.img" alt="" @click="zoom(index)">
-        <img class="zoom" v-if="zoomIndex === index" :src="row.img" alt="">
-      </template>
+    :data="listRole">
     </Table>
 
     <Divider />
@@ -18,10 +14,9 @@
     </div>
     <Table 
     :columns="columnsAccount"
-    :data="accountList">
-      <template slot-scope="{ row, index }" slot="action">
-        <img :src="row.img" alt="" @click="zoom(index)">
-        <img class="zoom" v-if="zoomIndex === index" :src="row.img" alt="">
+    :data="listAccount">
+      <template slot-scope="{ row }" slot="time">
+        {{row.invaTimeStart}} 至 {{row.invaTimeEnd}}
       </template>
     </Table>
 
@@ -29,48 +24,77 @@
 </template>
 
 <script>
+import { getRoles, getInvaNumber } from "@/api/lessee";
+
 export default {
   name: 'accountList',
+  props: {
+    id: {
+      type: [Number, String],
+      required: true
+    }
+  },
   data() {
     return {
+      query: {
+        page: 1,
+        size: 10,
+        companyId: 0
+      },
       columnsRole: [
         {
             title: '姓名',
-            key: 'name',
+            key: 'uname',
         },
         {
             title: '手机号',
-            key: 'name',
+            key: 'mobile',
         },
         {
             title: '职务',
-            key: 'name',
+            key: 'rname',
         },
       ],
       columnsAccount: [
         {
             title: '姓名',
-            key: 'name',
+            key: 'uname',
         },
         {
             title: '手机号',
-            key: 'name',
+            key: 'mobile',
         },
         {
             title: '职务',
-            key: 'name',
+            key: 'rname',
         },
         {
             title: '应用权限',
-            key: 'name',
+            key: 'mname',
         },
         {
             title: '有效期',
-            key: 'name',
+            slot: 'time'
         }
       ],
-      roleList: [],
-      accountList: [],
+      listRole: [],
+      listAccount: [],
+    }
+  },
+  mounted() {
+    this.query.companyId = this.id
+    this.init()
+  },
+  methods: {
+    init() {
+      getRoles(this.query).then(data => {
+        console.log(data)
+        this.listRole = data
+      })
+      getInvaNumber(this.query).then(data => {
+        console.log(data)
+        this.listAccount = data
+      })
     }
   }
 }
