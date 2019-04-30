@@ -2,15 +2,15 @@ import axios from 'axios'
 import store from '@/store'
 import { Spin, Message } from 'iview'
 const addErrorLog = errorInfo => {
-  // const { statusText, status, request: { responseText, responseURL } } = errorInfo
-  // // let info = {
-  // //   type: 'ajax',
-  // //   code: status,
-  // //   mes: statusText,
-  // //   url: responseURL
-  // // }
-  // // if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
-  // Message.error(`错误: 路径: ${responseURL}, 返回值 : ${responseText}`)
+  const { statusText, status, request: { responseText, responseURL } } = errorInfo
+  // let info = {
+  //   type: 'ajax',
+  //   code: status,
+  //   mes: statusText,
+  //   url: responseURL
+  // }
+  // if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
+  Message.error(`错误: 路径: ${responseURL}, 返回值 : ${responseText}`)
 }
 
 class HttpRequest {

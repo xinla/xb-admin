@@ -1,6 +1,7 @@
 <template>
   <div>
 
+    <Form ref="form" :model="form" :rules="rules">
     <div class="title-row">基本信息
       <div class="fr">
         <Button size="small" type="primary" @click="edit">编辑</Button>
@@ -77,6 +78,25 @@
         <img class="zoom" v-if="zoomIndex === index" :src="row.url" alt="">
       </template>
     </Table>
+    <!-- 添加公司荣誉 -->
+    <Row>
+      <Form ref="formHonor" :model="formHonor" :rules="rulesHonor">
+        <Col span="6">
+          <Input v-model="formHonor.certificationAuthority" placeholder="请输入颁发机构" style="width:73%; margin-right: 10px;" />
+        </Col>
+        <Col span="6">
+          <Input v-model="formHonor.honorName" placeholder="请输入荣誉名称" style="width:73%; margin-right: 10px;" />
+        </Col>
+        <Col span="6">
+          <Input v-model="formHonor.prizeTime" placeholder="请输入获奖时间" style="width:73%; margin-right: 10px;" />
+        </Col>
+        <Col span="6">
+          <Input v-model="formHonor.url" placeholder="请输入证书文件" style="width:53%; margin-right: 10px;" />
+
+          <Button type="info" @click="add('role')">添加</Button>
+        </Col>
+        </Form>
+    </Row>
 
     <Divider />
 
@@ -84,12 +104,26 @@
     </div>
     <Timeline>
         <TimelineItem v-for="(item, index) in form.bigEvents" :key="index">
-          
-            <p class="time">{{item.time}}</p>
-            <p class="content">{{item.bigEvents}}</p>
+          <Input type="text" :disabled="disabled" v-model="form.bigEvents[index].time"/>
+          <Input type="text" :disabled="disabled" v-model="form.bigEvents[index].bigEvents"/>
         </TimelineItem>
     </Timeline>
 
+    <!-- 添加公司事件/足迹 -->
+    <div class="" v-show="disabled">
+      <Form ref="formEvents" :model="formEvents" :rules="rulesEvents" :label-width="50" inline>
+        <FormItem label="时间" prop="time">
+          <Input v-model="formEvents.time" placeholder="时间"></Input>
+        </FormItem>
+        <FormItem label="事件" prop="event">
+          <Input v-model="formEvents.event" placeholder="事件"></Input>
+        </FormItem>
+        <FormItem>
+          <Button type="primary">添加</Button>
+        </FormItem>
+      </Form>
+    </div>
+    </Form>
   </div>
 </template>
 
@@ -125,6 +159,15 @@ export default {
         honor: [],
         bigEvents: []
       },
+      formEvents: {
+
+      },
+      formHonor: {
+
+      },
+      rules: [],
+      rulesEvents: [],
+      rulesHonor: [],
       columns: [
         {
             title: '颁发机构',

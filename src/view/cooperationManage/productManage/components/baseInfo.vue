@@ -3,69 +3,77 @@
     <Row>
         <Col span="12">
           <FormItem label="产品全称" prop="form">
-              <Input type="text" v-model="form.fullName" placeholder="供应商名称"/>
+              <Input type="text" v-model="form.name" placeholder="供应商名称"/>
           </FormItem>
         </Col>
         <Col span="12">
-          <FormItem label="产品简称" prop="shortName">
-              <Input type="text" v-model="form.shortName" placeholder="供应商简称"/>
+          <FormItem label="产品简称" prop="nameForShort">
+              <Input type="text" v-model="form.nameForShort" placeholder="供应商简称"/>
           </FormItem>
         </Col>
     </Row>
     <Row>
         <Col span="12">
-          <FormItem label="产品代码" prop="form">
-              <Input type="text" v-model="form.fullName" placeholder="产品代码"/>
+          <FormItem label="产品代码" prop="code">
+              <Input type="text" v-model="form.code" placeholder="产品代码"/>
           </FormItem>
         </Col>
         <Col span="12">
           <FormItem label="所属供应商" prop="shortName">
-            <Select v-model="model1" style="width:200px">
-                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <Select
+              style="width:73%; margin-right: 10px;"
+              v-model="form.name"
+              filterable
+              remote
+              :remote-method="search"
+              :loading="loading">
+                <Option v-for="(option, index) in lesseeList" 
+                :value="option.name" 
+                :key="index">
+                {{option.name}}
+                </Option>
             </Select>
           </FormItem>
         </Col>
     </Row>
     
-    <FormItem label="主附险" prop="site">
-        <RadioGroup v-model="animal">
-            <Radio label="金斑蝶"></Radio>
-            <Radio label="爪哇犀牛"></Radio>
-            <Radio label="印度黑羚"></Radio>
+    <FormItem label="主附险" prop="isMain">
+        <RadioGroup v-model="form.isMain">
+            <Radio label="0">主险</Radio>
+            <Radio label="1">附加险</Radio>
         </RadioGroup>
     </FormItem>
-    <FormItem label="分销渠道" prop="website">
-        <CheckboxGroup v-model="fruit">
-        <Checkbox label="香蕉"></Checkbox>
-        <Checkbox label="苹果"></Checkbox>
-        <Checkbox label="西瓜"></Checkbox>
-    </CheckboxGroup>
+    <FormItem label="分销渠道" prop="distributionChannel">
+      <CheckboxGroup v-model="form.distributionChannel">
+        <Checkbox label="0">经代</Checkbox>
+        <Checkbox label="1">互联网</Checkbox>
+        <Checkbox label="2">个险</Checkbox>
+        <Checkbox label="3">银保</Checkbox>
+      </CheckboxGroup>
     </FormItem>
-    <FormItem label="在线投保" prop="mobile">
-        <CheckboxGroup v-model="fruit">
+    <FormItem label="在线投保" prop="onlineApplication">
+      <CheckboxGroup v-model="form.onlineApplication">
         <Checkbox label="现保科技 APP"></Checkbox>
         <br>
-        <Checkbox label="Web 网址：">
+        <Checkbox :label="{code: 1, linkAddress: form.name}">
           Web 网址：
-          <Input type="text" v-model="form.fullName" placeholder="供应商名称"/>
+          <Input class="inline-input" type="text" v-model="form.name" placeholder="供应商名称"/>
         </Checkbox>
         <br>
-        <Checkbox label="小程序：">
+        <Checkbox :label="{code: 2, linkAddress: form.name}">
           小程序：
-          <Input type="text" v-model="form.fullName" placeholder="供应商名称"/>
+          <Input class="inline-input" type="text" v-model="form.name" placeholder="小程序"/>
         </Checkbox>
         <br>
-        <Checkbox label="供应商 APP：">
+        <Checkbox :label="{code: 2, linkAddress: form.name}">
           供应商 APP：
-          <Input type="text" v-model="form.fullName" placeholder="供应商名称"/>
+          <Input class="inline-input" type="text" v-model="form.name" placeholder="供应商 APP"/>
         </Checkbox>
     </CheckboxGroup>
     </FormItem>
-    <FormItem label="险种类型" prop="shortName">
-        <CheckboxGroup v-model="fruit">
-            <Checkbox label="香蕉"></Checkbox>
-            <Checkbox label="苹果"></Checkbox>
-            <Checkbox label="西瓜"></Checkbox>
+    <FormItem label="险种类型" prop="typeRuleId">
+        <CheckboxGroup v-model="form.typeRuleId">
+            <Checkbox :label="item.id" v-for="(item, index) in insuranceType" :key="index">{{item.name}}</Checkbox>
         </CheckboxGroup>
     </FormItem>
 
@@ -73,33 +81,76 @@
 </template>
 
 <script>
+import { getLesseePageByJB } from '@/api/lessee'
+import { getTypeRulePage } from '@/api/rulesSet/type'
+import { getProductPage, getProductInfoById, addProductInfo } from '@/api/product'
 const defaultForm = {
-  fullName: '',
-  shortName: '',
-  type: '',
+  name: '',
+  nameForShort: '',
+  code: '',
   logo: '',
-  site: '',
-  website: '',
-  mobile: '',
-  call: '',
+  isMain: '',
+  distributionChannel: [],
+  onlineApplication: [],
+  typeRuleId: [],
 }
 
 export default {
+  // props: {
+  //   id: undefined
+  // },
   data() {
     return {
+      loading: false,
+      lesseeList: [],
+      query: {
+        page: 1,
+        size: 10,
+        type: 1,
+        name: ''
+      },
       form: Object.assign({}, defaultForm),
-      animal: '',
-      fruit: ''
+      insuranceType: []
     }
   },
+  mounted() {
+    this.id = this.$route.query.id
+    // this.id || (this.id = this.$route.query.id)
+    this.init()
+  },
   methods: {
+    init() {
+      this.id && this.getData()
+      getTypeRulePage(0).then(data => {
+        this.insuranceType = data.list
+        console.log(data.list)
+      })
+    },
+    getData() {
+      getProductInfoById(this.id).then(data => {
+        console.log(data)
+      })
+    },
     submit() {
-      this.$router.push({name: 'supplierManage'})
-    }
+      addProductInfo(this.form).then(data =>{
+
+      })
+    },
+    search(query) {
+      this.query.name = query
+      this.loading = true
+      getLesseePageByJB(this.query).then(data => {
+        // console.log(data)
+        this.loading = false
+        this.lesseeList = data.list
+      })
+    },
   }
 }
 </script>
 
 <style lang="less" scoped>
-
+  .inline-input{
+    width: 200px;
+  }
 </style>

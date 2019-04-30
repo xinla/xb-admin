@@ -3,11 +3,11 @@
     <div class="title">产品列表</div>
 
     <Row style="padding-bottom: 10px;">
-        <Col span="14">
+        <Col span="16">
           <Button type="info" @click="goPage('createProduct')">新建产品</Button>
         </Col>
         <Col span="8">
-          <Input v-model="query.name" placeholder="搜索供应商/产品名称/代码" style="width:73%; margin-right: 10px;" />
+          <Input v-model="query.searchValue" placeholder="搜索供应商/产品名称/代码" style="width:73%; margin-right: 10px;" />
           <Button type="info" @click="search()">搜索</Button>
         </Col>
     </Row>
@@ -17,29 +17,54 @@
     :loading="loading"
     :columns="columns"
     :data="list">
-      <template slot-scope="{ row, index }" slot="action">
-          <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
-          <Button type="error" size="small" style="margin-right: 5px" @click="goPage('lesseeDetail')">详情</Button>
+      <template slot-scope="{ row }" slot="age">
+          {{row.applicationAgeStart + '-' + row.applicationAgeEnd + '周岁'}}
+      </template>
+
+      <template slot-scope="{ row }" slot="distributionChannel">
+        <span v-for="(item, index) in row.distributionChannel.split()" :key="index">
+       {{ item | channel}}
+        </span>
+      </template>
+
+      <template slot-scope="{ row }" slot="onlineApplication">
+          {{JSON.parse(row.onlineApplication)[0].linkAddress}}
+      </template>
+      
+
+      <template slot-scope="{ row }" slot="action">
+          <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">编辑</Button>
+          <Button type="error" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">详情</Button>
       </template>
     </Table>
 
-    <Page :total="100" show-elevator show-total style="text-align:center;margin-top:20px;" @on-Change="getListByPage"/>
+    <Page :total="total" show-elevator show-total style="text-align:center;margin-top:20px;" @on-change="getData"/>
 
   </div>
 </template>
 
 <script>
-import { getLesseePageByName, getLesseePageByJB } from '@/api/lessee'
+import { getProductPage } from '@/api/product'
 export default {
-  name: "home",
+  filters: {
+    channel(val) {
+      const channel = {
+        1: '经代',
+        1: '互联网',
+        1: '经代',
+      }
+      return channel[val]
+    }
+  },
   data() {
     return {
       loading: true,
       query: {
-        page: 1,
-        size: 10,
-        type: '1',
-        name: ''
+        pageNum: 1,
+        pageSize: 10,
+        searchValue: '',
+        typeRuleId: '',
+        distributionChannel: ''
       },
       columns: [
         {
@@ -48,18 +73,25 @@ export default {
             align: 'center'
         },
         {
+            title: '供应商名称',
+            key: 'supplierName',
+            align: 'center',
+            minWidth: 80
+        },
+        {
             title: '产品代码',
-            key: 'name',
+            key: 'code',
             align: 'center'
         },
         {
             title: '产品名称',
-            key: 'name',
-            align: 'center'
+            key: 'productName',
+            align: 'center',
+            minWidth: 80
         },
         {
             title: '产品类型',
-            key: 'compayAccountType',
+            key: 'typeRuleName',
             align: 'center',
             filters: [
               {
@@ -94,7 +126,7 @@ export default {
         },
         {
             title: '分销渠道',
-            key: 'createTime',
+            slot: 'distributionChannel',
             align: 'center',
             filters: [
               {
@@ -108,62 +140,62 @@ export default {
             ],
             filterMultiple: false,
             filterMethod (value, row) {
-                if (value === 0) {
-                    return row.compayAccountType == 0;
-                } else if (value === 1) {
-                    return row.compayAccountType == 1;
-                }
+              return row.distributionChannel === 'value'
             }
         },
         {
             title: '投保年龄',
-            key: 'text',
+            slot: 'age',
             align: 'center'
         },
         {
             title: '投保期限',
-            key: 'email',
+            key: 'applicationDuration',
             align: 'center'
         },
         {
             title: '在线投保',
-            key: 'text',
+            slot: 'onlineApplication',
             align: 'center'
         },
         {
             title: '最近更新时间',
-            key: 'text',
-            align: 'center'
+            key: 'updateTime',
+            align: 'center',
+            minWidth: 80
         },
         {
             title: '操作',
             slot: 'action',
-            width: 200,
+            minWidth: 80,
             align: 'center',
         }
       ],
       list: [],
+      total: 0,
     }
   },
   mounted() {
-    //
-    getLesseePageByName(this.query).then(data => {
-      // debugger
-      console.log(data)
-      this.loading = false
-      this.list = data.list
-    })
+    this.init()
   },
   methods: {
-    search() {
-      this.loading = true
-      this.query.page = 1
-      this.query.size = 1
-      getLesseePageByName(this.query).then(data => {
+    init() {
+      this.getData()
+    },
+    getData() {
+      getProductPage(this.query).then(data => {
+        // debugger
         console.log(data)
         this.loading = false
         this.list = data.list
+        this.total = data.total
       })
+    },
+    search() {
+      this.loading = true
+      this.query.page = 1
+      this.query.size = 10
+      this.getData()
     },
     edit() {
 
@@ -174,19 +206,11 @@ export default {
     set() {
 
     },
-    goPage(name) {
-      this.$router.push({name})
+    goPage(name, query) {
+      query
+      ? this.$router.push({name, query})
+      : this.$router.push({name})
     },
-    getListByPage(page) {
-      console.log(1)
-      this.loading = true
-      this.query.page = page
-      getLesseePage(this.query).then(data => {
-        console.log(data)
-        this.loading = false
-        this.list = data.list
-      })
-    }
   }
 };
 </script>

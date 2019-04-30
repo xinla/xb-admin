@@ -10,30 +10,27 @@
   </Steps>
 
   <baseInfo v-show="current === 0"/>
-  <insuranceRules v-show="current === 1"/>
+  <!-- <insuranceRules v-show="current === 1"/>
   <productExplain v-show="current === 2"/>
-  <productAccessory v-show="current === 3"/>
+  <productAccessory v-show="current === 3"/> -->
 
   <div class="ac">
     <Button v-show="current > 0" type="primary" ghost @click="current--">上一步</Button>
-    <Button v-show="current !== 3" type="primary" @click="current++">下一步</Button>
-    <Button v-show="current === 3" type="primary" @click="submit">确认添加</Button>
+    <Button v-show="current !== 3" type="primary" @click="submit(current)">下一步</Button>
+    <Button v-show="current === 3" type="primary" @click="submit(current)">确认添加</Button>
   </div>
 </div>
 </template>
 
 <script>
 import baseInfo from '../components/baseInfo'
-import insuranceRules from '../components/insuranceRules'
-import productExplain from '../components/productExplain'
-import productAccessory from '../components/productAccessory'
 
 export default {
   components:{
     baseInfo,
-    insuranceRules,
-    productExplain,
-    productAccessory,
+    // insuranceRules: () => import('../components/insuranceRules'),
+    // productExplain: () => import('../components/productExplain'),
+    // productAccessory: () => import('../components/productEproductAccessoryxplain'),
   },
   data() {
     return {
@@ -41,8 +38,30 @@ export default {
     }
   },
   methods: {
-    submit() {
-      this.$router.push({name: 'productManage'})
+    submit(type) {
+      switch (type) {
+        case 0: 
+        this.$refs.
+        then(data => {
+          this.current++
+        })
+        break
+        case 1: 
+        this.$refs.
+        then(data => {
+          this.current++
+        })
+        break
+        case 2: 
+        this.$refs.
+        then(data => {
+          this.current++
+        })
+        break
+        case 3: current--
+        this.$router.push({name: 'productManage'})
+        break
+      }
     }
   }
 }

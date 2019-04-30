@@ -8,7 +8,7 @@ const serviceSub = config.services.mCompany
  * 根据公司查询全部租户
  * @param {*} page 
  * @param {*} size 
- * @param {*} name 公司名
+ * @param {*} name 供应商名称
  */
 export const getLesseePage = ({page, size, name}) => {
   return axios.request({
@@ -112,25 +112,25 @@ export const editLessee = (data) => {
  * 添加超级管理员
  * @param {uname, mobile, rname} role 管理员信息
  */
-export const addAdmin = (role) => {
-  return axios.request({
-    url: service + `/saveRole`,
-    data: role,
-    method: 'post'
-  })
-}
+// export const addAdmin = (role) => {
+//   return axios.request({
+//     url: service + `/saveRole`,
+//     data: role,
+//     method: 'post'
+//   })
+// }
 
 /**
  * 添加体验账号
  * @param {uname, mobile, rname, pname, invaTimeStart, invaTimeEnd} user 
  */
-export const addServiceAccount = (user) => {
-  return axios.request({
-    url: service + `/saveNumber`,
-    data: user,
-    method: 'post'
-  })
-}
+// export const addServiceAccount = (user) => {
+//   return axios.request({
+//     url: service + `/saveNumber`,
+//     data: user,
+//     method: 'post'
+//   })
+// }
 
 /**
  * 查询超级管理员
