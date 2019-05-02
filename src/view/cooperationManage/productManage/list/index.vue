@@ -182,9 +182,10 @@ export default {
     init() {
       this.getData()
     },
-    getData() {
+    getData(page) {
+      this.loading = true;
+      page && (this.query.page = page);
       getProductPage(this.query).then(data => {
-        // debugger
         console.log(data)
         this.loading = false
         this.list = data.list
@@ -192,24 +193,12 @@ export default {
       })
     },
     search() {
-      this.loading = true
       this.query.page = 1
       this.query.size = 10
       this.getData()
     },
-    edit() {
-
-    },
-    goDetail() {
-
-    },
-    set() {
-
-    },
     goPage(name, query) {
-      query
-      ? this.$router.push({name, query})
-      : this.$router.push({name})
+      this.$router.push({name, query})
     },
   }
 };

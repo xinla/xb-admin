@@ -132,9 +132,7 @@ export default {
       })
     },
     submit() {
-      addProductInfo(this.form).then(data =>{
-
-      })
+      return addProductInfo(this.form)
     },
     search(query) {
       this.query.name = query

@@ -9,10 +9,10 @@
       <Step title="待进行" content="产品附件"></Step>
   </Steps>
 
-  <baseInfo v-show="current === 0"/>
-  <!-- <insuranceRules v-show="current === 1"/>
-  <productExplain v-show="current === 2"/>
-  <productAccessory v-show="current === 3"/> -->
+  <baseInfo ref="baseInfo" v-show="current === 0"/>
+  <!-- <insuranceRules ref="insuranceRules" v-show="current === 1"/>
+  <productExplain ref="productExplain" v-show="current === 2"/>
+  <productAccessory ref="productAccessory" v-show="current === 3"/> -->
 
   <div class="ac">
     <Button v-show="current > 0" type="primary" ghost @click="current--">上一步</Button>
@@ -41,14 +41,17 @@ export default {
     submit(type) {
       switch (type) {
         case 0: 
-        this.$refs.
-        then(data => {
+        this.$refs.baseInfo.submit()
+        .then(data => {
+          console.log(1)
           this.current++
+        }).catch(err => {
+          console.log(err)
         })
         break
         case 1: 
-        this.$refs.
-        then(data => {
+        this.$refs.baseInfo.submit()
+        .then(data => {
           this.current++
         })
         break

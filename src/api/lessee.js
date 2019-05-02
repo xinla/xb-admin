@@ -181,7 +181,7 @@ export const getInvaNumber = ({page, size, companyId}) => {
  */
 export const getLesseeBusinessInfoById = (id) => {
   return axios.request({
-    url: '/xbCompany' + `BusinessInformation/findAll/${id}`,
+    url: service + `BusinessInformation/findAll/${id}`,
     method: 'get'
   })
 }

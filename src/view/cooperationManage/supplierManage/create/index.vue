@@ -1,40 +1,47 @@
 <template>
 <div>
   
-  <Form ref="form" :model="form" :label-width="120" inline>
+  <Form ref="form" :model="form" :rules="rules" :label-width="120" inline>
     <div class="title-row">基本信息</div>
-    <FormItem label="供应商名称" prop="form">
-        <Input type="text" v-model="form.form" placeholder="供应商名称"/>
+    <FormItem label="供应商名称" prop="name">
+      <selectSupplier :name="form.name" @change="change" />
     </FormItem>
     <FormItem label="供应商Logo" prop="logo">
-      <Upload action="//jsonplaceholder.typicode.com/posts/">
+      <img class="logo" v-if="form.logo" :src="form.logo" alt="logo">
+      <Upload 
+      v-else
+      :action="$config.baseUrl.dev + '/upload'"
+      :show-upload-list="false"
+      :format="['jpg','jpeg','png']"
+      accept="image/*"
+      :on-success="upFile">
           <div class="upload-icon cp">+</div>
       </Upload>
     </FormItem>
-    <FormItem label="供应商简称" prop="shortName">
-        <Input type="text" v-model="form.shortName" placeholder="供应商简称"/>
+    <FormItem label="供应商简称" prop="nameForShort">
+        <Input type="text" v-model="form.nameForShort" placeholder="供应商简称"/>
     </FormItem>
-    <FormItem label="供应商类型" prop="type">
-      <RadioGroup v-model="form.type">
-          <Radio label="寿险"></Radio>
-          <Radio label="财险"></Radio>
+    <FormItem label="供应商类型" prop="typeRule">
+      <RadioGroup v-model="form.typeRule">
+          <Radio :label="0">寿险</Radio>
+          <Radio :label="1">财险</Radio>
       </RadioGroup>
     </FormItem>
 
     <Divider />
     
-    <div class="title-row">基本信息</div>
-    <FormItem label="公司地址" prop="site">
-        <Input type="text" v-model="form.site" placeholder="公司地址"/>
+    <div class="title-row">联系方式</div>
+    <FormItem label="公司地址" prop="companyAddress">
+        <Input type="text" v-model="form.companyAddress" placeholder="公司地址"/>
     </FormItem>
-    <FormItem label="公司网址" prop="website">
-        <Input type="text" v-model="form.website" placeholder="公司网址"/>
+    <FormItem label="公司网址" prop="companyWebsite">
+        <Input type="text" v-model="form.companyWebsite" placeholder="公司网址"/>
     </FormItem>
-    <FormItem label="联系电话" prop="mobile">
-        <Input type="text" v-model="form.mobile" placeholder="联系电话"/>
+    <FormItem label="联系电话" prop="contactPhone">
+        <Input type="text" v-model="form.contactPhone" placeholder="联系电话"/>
     </FormItem>
-    <FormItem label="全国统一服务电话" prop="shortName">
-        <Input type="text" v-model="form.call" placeholder="全国统一服务电话"/>
+    <FormItem label="全国统一服务电话" prop="nationalServicePhone">
+        <Input type="text" v-model="form.nationalServicePhone" placeholder="全国统一服务电话"/>
     </FormItem>
 
     <Button type="primary" @click="submit">确认创建</Button>
@@ -45,25 +52,95 @@
 </template>
 
 <script>
+import { addSupplier, updateSupplier, getSupplierDetail } from '@/api/supplier'
+import selectSupplier from '@/components/selectSupplier'
+
 const defaultForm = {
-  fullName: '',
-  shortName: '',
-  type: '',
+  id: '',
+  name: '',
+  nameForShort: '',
+  typeRule: '', // 0寿险,1财险	
   logo: '',
-  site: '',
-  website: '',
-  mobile: '',
-  call: '',
+  companyAddress: '',
+  companyWebsite: '',
+  contactPhone: '',
+  nationalServicePhone: '',
 }
 export default {
+  components: {
+    selectSupplier,
+  },
   data() {
     return {
-      form: Object.assign({}, defaultForm)
+      id: 0,
+      form: Object.assign({}, defaultForm),
+      rules: {
+        name: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        nameForShort: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        typeRule: [
+            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        companyAddress: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        companyWebsite: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        contactPhone: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        nationalServicePhone: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+        ],
+      }
     }
   },
+  mounted() {
+    this.$route.query.id && (this.id = this.$route.query.id)
+    this.init()
+  },
   methods: {
+    init() {
+      this.getData()
+    },
+    getData() {
+      if (this.id) {
+        getSupplierDetail(this.id).then(data => {
+          console.log(data)
+        })
+      }
+    },
     submit() {
-      this.$router.push({name: 'supplierManage'})
+      this.$refs.form.validate()
+      .then(data => {
+        if(data) {
+          console.log(this.form)
+          return addSupplier(this.form)
+        } else {
+        return new Promise((resolve, reject) => {})
+        }
+      })
+      .then(data => {
+        this.$Message.success("创建成功")
+        this.$router.push({name: 'supplierManage'}) 
+      })
+      .catch(err => {
+        this.$Message.success("服务器忙，请稍后重试")
+      })
+    },
+    upFile(response, file, fileList) {
+      // console.log(response, file, fileList)
+      // console.log(response.result.fileUrl)
+      this.form.logo = response.result.fileUrl
+    },
+    change(val) {
+      this.form.name = val.name
+      this.form.id = val.id
+      // console.log(val)
     }
   }
 }

@@ -1,125 +1,19 @@
 <template>
   <div>
     <xNav/>
-    <!-- <Tabs size="small">
-        <TabPane label="工商信息" @on-click="goPage('businessInfo')"></TabPane>
-        <TabPane label="品牌信息" @on-click="goPage('brandInfo')"></TabPane>
-        <TabPane label="组织架构" @on-click="goPage('organizationalStructure')"></TabPane>
-        <TabPane label="产品列表" @on-click="goPage('productList')"></TabPane>
-        <TabPane label="新闻资讯" @on-click="goPage('news')"></TabPane>
-        <TabPane label="职业代码表" @on-click="goPage('ascoCode')"></TabPane>
-        <TabPane label="投保规则" @on-click="goPage('insuranceRules')"></TabPane>
-    </Tabs> -->
+    
+    <brandInfo/>
 
-    <div>
-
-    <div class="title-row">基本信息</div>
-    <table>
-      <tr>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-      </tr>
-      <tr>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-      </tr>
-      <tr>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-        <th>公司名称</th>
-        <td>
-          <Input type="text" :disabled="disabled" v-model="company.fullName"/>
-        </td>
-      </tr>
-    </table>
-
-    <Divider />
-
-    <div class="title-row">公司简介
-    </div>
-    <Input 
-    type="textarea" 
-    placeholder="公司介绍"
-    :autosize="true"
-    :disabled="disabled"
-    v-model="company.introduction" />
-
-    <Divider />
-
-    <div class="title-row">公司荣誉
-    </div>
-    <Table 
-    border
-    :columns="columns"
-    :data="list">
-      <template slot-scope="{ row, index }" slot="action">
-        <img :src="row.img" alt="" @click="zoom(index)">
-        <img class="zoom" v-if="zoomIndex === index" :src="row.img" alt="">
-      </template>
-    </Table>
-
-    <Divider />
-
-    <div class="title-row">公司足迹
-    </div>
-    <Timeline>
-        <TimelineItem>
-            <p class="time">1976年</p>
-            <p class="content">Apple I 问世</p>
-        </TimelineItem>
-        <TimelineItem>
-            <p class="time">1984年</p>
-            <p class="content">发布 Macintosh</p>
-        </TimelineItem>
-        <TimelineItem>
-            <p class="time">2007年</p>
-            <p class="content">发布 iPhone</p>
-        </TimelineItem>
-        <TimelineItem>
-            <p class="time">2010年</p>
-            <p class="content">发布 iPad</p>
-        </TimelineItem>
-        <TimelineItem>
-            <p class="time">2011年10月5日</p>
-            <p class="content">史蒂夫·乔布斯去世</p>
-        </TimelineItem>
-    </Timeline>
-
-  </div>
   </div>
 </template>
 
 <script>
 import { getLesseePageByName, getLesseePageByJB } from '@/api/lessee'
 import xNav from '@/view/components/nav'
+import brandInfo from '@/components/brandInfo'
 export default {
   components: {
+    brandInfo,
     xNav
   },
   data() {

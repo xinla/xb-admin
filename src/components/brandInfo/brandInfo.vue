@@ -136,7 +136,7 @@ export default {
   props: {
     id: {
       type: [Number, String],
-      required: true
+      default: 0
     }
   },
   data() {
@@ -165,9 +165,9 @@ export default {
       formHonor: {
 
       },
-      rules: [],
-      rulesEvents: [],
-      rulesHonor: [],
+      rules: {},
+      rulesEvents: {},
+      rulesHonor: {},
       columns: [
         {
             title: '颁发机构',
@@ -200,17 +200,18 @@ export default {
     }
   },
   mounted() {
+    this.id || (this.id = this.$route.query.id)
     this.init()
   },
   methods: {
     init() { 
+      console.log(1)
       getLesseeBrandInfoById(this.id).then(data => {
         this.form = data
         // this.company = data.xbCompany
         // this.listHonor = data.honor
         // this.listEvents = data.bigEvents
         console.log('data5:',data)
-        // debugger
       })
     },
     edit() {

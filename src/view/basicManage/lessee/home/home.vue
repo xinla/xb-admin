@@ -17,7 +17,7 @@
       <template slot-scope="{ row }" slot="name">
         <div
           class="a"
-          @click="$router.push({name: 'companyDetail', query: {id: row.companyId}})"
+          @click="goPage('companyDetail', {id: row.companyId})"
         >{{row.name}}</div>
       </template>
 
@@ -33,13 +33,13 @@
         {{row.isActive | isActive}}
       </template>
 
-      <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row)">编辑</Button>
+      <template slot-scope="{ row }" slot="action">
+        <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createLessee', {id: row.id})">编辑</Button>
         <Button
           type="error"
           size="small"
           style="margin-right: 5px"
-          @click="goPage('lesseeDetail', row)"
+          @click="goPage('lesseeDetail', {id: row.id})"
         >详情</Button>
         <Button type="error" size="small" @click="set(row)">{{row.isActive == 0 ? '停用' : '启用'}}</Button>
       </template>
@@ -51,7 +51,7 @@
       show-elevator
       show-total
       style="text-align:center;margin-top:20px;"
-      @on-change="getListPage"
+      @on-change="getData"
     />
   </div>
 </template>
@@ -199,10 +199,12 @@ export default {
     };
   },
   mounted() {
-    this.getList();
+    this.getData();
   },
   methods: {
-    getList() {
+    getData(page) {
+      this.loading = true;
+      page && (this.query.page = page);
       getLesseePage(this.query).then(data => {
         console.log(data);
         this.loading = false;
@@ -211,16 +213,9 @@ export default {
       });
     },
     search() {
-      this.loading = true;
       this.query.page = 1;
       this.query.size = 10;
-      this.getList();
-    },
-    edit(data) {
-      this.$router.push({name: 'createLessee', query: {id: data.id}})
-    },
-    goDetail(data) {
-      this.$router.push({name: 'createLessee', query: {id: data.id}})
+      this.getData();
     },
     set(data) {
       data.isActive = data.isActive == 0 ? 1 : 0
@@ -229,17 +224,8 @@ export default {
       })
     },
     goPage(name, query) {
-      if (name === 'createLessee') {
-        this.$router.push({ name });
-      } else if (name === 'lesseeDetail') {
-        this.$router.push({ name, query: {id: query.id} });
-      }
+      this.$router.push({ name, query });
     },
-    getListPage(page) {
-      this.loading = true;
-      this.query.page = page;
-      this.getList();
-    }
   }
 };
 </script>

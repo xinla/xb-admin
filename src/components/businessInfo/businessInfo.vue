@@ -67,7 +67,6 @@ export default {
   props: {
     id: {
       type: [Number, String],
-      required: true
     }
   },
   data() {
@@ -95,6 +94,7 @@ export default {
     }
   },
   mounted() {
+    this.id || (this.id = this.$route.query.id)
     this.init()
   },
   methods: {

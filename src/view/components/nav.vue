@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <router-link v-for="(item, index) of routes" :key="index" class="tab-li" :to="{name: item.name}">
+    <router-link v-for="(item, index) of routes" :key="index" class="tab-li" :to="{name: item.name, query: {id: $route.query.id}}">
       {{item.text}}
     </router-link>
   </nav>
