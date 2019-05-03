@@ -2,7 +2,7 @@ import axios from '@/libs/api.request'
 import config from '@/config'
 
 const service = config.services.supplier
-const serviceCompany = config.services.company
+const serviceBusinessInformation = config.services.businessInformation
 const serviceSub = config.services.mCompany
 
 /**
@@ -46,11 +46,12 @@ export const getSupplierDetail = (id) => {
 
 /**
  * 供应商->添加
+ * @param {*} id 保险公司id
  * @param {*} data 
  */
-export const addSupplier = (data) => {
+export const addSupplier = (id, data) => {
   return axios.request({
-    url: service + `/${data.id}`,
+    url: service + `/${id}`,
     data,
     method: 'post'
   })
@@ -82,11 +83,11 @@ export const getSupplierProductPage = (query) => {
 
 /**
  * 工商信息->根据供应商id查询
- * @param {*} supplierId 供应商id
+ * @param {*} id 供应商id
  */
-export const getSupplierBusinessInformation = (supplierId) => {
+export const getSupplierBusinessInformation = (id) => {
   return axios.request({
-    url: serviceCompany + `/findByGyId/${supplierId}`,
+    url: serviceBusinessInformation + `/findByGyId/${id}`,
     method: 'get'
   })
 }

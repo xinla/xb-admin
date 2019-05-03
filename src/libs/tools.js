@@ -239,3 +239,25 @@ export const formatDate = (timeStamp, startType) => {
     return (year + '-' + month + '-' + date + ' ' + hours + ':' + minutes)
   }
 }
+
+/**
+ * logo 过滤处理
+ * @param {*} str url
+ */
+export function transLogo(str) {
+  if (str) 
+  return str
+  else 
+  return require('@/assets/images/defaultLogo.jpg')
+  
+}
+
+const tool = {
+  transLogo
+}
+
+export default {
+  install(Vue) {
+    Vue.prototype.$Tool = tool
+  }
+}

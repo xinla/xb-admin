@@ -9,9 +9,10 @@ import i18n from '@/locale'
 import OrgTree from 'v-org-tree'
 import 'v-org-tree/dist/v-org-tree.css'
 import TreeTable from 'tree-table-vue'
-
+import Tool from '@/libs/tools'
 Vue.use(TreeTable)
 Vue.use(OrgTree)
+Vue.use(Tool)
 
 import config from '@/config'
 import importDirective from '@/directive'

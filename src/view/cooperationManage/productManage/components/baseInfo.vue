@@ -19,20 +19,8 @@
           </FormItem>
         </Col>
         <Col span="12">
-          <FormItem label="所属供应商" prop="shortName">
-            <Select
-              style="width:73%; margin-right: 10px;"
-              v-model="form.name"
-              filterable
-              remote
-              :remote-method="search"
-              :loading="loading">
-                <Option v-for="(option, index) in lesseeList" 
-                :value="option.name" 
-                :key="index">
-                {{option.name}}
-                </Option>
-            </Select>
+          <FormItem label="所属供应商" prop="supplierId">
+             <selectSupplier :id="form.supplierId" @change="change" />
           </FormItem>
         </Col>
     </Row>
@@ -53,28 +41,28 @@
     </FormItem>
     <FormItem label="在线投保" prop="onlineApplication">
       <CheckboxGroup v-model="form.onlineApplication">
-        <Checkbox label="现保科技 APP"></Checkbox>
+        <Checkbox :label="`{code: 0, linkAddress: ${form.name}}`">现保科技 APP</Checkbox>
         <br>
-        <Checkbox :label="{code: 1, linkAddress: form.name}">
+        <Checkbox :label="`{code: 1, linkAddress: ${form.onlineApplication[0].linkAddress}}`">
           Web 网址：
-          <Input class="inline-input" type="text" v-model="form.name" placeholder="供应商名称"/>
+          <Input class="inline-input" type="text" v-model="form.onlineApplication[0].linkAddress" placeholder="供应商名称"/>
         </Checkbox>
         <br>
-        <Checkbox :label="{code: 2, linkAddress: form.name}">
+        <Checkbox :label="`{code: 2, linkAddress: ${form.name}}`">
           小程序：
           <Input class="inline-input" type="text" v-model="form.name" placeholder="小程序"/>
         </Checkbox>
         <br>
-        <Checkbox :label="{code: 2, linkAddress: form.name}">
+        <Checkbox :label="`{code: 3, linkAddress: ${form.name}}`">
           供应商 APP：
           <Input class="inline-input" type="text" v-model="form.name" placeholder="供应商 APP"/>
         </Checkbox>
     </CheckboxGroup>
     </FormItem>
     <FormItem label="险种类型" prop="typeRuleId">
-        <CheckboxGroup v-model="form.typeRuleId">
-            <Checkbox :label="item.id" v-for="(item, index) in insuranceType" :key="index">{{item.name}}</Checkbox>
-        </CheckboxGroup>
+      <RadioGroup v-model="form.typeRuleId">
+        <Radio v-for="(item, index) in insuranceType" :key="index" :label="item.id">{{item.name}}</Radio>
+      </RadioGroup>
     </FormItem>
 
   </Form>
@@ -84,18 +72,24 @@
 import { getLesseePageByJB } from '@/api/lessee'
 import { getTypeRulePage } from '@/api/rulesSet/type'
 import { getProductPage, getProductInfoById, addProductInfo } from '@/api/product'
+import selectSupplier from '@/components/selectSupplier'
+
 const defaultForm = {
+  supplierId: '',
   name: '',
   nameForShort: '',
   code: '',
-  logo: '',
-  isMain: '',
+  isMain: 0,
+  sale: 0,
   distributionChannel: [],
   onlineApplication: [],
   typeRuleId: [],
 }
 
 export default {
+  components: {
+    selectSupplier,
+  },
   // props: {
   //   id: undefined
   // },
@@ -120,29 +114,26 @@ export default {
   },
   methods: {
     init() {
-      this.id && this.getData()
+      this.getData()
+      // 获取险种类型
       getTypeRulePage(0).then(data => {
         this.insuranceType = data.list
         console.log(data.list)
       })
     },
     getData() {
-      getProductInfoById(this.id).then(data => {
+      this.id && getProductInfoById(this.id).then(data => {
         console.log(data)
+        this.form = data
       })
     },
     submit() {
       return addProductInfo(this.form)
     },
-    search(query) {
-      this.query.name = query
-      this.loading = true
-      getLesseePageByJB(this.query).then(data => {
-        // console.log(data)
-        this.loading = false
-        this.lesseeList = data.list
-      })
-    },
+    change(val) {
+      this.form.supplierId = val.id
+      // console.log(val)
+    }
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <Select
-    v-model="name"
+    v-model="id"
     filterable
     remote
     placeholder="输入供应商进行选择"
@@ -8,7 +8,7 @@
     :loading="loading"
     :disabled="disabled">
       <Option v-for="(option, index) in lesseeList" 
-      :value="option.name"
+      :value="option.id"
       :key="index"
       @click.native="$emit('change', option)">
       {{option.name}}
@@ -22,7 +22,7 @@ import { getLesseePageByJB } from '@/api/lessee'
 export default {
   name: 'selectSupplier',
   props:{
-    name: '',
+    id: '',
     disabled: {
       type: Boolean,
       default: false

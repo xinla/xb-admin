@@ -33,7 +33,7 @@
     </Table>
 
     <Page
-      :total="100"
+      :total="total"
       show-elevator
       show-total
       style="text-align:center;margin-top:20px;"
@@ -57,8 +57,9 @@ export default {
         page: 1,
         size: 10,
         sale: 0,
-        type: "1",
-        name: ""
+        nameAndCode: '',
+        typeRuleId: '',
+        supplierId: ''
       },
       columns: [
         {
@@ -115,6 +116,7 @@ export default {
         }
       ],
       list: [],
+      total: 0,
       saleState: {
         0: '在售',
         0: '停售',

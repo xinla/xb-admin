@@ -2,7 +2,7 @@
   <div>
 
     <div>
-      <img class="logo" :src="form.logo" alt="logo">
+      <img class="logo" :src="$Tool.transLogo(form.logo)" alt="logo">
       <div class="company-name">{{form.name}}</div>
       <div class="time">更新时间：{{form.updateTime}}</div>
     </div>
@@ -61,6 +61,7 @@
 
 <script>
 import { getLesseeBusinessInfoById } from "@/api/lessee";
+import { transLogo } from "@/libs/tools";
 
 export default {
   name: 'businessInfo',
@@ -101,7 +102,7 @@ export default {
     init() {
       getLesseeBusinessInfoById(this.id).then(data => {
         this.form = data[0]
-        console.log('data1',data)
+        // console.log('data1', data)
       })
     }
   }

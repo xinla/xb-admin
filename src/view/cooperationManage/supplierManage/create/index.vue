@@ -3,8 +3,8 @@
   
   <Form ref="form" :model="form" :rules="rules" :label-width="120" inline>
     <div class="title-row">基本信息</div>
-    <FormItem label="供应商名称" prop="name">
-      <selectSupplier :name="form.name" @change="change" />
+    <FormItem label="供应商名称" prop="insuranceId">
+      <selectSupplier :id="insuranceId" @change="change" />
     </FormItem>
     <FormItem label="供应商Logo" prop="logo">
       <img class="logo" v-if="form.logo" :src="form.logo" alt="logo">
@@ -44,7 +44,7 @@
         <Input type="text" v-model="form.nationalServicePhone" placeholder="全国统一服务电话"/>
     </FormItem>
 
-    <Button type="primary" @click="submit">确认创建</Button>
+    <Button type="primary" @click="submit">确认</Button>
 
   </Form>
 
@@ -56,7 +56,6 @@ import { addSupplier, updateSupplier, getSupplierDetail } from '@/api/supplier'
 import selectSupplier from '@/components/selectSupplier'
 
 const defaultForm = {
-  id: '',
   name: '',
   nameForShort: '',
   typeRule: '', // 0寿险,1财险	
@@ -72,7 +71,8 @@ export default {
   },
   data() {
     return {
-      id: 0,
+      id: 0, // 供应商id
+      insuranceId: 0, // 保险公司id
       form: Object.assign({}, defaultForm),
       rules: {
         name: [
@@ -110,7 +110,14 @@ export default {
     getData() {
       if (this.id) {
         getSupplierDetail(this.id).then(data => {
-          console.log(data)
+          // console.log(data)
+          // this.insuranceId = this.id
+          this.form.id = this.id
+          if (data) {
+            this.form = data
+          } else {
+            this.$Message.error("暂无此记录，请稍后重试")
+          }
         })
       }
     },
@@ -119,18 +126,22 @@ export default {
       .then(data => {
         if(data) {
           console.log(this.form)
-          return addSupplier(this.form)
+          if (this.id) {
+            return updateSupplier(this.form)
+          } else {
+            return addSupplier(this.insuranceId, this.form)
+          }
         } else {
-        return new Promise((resolve, reject) => {})
+          return new Promise((resolve, reject) => {})
         }
       })
       .then(data => {
-        this.$Message.success("创建成功")
+        this.$Message.success("操作成功")
         this.$router.push({name: 'supplierManage'}) 
       })
-      .catch(err => {
-        this.$Message.success("服务器忙，请稍后重试")
-      })
+      // .catch(err => {
+      //   this.$Message.success("服务器忙，请稍后重试")
+      // })
     },
     upFile(response, file, fileList) {
       // console.log(response, file, fileList)
@@ -139,7 +150,7 @@ export default {
     },
     change(val) {
       this.form.name = val.name
-      this.form.id = val.id
+      this.insuranceId = val.id
       // console.log(val)
     }
   }

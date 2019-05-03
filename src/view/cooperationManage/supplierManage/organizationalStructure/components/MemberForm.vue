@@ -1,168 +1,209 @@
 <template>
-  <Form class="member-form" v-if="value" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
-    <FormItem label="Name" prop="name">
-      <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
+  <Form class="member-form" v-if="value" ref="form" :model="form" :rules="rules" :label-width="80">
+
+    <FormItem prop="headImage">
+      <img class="headImage" v-if="form.headImage" :src="form.headImage" alt="headImage">
+      <Upload 
+      v-else
+      :action="$config.baseUrl.dev + '/upload'"
+      :show-upload-list="false"
+      :format="['jpg','jpeg','png']"
+      accept="image/*"
+      :on-success="upFile">
+          <div class="upload-icon cp">上传头像</div>
+      </Upload>
     </FormItem>
-    <FormItem label="E-mail" prop="mail">
-      <Input v-model="formValidate.mail" placeholder="Enter your e-mail"></Input>
+
+    <FormItem label="姓名" prop="name">
+      <Input v-model="form.name" placeholder="姓名"></Input>
     </FormItem>
-    <FormItem label="City" prop="city">
-      <Select v-model="formValidate.city" placeholder="Select your city">
-        <Option value="beijing">New York</Option>
-        <Option value="shanghai">London</Option>
-        <Option value="shenzhen">Sydney</Option>
-      </Select>
+
+    <FormItem label="部门" prop="organizationid">
+      <Input v-model="form.organizationid" placeholder="部门"></Input>
     </FormItem>
-    <FormItem label="Date">
-      <Row>
-        <Col span="11">
-          <FormItem prop="date">
-            <DatePicker type="date" placeholder="Select date" v-model="formValidate.date"></DatePicker>
-          </FormItem>
-        </Col>
-        <Col span="2" style="text-align: center">-</Col>
-        <Col span="11">
-          <FormItem prop="time">
-            <TimePicker type="time" placeholder="Select time" v-model="formValidate.time"></TimePicker>
-          </FormItem>
-        </Col>
-      </Row>
+
+    <FormItem label="职位" prop="jobname">
+      <Input v-model="form.jobname" placeholder="职位"></Input>
     </FormItem>
-    <FormItem label="Gender" prop="gender">
-      <RadioGroup v-model="formValidate.gender">
-        <Radio label="male">Male</Radio>
-        <Radio label="female">Female</Radio>
+
+    <FormItem label="是否加入角色列表" prop="joinstate">
+      <RadioGroup v-model="form.joinstate">
+        <Radio :label="0">是</Radio>
+        <Radio :label="1">否</Radio>
       </RadioGroup>
     </FormItem>
-    <FormItem label="Hobby" prop="interest">
-      <CheckboxGroup v-model="formValidate.interest">
-        <Checkbox label="Eat"></Checkbox>
-        <Checkbox label="Sleep"></Checkbox>
-        <Checkbox label="Run"></Checkbox>
-        <Checkbox label="Movie"></Checkbox>
-      </CheckboxGroup>
+
+    <FormItem label="是否组织长官" prop="leader">
+      <RadioGroup v-model="form.leader">
+        <Radio :label="0">是</Radio>
+        <Radio :label="1">否</Radio>
+      </RadioGroup>
     </FormItem>
-    <FormItem label="Desc" prop="desc">
-      <Input
-        v-model="formValidate.desc"
-        type="textarea"
-        :autosize="{minRows: 2,maxRows: 5}"
-        placeholder="Enter something..."
-      ></Input>
+
+    <FormItem label="职务类型" prop="userType">
+      <RadioGroup v-model="form.userType">
+        <Radio :label="0">内勤</Radio>
+        <Radio :label="1">外勤</Radio>
+      </RadioGroup>
     </FormItem>
+
+    <FormItem label="工号" prop="jobNumber">
+      <Input v-model="form.jobNumber" placeholder="工号"></Input>
+      <div>新员工，点击自动生成工号</div>
+    </FormItem>
+
+    <FormItem label="手机号" prop="phone">
+      <Input v-model="form.phone" placeholder="手机号"></Input>
+    </FormItem>
+
+    <FormItem label="座机号码" prop="telPhone">
+      <Input v-model="form.telPhone" placeholder="座机号码"></Input>
+    </FormItem>
+
+    <FormItem label="邮箱" prop="email">
+      <Input v-model="form.email" placeholder="邮箱"></Input>
+    </FormItem>
+    
     <FormItem>
       <Button @click="submit(1)">保存</Button>
       <Button @click="submit(2)" style="margin-left: 8px">保存并继续添加</Button>
       <Button @click="cancel()" style="margin-left: 8px">取消</Button>
     </FormItem>
+
   </Form>
 </template>
 <script>
+import { addSupplierUser, updateSupplierUser, getSupplierUserDetail } from "@/api/supplier/user";
+
 export default {
   props: {
     value: {
       type: Boolean,
       default: false
-    }
+    },
+    id: '',
   },
   data() {
     return {
-      formValidate: {
-        name: "",
-        mail: "",
-        city: "",
-        gender: "",
-        interest: [],
-        date: "",
-        time: "",
-        desc: ""
+      form: {
+        organizationid: '',
+        name: '',
+        headImage: '',
+        name1: '',
+        joinstate: 0,
+        leader: 0,
+        userType: 0,
+        phone: '',
+        telPhone: '',
+        email: '',
+        jobname: '',
+        roles: []
       },
-      ruleValidate: {
+      rules: {
         name: [
           {
             required: true,
-            message: "The name cannot be empty",
+            message: "必填项",
             trigger: "blur"
           }
         ],
-        mail: [
+        email: [
           {
             required: true,
-            message: "Mailbox cannot be empty",
+            message: "必填项",
             trigger: "blur"
           },
           { type: "email", message: "Incorrect email format", trigger: "blur" }
         ],
-        city: [
+        organizationid: [
           {
             required: true,
-            message: "Please select the city",
-            trigger: "change"
-          }
-        ],
-        gender: [
-          { required: true, message: "Please select gender", trigger: "change" }
-        ],
-        interest: [
-          {
-            required: true,
-            type: "array",
-            min: 1,
-            message: "Choose at least one hobby",
-            trigger: "change"
-          },
-          {
-            type: "array",
-            max: 2,
-            message: "Choose two hobbies at best",
-            trigger: "change"
-          }
-        ],
-        date: [
-          {
-            required: true,
-            type: "date",
-            message: "Please select the date",
-            trigger: "change"
-          }
-        ],
-        time: [
-          {
-            required: true,
-            type: "string",
-            message: "Please select time",
-            trigger: "change"
-          }
-        ],
-        desc: [
-          {
-            required: true,
-            message: "Please enter a personal introduction",
-            trigger: "blur"
-          },
-          {
-            type: "string",
-            min: 20,
-            message: "Introduce no less than 20 words",
+            message: "必填项",
             trigger: "blur"
           }
-        ]
+        ],
+        jobname: [
+          {
+            required: true,
+            message: "必填项",
+            trigger: "blur"
+          }
+        ],
+        leader: [
+          {
+            type: 'number',
+            required: true,
+            message: "必填项",
+            trigger: "blur"
+          }
+        ],
+        userType: [
+          {
+            type: 'number',
+            required: true,
+            message: "必填项",
+            trigger: "blur"
+          }
+        ],
+        jobNumber: [
+          {
+            required: true,
+            message: "必填项",
+            trigger: "blur"
+          }
+        ],
+        phone: [
+          {
+            required: true,
+            message: "必填项",
+            trigger: "blur"
+          }
+        ],
       }
     };
   },
+  mounted() {
+    this.getData()
+  },
   methods: {
-    submit(name) {
-      this.$refs[name].validate(valid => {
-        if (valid) {
-          this.$Message.success("Success!");
-        } else {
-          this.$Message.error("Fail!");
-        }
-      });
+    getData() {
+      if (this.id) {
+        getSupplierUserDetail().then(data => {
+          console.log(data)
+          this.form = data
+        })
+      }
     },
-    cancel(name) {
+    upFile(response, file, fileList) {
+      // console.log(response, file, fileList)
+      // console.log(response.result.fileUrl)
+      this.form.logo = response.result.fileUrl
+    },
+    submit(type) {
+      this.$refs['form'].validate()
+      .then(data => {
+        if (data) {
+          if (this.id) {
+            return updateSupplierUser(this.form)
+          } else {
+            return addSupplierUser(this.form)
+          }
+        } else {
+          return new Promise((resolve, reject) => {})
+        }
+      })
+      .then(data => {
+        if (type === 1) {
+          this.$emit('input', false)
+        }
+        this.$emit('success')
+        this.$refs['form'].resetFields();
+        this.$Message.success("Success!");
+      })
+    },
+    cancel() {
       this.$emit('input', false)
-      // this.$refs[name].resetFields();
+      this.$refs['form'].resetFields();
     }
   }
 };

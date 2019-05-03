@@ -137,7 +137,7 @@ export default {
         }
       ],
       list: [],
-      total: ""
+      total: undefined
     };
   },
   mounted() {

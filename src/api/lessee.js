@@ -2,6 +2,7 @@ import axios from '@/libs/api.request'
 import config from '@/config'
 
 const service = config.services.company
+const serviceBusinessInformation = config.services.businessInformation
 const serviceSub = config.services.mCompany
 
 /**
@@ -181,7 +182,7 @@ export const getInvaNumber = ({page, size, companyId}) => {
  */
 export const getLesseeBusinessInfoById = (id) => {
   return axios.request({
-    url: service + `BusinessInformation/findAll/${id}`,
+    url: serviceBusinessInformation + `/findAll/${id}`,
     method: 'get'
   })
 }
