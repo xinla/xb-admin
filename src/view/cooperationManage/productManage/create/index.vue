@@ -10,9 +10,9 @@
   </Steps>
 
   <baseInfo ref="baseInfo" v-show="current === 0"/>
-  <!-- <insuranceRules ref="insuranceRules" v-show="current === 1"/>
+  <insuranceRules ref="insuranceRules" v-show="current === 1"/>
   <productExplain ref="productExplain" v-show="current === 2"/>
-  <productAccessory ref="productAccessory" v-show="current === 3"/> -->
+  <productAccessory ref="productAccessory" v-show="current === 3"/>
 
   <div class="ac">
     <Button v-show="current > 0" type="primary" ghost @click="current--">上一步</Button>
@@ -28,9 +28,9 @@ import baseInfo from '../components/baseInfo'
 export default {
   components:{
     baseInfo,
-    // insuranceRules: () => import('../components/insuranceRules'),
-    // productExplain: () => import('../components/productExplain'),
-    // productAccessory: () => import('../components/productEproductAccessoryxplain'),
+    insuranceRules: () => import('../components/insuranceRules'),
+    productExplain: () => import('../components/productExplain'),
+    productAccessory: () => import('../components/productAccessory'),
   },
   data() {
     return {
@@ -39,32 +39,36 @@ export default {
   },
   methods: {
     submit(type) {
-      switch (type) {
-        case 0: 
-        this.$refs.baseInfo.submit()
-        .then(data => {
-          console.log(1)
-          this.current++
-        }).catch(err => {
-          console.log(err)
-        })
-        break
-        case 1: 
-        this.$refs.baseInfo.submit()
-        .then(data => {
-          this.current++
-        })
-        break
-        case 2: 
-        this.$refs.
-        then(data => {
-          this.current++
-        })
-        break
-        case 3: current--
-        this.$router.push({name: 'productManage'})
-        break
-      }
+      Promise.resolve().then(data => {
+        switch (type) {
+          case 0: 
+          return this.$refs.baseInfo.submit()
+          .then(data => {
+            console.log(2)
+            this.current++
+          })
+          break
+          case 1: 
+          return this.$refs.baseInfo.submit()
+          .then(data => {
+            console.log(3)
+            this.current++
+          })
+          break
+          case 2: 
+          return this.$refs.
+          then(data => {
+            this.current++
+          })
+          break
+          case 3: current--
+          this.$router.push({name: 'productManage'})
+          break
+        }
+      })
+      .catch(err => {
+        console.warn(err)
+      })
     }
   }
 }

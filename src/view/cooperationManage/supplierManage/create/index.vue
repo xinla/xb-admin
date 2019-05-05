@@ -4,7 +4,7 @@
   <Form ref="form" :model="form" :rules="rules" :label-width="120" inline>
     <div class="title-row">基本信息</div>
     <FormItem label="供应商名称" prop="insuranceId">
-      <selectSupplier :id="insuranceId" @change="change" />
+      <selectSupplier :val="insuranceId || form.name" :defaultValue="form.name" @change="change" />
     </FormItem>
     <FormItem label="供应商Logo" prop="logo">
       <img class="logo" v-if="form.logo" :src="form.logo" alt="logo">
@@ -71,7 +71,6 @@ export default {
   },
   data() {
     return {
-      id: 0, // 供应商id
       insuranceId: 0, // 保险公司id
       form: Object.assign({}, defaultForm),
       rules: {
@@ -100,7 +99,7 @@ export default {
     }
   },
   mounted() {
-    this.$route.query.id && (this.id = this.$route.query.id)
+    this.$route.query.id && (this.form.id = this.$route.query.id)
     this.init()
   },
   methods: {
@@ -108,11 +107,9 @@ export default {
       this.getData()
     },
     getData() {
-      if (this.id) {
-        getSupplierDetail(this.id).then(data => {
-          // console.log(data)
-          // this.insuranceId = this.id
-          this.form.id = this.id
+      if (this.form.id) {
+        getSupplierDetail(this.form.id).then(data => {
+          console.log(data)
           if (data) {
             this.form = data
           } else {
@@ -126,7 +123,7 @@ export default {
       .then(data => {
         if(data) {
           console.log(this.form)
-          if (this.id) {
+          if (this.form.id) {
             return updateSupplier(this.form)
           } else {
             return addSupplier(this.insuranceId, this.form)

@@ -129,6 +129,7 @@
 
 <script>
 import { getLesseeBrandInfoById, updateLessee, editLessee } from "@/api/lessee"
+import { getSupplierBrandInformation } from "@/api/supplier"
 import { formatDate } from "@/libs/tools"
 
 export default {
@@ -206,7 +207,7 @@ export default {
   methods: {
     init() { 
       console.log(1)
-      getLesseeBrandInfoById(this.id).then(data => {
+      getSupplierBrandInformation(this.id).then(data => {
         this.form = data
         // this.company = data.xbCompany
         // this.listHonor = data.honor

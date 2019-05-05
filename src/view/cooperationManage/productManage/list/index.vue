@@ -22,8 +22,8 @@
       </template>
 
       <template slot-scope="{ row }" slot="distributionChannel">
-        <span v-for="(item, index) in row.distributionChannel.split()" :key="index">
-       {{ item | channel}}
+        <span v-for="(item, index) in row.distributionChannel.split(',')" :key="index">
+       {{ item | channel}} ,
         </span>
       </template>
 
@@ -35,6 +35,7 @@
       <template slot-scope="{ row }" slot="action">
           <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">编辑</Button>
           <Button type="error" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">详情</Button>
+          <Button type="error" size="small" style="margin-right: 5px" @click="goPage('', {id: row.productId})">H5</Button>
       </template>
     </Table>
 
@@ -45,15 +46,47 @@
 
 <script>
 import { getProductPage } from '@/api/product'
+
+const channel = [
+  {
+      label: '经代',
+      value: 0
+  },
+  {
+      label: '互联网',
+      value: 1
+  },
+  {
+      label: '个险',
+      value: 2
+  },
+  {
+      label: '银保',
+      value: 3
+  },
+]
+const typeRuleName = [
+  {
+      label: '经代',
+      value: 0
+  },
+  {
+      label: '互联网',
+      value: 1
+  },
+  {
+      label: '个险',
+      value: 2
+  },
+  {
+      label: '银保',
+      value: 3
+  },
+]
 export default {
   filters: {
     channel(val) {
-      const channel = {
-        1: '经代',
-        1: '互联网',
-        1: '经代',
-      }
-      return channel[val]
+      return channel[val].label
     }
   },
   data() {
@@ -93,51 +126,17 @@ export default {
             title: '产品类型',
             key: 'typeRuleName',
             align: 'center',
-            filters: [
-              {
-                  label: '体验服务',
-                  value: 1
-              },
-              {
-                  label: '基础应用服务',
-                  value: 2
-              },
-              {
-                  label: '高级应用服务',
-                  value: 1
-              },
-              {
-                  label: '超级应用服务',
-                  value: 2
-              },
-              {
-                  label: '定制服务',
-                  value: 1
-              }
-            ],
+            filters: typeRuleName,
             filterMultiple: false,
             filterMethod (value, row) {
-                if (value === 0) {
-                    return row.compayAccountType == 0;
-                } else if (value === 1) {
-                    return row.compayAccountType == 1;
-                }
+                return row.typeRuleName === 'value'
             }
         },
         {
             title: '分销渠道',
             slot: 'distributionChannel',
             align: 'center',
-            filters: [
-              {
-                  label: '经代',
-                  value: 1
-              },
-              {
-                  label: '互联网',
-                  value: 2
-              }
-            ],
+            filters: channel,
             filterMultiple: false,
             filterMethod (value, row) {
               return row.distributionChannel === 'value'

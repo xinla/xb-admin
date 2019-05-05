@@ -34,7 +34,7 @@
       show-elevator
       show-total
       style="text-align:center;margin-top:20px;"
-      @on-change="getListPage"
+      @on-change="getDataPage"
     />
   </div>
 </template>
@@ -43,6 +43,11 @@
 import { getLesseePageByJB } from "@/api/lessee";
 import { getDistrict } from "@/api/common";
 export default {
+  // filters: {
+  //   timeFormat(val) {
+  //     return val.substring(0, val.indexOf("T"));
+  //   }
+  // },
   props: {
     type: {
       type: Number,
@@ -56,7 +61,7 @@ export default {
       query: {
         page: 1,
         size: 10,
-        type: 0, // 1是经代,0是保险( json格式)
+        type: 1, // 1是经代,0是保险( json格式)
         name: "",
         provinceName: "",
         areaName: ""
@@ -123,7 +128,8 @@ export default {
   },
   mounted() {
     // 获取行政区划数据
-    getDistrict().then(data => {
+    getDistrict()
+    .then(data => {
       // console.log(data.data.districts[0].districts)
       let districtsFull = data.data.districts[0].districts;
       recursiveExtract(this.districtsList, districtsFull);
@@ -150,23 +156,23 @@ export default {
       }
     });
 
-    this.getList();
+    this.getData();
   },
   methods: {
-    getList() {
+    getData() {
+      this.loading = true;
       getLesseePageByJB(this.query).then(data => {
-        // console.log(data);
+        console.log(data);
         this.loading = false;
         this.list = data.list;
         this.total = data.total;
       });
     },
     search() {
-      this.loading = true;
       this.query.page = 1;
       this.query.size = 10;
       // console.log(this.query);
-      this.getList();
+      this.getData();
     },
     edit(data) {},
     deleteItem(data) {},
@@ -175,10 +181,9 @@ export default {
     goPage(name) {
       this.$router.push({ name });
     },
-    getListPage(page) {
-      this.loading = true;
+    getDataPage(page) {
       this.query.page = +page;
-      this.getList()
+      this.getData()
     }
   }
 };

@@ -7,8 +7,8 @@
       </Col>
       <Col span="18">
         业务类型
-        <Select v-model="query.businessType" style="width:100px">
-          <Option v-for="(value, key) in businessType" :value="+key" :key="key">{{ value }}</Option>
+        <Select v-model="query.type" style="width:100px">
+          <Option v-for="(value, key) in type" :value="+key" :key="key">{{ value }}</Option>
         </Select>
         菜单类型
         <Select v-model="query.classify" style="width:100px">
@@ -32,8 +32,8 @@
       <template slot="classify" slot-scope="scope">
         {{scope.row.classify | menuTypeFilter}}
       </template>
-      <template slot="businessType" slot-scope="scope">
-        {{scope.row.businessType | businessTypeFilter}}
+      <template slot="type" slot-scope="scope">
+        {{scope.row.type | typeFilter}}
       </template>
       <template slot="isVo" slot-scope="scope">
         {{scope.row.isVo | isVoFilter}}
@@ -48,9 +48,9 @@
     <Form v-show="formShow" ref="form" class="org-form cc" :model="form" :rules="rules" :label-width="100">
       新建菜单
 
-      <FormItem prop="businessType" label="业务类型">
-        <RadioGroup v-model="form.businessType">
-          <Radio v-for="(value, key) in businessType" :label="+key" :key="key">{{value}}</Radio>
+      <FormItem prop="type" label="业务类型">
+        <RadioGroup v-model="form.type">
+          <Radio v-for="(value, key) in type" :label="+key" :key="key">{{value}}</Radio>
         </RadioGroup>
       </FormItem>
       
@@ -96,7 +96,7 @@ import memuRecursive from './components/memuRecursive'
 
 const defautlForm = {
   name: '',
-  businessType: '',
+  type: '',
   classify: '',
   menuUrl: '',
   permissionIdentifying: '',
@@ -106,7 +106,7 @@ const menuType= {
   0: '菜单',
   1: '按钮'
 }
-const businessType= {
+const type= {
   0: '保险',
   1: '信贷',
   2: '基金'
@@ -121,8 +121,8 @@ export default {
     menuTypeFilter(val) {
       return menuType[val]
     },
-    businessTypeFilter(val) {
-      return businessType[val]
+    typeFilter(val) {
+      return type[val]
     },
     isVoFilter(val) {
       return isVo[val]
@@ -132,13 +132,13 @@ export default {
     return {
       menuList: [],
       menuType: Object.assign({}, menuType),
-      businessType: Object.assign({}, businessType),
+      type: Object.assign({}, type),
       isVo: Object.assign({}, isVo),
       query: {
         page: 1,
         size: 10,
         id: '',
-        businessType: '',
+        type: '',
         classify: '',
         isVo: '',
         name: ''
@@ -148,13 +148,13 @@ export default {
         {
           title: '菜单名称',
           key: 'name',
-          width: 130
+          minWidth: '130px',
         },
         {
           title: '业务类型',
-          key: 'businessType',
+          key: 'type',
           type: 'template',
-          template: 'businessType',
+          template: 'type',
           headerAlign: 'center',
           align: 'center',
         },
@@ -189,7 +189,7 @@ export default {
         {
           title: '操作',
           key: 'action',
-          minWidth: '200px',
+          minWidth: '150px',
           type: 'template',
           template: 'action',
           headerAlign: 'center',
@@ -201,7 +201,7 @@ export default {
         name: [
             { required: true, message: '不能为空', trigger: 'blur' },
         ],
-        businessType: [
+        type: [
             { required: true, type: 'number', message: '类型错误或为空', trigger: 'change' },
         ],
         classify: [
@@ -221,13 +221,13 @@ export default {
     }
   },
   mounted(){
-    this.getAllMenu()
+    this.getData()
   },
   methods:{
-    getAllMenu() {
+    getData() {
       getAllMenu().then(data => {
         let menuList = []
-        // console.log(data)
+        console.log(data)
         this.list = data
         this.menuList = recursiveMenu(data)
         // console.log(this.menuList)
@@ -271,12 +271,12 @@ export default {
             ? modifyMenu(this.form).then(data => {
               this.$Message.success('修改成功')
               this.handleReset()
-              this.getAllMenu()
+              this.getData()
             })
             : addMenu(this.form).then(data => {
               this.$Message.success('创建成功')
               this.handleReset()
-              this.getAllMenu()
+              this.getData()
             })
           }
       })
@@ -305,7 +305,7 @@ export default {
             onOk: () => {
                 deleteMenu(data.id).then(_data => {
                 this.$Message.success('删除成功')
-                this.getAllMenu()
+                this.getData()
               })
             },
         })

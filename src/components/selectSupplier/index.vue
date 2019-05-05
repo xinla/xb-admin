@@ -1,12 +1,12 @@
 <template>
   <Select
-    v-model="id"
+    v-model="val"
     filterable
     remote
-    placeholder="输入供应商进行选择"
     :remote-method="search"
     :loading="loading"
     :disabled="disabled">
+      <!-- <Option :value="defaultValue" key="10000">{{defaultValue}}</Option> -->
       <Option v-for="(option, index) in lesseeList" 
       :value="option.id"
       :key="index"
@@ -18,15 +18,21 @@
 
 <script>
 import { getLesseePageByJB } from '@/api/lessee'
+import { getSupplierPage } from '@/api/supplier'
 
 export default {
   name: 'selectSupplier',
   props:{
-    id: '',
+    val: '',
     disabled: {
       type: Boolean,
       default: false
-    }
+    },
+    type: {
+      type: String,
+      default: 'lessee'
+    },
+    defaultValue: ''
   },
   data(){
     return {
@@ -40,17 +46,22 @@ export default {
       },
     }
   },
-  // computed: {
-  //   supplier() {
-  //     return this.name
-  //   }
-  // },
   methods:{
     search(query) {
       this.query.name = query
       this.loading = true
-      getLesseePageByJB(this.query).then(data => {
-        // console.log(data)
+      new Promise((resolve, reject) => {
+        resolve()
+      })
+      .then(() => {
+        if (this.type === 'lessee') {
+          return getLesseePageByJB(this.query)
+        } else if (this.type === 'supplier') {
+          return getSupplierPage(this.query)
+        }
+      })
+      .then(data => {
+        console.log(data)
         this.loading = false
         this.lesseeList = data.list
       })

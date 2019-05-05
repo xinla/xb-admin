@@ -11,7 +11,7 @@ const serviceSub = config.services.mCompany
  */
 export const getSupplierPage = ({page, size, name}) => {
   return axios.request({
-    url: service + `/${page}/${size}`,
+    url: service + `/findAll/${page}/${size}`,
     params: {
       name
     },
@@ -77,6 +77,16 @@ export const getSupplierProductPage = (query) => {
   return axios.request({
     url: service + `/findProduct/${page}/${size}`,
     params: {sale, nameAndCode, supplierId, typeRuleId},
+    method: 'get'
+  })
+}
+
+export const getSupplierBrandInformation = (supplierId) => {
+  return axios.request({
+    url: service + `/findBrandBySupplierId/${supplierId}`,
+    params: {
+      supplierId
+    },
     method: 'get'
   })
 }

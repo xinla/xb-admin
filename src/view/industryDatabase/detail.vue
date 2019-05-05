@@ -1,13 +1,9 @@
 <template>
-  <div>
-
-    <businessInfo/>
-
-  </div>
+  <businessInfo/>
 </template>
 
 <script>
-import { getLesseePageByName, getLesseePageByJB } from '@/api/lessee'
+import {  } from '@/api/lessee'
 import businessInfo from '@/components/businessInfo'
 export default {
   components: {
@@ -19,10 +15,6 @@ export default {
     }
   },
   methods: {
-    goPage(name) {
-      console.log(1)
-      this.$router.push({name})
-    },
   }
 }
 </script>

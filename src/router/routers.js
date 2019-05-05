@@ -485,7 +485,7 @@ export default [
           icon: '_Generationcompany',
           title: '经代公司'
         },
-        component: () => import('@/view/industryDatabase/insuranceCompany.vue'),
+        component: () => import('@/view/industryDatabase/agencyCompany.vue'),
       },
       {
         path: 'insuranceProduct',
@@ -494,7 +494,7 @@ export default [
           icon: '_InsuranceProducts',
           title: '保险产品'
         },
-        component: () => import('@/view/industryDatabase/insuranceCompany.vue'),
+        component: () => import('@/view/industryDatabase/insuranceProduct.vue'),
       }
     ]
   },

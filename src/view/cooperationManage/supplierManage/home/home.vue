@@ -13,6 +13,38 @@
     </Row>
 
     <Table border :loading="loading" :columns="columns" :data="list">
+      <template slot-scope="{ row }" slot="typeRule">
+        {{row.typeRule | typeRule}}
+      </template>
+
+      <template slot-scope="{ row }" slot="distributionChannel">
+        {{row.distributionChannel | distributionChannel}}
+      </template>
+
+      <template slot-scope="{ row }" slot="name">
+        <div class="a" @click="goPage('businessInfo', {id: row.id})">
+          {{row.name}}
+        </div>
+      </template>
+      
+      <template slot-scope="{ row }" slot="productNum">
+        <div class="a" @click="goPage('productList', {id: row.id})">
+          {{row.productNum}}
+        </div>
+      </template>
+      
+      <template slot-scope="{ row }" slot="saleProductNum">
+        <div class="a" @click="goPage('productList', {id: row.id})">
+          {{row.saleProductNum}}
+        </div>
+      </template>
+
+      <template slot-scope="{ row }" slot="cooperationCompanyNum">
+        <div class="a" @click="showCooperationCompany(row.id)">
+          {{row.cooperationCompanyNum}}
+        </div>
+      </template>
+
       <template slot-scope="{ row }" slot="action">
         <Button
           type="primary"
@@ -36,13 +68,60 @@
       style="text-align:center;margin-top:20px;"
       @on-change="getData"
     />
+
+    <div v-show="cooperationCompanShow">
+      <div>合作企业 <span class="fr" @click="close">x</span></div>
+      <Table border :columns="cooperationCompanyColumns" :data="cooperationCompanyList">
+        <template slot-scope="{ row }" slot="name">
+          <div class="a" @click="goPage('businessInfo', {id: row.id})">
+            {{row.name}}
+          </div>
+        </template>
+      </Table>
+
+      <Page
+        :total="cooperationCompanyTotal"
+        show-elevator
+        show-total
+        style="text-align:center;margin-top:20px;"
+        @on-change="getDataCooperationCompany"
+      />
+    </div>
+
   </div>
+
 </template>
 
 <script>
-import { getLesseePage, getLesseePageByJB } from "@/api/lessee";
+import { getSupplierPage } from "@/api/supplier";
+
+const typeRule = [
+  {
+    value: 0,
+    label: '寿险'
+  },
+  {
+    value: 1,
+    label: '财险'
+  }
+]
+const distributionChannel = {
+  0: '经代',
+  1:' 互联网',
+  2: '个险',
+  3: '银保'
+}
+
 export default {
   name: "home",
+  filters: {
+    typeRule(val) {
+      return typeRule[val].label
+    },
+    distributionChannel(val) {
+      return distributionChannel[val]
+    }
+  },
   data() {
     return {
       loading: true,
@@ -60,68 +139,43 @@ export default {
         },
         {
           title: "供应商名称",
-          key: "name",
+          slot: "name",
           minWidth: 80,
           align: "center"
         },
         {
-          title: "产品类型",
-          key: "compayAccountType",
+          title: "供应商类型",
+          slot: "typeRule",
           align: "center",
-          filters: [
-            {
-              label: "体验服务",
-              value: 1
-            },
-            {
-              label: "基础应用服务",
-              value: 2
-            },
-            {
-              label: "高级应用服务",
-              value: 1
-            },
-            {
-              label: "超级应用服务",
-              value: 2
-            },
-            {
-              label: "定制服务",
-              value: 1
-            }
-          ],
+          filters: typeRule,
           filterMultiple: false,
           filterMethod(value, row) {
-            if (value === 0) {
-              return row.compayAccountType == 0;
-            } else if (value === 1) {
-              return row.compayAccountType == 1;
-            }
+            return row.typeRule == value;
           }
         },
         {
           title: "分销渠道",
-          key: "createTime",
+          slot: "distributionChannel",
           align: "center"
         },
         {
-          title: "体验产品数量账户",
-          key: "email",
+          title: "产品总数",
+          slot: "productNum",
           align: "center"
         },
         {
           title: "在售产品数",
-          key: "text",
+          slot: "saleProductNum",
           align: "center"
         },
         {
           title: "合作企业数",
-          key: "text",
+          slot: "cooperationCompanyNum",
           align: "center"
         },
         {
           title: "分公司数量",
-          key: "isActive",
+          key: "filialeNum",
           align: "center"
         },
         {
@@ -137,7 +191,34 @@ export default {
         }
       ],
       list: [],
-      total: undefined
+      total: 0,
+
+      cooperationCompanyQuery: {
+        page: 1,
+        size: 10,
+        id: ''
+      },
+      cooperationCompanyColumns: [
+        {
+          title: "序号",
+          type: "index",
+          align: "center"
+        },
+        {
+          title: "合作租户名称",
+          slot: "name",
+          minWidth: 80,
+          align: "center"
+        },
+        {
+          title: "合作时间",
+          key: "text",
+          align: "center"
+        }
+      ],
+      cooperationCompanyList: [],
+      cooperationCompanyTotal: 0,
+      cooperationCompanShow: false
     };
   },
   mounted() {
@@ -147,12 +228,29 @@ export default {
     getData(page) {
       this.loading = true;
       page && (this.query.page = page);
-      getLesseePage(this.query).then(data => {
+      getSupplierPage(this.query).then(data => {
         console.log(data);
         this.loading = false;
         this.list = data.list;
         this.total = data.total;
       });
+    },
+    getDataCooperationCompany(page) {
+      page && (this.cooperationCompanyQuery.page = page);
+      getSupplierPage(this.cooperationCompanyQuery).then(data => {
+        console.log(data);
+        this.cooperationCompanyList = data.list;
+        this.cooperationCompanyTotal = data.total;
+      });
+    },
+    showCooperationCompany(id) {
+      this.cooperationCompanyQuery.page = 1
+      this.cooperationCompanyQuery.id = id
+      this.cooperationCompanShow = true
+      this.getDataCooperationCompany()
+    },
+    close() {
+      this.cooperationCompanShow = false
     },
     search() {
       this.query.page = 1;
