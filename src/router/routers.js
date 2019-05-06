@@ -254,46 +254,46 @@ export default [
         //   },
         // ]
       },
-      {
-        path: 'baseInfo',
-        name: 'baseInfo',
-        meta: {
-          icon: 'md-funnel',
-          hideInMenu: true,
-          title: '基本信息'
-        },
-        component: () => import('@/view/cooperationManage/productManage/baseInfo')
-      },
-      {
-        path: 'productInsuranceRules',
-        name: 'productInsuranceRules',
-        meta: {
-          icon: 'md-funnel',
-          hideInMenu: true,
-          title: '投保规则'
-        },
-        component: () => import('@/view/cooperationManage/productManage/insuranceRules')
-      },
-      {
-        path: 'productExplain',
-        name: 'productExplain',
-        meta: {
-          icon: 'md-funnel',
-          hideInMenu: true,
-          title: '产品说明'
-        },
-        component: () => import('@/view/cooperationManage/productManage/productExplain')
-      },
-      {
-        path: 'productAccessory',
-        name: 'productAccessory',
-        meta: {
-          icon: 'md-funnel',
-          hideInMenu: true,
-          title: '产品附件'
-        },
-        component: () => import('@/view/cooperationManage/productManage/productAccessory')
-      },
+      // {
+      //   path: 'baseInfo',
+      //   name: 'baseInfo',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     hideInMenu: true,
+      //     title: '基本信息'
+      //   },
+      //   component: () => import('@/view/cooperationManage/productManage/baseInfo')
+      // },
+      // {
+      //   path: 'productInsuranceRules',
+      //   name: 'productInsuranceRules',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     hideInMenu: true,
+      //     title: '投保规则'
+      //   },
+      //   component: () => import('@/view/cooperationManage/productManage/insuranceRules')
+      // },
+      // {
+      //   path: 'productExplain',
+      //   name: 'productExplain',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     hideInMenu: true,
+      //     title: '产品说明'
+      //   },
+      //   component: () => import('@/view/cooperationManage/productManage/productExplain')
+      // },
+      // {
+      //   path: 'productAccessory',
+      //   name: 'productAccessory',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     hideInMenu: true,
+      //     title: '产品附件'
+      //   },
+      //   component: () => import('@/view/cooperationManage/productManage/productAccessory')
+      // },
     ]
   },
 

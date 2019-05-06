@@ -61,6 +61,7 @@
 
 <script>
 import { getLesseeBusinessInfoById } from "@/api/lessee";
+import { getSupplierBusinessInformation } from "@/api/supplier";
 import { transLogo } from "@/libs/tools";
 
 export default {
@@ -68,6 +69,11 @@ export default {
   props: {
     id: {
       type: [Number, String],
+      default: ''
+    },
+    type: {
+      type: String,
+      default: 'lessee'
     }
   },
   data() {
@@ -100,10 +106,19 @@ export default {
   },
   methods: {
     init() {
-      getLesseeBusinessInfoById(this.id).then(data => {
-        this.form = data[0]
-        // console.log('data1', data)
-      })
+      console.log(0)
+      if (this.type === 'lessee') {
+        getLesseeBusinessInfoById(this.id).then(data => {
+          this.form = data[0]
+          console.log('data1', data)
+        })
+      } else if (this.type === 'supplier') {
+        getSupplierBusinessInformation(this.id).then(data => {
+          this.form = data[0]
+          console.log('data1', data)
+        })
+      }
+      
     }
   }
 }

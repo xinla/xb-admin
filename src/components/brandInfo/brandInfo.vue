@@ -138,6 +138,10 @@ export default {
     id: {
       type: [Number, String],
       default: 0
+    },
+    type: {
+      type: String,
+      default: 'lessee'
     }
   },
   data() {
@@ -207,13 +211,23 @@ export default {
   methods: {
     init() { 
       console.log(1)
-      getSupplierBrandInformation(this.id).then(data => {
-        this.form = data
-        // this.company = data.xbCompany
-        // this.listHonor = data.honor
-        // this.listEvents = data.bigEvents
-        console.log('data5:',data)
-      })
+      if (this.type === 'lessee') {
+        getLesseeBrandInfoById(this.id).then(data => {
+          this.form = data
+          // this.company = data.xbCompany
+          // this.listHonor = data.honor
+          // this.listEvents = data.bigEvents
+          console.log('data5:', data)
+        })
+      } else if (this.type === 'supplier') {
+        getSupplierBrandInformation(this.id).then(data => {
+          this.form = data
+          // this.company = data.xbCompany
+          // this.listHonor = data.honor
+          // this.listEvents = data.bigEvents
+          console.log('data5:',data)
+        })
+      }
     },
     edit() {
       this.disabled = false

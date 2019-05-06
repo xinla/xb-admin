@@ -28,7 +28,9 @@
       </template>
 
       <template slot-scope="{ row }" slot="onlineApplication">
-          {{JSON.parse(row.onlineApplication)[0].linkAddress}}
+        <div v-for="(item, index) in JSON.parse(row.onlineApplication)" :key="index">
+          {{item.linkAddress}}
+        </div>
       </template>
       
 
@@ -46,6 +48,7 @@
 
 <script>
 import { getProductPage } from '@/api/product'
+import { getTypeRulePage } from '@/api/rulesSet/type'
 
 const channel = [
   {
@@ -155,6 +158,7 @@ export default {
         {
             title: '在线投保',
             slot: 'onlineApplication',
+            minWidth: 60,
             align: 'center'
         },
         {
@@ -180,6 +184,9 @@ export default {
   methods: {
     init() {
       this.getData()
+      getTypeRulePage(1).then(data => {
+        console.log(data)
+      })
     },
     getData(page) {
       this.loading = true;

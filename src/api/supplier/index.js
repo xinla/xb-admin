@@ -71,6 +71,7 @@ export const updateSupplier = (data) => {
 /**
  * 产品列表->查询供应商产品
  * @param {*} query 
+ * @param {*} sale 0在售,1停售
  */
 export const getSupplierProductPage = (query) => {
   let {page, size, sale, nameAndCode, supplierId, typeRuleId} = query
@@ -81,6 +82,24 @@ export const getSupplierProductPage = (query) => {
   })
 }
 
+/**
+ * 供应商->根据供应商id查询合作企业列表
+ * @param {*} param0 
+ */
+export const getCooperationCompanyPage = ({page, size, supplierId}) => {
+  return axios.request({
+    url: service + `/cooperationCompanyNum/${page}/${size}`,
+    params: {
+      supplierId
+    },
+    method: 'get'
+  })
+}
+
+/**
+ * 品牌信息->根据供应商id查询
+ * @param {*} supplierId 
+ */
 export const getSupplierBrandInformation = (supplierId) => {
   return axios.request({
     url: service + `/findBrandBySupplierId/${supplierId}`,

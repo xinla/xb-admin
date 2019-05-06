@@ -174,7 +174,7 @@ export default {
       this.form.onlineApplication = []
       for (const iterator of this.onlineType) {
         if ((iterator < 1) || this.onlineLinkAddress[iterator]) {
-          this.form.onlineApplication.push({
+          this.form.onlineApplicfvation.push({
             code: iterator,
             linkAddress: this.onlineLinkAddress[iterator]
           })

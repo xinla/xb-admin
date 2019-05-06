@@ -1,25 +1,27 @@
 import axios from '@/libs/api.request'
 import config from '@/config'
 
-const service = config.services.typeRule
+const service = config.services.roleGroup
 
 /**
  * 创建规则
- * @param {*} data 
+ * @param {*} groupName 
  */
-export const addTypeRule = (data) => {
+export const addRoleGroupRule = (groupName) => {
   return axios.request({
     url: service + `/create`,
-    data,
+    data: {
+      groupName
+    },
     method: 'post'
   })
 }
 
 /**
- * 查询类型规则详情
+ * 查询角色组规则详情
  * @param {*} id 
  */
-export const getTypeRuleRuleById = (id) => {
+export const getRoleGroupRuleById = (id) => {
   return axios.request({
     url: service + `/detail/${id}`,
     method: 'get'
@@ -27,10 +29,10 @@ export const getTypeRuleRuleById = (id) => {
 }
 
 /**
- * 更新类型规则详情
+ * 更新角色组规则详情
  * @param {*} data 
  */
-export const updateTypeRule = (data) => {
+export const updateRoleGroupRule = (data) => {
   return axios.request({
     url: service + `/update`,
     data,
@@ -39,34 +41,26 @@ export const updateTypeRule = (data) => {
 }
 
 /**
- * 删除类型规则
+ * 删除角色组规则
  * @param {*} id 
  */
-export const deleteTypeRule = (id) => {
+export const deleteRoleGroupRule = (id) => {
   return axios.request({
     url: service + `/delete/${id}`,
     method: 'get'
   })
 }
 
-export const selectProductTypeRule = (id) => {
-  return axios.request({
-    url: service + `/selectProductTypeRule`,
-    method: 'get'
-  })
-}
-
 /**
- * 查询类型规则列表
- * @param {*} type 0 供应商类型，1 产品类型
+ * 查询角色组规则列表
  * @param {*} pageNum 
  * @param {*} pageSize 
  */
-export const getTypeRulePage = (type, pageNum = 1, pageSize = 100) => {
+export const getRoleGroupRulePage = (pageNum = 1, pageSize = 100) => {
   return axios.request({
     url: service + `/list`,
     params: {
-      type, pageNum, pageSize
+      pageNum, pageSize
     },
     method: 'get'
   })

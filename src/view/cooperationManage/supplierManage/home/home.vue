@@ -17,10 +17,6 @@
         {{row.typeRule | typeRule}}
       </template>
 
-      <template slot-scope="{ row }" slot="distributionChannel">
-        {{row.distributionChannel | distributionChannel}}
-      </template>
-
       <template slot-scope="{ row }" slot="name">
         <div class="a" @click="goPage('businessInfo', {id: row.id})">
           {{row.name}}
@@ -93,7 +89,7 @@
 </template>
 
 <script>
-import { getSupplierPage } from "@/api/supplier";
+import { getSupplierPage, getCooperationCompanyPage } from "@/api/supplier";
 
 const typeRule = [
   {
@@ -155,7 +151,7 @@ export default {
         },
         {
           title: "分销渠道",
-          slot: "distributionChannel",
+          key: "distributionChannel",
           align: "center"
         },
         {
@@ -180,7 +176,7 @@ export default {
         },
         {
           title: "最近更新时间",
-          key: "text",
+          key: "updateTime",
           align: "center"
         },
         {
@@ -196,7 +192,7 @@ export default {
       cooperationCompanyQuery: {
         page: 1,
         size: 10,
-        id: ''
+        supplierId: ''
       },
       cooperationCompanyColumns: [
         {
@@ -212,7 +208,7 @@ export default {
         },
         {
           title: "合作时间",
-          key: "text",
+          key: "createTime",
           align: "center"
         }
       ],
@@ -237,7 +233,7 @@ export default {
     },
     getDataCooperationCompany(page) {
       page && (this.cooperationCompanyQuery.page = page);
-      getSupplierPage(this.cooperationCompanyQuery).then(data => {
+      getCooperationCompanyPage(this.cooperationCompanyQuery).then(data => {
         console.log(data);
         this.cooperationCompanyList = data.list;
         this.cooperationCompanyTotal = data.total;
@@ -245,7 +241,7 @@ export default {
     },
     showCooperationCompany(id) {
       this.cooperationCompanyQuery.page = 1
-      this.cooperationCompanyQuery.id = id
+      this.cooperationCompanyQuery.supplierId = id
       this.cooperationCompanShow = true
       this.getDataCooperationCompany()
     },

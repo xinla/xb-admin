@@ -3,7 +3,7 @@
     
     <xNav/>
 
-    <businessInfo/>
+    <businessInfo type="supplier"/>
 
   </div>
 </template>
@@ -17,17 +17,6 @@ export default {
     businessInfo,
     xNav
   },
-  data() {
-    return {
-
-    }
-  },
-  methods: {
-    goPage(name) {
-      console.log(1)
-      this.$router.push({name})
-    },
-  }
 }
 </script>
 
