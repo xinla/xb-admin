@@ -19,7 +19,7 @@ export const addTypeRule = (data) => {
  * 查询类型规则详情
  * @param {*} id 
  */
-export const getTypeRuleRuleById = (id) => {
+export const getTypeRuleById = (id) => {
   return axios.request({
     url: service + `/detail/${id}`,
     method: 'get'
@@ -45,7 +45,7 @@ export const updateTypeRule = (data) => {
 export const deleteTypeRule = (id) => {
   return axios.request({
     url: service + `/delete/${id}`,
-    method: 'get'
+    method: 'post'
   })
 }
 

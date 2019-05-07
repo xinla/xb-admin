@@ -7,20 +7,34 @@
 </template>
 
 <script>
+const routesA = [
+  {name: 'businessInfo', text: '工商信息'},
+  {name: 'brandInfo', text: '品牌信息'},
+  {name: 'organizationalStructure', text: '组织架构'},
+  {name: 'productList', text: '产品列表'},
+  {name: 'news', text: '新闻资讯'},
+  {name: 'ascoCode', text: '职业代码表'},
+  {name: 'insuranceRules', text: '投保规则'},
+]
+const routesB = [
+  {name: 'nationalityTable', text: '国籍表'},
+  {name: 'districtTable', text: '行政区划表'},
+  {name: 'professionTable', text: '职业代码表'},
+]
+
 export default {
+  props: {
+    type: ''
+  },
   data() {
     return {
-      routes: [
-        {name: 'businessInfo', text: '工商信息'},
-        {name: 'brandInfo', text: '品牌信息'},
-        {name: 'organizationalStructure', text: '组织架构'},
-        {name: 'productList', text: '产品列表'},
-        {name: 'news', text: '新闻资讯'},
-        {name: 'ascoCode', text: '职业代码表'},
-        {name: 'insuranceRules', text: '投保规则'},
-      ]
     }
-  }
+  },
+  computed: {
+    routes() {
+      return this.type === 'database' ? routesB : routesA
+    }
+  },
 }
 </script>
 

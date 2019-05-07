@@ -7,7 +7,7 @@ const service = config.services.roleGroup
  * 创建规则
  * @param {*} groupName 
  */
-export const addRoleGroupRule = (groupName) => {
+export const addRoleGroupRule = ({groupName}) => {
   return axios.request({
     url: service + `/create`,
     data: {
@@ -47,7 +47,7 @@ export const updateRoleGroupRule = (data) => {
 export const deleteRoleGroupRule = (id) => {
   return axios.request({
     url: service + `/delete/${id}`,
-    method: 'get'
+    method: 'post'
   })
 }
 

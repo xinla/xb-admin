@@ -51,7 +51,7 @@ config.services = {
   profession: '/xbProfession',
   roleGroup: '/roleGroup',
   role: '/role',
-  role: '/role',
+  nationality: '/vitNationality',
   role: '/role',
   role: '/role',
 

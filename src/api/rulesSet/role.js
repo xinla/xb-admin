@@ -8,14 +8,26 @@ const service = config.services.role
  * @param {*} roleGroupId 
  * @param {*} roleName 
  */
-export const addRoleRule = (roleGroupId, roleName) => {
+export const addRoleRule = ({roleGroupId, roleName}) => {
   return axios.request({
     url: service + `/create`,
     data: {
       roleGroupId,
       roleName
     },
-    method: 'post'
+    method: 'post',
+    transformRequest: [function (data) {
+      let _data = ''
+      for (let it in data) {
+        if (data[it]) {
+          _data += it + '=' + data[it] + '&'
+        }
+      }
+      return _data
+    }],
+    // header: {
+    //   'Content-Type': 'application/x-www-form-urlencoded'
+    // }
   })
 }
 
@@ -38,7 +50,16 @@ export const updateRoleRule = (data) => {
   return axios.request({
     url: service + `/update`,
     data,
-    method: 'post'
+    method: 'post',
+    transformRequest: [function (data) {
+      let _data = ''
+      for (let it in data) {
+        if (data[it]) {
+          _data += it + '=' + data[it] + '&'
+        }
+      }
+      return _data
+    }],
   })
 }
 
@@ -46,10 +67,10 @@ export const updateRoleRule = (data) => {
  * 删除角色规则
  * @param {*} id 
  */
-export const deleteRoleRule = (id) => {
+export const deleteRoleRule = ({roleId, roleGroupId}) => {
   return axios.request({
-    url: service + `/delete/${id}`,
-    method: 'get'
+    url: service + `/delete/${roleId}/${roleGroupId}`,
+    method: 'post'
   })
 }
 

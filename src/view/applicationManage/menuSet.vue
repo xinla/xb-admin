@@ -23,7 +23,7 @@
       </Col>
     </Row>
 
-    <tree-table :expand-type="false" :columns="columns" 
+  <tree-table :expand-type="false" :columns="columns" 
     :selectable="true"
     children-prop="childList"
     select-type="radio"

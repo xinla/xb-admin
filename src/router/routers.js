@@ -369,11 +369,11 @@ export default [
   },
   // 规则配置
   {
-    path: '/ruleConfig',
-    name: 'ruleConfig',
+    path: '/ruleSet',
+    name: 'ruleSet',
     component: Main,
     meta: {
-      icon: '_Ruleconfiguration',
+      icon: '_ruleSeturation',
       title: '规则配置',
       hideInMenu: false,
       notCache: true
@@ -386,7 +386,7 @@ export default [
           icon: '_Typerule',
           title: '类型规则'
         },
-        component: () => import('@/view/ruleConfig/type.vue')
+        component: () => import('@/view/ruleSet/type.vue')
       },
       {
         path: 'characterRule',
@@ -395,7 +395,7 @@ export default [
           icon: '_Rolerule',
           title: '角色规则'
         },
-        component: () => import('@/view/ruleConfig/role.vue')
+        component: () => import('@/view/ruleSet/role.vue')
       },
       {
         path: 'insureRule',
@@ -404,7 +404,7 @@ export default [
           icon: '_Insurancerules',
           title: '投保规则'
         },
-        component: () => import('@/view/ruleConfig/insure.vue')
+        component: () => import('@/view/ruleSet/insure.vue')
       },
       // 通用数据库
       {
@@ -414,37 +414,41 @@ export default [
           icon: '_Generalpurposedatabase',
           title: '通用数据库'
         },
-        component: () => import('@/view/ruleConfig/type.vue'),
+        component: () => import('@/view/ruleSet/table/index.vue'),
+        redirect: '/ruleSet/commonDatabase/nationalityTable',
         children: [
           {
             path: 'nationalityTable',
             name: 'nationalityTable',
             meta: {
+              hideInMenu: true,
               icon: 'md-funnel',
               title: '国籍表'
             },
-            component: () => import('@/view/multilevel/level-2-1.vue')
+            component: () => import('@/view/ruleSet/table/nationality.vue')
           },
           {
-            path: 'administrativeDivisionTable',
-            name: 'administrativeDivisionTable',
+            path: 'districtTable',
+            name: 'districtTable',
             meta: {
+              hideInMenu: true,
               icon: 'md-funnel',
               title: '行政区划表'
             },
-            component: () => import('@/view/multilevel/level-2-1.vue'),
+            component: () => import('@/view/ruleSet/table/district.vue'),
           },
           {
-            path: 'classCodeTable',
-            name: 'classCodeTable',
+            path: 'professionTable',
+            name: 'professionTable',
             meta: {
+              hideInMenu: true,
               icon: 'md-funnel',
               title: '职业代码表'
             },
-            component: () => import('@/view/multilevel/level-2-1.vue'),
+            component: () => import('@/view/ruleSet/table/profession.vue'),
           }
         ]
-      }
+      },
     ]
   },
   // 行业数据库

@@ -12,10 +12,13 @@
               v-model="formAll.name"
               filterable
               remote
+              :label-in-value="true"
               :remote-method="search"
-              :loading="loading">
+              :loading="loading"
+              @on-change="change">
                 <Option v-for="(option, index) in lesseeList" 
                 :value="option.name" 
+                :label="option.id" 
                 :key="index">
                 {{option.name}}
                 </Option>
@@ -44,7 +47,7 @@
     <Table 
       border
       :columns="roleColumns"
-      :data="formAll.roleList"
+      :data="formAll.glmap"
       style="text-align: center;">
       <template slot-scope="{ row, index }" slot="action">
           <Icon type="ios-close-circle-outline" @click="deleteRole(index)"/>
@@ -52,13 +55,13 @@
     </Table>
     <Row>
         <Col span="6">
-          <Input v-model="formRole.name" placeholder="请输入姓名" style="width:73%; margin-right: 10px;" />
+          <Input v-model="formRole.uname" placeholder="请输入姓名" style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="6">
           <Input v-model="formRole.mobile" placeholder="请输入手机号" style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="6">
-          <Input v-model="formRole.duty" placeholder="请输入职务" style="width:73%; margin-right: 10px;" />
+          <Input  placeholder="超级管理员" disabled style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="6">
           <Button type="info" @click="add('role')">添加</Button>
@@ -67,9 +70,10 @@
     
     <Divider />
 
+    <div class="title-row">体验账号</div>
     <Table 
       :columns="accountColumns"
-      :data="formAll.accountList">
+      :data="formAll.exmap">
       <template slot-scope="{ row, index }" slot="action">
           <Icon type="ios-close-circle-outline" @click="deleteRole(index)"/>
       </template>
@@ -108,12 +112,12 @@
 </template>
 
 <script>
-import { getLesseePageByJB, getLesseeById, getRoles, getRolesAndGroups, updateLessee } from '@/api/lessee'
+import { getLesseePageByJB, getLesseeById, getRoles, getRolesAndGroups, updateLessee, addLessee } from '@/api/lessee'
 
 const dafaultForm = {
   name: '',
   compayAccountType: '',
-  businessType: '',
+  businessType: '', // 0保险,1信贷,2基金
   glmap: [],
   exmap: []
 }
@@ -145,6 +149,7 @@ export default {
   data() {
     return {
       id: '',
+      JDId: '',
       query: {
         page: 1,
         size: 10,
@@ -239,19 +244,22 @@ export default {
         })
         .then(_data => {
           console.log('data1',_data)
-          this.formAll.roleList = _data
+          this.formAll.glmap = _data
         })
 
         getRoles(this.queryRole).then(data => {
           console.log('data2',data)
         })
       }
+      getRolesAndGroups().then(data => {
+        this.formRole.roles = data
+      })
     },
     search(query) {
       this.query.name = query
       this.loading = true
       getLesseePageByJB(this.query).then(data => {
-        // console.log(data)
+        console.log(data)
         this.loading = false
         this.lesseeList = data.list
       })
@@ -261,10 +269,10 @@ export default {
     },
     add(type) {
       if (type === 'role') {
-        this.formAll.roleList.push(this.formRole)
+        this.formAll.glmap.push(this.formRole)
         this.formRole = Object.assign({}, defaultFormRole)
       } else {
-        this.formAll.accountList.push(this.formAccount)
+        this.formAll.exmap.push(this.formAccount)
         this.formAccount = Object.assign({}, defaultFormAccount)
       }
     },
@@ -273,8 +281,15 @@ export default {
       this.formAccount.timeStart = date[0]
       this.formAccount.timeEnd = date[1]
     },
+    change(item) {
+      // console.log(this.formAll.name)
+      this.JDId = item.label
+      // console.log(item)
+    },
     create() {
-
+      addLessee(this.JDId, this.formAll).then(data => {
+        this.$Message.success('创建成功')
+      })
     }
   }
 };
