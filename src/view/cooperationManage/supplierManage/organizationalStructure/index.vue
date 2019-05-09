@@ -234,7 +234,7 @@ export default {
     getOrganizations() {
       getSupplierOrganization(this.query.supplierId).then(data => {
         console.log("data:", data);
-        this.userList = data;
+        this.organizationStructure = data.list;
       });
     },
     getUsers() {

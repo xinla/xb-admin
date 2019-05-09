@@ -8,7 +8,7 @@
     :disabled="disabled">
       <!-- <Option :value="defaultValue" key="10000">{{defaultValue}}</Option> -->
       <Option v-for="(option, index) in lesseeList" 
-      :value="option.id"
+      :value="option.name"
       :key="index"
       @click.native="$emit('change', option)">
       {{option.name}}
@@ -48,6 +48,7 @@ export default {
   },
   methods:{
     search(query) {
+      // debugger
       this.query.name = query
       this.loading = true
       new Promise((resolve, reject) => {
@@ -61,7 +62,7 @@ export default {
         }
       })
       .then(data => {
-        console.log(data)
+        console.log('data', data)
         this.loading = false
         this.lesseeList = data.list
       })

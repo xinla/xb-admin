@@ -7,7 +7,6 @@
     <Divider />
 
     <div class="title-row">投保规则</div>
-    <editor ref="editor" :value="content" @on-change="handleChange"/>
     <Button type="primary" @click="">确认</Button>
     <Upload action="//jsonplaceholder.typicode.com/posts/" style="display:inline-block;">
         <Button icon="ios-cloud-upload-outline">上传文件</Button>
@@ -71,14 +70,10 @@ const defaultForm = {
 }
 
 export default {
-  components: {
-    Editor
-  },
   props:{},
   data(){
     return {
       form: Object.assign({}, defaultForm),
-      content: '12312323',
       columns: [
         {
             title: '开发者',

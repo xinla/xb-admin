@@ -106,6 +106,7 @@ export default {
   },
   methods: {
     init() {
+      this.id || this.$Message.error('没有参数或参数错误')
       console.log(0)
       if (this.type === 'lessee') {
         getLesseeBusinessInfoById(this.id).then(data => {

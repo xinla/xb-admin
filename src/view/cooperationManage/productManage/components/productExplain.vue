@@ -2,13 +2,39 @@
 <div>
 
   <Form ref="form" :model="form" :label-width="80" inline>
-    <div class="title-row">核心买点</div>
-    <Input type="textarea" v-model="form.fullName" placeholder="请输入产品主要特色，不超过30字"/>
+    <div class="title-row">核心亮点</div>
+    <Input v-model="form.fullName" placeholder="请输入产品主要特色，不超过30字"/>
 
+    <div class="title-row">典型费率</div>
+    <Input v-model="form.fullName" placeholder="请输入产品主要特色，不超过30字"/>
+
+    <div class="title-row">保险利益</div><span>新增一行</span>
+    <Row>
+        <Col span="8">计划名称</Col>
+        <Col span="8">标题</Col>
+        <Col span="8">算法</Col>
+    </Row>
+    <Row>
+        <Col span="8">
+          <Input v-model="resForm.name" placeholder="请输入标题" style="width:73%; margin-right: 10px;" />
+        </Col>
+        <Form ref="" :model="" :rules="" inline>
+          <Col span="8">
+          <FormItem prop="site">
+            <Input v-model="resForm.mobile" placeholder="请输入内容" style="width:73%; margin-right: 10px;" />
+          </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem prop="site">
+              <Input v-model="resForm.mobile" placeholder="请输入内容" style="width:73%; margin-right: 10px;" />
+            </FormItem>
+            <Button type="info" @click="add('role')">添加</Button>
+          </Col>
+        </Form>
+    </Row>
     <Divider />
     
     <div class="title-row">保险责任</div>
-    等待期<Input type="text" size="small" style="width:100px;" v-model="form.fullName" placeholder="供应商名称"/>天
     <Table 
       :columns="resColumns"
       :data="form.accountList">
@@ -20,41 +46,17 @@
         <Col span="6">
           <Input v-model="resForm.name" placeholder="请输入标题" style="width:73%; margin-right: 10px;" />
         </Col>
-        <Col span="6">
-          <Input v-model="resForm.mobile" placeholder="请输入内容" style="width:73%; margin-right: 10px;" />
-        </Col>
-        <Col span="6">
-          <Input v-model="resForm.name" placeholder="计算公式" style="width:73%; margin-right: 10px;" />
-        </Col>
-        <Col span="6">
+        <Col span="18">
+          <Input type="textarea" v-model="resForm.mobile" placeholder="请输入内容" style="width:73%; margin-right: 10px;" />
           <Button type="primary" @click="add('role')">添加</Button>
         </Col>
     </Row>
     <Divider />
 
     <div class="title-row">免除责任</div>
-    <Input type="textarea" v-model="form.fullName" placeholder="请输入产品主要特色，不超过30字"/>
-    <Divider />
-
-    <div class="title-row">利益演示</div>
-    <Table 
-      :columns="resColumns"
-      :data="form.accountList">
-      <template slot-scope="{ row, index }" slot="action">
-          <Icon type="ios-close-circle-outline" @click="deleteRole(index)"/>
-      </template>
-    </Table>
-    <Row>
-        <Col span="8">
-          <Input v-model="resForm.name" placeholder="请输入标题" style="width:73%; margin-right: 10px;" />
-        </Col>
-        <Col span="8">
-          <Input v-model="resForm.mobile" placeholder="请输入内容" style="width:73%; margin-right: 10px;" />
-        </Col>
-        <Col span="8">
-          <Button type="info" @click="add('role')">添加</Button>
-        </Col>
-    </Row>
+    <FormItem label="APP" prop="mobile">
+      <Input type="textarea" v-model="form.fullName" placeholder="请输入产品主要特色，不超过30字"/>
+    </FormItem>
     <Divider />
 
     <div class="title-row">Banner 图</div>
@@ -101,7 +103,7 @@
     
     <div class="title-row">图片描述</div>
     <Upload action="//jsonplaceholder.typicode.com/posts/">
-        <Button icon="ios-cloud-upload-outline">上传文件</Button>
+        <div class="upload-icon cp">+</div>
     </Upload>
     <Divider />
   </Form>

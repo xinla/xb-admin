@@ -4,19 +4,23 @@
     :selectable="true"
     children-prop="districts"
     select-type="radio"
-    :data="list" >
-      <!-- <template slot="classify" slot-scope="scope">
-        {{scope.row.type}}
-      </template> -->
+    :data="list" 
+    @tree-icon-click="flod">
     </tree-table>
   </div>
 </template>
 
 <script>
 import { getDistrict } from "@/api/common"
+import { getPostcode } from "@/api/rulesSet/nationality"
 
 export default {
   components:{},
+  filters: {
+    async postcode(val) {
+      return await getPostcode(val)
+    }
+  },
   props:{},
   data(){
     return {
@@ -34,7 +38,7 @@ export default {
         },
         {
           title: '邮编',
-          key: 'menuUrl',
+          key: 'postcode',
           headerAlign: 'center',
           align: 'center'
         },
@@ -54,12 +58,28 @@ export default {
   computed:{},
   watch:{},
   mounted(){
-    getDistrict(3).then(res => {
-      this.list = res.data.districts[0].districts
-      console.log(res.data.districts[0].districts)
+    getDistrict(3).then(data  => {
+      this.list = data
+      // console.log(data)
     })
   },
-  methods:{}
+  methods:{
+    // async postcode(address) {
+    //   let res = await getPostcode(address)
+    //   console.log(res)
+    //   return res
+    // }
+    flod(row, rowIndex, $event) {
+      for (const iterator of row.districts) {
+        getPostcode(iterator.name).then(data => {
+          // iterator.postcode = data
+          this.$set(iterator, 'postcode', data)
+        // console.log(iterator)
+        // console.log(row)
+        })
+      }
+    }
+  },
 }
 </script>
 <style lang="less" scoped>

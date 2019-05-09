@@ -30,7 +30,7 @@
       </template>
 
       <template slot-scope="{ row }" slot="isActive">
-        {{row.isActive | isActive}}
+        {{row.outageTime ? '停用' : '正常'}}
       </template>
 
       <template slot-scope="{ row }" slot="action">
@@ -41,7 +41,7 @@
           style="margin-right: 5px"
           @click="goPage('lesseeDetail', {id: row.id})"
         >详情</Button>
-        <Button type="error" size="small" @click="set(row)">{{row.isActive == 0 ? '停用' : '启用'}}</Button>
+        <Button type="error" size="small" @click="set(row)">{{row.outageTime ? '启用' : '停用'}}</Button>
       </template>
 
     </Table>
@@ -102,9 +102,6 @@ export default {
     businessType(val) {
       return businessType[val] && businessType[val].label
     },
-    isActive(val) {
-      return isActive[val] && isActive[val].label
-    }
   },
   data() {
     return {
@@ -155,31 +152,26 @@ export default {
           key: "glname",
           align: "center"
         },
-        {
-          title: "体验账户",
-          key: "exname",
-          align: "center"
-        },
-        {
-          title: "体验截止时间",
-          key: "invaTimeEnd",
-          align: "center"
-        },
-        {
-          title: "定制模块",
-          key: "mname",
-          align: "center"
-        },
+        // {
+        //   title: "体验账户",
+        //   key: "exname",
+        //   align: "center"
+        // },
+        // {
+        //   title: "体验截止时间",
+        //   key: "invaTimeEnd",
+        //   align: "center"
+        // },
+        // {
+        //   title: "定制模块",
+        //   key: "mname",
+        //   align: "center"
+        // },
         {
           title: "租户状态",
           key: "isActive",
           align: "center",
           slot: "isActive",
-          filters: isActive,
-          filterMultiple: false,
-          filterMethod(value, row) {
-            return row.isActive == value
-          }
         },
         {
           title: "最近更新时间",
@@ -218,9 +210,10 @@ export default {
       this.getData();
     },
     set(data) {
-      data.isActive = data.isActive == 0 ? 1 : 0
-      setState(data.id, data.isActive).then(data => {
-        console.log(data)
+      let temp = data.outageTime ? 0 : 1
+      setState(data.id, temp).then(data => {
+        this.getData()
+        // console.log(data)
       })
     },
     goPage(name, query) {

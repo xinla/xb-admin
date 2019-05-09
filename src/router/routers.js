@@ -373,7 +373,7 @@ export default [
     name: 'ruleSet',
     component: Main,
     meta: {
-      icon: '_ruleSeturation',
+      icon: '_Ruleconfiguration',
       title: '规则配置',
       hideInMenu: false,
       notCache: true
@@ -414,7 +414,7 @@ export default [
           icon: '_Generalpurposedatabase',
           title: '通用数据库'
         },
-        component: () => import('@/view/ruleSet/table/index.vue'),
+        component: () => import('@/view/ruleSet/database/index.vue'),
         redirect: '/ruleSet/commonDatabase/nationalityTable',
         children: [
           {
@@ -425,7 +425,7 @@ export default [
               icon: 'md-funnel',
               title: '国籍表'
             },
-            component: () => import('@/view/ruleSet/table/nationality.vue')
+            component: () => import('@/view/ruleSet/database/nationality.vue')
           },
           {
             path: 'districtTable',
@@ -435,7 +435,7 @@ export default [
               icon: 'md-funnel',
               title: '行政区划表'
             },
-            component: () => import('@/view/ruleSet/table/district.vue'),
+            component: () => import('@/view/ruleSet/database/district.vue'),
           },
           {
             path: 'professionTable',
@@ -445,7 +445,7 @@ export default [
               icon: 'md-funnel',
               title: '职业代码表'
             },
-            component: () => import('@/view/ruleSet/table/profession.vue'),
+            component: () => import('@/view/ruleSet/database/profession.vue'),
           }
         ]
       },

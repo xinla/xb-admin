@@ -83,29 +83,14 @@ export const addLessee = (id, company) => {
 }
 
 /**
- * 修改租户（废弃）
+ * 修改租户
  * @param {*} id 租户id
  */
-export const editLessee = (data) => {
+export const updateLessee = (data) => {
   return axios.request({
-    url: service + `/${data.id}`,
+    url: service + `/updateCompany`,
     data,
-    transformRequest: [function (data) {
-      // let ret = ''
-      // for (let it in data) {
-      //   if (data[it] && it !== 'actualAnniversary' && it !== 'registrationDate') {
-      //     ret += it + '=' + data[it] + '&'
-      //   }
-      // }
-      return JSON.stringify(data, function(key,value){
-        if (value && key !== 'actualAnniversary' && key !== 'registrationDate') {
-          return value
-        } else {
-          return undefined
-        }
-      })
-      }],
-    method: 'put',
+    method: 'POST',
   })
 }
 
@@ -205,20 +190,20 @@ export const getLesseeBrandInfoById = (id) => {
  * 修改公司品牌信息
  * @param {object} data 公司品牌信息对象
  */
-export const updateLessee = (data) => {
-  return axios.request({
-    url: serviceSub + `/updateById`,
-    data,
-    transformRequest: [function (data) {
-      let ret = ''
-      for (let it in data) {
-        if (data[it]) {
-          ret += it + '=' + data[it] + '&'
-        }
-      }
-      return ret
-    }],
-    method: 'post',
-  })
-}
+// export const updateLessee = (data) => {
+//   return axios.request({
+//     url: serviceSub + `/updateById`,
+//     data,
+//     transformRequest: [function (data) {
+//       let ret = ''
+//       for (let it in data) {
+//         if (data[it]) {
+//           ret += it + '=' + data[it] + '&'
+//         }
+//       }
+//       return ret
+//     }],
+//     method: 'post',
+//   })
+// }
 

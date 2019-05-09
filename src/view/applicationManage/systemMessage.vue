@@ -122,18 +122,18 @@ export default {
     submit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          this.isEdit 
-          ? updateMessageTemplateById(this.form).then(data => {
-            this.$Message.success('修改成功')
+          Promise.resolve()
+          .then(() => {
+            return this.isEdit 
+            ? updateMessageTemplateById(this.form)
+            : addMessageTemplate(this.form)
+          })
+          .them(() =>{
+            this.isEdit = false
             this.handleReset('form')
             this.getSystemMessagePage()
+            this.$Message.success('操作成功')
           })
-          : addMessageTemplate(this.form).then(data => {
-            this.$Message.success('创建成功')
-            this.handleReset('form')
-            this.getSystemMessagePage()
-          })
-          this.isEdit = false
         }
       })
     },

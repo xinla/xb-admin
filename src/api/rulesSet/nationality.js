@@ -14,3 +14,17 @@ export const nationalityTable = (page=1, size=100) => {
     method: 'get'
   })
 }
+
+/**
+ * 根据地址查找邮编
+ * @param {*} address 地址
+ */
+export const getPostcode = (address) => {
+  return axios.request({
+    url: service + `/getPostCode`,
+    params: {
+      address,
+    },
+    method: 'get'
+  })
+}

@@ -9,10 +9,10 @@
       <Step title="待进行" content="产品附件"></Step>
   </Steps>
 
-  <baseInfo ref="baseInfo" v-show="current === 0"/>
+  <!-- <baseInfo ref="baseInfo" v-show="current === 0"/>
   <insuranceRules ref="insuranceRules" v-show="current === 1"/>
   <productExplain ref="productExplain" v-show="current === 2"/>
-  <productAccessory ref="productAccessory" v-show="current === 3"/>
+  <productAccessory ref="productAccessory" v-show="current === 3"/> -->
 
   <div class="ac">
     <Button v-show="current > 0" type="primary" ghost @click="current--">上一步</Button>
@@ -28,13 +28,13 @@ import baseInfo from '../components/baseInfo'
 export default {
   components:{
     baseInfo,
-    insuranceRules: () => import('../components/insuranceRules'),
-    productExplain: () => import('../components/productExplain'),
-    productAccessory: () => import('../components/productAccessory'),
+    // insuranceRules: () => import('../components/insuranceRules'),
+    // productExplain: () => import('../components/productExplain'),
+    // productAccessory: () => import('../components/productAccessory'),
   },
   data() {
     return {
-      current: 0,
+      current: 1,
     }
   },
   methods: {

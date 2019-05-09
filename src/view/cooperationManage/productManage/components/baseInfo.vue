@@ -25,12 +25,71 @@
         </Col>
     </Row>
     
-    <FormItem label="主附险" prop="isMain">
+    <FormItem label="所属大类" prop="isMain">
+        <RadioGroup v-model="form.isMain">
+            <Radio :label="0">人身保险</Radio>
+            <Radio :label="1">财产保险</Radio>
+        </RadioGroup>
+    </FormItem>
+
+    <FormItem label="所属细类" prop="distributionChannelAgency">
+      <Row>
+        <Col span="3" v-for="(item, index) of subclass" :key="index">
+          <CheckboxGroup v-model="subclassParent">
+            <Checkbox :label="item.pid">{{item.name}}</Checkbox> <span class="cp" @click="showCheck(index)">+</span>
+          </CheckboxGroup>
+          <CheckboxGroup class="child-check" v-model="subclassChild[index]" v-show="checkShow[index]">
+            <Checkbox v-for="(unit, unique) of item.children" :key="unique" :label="unit.id">{{unit.name}}</Checkbox>
+          </CheckboxGroup>
+        </Col>
+      </Row>
+      
+    </FormItem>
+
+    <FormItem label="保障功能" prop="distributionChannelAgency">
+      <CheckboxGroup v-model="distributionChannelAgency">
+        <Checkbox label="0">家庭保障</Checkbox>
+        <Checkbox label="1">健康医疗</Checkbox>
+        <Checkbox label="2">子女教育</Checkbox>
+        <Checkbox label="3">退休养老</Checkbox>
+        <Checkbox label="2">投资理财</Checkbox>
+        <Checkbox label="3">财富传承</Checkbox>
+      </CheckboxGroup>
+    </FormItem>
+
+    <FormItem label="适合人群" prop="isMain">
+        <RadioGroup v-model="form.isMain">
+            <Radio :label="0">母婴</Radio>
+            <Radio :label="1">儿童</Radio>
+            <Radio :label="0">青中年</Radio>
+            <Radio :label="1">中老年</Radio>
+            <Radio :label="0">老年</Radio>
+            <Radio :label="1">全龄</Radio>
+        </RadioGroup>
+    </FormItem>
+
+    <FormItem label="承保方式" prop="isMain">
+        <RadioGroup v-model="form.isMain">
+            <Radio :label="0">个人</Radio>
+            <Radio :label="1">团体</Radio>
+        </RadioGroup>
+    </FormItem>
+
+    <FormItem label="承保周期" prop="isMain">
+        <RadioGroup v-model="form.isMain">
+            <Radio :label="0">短期</Radio>
+            <Radio :label="1">长期</Radio>
+        </RadioGroup>
+    </FormItem>
+
+    <FormItem label="产品形态" prop="isMain">
         <RadioGroup v-model="form.isMain">
             <Radio :label="0">主险</Radio>
             <Radio :label="1">附加险</Radio>
+            <Radio :label="1">保险计划</Radio>
         </RadioGroup>
     </FormItem>
+
     <FormItem label="分销渠道" prop="distributionChannelAgency">
       <CheckboxGroup v-model="distributionChannelAgency">
         <Checkbox label="0">经代</Checkbox>
@@ -39,23 +98,29 @@
         <Checkbox label="3">银保</Checkbox>
       </CheckboxGroup>
     </FormItem>
+
     <FormItem label="在线投保" prop="onlineType">
       <CheckboxGroup v-model="onlineType">
-        <Checkbox :label="0">现保科技 APP</Checkbox>
+        <Checkbox :label="0">现保</Checkbox>
+        <br>
+        <Checkbox :label="3">
+          APP：
+          <Input class="inline-input" type="text" v-model="onlineLinkAddress[3]" placeholder="APP"/>
+        </Checkbox>
         <br>
         <Checkbox :label="1">
-          Web 网址：
-          <Input class="inline-input" type="text" v-model="onlineLinkAddress[1]" placeholder="Web 网址"/>
+          PC端：
+          <Input class="inline-input" type="text" v-model="onlineLinkAddress[1]" placeholder="PC端"/>
+        </Checkbox>
+        <br>
+        <Checkbox :label="1">
+          H5：
+          <Input class="inline-input" type="text" v-model="onlineLinkAddress[4]" placeholder="H5"/>
         </Checkbox>
         <br>
         <Checkbox :label="2">
           小程序：
           <Input class="inline-input" type="text" v-model="onlineLinkAddress[2]" placeholder="小程序"/>
-        </Checkbox>
-        <br>
-        <Checkbox :label="3">
-          供应商 APP：
-          <Input class="inline-input" type="text" v-model="onlineLinkAddress[3]" placeholder="供应商 APP"/>
         </Checkbox>
       </CheckboxGroup>
     </FormItem>
@@ -133,7 +198,51 @@ export default {
             { required: true, message: '不能为空', trigger: 'blur' }
         ],
       },
-      insuranceType: []
+      insuranceType: [],
+      checkShow: [true, true, true, true],
+      subclass: Object.freeze([
+        {
+          pid: 1, 
+          name: '理财保险',
+          children: [
+            {id: 1, name: '两全保险'},
+            {id: 2, name: '年金保险'},
+            {id: 3, name: '分红保险'},
+            {id: 4, name: '万能保险'}
+          ]
+        },
+        {
+          pid: 2, 
+          name: '人寿保险',
+          children: [
+            {id: 1, name: '终身寿险'},
+            {id: 2, name: '定期寿险'},
+            {id: 3, name: '两全保险'},
+            {id: 4, name: '年金保险'}
+          ]
+        },
+        {
+          pid: 3, 
+          name: '健康保险',
+          children: [
+            {id: 1, name: '疾病保险'},
+            {id: 2, name: '医疗保险'},
+            {id: 3, name: '长期护理保险'},
+            {id: 4, name: '失能收入保险'}
+          ]
+        },
+        {
+          pid: 4, 
+          name: '意外保险',
+          children: [
+            {id: 1, name: '普通意外'},
+            {id: 2, name: '交通意外'},
+            {id: 3, name: '旅行意外'},
+          ]
+        },
+      ]),
+      subclassParent: [], 
+      subclassChild: []
     }
   },
   watch: {
@@ -206,6 +315,11 @@ export default {
     change(val) {
       this.form.supplierId = val.id
       // console.log(val)
+    },
+    showCheck(index) {
+      // console.log(this.checkShow[index])
+      this.checkShow[index] = !this.checkShow[index]
+      this.checkShow.splice()
     }
   }
 }
@@ -214,5 +328,8 @@ export default {
 <style lang="less" scoped>
   .inline-input{
     width: 200px;
+  }
+  .child-check{
+    margin-left: 15px;
   }
 </style>

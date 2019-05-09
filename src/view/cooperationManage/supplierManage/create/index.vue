@@ -4,7 +4,7 @@
   <Form ref="form" :model="form" :rules="rules" :label-width="120" inline>
     <div class="title-row">基本信息</div>
     <FormItem label="供应商名称" prop="insuranceId">
-      <selectSupplier :val="insuranceId || form.name" :defaultValue="form.name" @change="change" />
+      <selectSupplier :val="form.name" :defaultValue="form.name" @change="change" />
     </FormItem>
     <FormItem label="供应商Logo" prop="logo">
       <img class="logo" v-if="form.logo" :src="form.logo" alt="logo">
@@ -141,7 +141,7 @@ export default {
       // })
     },
     upFile(response, file, fileList) {
-      // console.log(response, file, fileList)
+      console.log(response, file, fileList)
       // console.log(response.result.fileUrl)
       this.form.logo = response.result.fileUrl
     },

@@ -34,7 +34,7 @@
       show-elevator
       show-total
       style="text-align:center;margin-top:20px;"
-      @on-change="getListPage"
+      @on-change="getDataPage"
     />
   </div>
 </template>
@@ -150,12 +150,12 @@ export default {
       }
     });
 
-    this.getList();
+    this.getData();
   },
   methods: {
-    getList() {
+    getData() {
       getLesseePageByJB(this.query).then(data => {
-        // console.log(data);
+        console.log(data);
         this.loading = false;
         this.list = data.list;
         this.total = data.total;
@@ -166,7 +166,7 @@ export default {
       this.query.page = 1;
       this.query.size = 10;
       // console.log(this.query);
-      this.getList();
+      this.getData();
     },
     edit(data) {},
     deleteItem(data) {},
@@ -175,10 +175,10 @@ export default {
     goPage(name) {
       this.$router.push({ name });
     },
-    getListPage(page) {
+    getDataPage(page) {
       this.loading = true;
       this.query.page = +page;
-      this.getList()
+      this.getData()
     }
   }
 };

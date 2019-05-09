@@ -7,22 +7,7 @@
       <Row>
         <Col span="12">
           <FormItem label="租户名称" prop="name">
-            <Select
-              style="width:73%; margin-right: 10px;"
-              v-model="formAll.name"
-              filterable
-              remote
-              :label-in-value="true"
-              :remote-method="search"
-              :loading="loading"
-              @on-change="change">
-                <Option v-for="(option, index) in lesseeList" 
-                :value="option.name" 
-                :label="option.id" 
-                :key="index">
-                {{option.name}}
-                </Option>
-            </Select>
+            <selectSupplier :val="formAll.name" @change="change" />
         </FormItem>
         </Col>
 
@@ -50,7 +35,7 @@
       :data="formAll.glmap"
       style="text-align: center;">
       <template slot-scope="{ row, index }" slot="action">
-          <Icon type="ios-close-circle-outline" @click="deleteRole(index)"/>
+          <Icon type="ios-close-circle-outline" @click="deleteRole(0, index)"/>
       </template>
     </Table>
     <Row>
@@ -61,7 +46,7 @@
           <Input v-model="formRole.mobile" placeholder="请输入手机号" style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="6">
-          <Input  placeholder="超级管理员" disabled style="width:73%; margin-right: 10px;" />
+          <Input v-model="formRole.rname" placeholder="超级管理员" disabled style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="6">
           <Button type="info" @click="add('role')">添加</Button>
@@ -70,12 +55,12 @@
     
     <Divider />
 
-    <div class="title-row">体验账号</div>
+    <!-- <div class="title-row">体验账号</div>
     <Table 
       :columns="accountColumns"
       :data="formAll.exmap">
       <template slot-scope="{ row, index }" slot="action">
-          <Icon type="ios-close-circle-outline" @click="deleteRole(index)"/>
+          <Icon type="ios-close-circle-outline" @click="deleteRole(1, index)"/>
       </template>
     </Table>
     <Row>
@@ -89,7 +74,7 @@
           <Input v-model="formAccount.duty" placeholder="请输入职务" style="width:73%; margin-right: 10px;" />
         </Col>
         <Col span="4">
-          <Select v-model="formAccount.jurisdiction" style="width:73%; margin-right: 10px;">
+          <Select :multiple="true" v-model="formAccount.jurisdiction" style="width:73%; margin-right: 10px;">
               <Option v-for="(value, key) in jurisdictionList" :value="value" :key="key">{{ value }}</Option>
           </Select>
         </Col>
@@ -105,14 +90,16 @@
         <Col span="2">
           <Button type="info" @click="add('account')">添加</Button>
         </Col>
-    </Row>
+    </Row> -->
 
-    <Button type="info" @click="create" style="margin: 20px auto; display: block;">确认创建</Button>
+    <Button type="info" @click="create" style="margin: 20px auto; display: block;">确认</Button>
   </div>
 </template>
 
 <script>
 import { getLesseePageByJB, getLesseeById, getRoles, getRolesAndGroups, updateLessee, addLessee } from '@/api/lessee'
+import selectSupplier from '@/components/selectSupplier'
+
 
 const dafaultForm = {
   name: '',
@@ -124,8 +111,7 @@ const dafaultForm = {
 const defaultFormRole = {
   uname: '',
   mobile: '',
-  rname: '',
-  roles: []
+  rname: '超级管理员',
 }
 const defaultFormAccount = {
   name: '',
@@ -146,6 +132,9 @@ const businessType= {
 }
 export default {
   name: "home",
+  components: {
+    selectSupplier,
+  },
   data() {
     return {
       id: '',
@@ -163,8 +152,6 @@ export default {
       },
       compayAccountType: Object.assign({}, compayAccountType),
       businessType: Object.assign({}, businessType),
-      loading: false,
-      lesseeList: [],
       formAll: Object.assign({}, dafaultForm),
       formRole: Object.assign({}, defaultFormRole),
       formAccount: Object.assign({}, defaultFormAccount),
@@ -237,35 +224,38 @@ export default {
         getLesseeById(this.id)
         .then(data => {
           console.log(data)
-          let {name, compayAccountType, businessType} = data
-          let _form = {name, compayAccountType, businessType}
-          this.formAll = Object.assign({}, _form)
-          return getRolesAndGroups(data.name)
+          // let {name, compayAccountType, businessType} = data
+          // let _form = {name, compayAccountType, businessType}
+          this.formAll = Object.assign({oldXbCompanyBusinessInformationId: data.xbCompanyBusinessInformationId, companyName: data.name}, data)
+          // return getRolesAndGroups(data.name)
+          return getRoles(this.queryRole)
         })
-        .then(_data => {
-          console.log('data1',_data)
-          this.formAll.glmap = _data
+        .then(data => {
+          // console.log('data2', data)
+          // this.formAll.glmap = data.list
+          this.$set(this.formAll, 'glmap', data.list)
         })
+        // .then(_data => {
+          // console.log('data1',_data)
+        //   this.formAll.glmap = _data
+        // })
 
-        getRoles(this.queryRole).then(data => {
-          console.log('data2',data)
-        })
       }
-      getRolesAndGroups().then(data => {
-        this.formRole.roles = data
-      })
+      // getRolesAndGroups().then(data => {
+      //   this.formRole.roles = data
+      // })
     },
-    search(query) {
-      this.query.name = query
-      this.loading = true
-      getLesseePageByJB(this.query).then(data => {
-        console.log(data)
-        this.loading = false
-        this.lesseeList = data.list
+    deleteRole(type, index) {
+      this.$Modal.confirm({
+          title: '提示',
+          content: '确定要删除么',
+          onOk: () => {
+            // 0：超级管理员 ，1：体验账号
+            type === 0 
+            ? this.formAll.glmap.splice(index, 1)
+            : this.formAll.exmap.splice(index, 1)
+          },
       })
-    },
-    deleteRole() {
-
     },
     add(type) {
       if (type === 'role') {
@@ -282,13 +272,22 @@ export default {
       this.formAccount.timeEnd = date[1]
     },
     change(item) {
-      // console.log(this.formAll.name)
-      this.JDId = item.label
+      console.log(1)
+      this.JDId = item.id
       // console.log(item)
     },
     create() {
-      addLessee(this.JDId, this.formAll).then(data => {
-        this.$Message.success('创建成功')
+      // debugger
+      // console.log(this.formAll)
+      Promise.resolve()
+      .then(() =>{
+        return this.id
+        ? updateLessee(this.formAll)
+        : addLessee(this.JDId, this.formAll)
+      })
+      .then(data => {
+        this.$Message.success('操作成功')
+        this.$router.push({name: 'lessee'})
       })
     }
   }
@@ -296,5 +295,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import url('./create.less');
+  .title{
+    padding: 0px 0px 20px 10px;
+    font-size: 20px;
+  }
+  .ivu-row{
+    margin-top: 10px;
+  }
 </style>
