@@ -15,13 +15,17 @@ export const getAllMenu = () => {
 
 /**
  * 获取菜单分页
- * @param {*} param0 
+ * @param {*} id id
+ * @param {*} type 2:保险,1:总后台,0:信贷,3:基金
+ * @param {*} classify 菜单类型,0菜单,1按钮
+ * @param {*} isVo 0 可见,1不可见
+ * @param {*} name 菜单名称 必传
  */
-export const getMenuPage = ({page, size, id, businessType, classify, isVo, name}) => {
+export const getMenuPage = ({page, size, id, type, classify, isVo, name}) => {
   return axios.request({
     url: service + `/findAll/${page}/${size}`,
     params: {
-      id, businessType, classify, isVo, name
+      id, type, classify, isVo, name
     },
     method: 'get'
   })

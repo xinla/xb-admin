@@ -6,20 +6,26 @@
         <Button type="info" @click="isfold = !isfold">折叠/展开</Button>
       </Col>
       <Col span="18">
-        业务类型
-        <Select v-model="query.type" style="width:100px">
-          <Option v-for="(value, key) in type" :value="+key" :key="key">{{ value }}</Option>
-        </Select>
-        菜单类型
+      <Form ref="form" :model="query" inline :label-width="60">
+        <FormItem prop="type" label="业务类型">
+          <Select v-model="query.type" style="width:100px">
+            <Option v-for="(value, key) in type" :value="+key" :key="key">{{ value }}</Option>
+          </Select>
+        </FormItem>
+
+        <FormItem prop="type" label="菜单类型">
         <Select v-model="query.classify" style="width:100px">
           <Option v-for="(value, key) in menuType" :value="+key" :key="key">{{ value }}</Option>
         </Select>
-        可见状态
+        </FormItem>
+        <FormItem prop="type" label="可见状态">
         <Select v-model="query.isVo" style="width:100px">
           <Option v-for="(value, key) in isVo" :value="+key" :key="key">{{ value }}</Option>
         </Select>
+        </FormItem>
         <Input v-model="query.name" placeholder="搜索公司" style="width:30%; margin-right: 10px;"/>
         <Button type="info" @click="search()">搜索</Button>
+        </Form>
       </Col>
     </Row>
 
@@ -98,18 +104,21 @@ const defautlForm = {
   name: '',
   type: '',
   classify: '',
+  isVo: '',
   menuUrl: '',
   permissionIdentifying: '',
-  pid: '',
+  pid: 0,
+  type: ''
 }
 const menuType= {
   0: '菜单',
   1: '按钮'
 }
 const type= {
-  0: '保险',
-  1: '信贷',
-  2: '基金'
+  0: '信贷',
+  1: '总后台',
+  2: '保险',
+  3: '基金'
 }
 let isVo = {
   0: '可见',
@@ -286,7 +295,7 @@ export default {
     },
     addChild(data) {
       this.form = Object.assign({}, defautlForm),
-      this.form.pid = data && data.id || ''
+      this.form.pid = data && data.id || 0
       this.isEdit = false
       this.formShow = true
     },
