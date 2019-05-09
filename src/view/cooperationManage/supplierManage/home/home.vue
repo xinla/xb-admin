@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">租户列表</div>
+    <div class="title">供应商列表</div>
 
     <Row style="padding-bottom: 10px;">
       <Col span="14">

@@ -125,7 +125,7 @@ export default {
     // 获取行政区划数据
     getDistrict().then(data => {
       // console.log(data.data.districts[0].districts)
-      let districtsFull = data.data.districts[0].districts;
+      let districtsFull = data;
       recursiveExtract(this.districtsList, districtsFull);
       // console.log(this.districtsList)
 
@@ -154,6 +154,7 @@ export default {
   },
   methods: {
     getData() {
+      this.loading = true;
       getLesseePageByJB(this.query).then(data => {
         console.log(data);
         this.loading = false;
@@ -162,8 +163,7 @@ export default {
       });
     },
     search() {
-      this.loading = true;
-      this.query.page = 1;
+        this.query.page = 1;
       this.query.size = 10;
       // console.log(this.query);
       this.getData();
@@ -176,7 +176,6 @@ export default {
       this.$router.push({ name });
     },
     getDataPage(page) {
-      this.loading = true;
       this.query.page = +page;
       this.getData()
     }

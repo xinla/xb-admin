@@ -131,7 +131,7 @@ export default {
     getDistrict()
     .then(data => {
       // console.log(data.data.districts[0].districts)
-      let districtsFull = data.data.districts[0].districts;
+      let districtsFull = data;
       recursiveExtract(this.districtsList, districtsFull);
       // console.log(this.districtsList)
 

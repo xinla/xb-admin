@@ -236,7 +236,7 @@ export default {
     getData() {
       getAllMenu().then(data => {
         let menuList = []
-        console.log(data)
+        // console.log(data)
         this.list = data
         this.menuList = recursiveMenu(data)
         // console.log(this.menuList)
@@ -267,7 +267,7 @@ export default {
       this.formShow = false
     },
     edit(mes) {
-      console.log(mes)
+      // console.log(mes)
       this.form = Object.assign({}, mes) 
       this.isEdit = true
       this.formShow = true
@@ -300,7 +300,7 @@ export default {
       this.formShow = true
     },
     deleteMenu(data) {
-      console.log(data)
+      // console.log(data)
       if (data.childList.length) {
         this.$Message.warning({
           content: '此项含有子项，不可直接删除！',
