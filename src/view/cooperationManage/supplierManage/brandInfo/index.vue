@@ -12,24 +12,24 @@
     
     <table>
       <tr>
-        <th>供应商名称</th>
+        <th>供应商名称：</th>
         <td>
           <!-- <Input type="text" :disabled="disabled" v-model="form.name"/> -->
           {{form.name}}
         </td>
-        <th>供应商logo</th>
+        <th>供应商logo：</th>
         <td>
-          <img :src="form.logo" alt="logo">
+          <img :src="form.logo" class="logo" alt="logo">
         </td>
       </tr>
       <tr>
-        <th>供应商简称</th>
+        <th>供应商简称：</th>
         <td colspan="3">
           {{form.nameForShort}}
         </td>
       </tr>
       <tr>
-        <th>供应商类型</th>
+        <th>供应商类型：</th>
         <td colspan="3">
           {{form.typeRule | typeRule }}
         </td>
@@ -48,21 +48,21 @@
     <div class="title-row">联系方式</div>
     <table>
       <tr>
-        <th>公司地址</th>
+        <th>公司地址：</th>
         <td>
           {{form.companyAddress}}
         </td>
-        <th>公司网址</th>
+        <th>公司网址：</th>
         <td>
           {{form.companyWebsite}}
         </td>
       </tr>
       <tr>
-        <th>公司电话</th>
+        <th>公司电话：</th>
         <td>
           {{form.contactPhone}}
         </td>
-        <th>全国统一电话</th>
+        <th>全国统一电话：</th>
         <td>
           {{form.nationalServicePhone}}
         </td>
@@ -142,6 +142,7 @@ export default {
       getSupplierBrandInformation(this.form.id).then(data => {
         console.log('SupplierBrandInformation:', data)
         this.form = data
+        this.form.supplierAndOrganizationVoList = data.supplierAndOrganizationVoList || []
       }) 
     }
   }
@@ -150,8 +151,4 @@ export default {
 
 <style lang="less" scoped>
 @import url(./index.less);
-  .title{
-    padding: 0px 0px 20px 10px;
-    font-size: 20px;
-  }
 </style>

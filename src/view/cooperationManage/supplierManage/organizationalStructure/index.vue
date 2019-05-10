@@ -3,11 +3,12 @@
     <xNav/>
 
     <!-- 组织架构 -->
-    <org-view
+    <!-- <org-view
       v-if="organizationStructure"
       :data="organizationStructure"
       @on-menu-click="handleMenuClick"
-    ></org-view>
+    ></org-view> -->
+    <Tree :data="organizationStructure" :render="renderContent"></Tree>
 
     <div style="position:relative;">
       <div style="display:inline-block;width: 50%;">
@@ -109,57 +110,58 @@ export default {
         page: 1,
         size: 10
       },
-      organizationStructure: {
-        id: 0,
-        label: "现保科技有限公司",
-        expand: true,
-        children: [
-          {
-            id: 2,
-            label: "产品研发部",
-            children: [
-              {
-                id: 5,
-                label: "研发-前端"
-              },
-              {
-                id: 6,
-                label: "研发-后端"
-              },
-              {
-                id: 9,
-                label: "UI设计"
-              },
-              {
-                id: 10,
-                label: "产品经理"
-              }
-            ]
-          },
-          {
-            id: 3,
-            label: "销售部",
-            children: [
-              {
-                id: 7,
-                label: "销售一部"
-              },
-              {
-                id: 8,
-                label: "销售二部"
-              }
-            ]
-          },
-          {
-            id: 4,
-            label: "财务部"
-          },
-          {
-            id: 9,
-            label: "HR人事"
-          }
-        ]
-      },
+      // organizationStructure: {
+      //   id: 0,
+      //   label: "现保科技有限公司",
+      //   expand: true,
+      //   children: [
+      //     {
+      //       id: 2,
+      //       label: "产品研发部",
+      //       children: [
+      //         {
+      //           id: 5,
+      //           label: "研发-前端"
+      //         },
+      //         {
+      //           id: 6,
+      //           label: "研发-后端"
+      //         },
+      //         {
+      //           id: 9,
+      //           label: "UI设计"
+      //         },
+      //         {
+      //           id: 10,
+      //           label: "产品经理"
+      //         }
+      //       ]
+      //     },
+      //     {
+      //       id: 3,
+      //       label: "销售部",
+      //       children: [
+      //         {
+      //           id: 7,
+      //           label: "销售一部"
+      //         },
+      //         {
+      //           id: 8,
+      //           label: "销售二部"
+      //         }
+      //       ]
+      //     },
+      //     {
+      //       id: 4,
+      //       label: "财务部"
+      //     },
+      //     {
+      //       id: 9,
+      //       label: "HR人事"
+      //     }
+      //   ]
+      // },
+      organizationStructure: [],
       columns: [
         {
           type: "selection",
@@ -233,13 +235,37 @@ export default {
     },
     getOrganizations() {
       getSupplierOrganization(this.query.supplierId).then(data => {
-        console.log("data:", data);
-        this.organizationStructure = data.list;
+        console.log("SupplierOrganization:", data);
+        function recursiveExtract(res, obj) {
+          // debugger
+          res['title'] = obj.name
+          res['name'] = obj.name
+          res.id = obj.id
+          res.organizationAddress = obj.organizationAddress
+          res.organizationDesc = obj.organizationDesc
+          res.organizationPhone = obj.organizationPhone
+          res.pid = obj.pid
+          res.supplierId = obj.supplierId
+          res.type = obj.type
+          res.children = []
+          if (obj.childList.length) {
+            for (const key in obj.childList) {
+              if (obj.childList.hasOwnProperty(key)) {
+                res.children[key] = {}
+                recursiveExtract(res.children[key], obj.childList[key])
+              }
+            }
+          }
+        }
+        let res = {}
+        recursiveExtract(res, data[0])
+        this.organizationStructure = [res]
+        // this.organizationStructure = data;
       });
     },
     getUsers() {
       getSupplierUserPage(this.query).then(data => {
-        console.log(data);
+        // console.log(data);
         this.userList = data.list;
       });
     },
@@ -280,8 +306,49 @@ export default {
     cancel() {
       this.$refs.orgForm.resetFields()
       this.orgFormShow = false
+    },
+    renderContent (h, { root, node, data }) {
+        return h('span', {
+            style: {
+                display: 'inline-block',
+                width: '100%'
+            }
+        }, [
+            h('span', [
+                h('Icon', {
+                    props: {
+                        type: 'ios-paper-outline'
+                    },
+                    style: {
+                        marginRight: '8px'
+                    }
+                }),
+                h('span', data.title)
+            ]),
+            h('span', {
+                style: {
+                    display: 'inline-block',
+                    float: 'right',
+                    marginRight: '32px'
+                }
+            }, [
+                h('Button', {
+                    props: Object.assign({}, this.buttonProps, {
+                        icon: 'ios-remove'
+                    }),
+                    on: {
+                        click: () => { this.showOrgFormShow(data) }
+                    }
+                })
+            ])
+        ]);
+    },
+    showOrgFormShow(data) {
+      console.log(data)
+      this.orgFormShow = true
+      this.orgForm = data
     }
-  }
+  },
 };
 </script>
 

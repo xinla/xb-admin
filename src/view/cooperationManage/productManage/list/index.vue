@@ -38,6 +38,7 @@
           <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">编辑</Button>
           <Button type="error" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">详情</Button>
           <Button type="error" size="small" style="margin-right: 5px" @click="goPage('', {id: row.productId})">H5</Button>
+          <Button type="error" size="small" style="margin-right: 5px" @click="goPage('', {id: row.productId})">上架</Button>
       </template>
     </Table>
 
@@ -160,12 +161,6 @@ export default {
             slot: 'onlineApplication',
             minWidth: 60,
             align: 'center'
-        },
-        {
-            title: '最近更新时间',
-            key: 'updateTime',
-            align: 'center',
-            minWidth: 80
         },
         {
             title: '操作',

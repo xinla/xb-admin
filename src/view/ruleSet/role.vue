@@ -132,11 +132,11 @@ export default {
       // 0： 角色组，1：角色
       type === 0
       ? getRoleGroupRulePage().then(data => {
-        console.log('RoleGroupRulePage:', data);
+        // console.log('RoleGroupRulePage:', data);
          this.roleGroupList = data.list
       })
       : getRoleRulePage().then(data => {
-        console.log('RoleRulePage:', data);
+        // console.log('RoleRulePage:', data);
         this.roleList = data.list
       })
     },
@@ -170,8 +170,8 @@ export default {
       })
     },
     submit(type, item) {
-      console.log('roleGroupForm:', this.roleGroupForm)
-      console.log('roleForm:', this.roleForm)
+      // console.log('roleGroupForm:', this.roleGroupForm)
+      // console.log('roleForm:', this.roleForm)
       Promise.resolve()
       .then(() => {
         if (item.id || item.roleId) {

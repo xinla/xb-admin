@@ -107,16 +107,15 @@ export default {
   methods: {
     init() {
       this.id || this.$Message.error('没有参数或参数错误')
-      console.log(0)
       if (this.type === 'lessee') {
         getLesseeBusinessInfoById(this.id).then(data => {
           this.form = data[0]
-          console.log('data1', data)
+          // console.log('LesseeBusinessInformation', data)
         })
       } else if (this.type === 'supplier') {
         getSupplierBusinessInformation(this.id).then(data => {
           this.form = data[0]
-          console.log('data1', data)
+          // console.log('SupplierBusinessInformation ', data)
         })
       }
       

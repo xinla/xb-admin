@@ -14,7 +14,7 @@
           <Upload :action="action"
           :data="body"
           :format="['xls','xlsx']" 
-          :show-upload-list="false" :before-upload="uploada">
+          :show-upload-list="false" :before-upload="upload">
               <Button icon="ios-cloud-upload-outline"
               >上传表格</Button>
           </Upload>
@@ -50,8 +50,7 @@ export default {
     download() {
       downloadProfessionTable()
     },
-    uploada(file) {
-      console.log(1)
+    upload(file) {
       console.log(file)
     }
   }

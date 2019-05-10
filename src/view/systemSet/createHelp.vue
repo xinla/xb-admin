@@ -73,6 +73,7 @@ export default {
               this.$Message.success('添加成功')
               // this.$refs.form.resetFields()
               this.form = Object.assign({}, defaultForm)
+              this.$router.back()
             })
             : modifyHelp(this.form).then(data => {
               this.$Message.success('修改成功')

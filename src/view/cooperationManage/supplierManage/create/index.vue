@@ -6,7 +6,7 @@
     <FormItem label="供应商名称" prop="name">
       <selectSupplier :val="form.name" :defaultValue="form.name" @change="change" />
     </FormItem>
-    <FormItem label="供应商Logo" prop="logo">
+    <FormItem label="供应商Logo" prop="logo" class="fr">
       <img class="logo" v-if="form.logo" :src="form.logo" alt="logo">
       <Upload 
       v-else
@@ -26,6 +26,12 @@
           <Radio :label="0">寿险</Radio>
           <Radio :label="1">财险</Radio>
       </RadioGroup>
+    </FormItem>
+
+    <FormItem label="可投保地区" prop="vitDictProvinceId">
+      <Select v-model="form.vitDictProvinceId" multiple :max-tag-count="3">
+        <Option v-for="(item, index) in cityList" :value="item.id" :key="index">{{ item.province }}</Option>
+      </Select>
     </FormItem>
 
     <Divider />
@@ -52,7 +58,7 @@
 </template>
 
 <script>
-import { addSupplier, updateSupplier, getSupplierDetail } from '@/api/supplier'
+import { addSupplier, updateSupplier, getSupplierDetail, getInsureAllProvice } from '@/api/supplier'
 import selectSupplier from '@/components/selectSupplier'
 
 const defaultForm = {
@@ -64,6 +70,7 @@ const defaultForm = {
   companyWebsite: '',
   contactPhone: '',
   nationalServicePhone: '',
+  vitDictProvinceId: []
 }
 export default {
   components: {
@@ -95,7 +102,8 @@ export default {
         nationalServicePhone: [
             { required: true, message: '不能为空', trigger: 'blur' }
         ],
-      }
+      },
+      cityList: []
     }
   },
   mounted() {
@@ -105,13 +113,24 @@ export default {
   methods: {
     init() {
       this.getData()
+      getInsureAllProvice().then(data => {
+        this.cityList = data
+        // console.log(data)
+      })
     },
     getData() {
       if (this.form.id) {
         getSupplierDetail(this.form.id).then(data => {
-          console.log(data)
+          // console.log(data)
           if (data) {
-            this.form = data
+            this.form = data.xbSupplier
+            let vitDictProvinceId = data.xbSupplier.vitDictProvinceId
+            if (vitDictProvinceId) {
+              vitDictProvinceId = vitDictProvinceId.split(',')
+              vitDictProvinceId = vitDictProvinceId.map(item => parseInt(item))
+              this.$set(this.form, 'vitDictProvinceId', vitDictProvinceId)
+            }
+            // console.log('form:', this.form)
           } else {
             this.$Message.error("暂无此记录，请稍后重试")
           }
@@ -122,7 +141,8 @@ export default {
       this.$refs.form.validate()
       .then(data => {
         if(data) {
-          console.log(this.form)
+          // console.log('form:', this.form) 
+          // this.form.vitDictProvinceId = this.form.vitDictProvinceId.join()
           if (this.form.id) {
             return updateSupplier(this.form)
           } else {

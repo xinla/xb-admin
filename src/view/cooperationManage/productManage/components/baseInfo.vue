@@ -38,7 +38,7 @@
           <CheckboxGroup v-model="subclassParent">
             <Checkbox :label="item.pid">{{item.name}}</Checkbox> <span class="cp" @click="showCheck(index)">+</span>
           </CheckboxGroup>
-          <CheckboxGroup class="child-check" v-model="subclassChild[index]" v-show="checkShow[index]">
+          <CheckboxGroup class="child-check" v-model="subclassChild[index]" v-show="subClassShow[index]">
             <Checkbox v-for="(unit, unique) of item.children" :key="unique" :label="unit.id">{{unit.name}}</Checkbox>
           </CheckboxGroup>
         </Col>
@@ -135,7 +135,7 @@
 
 <script>
 import { getLesseePageByJB } from '@/api/lessee'
-import { getTypeRulePage } from '@/api/rulesSet/type'
+import { getTypeRulePage, getAllInsuranceSubclass } from '@/api/rulesSet/type'
 import { getProductPage, getProductInfoById, addProductInfo, updateProductInfo } from '@/api/product'
 import selectSupplier from '@/components/selectSupplier'
 
@@ -199,48 +199,8 @@ export default {
         ],
       },
       insuranceType: [],
-      checkShow: [true, true, true, true],
-      subclass: Object.freeze([
-        {
-          pid: 1, 
-          name: '理财保险',
-          children: [
-            {id: 1, name: '两全保险'},
-            {id: 2, name: '年金保险'},
-            {id: 3, name: '分红保险'},
-            {id: 4, name: '万能保险'}
-          ]
-        },
-        {
-          pid: 2, 
-          name: '人寿保险',
-          children: [
-            {id: 1, name: '终身寿险'},
-            {id: 2, name: '定期寿险'},
-            {id: 3, name: '两全保险'},
-            {id: 4, name: '年金保险'}
-          ]
-        },
-        {
-          pid: 3, 
-          name: '健康保险',
-          children: [
-            {id: 1, name: '疾病保险'},
-            {id: 2, name: '医疗保险'},
-            {id: 3, name: '长期护理保险'},
-            {id: 4, name: '失能收入保险'}
-          ]
-        },
-        {
-          pid: 4, 
-          name: '意外保险',
-          children: [
-            {id: 1, name: '普通意外'},
-            {id: 2, name: '交通意外'},
-            {id: 3, name: '旅行意外'},
-          ]
-        },
-      ]),
+      subClassShow: [],
+      subclass:[],
       subclassParent: [], 
       subclassChild: []
     }
@@ -258,7 +218,14 @@ export default {
       // 获取险种类型
       getTypeRulePage(1).then(data => {
         this.insuranceType = data.list
-        console.log(data.list)
+        // console.log('insuranceType', data.list)
+      })
+      // 获取保险细类
+      getAllInsuranceSubclass(1).then(data => {
+        // console.log('InsuranceSubclass', data)
+        this.subclass = data.children
+        this.subClassShow.length = this.subclass.length
+        this.subClassShow.fill(true, 0, this.subclass.length)
       })
     },
     getData() {
@@ -317,9 +284,9 @@ export default {
       // console.log(val)
     },
     showCheck(index) {
-      // console.log(this.checkShow[index])
-      this.checkShow[index] = !this.checkShow[index]
-      this.checkShow.splice()
+      // console.log(this.subClassShow[index])
+      this.subClassShow[index] = !this.subClassShow[index]
+      this.subClassShow.splice()
     }
   }
 }

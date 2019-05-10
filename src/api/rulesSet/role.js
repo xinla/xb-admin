@@ -8,11 +8,11 @@ const service = config.services.role
  * @param {*} roleGroupId 
  * @param {*} roleName 
  */
-export const addRoleRule = ({roleGroupId, roleName}) => {
+export const addRoleRule = ({newRoleGroupId, roleName}) => {
   return axios.request({
     url: service + `/create`,
     data: {
-      roleGroupId,
+      roleGroupId: newRoleGroupId,
       roleName
     },
     method: 'post',

@@ -57,7 +57,7 @@ export const selectProductTypeRule = (id) => {
 }
 
 /**
- * 查询类型规则列表
+ * 查询产品类型规则列表
  * @param {*} type 0 供应商类型，1 产品类型
  * @param {*} pageNum 
  * @param {*} pageSize 
@@ -67,6 +67,20 @@ export const getTypeRulePage = (type, pageNum = 1, pageSize = 100) => {
     url: service + `/list`,
     params: {
       type, pageNum, pageSize
+    },
+    method: 'get'
+  })
+}
+
+/**
+ * 获取产品保险细类->树
+ * @param {*} type 产品类型 *
+ */
+export const getAllInsuranceSubclass = (type) => {
+  return axios.request({
+    url: service + `/list/tree`,
+    params: {
+      type
     },
     method: 'get'
   })

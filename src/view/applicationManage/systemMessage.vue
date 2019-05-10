@@ -9,7 +9,7 @@
           <Input type="text" v-model="form.linkUrl" placeholder="格式如: www.xbkj.com"/>
       </FormItem>
       <FormItem label="推送时间" prop="noticedAt">
-        <DatePicker v-model="form.noticedAt" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="推送时间" style="width: 200px" @on-change="change"></DatePicker>
+        <DatePicker :value="form.noticedAt" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="推送时间" style="width: 200px" @on-change="change"></DatePicker>
       </FormItem>
       <FormItem label="通知内容" prop="content">
           <Input type="textarea" v-model="form.content" placeholder="通知内容"/>
@@ -95,14 +95,15 @@ export default {
         content: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ],
-        // noticedAt: [
-        //   { required: true, message: '不能为空', trigger: 'change' }
-        // ]
+        noticedAt: [
+          { required: true, message: '不能为空', trigger: 'change' }
+        ]
       },
       isEdit: false
     }
   },
-  watch:{},
+  watch:{
+  },
   computed:{},
   created(){
     this.getSystemMessagePage()
@@ -161,7 +162,7 @@ export default {
       })
     },
     change(data) {
-      console.log(data)
+      // console.log(data)
       this.form.noticedAt = data
     }
   }

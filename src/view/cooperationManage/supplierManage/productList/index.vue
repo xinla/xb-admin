@@ -98,7 +98,8 @@ export default {
         },
         {
           title: "产品类型",
-          key: "typeRuleId",
+          key: "typeRuleName",
+          minWidth: 60,
           align: "center"
         },
         {
@@ -130,12 +131,13 @@ export default {
         {
           title: "最近更新时间",
           key: "updateTime",
+          minWidth: 60,
           align: "center"
         },
         {
           title: "操作",
           slot: "action",
-          width: 200,
+          width: 130,
           align: "center"
         }
       ],

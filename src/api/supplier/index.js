@@ -121,3 +121,13 @@ export const getSupplierBusinessInformation = (id) => {
   })
 }
 
+/**
+ * 获取投保所有省信息
+ * @param {*} 
+ */
+export const getInsureAllProvice = () => {
+  return axios.request({
+    url: service + `/findAllProvince`,
+    method: 'get'
+  })
+}
