@@ -62,3 +62,12 @@ export const deleteSupplierUser = (id) => {
     method: 'delete'
   })
 }
+/**
+ * 组织架构->查询所有角色
+ */
+export const getAllGroupAndRole = () => {
+  return axios.request({
+    url: service + `/selectAllGroupAndRole`,
+    method: 'get'
+  })
+}

@@ -23,7 +23,11 @@
     </FormItem>
 
     <FormItem label="职位" prop="jobname">
-      <Input v-model="form.jobname" placeholder="职位"></Input>
+      <Select v-model="form.jobname" style="width:200px" placeholder="职位" multiple>
+        <OptionGroup v-for="(item, index) of roleAndRoleGroup" :label="item.xbRoleGroups.groupName" :key="index">
+            <Option v-for="(unit, unique) in item.roles" :value="unit.name" :key="unique" @click.native="change(unit)"></Option>
+        </OptionGroup>
+      </Select>
     </FormItem>
 
     <FormItem label="是否加入角色列表" prop="joinstate">
@@ -49,7 +53,7 @@
 
     <FormItem label="工号" prop="jobNumber">
       <Input v-model="form.jobNumber" placeholder="工号"></Input>
-      <div>新员工，点击自动生成工号</div>
+      <Button size="small" type="primary" @click="autoCreate">新员工，点击自动生成工号</Button>
     </FormItem>
 
     <FormItem label="手机号" prop="phone">
@@ -73,7 +77,7 @@
   </Form>
 </template>
 <script>
-import { addSupplierUser, updateSupplierUser, getSupplierUserDetail } from "@/api/supplier/user";
+import { addSupplierUser, updateSupplierUser, getSupplierUserDetail, getAllGroupAndRole } from "@/api/supplier/user";
 
 export default {
   props: {
@@ -93,6 +97,7 @@ export default {
         joinstate: 0,
         leader: 0,
         userType: 0,
+        jobNumber: '',
         phone: '',
         telPhone: '',
         email: '',
@@ -159,13 +164,21 @@ export default {
             trigger: "blur"
           }
         ],
-      }
+      },
+      roleAndRoleGroup: []
     };
   },
   mounted() {
-    this.getData()
+    this.init()
   },
   methods: {
+    init() {
+      this.getData()
+      getAllGroupAndRole().then(data => {
+        this.roleAndRoleGroup = data
+        console.log(this.roleAndRoleGroup)
+      })
+    },
     getData() {
       if (this.id) {
         getSupplierUserDetail().then(data => {
@@ -177,12 +190,13 @@ export default {
     upFile(response, file, fileList) {
       // console.log(response, file, fileList)
       // console.log(response.result.fileUrl)
-      this.form.logo = response.result.fileUrl
+      this.form.headImage = response.result.fileUrl
     },
     submit(type) {
       this.$refs['form'].validate()
       .then(data => {
         if (data) {
+          this.form.jobname = this.form.jobname.join()
           if (this.id) {
             return updateSupplierUser(this.form)
           } else {
@@ -204,6 +218,14 @@ export default {
     cancel() {
       this.$emit('input', false)
       this.$refs['form'].resetFields();
+    },
+    autoCreate() {
+      this.form.jobNumber = Math.floor(Math.random()*10e+15)
+    },
+    change(data) {
+      this.roles.includes(data)
+      ? this.roles.splice(this.roles.indexOf(data), 1)
+      : this.roles.push(data)
     }
   }
 };
@@ -216,7 +238,11 @@ export default {
     width: 45%;
     background: #fff;
     padding: 20px;
-    right: 10px;
+    // right: 10px;
+  }
+  .headImage {
+    width: 86px;
+    height: 80px;
   }
 </style>
 

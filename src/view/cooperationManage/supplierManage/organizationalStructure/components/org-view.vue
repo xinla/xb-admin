@@ -25,19 +25,19 @@ import { on, off } from '@/libs/tools'
 const menuList = [
   {
     key: 'edit',
-    label: '编辑部门'
+    title: '编辑部门'
   },
-  {
-    key: 'detail',
-    label: '查看部门'
-  },
+  // {
+  //   key: 'detail',
+  //   title: '查看部门'
+  // },
   {
     key: 'new',
-    label: '新增子部门'
+    title: '新增子部门'
   },
   {
     key: 'delete',
-    label: '删除部门'
+    title: '删除部门'
   }
 ]
 export default {
@@ -96,7 +96,7 @@ export default {
           on-mousedown={event => event.stopPropagation()}
           on-contextmenu={this.contextmenu.bind(this, data)}
         >
-          {data.label}
+          {data.title}
           <dropdown
             trigger="custom"
             class="context-menu"
@@ -112,7 +112,7 @@ export default {
             <dropdown-menu slot="list">
               {menuList.map(item => {
                 return (
-                  <dropdown-item name={item.key}>{item.label}</dropdown-item>
+                  <dropdown-item name={item.key}>{item.title}</dropdown-item>
                 )
               })}
             </dropdown-menu>
@@ -158,6 +158,7 @@ export default {
       this.canMove = false
     },
     handleContextMenuClick (data, key) {
+      this.closeMenu()
       this.$emit('on-menu-click', { data, key })
     }
   },
@@ -170,5 +171,41 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
+  .org-tree-wrapper {
+    .org-tree-node-label {
+      box-shadow: 0px 2px 12px 0px rgba(143, 154, 165, 0.4);
+      border-radius: 4px;
+      .org-tree-node-label-inner {
+        padding: 0;
+        .custom-org-node {
+          padding: 14px 41px;
+          background: #738699;
+          user-select: none;
+          word-wrap: none;
+          white-space: nowrap;
+          border-radius: 4px;
+          color: #ffffff;
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 20px;
+          transition: background 0.1s ease-in;
+          cursor: default;
+          &:hover {
+            background: #5d6c7b;
+            transition: background 0.1s ease-in;
+          }
+          &.has-children-label {
+            cursor: pointer;
+          }
+          .context-menu{
+            position: absolute;
+            right: -10px;
+            bottom: 20px;
+            z-index: 10;
+          }
+        }
+      }
+    }
+  }
 </style>

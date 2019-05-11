@@ -40,6 +40,10 @@ export const addSupplierOrganization = (data) => {
   })
 }
 
+/**
+ * 
+ * @param {*} data 
+ */
 export const updateSupplierOrganization = (data) => {
   return axios.request({
     url: service + `/${data.id}`,

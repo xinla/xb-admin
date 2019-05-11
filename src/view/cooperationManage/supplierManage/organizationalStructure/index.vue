@@ -3,38 +3,43 @@
     <xNav/>
 
     <!-- 组织架构 -->
-    <!-- <org-view
-      v-if="organizationStructure"
+    <org-view
       :data="organizationStructure"
       @on-menu-click="handleMenuClick"
-    ></org-view> -->
-    <Tree :data="organizationStructure" :render="renderContent"></Tree>
+    ></org-view>
+    <Row>
+      <Col span="4">
+        <Tree :data="department"></Tree>
+      </Col>
+      <Col span="18">
+        <div style="position:relative;">
+          <div style="display:inline-block;width: 70%;">
+            <div class="add-member" @click="userFormShow = !userFormShow">+</div>
 
-    <div style="position:relative;">
-      <div style="display:inline-block;width: 50%;">
-        <div class="add-member" @click="userFormShow = !userFormShow">+</div>
+            <Table border :columns="columns" :data="userList">
+              <template slot-scope="{ row }" slot="action">
+                <Button
+                  type="primary"
+                  size="small"
+                  style="margin-right: 5px"
+                  @click="edit(row.id)"
+                >编辑</Button>
+                <Button
+                  type="error"
+                  size="small"
+                  style="margin-right: 5px"
+                  @click="deleteUser(row.id)"
+                >删除</Button>
+              </template>
+            </Table>
+          </div>
 
-        <Table border :columns="columns" :data="userList">
-          <template slot-scope="{ row }" slot="action">
-            <Button
-              type="primary"
-              size="small"
-              style="margin-right: 5px"
-              @click="edit(row.id)"
-            >编辑</Button>
-            <Button
-              type="error"
-              size="small"
-              style="margin-right: 5px"
-              @click="deleteUser(row.id)"
-            >删除</Button>
-          </template>
-        </Table>
-      </div>
+          <!-- 添加成员表单 -->
+          <MemberForm :id="userId" v-model="userFormShow" @success="getUsers" />
+        </div>
+      </Col>
+    </Row>
 
-      <!-- 添加成员表单 -->
-      <MemberForm :id="userId" v-model="userFormShow" @success="getUsers" />
-    </div>
 
     <Form v-if="orgFormShow" ref="orgForm" class="org-form cc" :model="orgForm" :rules="rules" :label-width="100">
       添加下级组织
@@ -43,9 +48,9 @@
       </FormItem>
       <FormItem label="组织类型" prop="type">
         <RadioGroup v-model="orgForm.type">
-          <Radio :label="0">分公司</Radio>
+          <Radio :label="0">部门</Radio>
           <Radio :label="1">机构</Radio>
-          <Radio :label="2">部门</Radio>
+          <Radio :label="2">分公司</Radio>
         </RadioGroup>
       </FormItem>
       <FormItem label="组织简介" prop="organizationDesc">
@@ -58,7 +63,7 @@
         <Input v-model="orgForm.organizationPhone" placeholder="親輸入组织电话"></Input>
       </FormItem>
       <FormItem>
-        <Button type="primary" @click="submit(1)">确认添加</Button>
+        <Button type="primary" @click="submit()">确定</Button>
         <Button @click="cancel('orgForm')" style="margin-left: 8px">取消</Button>
       </FormItem>
     </Form>
@@ -66,7 +71,7 @@
 </template>
 
 <script>
-import { getSupplierOrganization, addSupplierOrganization } from "@/api/supplier/organization";
+import { getSupplierOrganization, addSupplierOrganization, updateSupplierOrganization } from "@/api/supplier/organization";
 import { getSupplierUserPage, deleteSupplierUser } from "@/api/supplier/user";
 import OrgView from "./components/org-view.vue";
 import MemberForm from "./components/MemberForm.vue";
@@ -74,16 +79,18 @@ import xNav from "@/view/components/nav";
 
 const menuDic = {
   edit: "编辑部门",
-  detail: "查看部门",
+  // detail: "查看部门",
   new: "新增子部门",
   delete: "删除部门"
 };
 const defautlOrgForm = {
   name: "",
-  type: "",
+  type: '',
   organizationDesc: "",
   organizationAddress: "",
-  organizationPhone: ""
+  organizationPhone: "",
+  PerfWidgetExternal: '0',
+  pid: '0'
 };
 const defautlMemberForm = {
   name: "",
@@ -110,58 +117,58 @@ export default {
         page: 1,
         size: 10
       },
-      // organizationStructure: {
-      //   id: 0,
-      //   label: "现保科技有限公司",
-      //   expand: true,
-      //   children: [
-      //     {
-      //       id: 2,
-      //       label: "产品研发部",
-      //       children: [
-      //         {
-      //           id: 5,
-      //           label: "研发-前端"
-      //         },
-      //         {
-      //           id: 6,
-      //           label: "研发-后端"
-      //         },
-      //         {
-      //           id: 9,
-      //           label: "UI设计"
-      //         },
-      //         {
-      //           id: 10,
-      //           label: "产品经理"
-      //         }
-      //       ]
-      //     },
-      //     {
-      //       id: 3,
-      //       label: "销售部",
-      //       children: [
-      //         {
-      //           id: 7,
-      //           label: "销售一部"
-      //         },
-      //         {
-      //           id: 8,
-      //           label: "销售二部"
-      //         }
-      //       ]
-      //     },
-      //     {
-      //       id: 4,
-      //       label: "财务部"
-      //     },
-      //     {
-      //       id: 9,
-      //       label: "HR人事"
-      //     }
-      //   ]
-      // },
-      organizationStructure: [],
+      organizationStructure: {
+        // id: 0,
+        // title: "现保科技有限公司",
+        // expand: true,
+        // children: [
+        //   {
+        //     id: 2,
+        //     title: "产品研发部",
+        //     children: [
+        //       {
+        //         id: 5,
+        //         title: "研发-前端"
+        //       },
+        //       {
+        //         id: 6,
+        //         title: "研发-后端"
+        //       },
+        //       {
+        //         id: 9,
+        //         title: "UI设计"
+        //       },
+        //       {
+        //         id: 10,
+        //         title: "产品经理"
+        //       }
+        //     ]
+        //   },
+        //   {
+        //     id: 3,
+        //     title: "销售部",
+        //     children: [
+        //       {
+        //         id: 7,
+        //         title: "销售一部"
+        //       },
+        //       {
+        //         id: 8,
+        //         title: "销售二部"
+        //       }
+        //     ]
+        //   },
+        //   {
+        //     id: 4,
+        //     title: "财务部"
+        //   },
+        //   {
+        //     id: 9,
+        //     title: "HR人事"
+        //   }
+        // ]
+      },
+      // organizationStructure: [],
       columns: [
         {
           type: "selection",
@@ -206,7 +213,7 @@ export default {
       ],
       rules: {
         name: [{ required: true, message: "不能为空", trigger: "blur" }],
-        type: [{ type: 'number', required: true, message: "不能为空", trigger: "blur" }],
+        type: [{ type: 'number', required: true, message: "不能为空", trigger: "change" }],
         organizationDesc: [
           { required: true, message: "不能为空", trigger: "blur" }
         ],
@@ -219,14 +226,16 @@ export default {
       },
       userList: [],
       userFormShow: false,
-      orgForm: Object.assign({}, defautlOrgForm),
+      orgForm: Object.assign({supplierId:this.$route.query.id}, defautlOrgForm),
       orgFormShow: false,
-      userId: 0
+      userId: 0,
+      department: []
     };
   },
   mounted() {
     this.query.supplierId = this.$route.query.id;
     this.init();
+    // console.log(this.orgForm)
   },
   methods: {
     init() {
@@ -236,31 +245,28 @@ export default {
     getOrganizations() {
       getSupplierOrganization(this.query.supplierId).then(data => {
         console.log("SupplierOrganization:", data);
+        /**
+         * 递归提取对象内所需数据
+         * 此方法可以封装到工具库中
+         */
         function recursiveExtract(res, obj) {
           // debugger
-          res['title'] = obj.name
-          res['name'] = obj.name
-          res.id = obj.id
-          res.organizationAddress = obj.organizationAddress
-          res.organizationDesc = obj.organizationDesc
-          res.organizationPhone = obj.organizationPhone
-          res.pid = obj.pid
-          res.supplierId = obj.supplierId
-          res.type = obj.type
+          obj.type === 0 && (res['title'] = obj.title)
           res.children = []
-          if (obj.childList.length) {
-            for (const key in obj.childList) {
-              if (obj.childList.hasOwnProperty(key)) {
+          if (obj.children.length) {
+            for (const key in obj.children) {
+              if (obj.children.hasOwnProperty(key)) {
                 res.children[key] = {}
-                recursiveExtract(res.children[key], obj.childList[key])
+                recursiveExtract(res.children[key], obj.children[key])
               }
             }
           }
         }
         let res = {}
         recursiveExtract(res, data[0])
-        this.organizationStructure = [res]
-        // this.organizationStructure = data;
+        this.department = [res]
+        console.log('res', res)
+        this.organizationStructure = data[0]
       });
     },
     getUsers() {
@@ -279,27 +285,38 @@ export default {
       })
     },
     handleMenuClick({ data, key }) {
-      console.log(1);
       if (key === 'new') {
         this.orgFormShow = true
-      } else {
-        
+        this.orgForm = Object.assign({supplierId:this.$route.query.id}, defautlOrgForm)
+        this.orgForm.pid = data.id
+      } else if (key === 'edit') {
+        this.orgFormShow = true
+        this.orgForm = data
+      } else if (key === 'delete') {
+        this.$Message.success({
+          duration: 5,
+          content: `暂时不提供删除功能，请知晓，如有需要请联系总台`
+        });
       }
-      this.$Message.success({
-        duration: 5,
-        content: `点击了《${data.label}》节点的'${menuDic[key]}'菜单`
-      });
+      // this.$Message.success({
+      //   duration: 5,
+      //   content: `点击了《${data.title}》节点的'${menuDic[key]}'菜单`
+      // });
     },
-    submit(type) {
+    submit() {
       this.$refs.orgForm.validate()
       .then(data => {
         if (data) {
-          return addSupplierOrganization(this.orgForm)
+          return this.orgForm.id
+          ? updateSupplierOrganization(this.orgForm)
+          : addSupplierOrganization(this.orgForm)
         } else {
           return new Promise((resolve, reject) => {})
         }
       })
       .then(data => {
+        this.getOrganizations()
+        this.orgFormShow = false
         this.$Message.success("操作成功")
       })
     },
@@ -307,47 +324,51 @@ export default {
       this.$refs.orgForm.resetFields()
       this.orgFormShow = false
     },
-    renderContent (h, { root, node, data }) {
-        return h('span', {
-            style: {
-                display: 'inline-block',
-                width: '100%'
-            }
-        }, [
-            h('span', [
-                h('Icon', {
-                    props: {
-                        type: 'ios-paper-outline'
-                    },
-                    style: {
-                        marginRight: '8px'
-                    }
-                }),
-                h('span', data.title)
-            ]),
-            h('span', {
-                style: {
-                    display: 'inline-block',
-                    float: 'right',
-                    marginRight: '32px'
-                }
-            }, [
-                h('Button', {
-                    props: Object.assign({}, this.buttonProps, {
-                        icon: 'ios-remove'
-                    }),
-                    on: {
-                        click: () => { this.showOrgFormShow(data) }
-                    }
-                })
-            ])
-        ]);
-    },
-    showOrgFormShow(data) {
-      console.log(data)
-      this.orgFormShow = true
-      this.orgForm = data
-    }
+    // renderContent (h, { root, node, data }) {
+    //     return h('span', {
+    //         style: {
+    //             display: 'inline-block',
+    //             width: '100%'
+    //         }
+    //     }, [
+    //         h('span', [
+    //             // h('Icon', {
+    //             //     props: {
+    //             //         type: 'ios-paper-outline'
+    //             //     },
+    //             //     style: {
+    //             //         marginRight: '8px'
+    //             //     }
+    //             // }),
+    //             h('span', data.title)
+    //         ]),
+    //         h('div', {
+    //             style: {
+    //                 display: 'inline-block',
+    //                 float: 'right',
+    //                 marginRight: '32px'
+    //             }
+    //         }, [
+    //             h('Icon', {
+    //                 props: {
+    //                   type: 'md-more'
+    //                 },
+    //                 style: {
+    //                     fontSize: '20px'
+    //                 },
+    //                 on: {
+    //                     click: () => { this.showOrgFormShow(data) }
+    //                 }
+    //             }),
+    //             h('div', {
+    //               style: {
+    //                  display: 'inline-block',
+
+    //               }
+    //             })
+    //         ])
+    //     ]);
+    // },
   },
 };
 </script>
