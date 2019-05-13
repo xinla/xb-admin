@@ -5,10 +5,15 @@
     <Form ref="formAll" :model="formAll" :rules="rulesFormAll" :label-width="100">
     
       <Row>
-        <Col span="12">
-          <FormItem label="租户名称" prop="name">
-            <selectSupplier :val="formAll.name" @change="change" />
-        </FormItem>
+        <Col span="10">
+            <FormItem label="租户名称" prop="name">
+              <selectSupplier :val="formAll.name" @change="change" />
+          </FormItem>
+          <FormItem label="业务类型" prop="businessType">
+            <RadioGroup v-model="formAll.businessType">
+              <Radio v-for="(value, key) in businessType" :key="key" :label="+key">{{value}}</Radio>
+            </RadioGroup>
+          </FormItem>
         </Col>
 
         <Col span="12">
@@ -19,11 +24,6 @@
           </FormItem>
         </Col>
       </Row>
-      <FormItem label="业务类型" prop="businessType">
-        <RadioGroup v-model="formAll.businessType">
-          <Radio v-for="(value, key) in businessType" :key="key" :label="+key">{{value}}</Radio>
-        </RadioGroup>
-      </FormItem>
     </Form>
     
     <Divider />
@@ -301,5 +301,8 @@ export default {
   }
   .ivu-row{
     margin-top: 10px;
+  }
+  .ivu-col {
+    padding-right: 10%;
   }
 </style>

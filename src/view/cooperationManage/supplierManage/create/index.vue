@@ -1,12 +1,29 @@
 <template>
 <div>
   
-  <Form ref="form" :model="form" :rules="rules" :label-width="120" inline>
+  <Form ref="form" :model="form" :rules="rules" :label-width="120">
     <div class="title-row">基本信息</div>
-    <FormItem label="供应商名称" prop="name">
-      <selectSupplier :val="form.name" :defaultValue="form.name" @change="change" />
-    </FormItem>
-    <FormItem label="供应商Logo" prop="logo" class="fr">
+
+    <Row>
+        <Col span="10">
+          <FormItem label="供应商名称" prop="name">
+            <selectSupplier :val="form.name" :defaultValue="form.name" @change="change" />
+          </FormItem>
+
+          <FormItem label="供应商简称" prop="nameForShort">
+              <Input type="text" v-model="form.nameForShort" placeholder="供应商简称"/>
+          </FormItem>
+
+          <FormItem label="供应商类型" prop="typeRule">
+            <RadioGroup v-model="form.typeRule">
+                <Radio :label="0">寿险</Radio>
+                <Radio :label="1">财险</Radio>
+            </RadioGroup>
+          </FormItem>
+      </Col>
+
+    <Col span="8">
+    <FormItem label="供应商Logo" prop="logo">
       <img class="logo" v-if="form.logo" :src="form.logo" alt="logo">
       <Upload 
       v-else
@@ -18,37 +35,33 @@
           <div class="upload-icon cp">+</div>
       </Upload>
     </FormItem>
-    <FormItem label="供应商简称" prop="nameForShort">
-        <Input type="text" v-model="form.nameForShort" placeholder="供应商简称"/>
-    </FormItem>
-    <FormItem label="供应商类型" prop="typeRule">
-      <RadioGroup v-model="form.typeRule">
-          <Radio :label="0">寿险</Radio>
-          <Radio :label="1">财险</Radio>
-      </RadioGroup>
-    </FormItem>
 
     <FormItem label="可投保地区" prop="vitDictProvinceId">
       <Select v-model="form.vitDictProvinceId" multiple :max-tag-count="3">
         <Option v-for="(item, index) in cityList" :value="item.id" :key="index">{{ item.province }}</Option>
       </Select>
     </FormItem>
-
+    </Col>
+    </Row>
     <Divider />
     
     <div class="title-row">联系方式</div>
-    <FormItem label="公司地址" prop="companyAddress">
-        <Input type="text" v-model="form.companyAddress" placeholder="公司地址"/>
-    </FormItem>
-    <FormItem label="公司网址" prop="companyWebsite">
-        <Input type="text" v-model="form.companyWebsite" placeholder="公司网址"/>
-    </FormItem>
-    <FormItem label="联系电话" prop="contactPhone">
-        <Input type="text" v-model="form.contactPhone" placeholder="联系电话"/>
-    </FormItem>
-    <FormItem label="全国统一服务电话" prop="nationalServicePhone">
-        <Input type="text" v-model="form.nationalServicePhone" placeholder="全国统一服务电话"/>
-    </FormItem>
+    <Row>
+        <Col span="10">
+          <FormItem label="公司地址" prop="companyAddress">
+              <Input type="text" v-model="form.companyAddress" placeholder="公司地址"/>
+          </FormItem>
+          <FormItem label="公司网址" prop="companyWebsite">
+              <Input type="text" v-model="form.companyWebsite" placeholder="公司网址"/>
+          </FormItem>
+          <FormItem label="联系电话" prop="contactPhone">
+              <Input type="text" v-model="form.contactPhone" placeholder="联系电话"/>
+          </FormItem>
+          <FormItem label="全国统一服务电话" prop="nationalServicePhone">
+              <Input type="text" v-model="form.nationalServicePhone" placeholder="全国统一服务电话"/>
+          </FormItem>
+      </Col>
+    </Row>
 
     <Button type="primary" @click="submit">确认</Button>
 

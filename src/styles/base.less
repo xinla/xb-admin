@@ -46,7 +46,7 @@ input:-ms-input-placeholder,textarea:-ms-input-placeholder,input::-webkit-input-
 .ac { text-align:center; }
 .ar { text-align:right; }
 .hide { display:none; }
-//top-fixed and bottom-fixed/
+/*top-fixed and bottom-fixed*/
 .tf,.bf{
   position: fixed;
   width: 100%;
@@ -57,7 +57,7 @@ z-index: 999;
 .bf{bottom: 0;}
 .mask{
   position: fixed;
-  display: none;
+  // display: none;
   width: 100%;
   height: 100%;
   background: rgba(39, 39, 39, 0.76);
@@ -66,7 +66,14 @@ z-index: 999;
   margin: auto;
   z-index: 999999;
 }
-// t-o-h-e
+/*center-center*/
+.cc{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+/*t-o-h-e*/
 .oe{
   white-space: nowrap;
   overflow: hidden;

@@ -1,10 +1,10 @@
 <template>
   <div>
     <Row style="padding-bottom: 10px;">
-      <Col span="10">
+      <Col span="16">
         <Button type="info" @click="goPage('')">新建</Button>
       </Col>
-      <Col span="14">
+      <Col span="8">
         所在省市
         <Cascader
           :data="districtsList"
@@ -13,7 +13,7 @@
           style="width:200px;display:inline-block;"
           v-model="selectDistrict"
         ></Cascader>
-        <Input v-model="query.name" placeholder="搜索公司" style="width:30%; margin-right: 10px;"/>
+        <Input v-model="query.name" placeholder="搜索公司" style="width:40%; margin-right: 10px;"/>
         <Button type="info" @click="search()">搜索</Button>
       </Col>
     </Row>
@@ -110,7 +110,7 @@ export default {
         {
           title: "操作",
           slot: "action",
-          minWidth: 130,
+          minWidth: 100,
           align: "center"
         }
       ],

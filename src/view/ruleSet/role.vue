@@ -2,8 +2,8 @@
   <div>
     <Row>
       <div class="title-row">角色组类型</div>
-        <Col span="12">
-        <Button type="primary" size="small" style="dispaly:block; margin:0 5px 5px auto;" @click="edit(0)">新建</Button>
+        <Col span="16">
+        <Button type="primary" size="small" style="display:block; margin:0 5px 5px auto;" @click="edit(0)">新建</Button>
           <Table 
           border
           :columns="roleGroupColumns"
@@ -14,22 +14,34 @@
             </template>
           </Table>
         </Col>
-        <Col span="12">
-        <div v-show="roleGroupShow">
+        <Col span="1">
+        <dialogBox v-model="roleGroupShow">
+          <template slot="title">添加类型</template>
+          <template>
+              <Form ref="roleGroupForm" :model="roleGroupForm" :rules="roleGroupRules">
+                <FormItem prop="groupName">
+                  <Input type="text" v-model="roleGroupForm.groupName" placeholder="親輸入类型"></Input>
+                </FormItem>
+              <Button type="primary" size="small" style="display: block; margin: 0 auto" @click="submit(0, roleGroupForm)">确定</Button>
+              </Form>
+          </template>
+        </dialogBox>
+        
+        <!-- <div v-show="roleGroupShow">
           添加类型
           <div class="fr cp" @click="cancel(0)">x</div>
           <Input type="text" v-model="roleGroupForm.groupName" placeholder="親輸入类型"></Input>
           <Button type="primary" size="small" style="margin-right: 5px" @click="submit(0, roleGroupForm)">确定</Button>
-        </div>
+        </div> -->
         </Col>
     </Row>
-
+  
      <Divider />
     
     <Row>
       <div class="title-row">角色类型</div>
-        <Col span="12">
-        <Button type="primary" size="small" style="dispaly:block; margin:0 5px 5px auto;" @click="edit(1)">新建</Button>
+        <Col span="16">
+        <Button type="primary" size="small" style="display:block; margin:0 5px 5px auto;" @click="edit(1)">新建</Button>
           <Table 
           border
           :columns="roleColumns"
@@ -41,7 +53,26 @@
           </Table>
         </Col>
         <Col span="12">
-        <div v-show="roleShow">
+        <dialogBox v-model="roleShow">
+          <template slot="title">添加类型</template>
+          <template>
+            <Form ref="roleForm" :model="roleForm" :rules="roleRules">
+              <FormItem prop="newRoleGroupId">
+                <Select v-model="roleForm.newRoleGroupId">
+                  <Option v-for="(item, index) in roleGroupList" :value="item.id" :key="index">{{ item.groupName }}</Option>
+                </Select>
+              </FormItem>
+
+              <FormItem prop="roleName">
+                <Input type="text" v-model="roleForm.roleName" placeholder="親輸入类型"></Input>
+              </FormItem>
+
+              <Button type="primary" size="small" style="display: block; margin: 0 auto" @click="submit(1, roleForm)">确定</Button>
+              </Form>
+          </template>
+        </dialogBox>
+
+        <!-- <div v-show="roleShow">
           添加类型
           <div class="fr cp" @click="cancel(1)">x</div>
           <Select v-model="roleForm.newRoleGroupId" style="width:200px">
@@ -49,7 +80,7 @@
           </Select>
           <Input type="text" v-model="roleForm.roleName" placeholder="親輸入类型"></Input>
           <Button type="primary" size="small" style="margin-right: 5px" @click="submit(1, roleForm)">确定</Button>
-        </div>
+        </div> -->
         </Col>
     </Row>
   </div>
@@ -58,9 +89,10 @@
 <script>
 import { getRoleRulePage, getRoleRuleRuleById, deleteRoleRule, updateRoleRule, addRoleRule } from "@/api/rulesSet/role";
 import { getRoleGroupRulePage, getRoleGroupRuleRuleById, deleteRoleGroupRule, updateRoleGroupRule, addRoleGroupRule } from "@/api/rulesSet/roleGroup";
+import dialogBox from '@/components/dialogBox'
 
 export default {
-  components:{},
+  components:{dialogBox},
   props:{},
   data(){
     return {
@@ -81,6 +113,11 @@ export default {
           align: 'center'
         },
       ],
+      roleGroupRules: {
+        groupName: [
+          { required: true, message: '不能为空', trigger: 'blur' },
+        ],
+      },
       roleGroupList: [],
       roleGroupForm: {},
       roleGroupShow: false,
@@ -106,6 +143,14 @@ export default {
           align: 'center'
         },
       ],
+      roleRules: {
+        newRoleGroupId: [
+          { required: true, message: '不能为空', trigger: 'change' },
+        ],
+        roleName: [
+          { required: true, message: '不能为空', trigger: 'blur' },
+        ],
+      },
       roleList: [],
       roleForm: {},
       roleShow: false,
@@ -172,7 +217,9 @@ export default {
     submit(type, item) {
       // console.log('roleGroupForm:', this.roleGroupForm)
       // console.log('roleForm:', this.roleForm)
-      Promise.resolve()
+      type === 0
+      ? this.$refs.roleGroupForm.validate()
+      : this.$refs.roleForm.validate()
       .then(() => {
         if (item.id || item.roleId) {
           return type === 0

@@ -3,7 +3,7 @@
     <!-- <div class="title">租户列表</div> -->
 
     <Row style="padding-bottom: 10px;">
-      <Col span="14">
+      <Col span="16">
         <Button type="info" @click="goPage('createLessee')">新建租户</Button>
       </Col>
       <Col span="8">

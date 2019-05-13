@@ -1,24 +1,28 @@
 <template>
   <div>
     <div class="title-row">创建通知</div>
-    <Form ref="form" :model="form" :rules="rules" :label-width="120">
-      <FormItem label="通知标题" prop="title">
-          <Input type="text" v-model="form.title" placeholder="通知标题"/>
-      </FormItem>
-      <FormItem label="跳转链接" prop="linkUrl">
-          <Input type="text" v-model="form.linkUrl" placeholder="格式如: www.xbkj.com"/>
-      </FormItem>
-      <FormItem label="推送时间" prop="noticedAt">
-        <DatePicker :value="form.noticedAt" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="推送时间" style="width: 200px" @on-change="change"></DatePicker>
-      </FormItem>
-      <FormItem label="通知内容" prop="content">
-          <Input type="textarea" v-model="form.content" placeholder="通知内容"/>
-      </FormItem>
-      <div class="ac">
-        <Button type="primary" ghost @click="handleReset('form')">清空内容</Button>
-        <Button type="primary" @click="submit">{{isEdit ? '确认修改' : '确认添加'}}</Button>
-      </div>
-    </Form>
+    <Row>
+        <Col span="8">
+          <Form ref="form" :model="form" :rules="rules" :label-width="120">
+            <FormItem label="通知标题" prop="title">
+                <Input type="text" v-model="form.title" placeholder="通知标题"/>
+            </FormItem>
+            <FormItem label="跳转链接" prop="linkUrl">
+                <Input type="text" v-model="form.linkUrl" placeholder="格式如: www.xbkj.com"/>
+            </FormItem>
+            <FormItem label="推送时间" prop="noticedAt">
+              <DatePicker :value="form.noticedAt" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="推送时间" style="width: 200px" @on-change="change"></DatePicker>
+            </FormItem>
+            <FormItem label="通知内容" prop="content">
+                <Input type="textarea" v-model="form.content" placeholder="通知内容"/>
+            </FormItem>
+            <div class="ac">
+              <Button type="primary" ghost @click="handleReset('form')">清空内容</Button>
+              <Button type="primary" @click="submit">{{isEdit ? '确认修改' : '确认添加'}}</Button>
+            </div>
+          </Form>
+        </Col>
+    </Row>
 
     <Divider />
     

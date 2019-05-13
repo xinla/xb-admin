@@ -1,11 +1,11 @@
 <template>
   <div>
     <Row style="padding-bottom: 10px;">
-      <Col span="6">
+      <Col span="10">
         <Button type="info" @click="addChild()">新建</Button>
         <Button type="info" @click="isfold = !isfold">折叠/展开</Button>
       </Col>
-      <Col span="18">
+      <Col span="14">
       <Form ref="form" :model="query" inline :label-width="60">
         <FormItem prop="type" label="业务类型">
           <Select v-model="query.type" style="width:100px">
@@ -23,7 +23,7 @@
           <Option v-for="(value, key) in isVo" :value="+key" :key="key">{{ value }}</Option>
         </Select>
         </FormItem>
-        <Input v-model="query.name" placeholder="搜索公司" style="width:30%; margin-right: 10px;"/>
+        <Input v-model="query.name" placeholder="搜索公司" style="width:35%; margin-right: 10px;"/>
         <Button type="info" @click="search()">搜索</Button>
         </Form>
       </Col>
@@ -51,54 +51,59 @@
       </template>
     </tree-table>
     
-    <Form v-show="formShow" ref="form" class="org-form cc" :model="form" :rules="rules" :label-width="100">
-      新建菜单
+    <dialogBox v-model="formShow">
+      <template slot="title">新建菜单</template>
+      <Form ref="form" class="org-form" :model="form" :rules="rules" :label-width="70">
+        
+        <FormItem prop="type" label="业务类型">
+          <RadioGroup v-model="form.type">
+            <Radio v-for="(value, key) in type" :label="+key" :key="key">{{value}}</Radio>
+          </RadioGroup>
+        </FormItem>
+        
+        <FormItem prop="pid" label="上级菜单">
+          <Select v-model="form.pid">
+            <!-- <OptionGroup v-for="(item) in list" :key="item.id" :label="item.name" >
+                <Option v-for="(unit) in item.childList" :value="unit.id" :key="unit.id">{{ unit.name }}
+                </Option>
+            </OptionGroup> -->
+              <Option v-for="item in menuList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+          </Select>
+        </FormItem>
 
-      <FormItem prop="type" label="业务类型">
-        <RadioGroup v-model="form.type">
-          <Radio v-for="(value, key) in type" :label="+key" :key="key">{{value}}</Radio>
-        </RadioGroup>
-      </FormItem>
-      
-      <FormItem prop="pid" label="上级菜单">
-        <Select v-model="form.pid" style="width:200px">
-          <!-- <OptionGroup v-for="(item) in list" :key="item.id" :label="item.name" >
-              <Option v-for="(unit) in item.childList" :value="unit.id" :key="unit.id">{{ unit.name }}
-              </Option>
-          </OptionGroup> -->
-            <Option v-for="item in menuList" :value="item.id" :key="item.id">{{ item.name }}</Option>
-        </Select>
-      </FormItem>
+        <FormItem prop="name" label="菜单名称">
+          <Input v-model="form.name" placeholder="请输入菜单名称"></Input>
+        </FormItem>
 
-      <FormItem prop="name" label="菜单名称">
-        <Input v-model="form.name" placeholder="请输入菜单名称"></Input>
-      </FormItem>
+        <FormItem prop="classify" label="菜单类型">
+          <RadioGroup v-model="form.classify">
+            <Radio v-for="(value, key) in menuType" :label="+key" :key="key">{{value}}</Radio>
+          </RadioGroup>
+        </FormItem>
+        
+        <FormItem prop="menuUrl" label="请求地址">
+          <Input v-model="form.menuUrl" placeholder="请输入请求地址"></Input>
+        </FormItem>
 
-      <FormItem prop="classify" label="菜单类型">
-        <RadioGroup v-model="form.classify">
-          <Radio v-for="(value, key) in menuType" :label="+key" :key="key">{{value}}</Radio>
-        </RadioGroup>
-      </FormItem>
-      
-      <FormItem prop="menuUrl" label="请求地址">
-        <Input v-model="form.menuUrl" placeholder="请输入请求地址"></Input>
-      </FormItem>
+        <FormItem prop="permissionIdentifying" label="权限标识">
+          <Input v-model="form.permissionIdentifying" placeholder="请输入权限标识"></Input>
+        </FormItem>
 
-      <FormItem prop="permissionIdentifying" label="权限标识">
-        <Input v-model="form.permissionIdentifying" placeholder="请输入权限标识"></Input>
-      </FormItem>
-
-      <FormItem>
-        <Button type="primary" @click="submit()">确认</Button>
-        <Button @click="cancel()" style="margin-left: 8px">取消</Button>
-      </FormItem>
-    </Form>
+        <FormItem>
+          <Button type="primary" @click="submit()">确认</Button>
+          <Button @click="cancel" style="margin-left: 8px">取消</Button>
+        </FormItem>
+      </Form>
+    </dialogBox>
+    <!-- <div v-show="formShow" class="mask" @click.self="cancel">
+    </div> -->
   </div>
 </template>
 
 <script>
 import { getAllMenu, getMenuPage, modifyMenu, deleteMenu, addMenu } from "@/api/menuSet"
 import memuRecursive from './components/memuRecursive'
+import dialogBox from '@/components/dialogBox'
 
 const defautlForm = {
   name: '',
@@ -125,7 +130,7 @@ let isVo = {
   1: '隐藏'
 }
 export default {
-  components:{ memuRecursive },
+  components:{ memuRecursive, dialogBox },
   filters: {
     menuTypeFilter(val) {
       return menuType[val]
@@ -340,4 +345,8 @@ export default {
   //   border-top: 1px solid #ccc;
   //   border-left: 1px solid #ccc;
   // }
+  .ivu-btn{
+    margin-right: 10px;
+  }
+
 </style>

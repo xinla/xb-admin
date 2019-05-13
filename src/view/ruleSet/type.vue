@@ -2,8 +2,8 @@
   <div>
     <Row>
       <div class="title-row">供应商类型</div>
-        <Col span="12">
-        <Button type="primary" size="small" style="dispaly:block; margin:0 5px 5px auto;" @click="edit(0)">新建</Button>
+        <Col span="16">
+        <Button type="primary" size="small" style="display:block; margin:0 5px 5px auto;" @click="edit(0)">新建</Button>
           <Table 
           border
           :columns="supplierColumns"
@@ -15,21 +15,26 @@
           </Table>
         </Col>
         <Col span="12">
-        <div v-show="supplierShow">
-          添加类型
-          <div class="fr cp" @click="cancel(0)">x</div>
-          <Input type="text" v-model="supplierForm.name" placeholder="親輸入类型"></Input>
-          <Button type="primary" size="small" style="margin-right: 5px" @click="submit(0, supplierForm)">确定</Button>
-        </div>
         </Col>
     </Row>
+    <dialogBox v-model="supplierShow">
+      <template slot="title">添加类型</template>
+      <template>
+          <Form ref="supplierForm" :model="supplierForm" :rules="supplierRules">
+            <FormItem prop="name">
+              <Input type="text" v-model="supplierForm.name" placeholder="親輸入类型"></Input>
+            </FormItem>
+          <Button type="primary" size="small" style="display: block; margin: 0 auto" @click="submit(0, supplierForm)">确定</Button>
+          </Form>
+      </template>
+    </dialogBox>
 
      <Divider />
     
     <Row>
       <div class="title-row">产品类型</div>
-        <Col span="12">
-        <Button type="primary" size="small" style="dispaly:block; margin:0 5px 5px auto;" @click="edit(1)">新建</Button>
+        <Col span="16">
+        <Button type="primary" size="small" style="display:block; margin:0 5px 5px auto;" @click="edit(1)">新建</Button>
           <Table 
           border
           :columns="productColumns"
@@ -45,22 +50,42 @@
           </Table>
         </Col>
         <Col span="12">
-        <div v-show="productShow">
+        <!-- <div v-show="productShow">
           添加类型
-          <div class="fr cp" @click="cancel(1)">x</div>
-          <Select v-model="productForm.pid" style="width:200px">
+          <Select v-model="productForm.pid">
               <Option v-for="(item, index) in productList" :value="item.id" :key="index">{{ item.name }}</Option>
           </Select>
           <Input type="text" v-model="productForm.name" placeholder="親輸入类型"></Input>
           <Button type="primary" size="small" style="margin-right: 5px" @click="submit(1, productForm)">确定</Button>
-        </div>
+        </div> -->
         </Col>
+
+      <dialogBox v-model="productShow">
+        <template slot="title">添加类型</template>
+        <template>
+          <Form ref="productForm" :model="productForm" :rules="productRules">
+            <FormItem prop="pid">
+              <Select v-model="productForm.pid">
+                <Option v-for="(item, index) in productList" :value="item.id" :key="index">{{ item.name }}</Option>
+              </Select>
+            </FormItem>
+
+            <FormItem prop="name">
+              <Input type="text" v-model="productForm.name" placeholder="親輸入类型"></Input>
+            </FormItem>
+
+            <Button type="primary" size="small" style="display: block; margin: 0 auto" @click="submit(1, productForm)">确定</Button>
+            </Form>
+        </template>
+      </dialogBox>
+      
     </Row>
   </div>
 </template>
 
 <script>
 import { getTypeRulePage, getTypeRuleById, deleteTypeRule, updateTypeRule, addTypeRule } from "@/api/rulesSet/type";
+import dialogBox from '@/components/dialogBox'
 
 const productForm = {
   type: 1,
@@ -75,7 +100,7 @@ const supplierForm = {
 }
 
 export default {
-  components:{},
+  components:{dialogBox},
   props:{},
   data(){
     return {
@@ -96,6 +121,11 @@ export default {
           align: 'center'
         },
       ],
+      supplierRules: {
+        name: [
+          { required: true, message: '不能为空', trigger: 'blur' },
+        ],
+      },
       supplierList: [],
       supplierForm: Object.assign({}, supplierForm),
       supplierShow: false,
@@ -121,6 +151,14 @@ export default {
           align: 'center'
         },
       ],
+      productRules: {
+        pid: [
+          { required: true, message: '不能为空', trigger: 'change' },
+        ],
+        name: [
+          { required: true, message: '不能为空', trigger: 'blur' },
+        ],
+      },
       productList: [],
       productForm: Object.assign({}, productForm),
       productShow: false,
@@ -180,9 +218,18 @@ export default {
       })
     },
     submit(type, item) {
-      console.log('supplierForm', this.supplierForm)
-      console.log('productForm', this.productForm)
-      Promise.resolve()
+      // console.log('supplierForm', this.supplierForm)
+      // console.log('productForm', this.productForm)
+      type === 0
+      ? this.$refs.supplierForm.validate()
+      : this.$refs.productForm.validate()
+      .then(data => {
+        if (data) {
+          return Promise.resolve()
+        } else {
+          return Promise.reject()
+        }
+      })
       .then(() => {
         if (item.id) {
           return updateTypeRule(item)

@@ -2,7 +2,7 @@
   <div>
     <Row>
       <Col span="12">
-        <Form class="org-form cc" :model="orgForm" :rules="ruleValidate" :label-width="100">
+        <Form class="org-form" :model="orgForm" :rules="ruleValidate" :label-width="100">
           <FormItem label="接口名称">
             <Input v-model="orgForm.name" placeholder="请输入接口名称"></Input>
           </FormItem>

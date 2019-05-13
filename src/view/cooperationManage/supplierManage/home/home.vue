@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="title">供应商列表</div>
+    <!-- <div class="title">供应商列表</div> -->
 
     <Row style="padding-bottom: 10px;">
-      <Col span="14">
+      <Col span="16">
         <Button type="info" @click="goPage('createSupplier')">新建供应商</Button>
       </Col>
       <Col span="8">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Button type="primary" size="small" style="margin-right: 5px" @click="$router.push({name: 'createHelp'})">新建</Button>
+    <Button type="primary" size="small" style="display:block; margin:0 5px 5px auto;" @click="$router.push({name: 'createHelp'})">新建</Button>
     <Table border :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row, index }" slot="time">
         {{row.updateTime | transTime}}

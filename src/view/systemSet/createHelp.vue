@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 30%;">
     <Form ref="form" :model="form" :rules="rules" :label-width="80">
       <FormItem prop="title" label="标题">
           <Input type="text" v-model="form.title" placeholder="标题">

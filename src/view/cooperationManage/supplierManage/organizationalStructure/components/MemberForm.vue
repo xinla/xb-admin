@@ -154,7 +154,7 @@ export default {
           {
             required: true,
             message: "必填项",
-            trigger: "blur"
+            trigger: "change"
           }
         ],
         phone: [
@@ -220,7 +220,7 @@ export default {
       this.$refs['form'].resetFields();
     },
     autoCreate() {
-      this.form.jobNumber = Math.floor(Math.random()*10e+15)
+      this.form.jobNumber = Math.floor(Math.random()*10e+15).toString()
     },
     change(data) {
       this.roles.includes(data)
