@@ -2,20 +2,20 @@
   <Form ref="form" :model="form" :rules="rules" :label-width="120">
     <Row>
         <Col span="12">
-          <FormItem label="产品全称" prop="form">
-              <Input type="text" v-model="form.name" placeholder="供应商名称"/>
+          <FormItem label="产品全称" prop="productAbbr">
+              <Input type="text" v-model="form.productFullName" placeholder="供应商名称"/>
           </FormItem>
         </Col>
         <Col span="12">
-          <FormItem label="产品简称" prop="nameForShort">
-              <Input type="text" v-model="form.nameForShort" placeholder="供应商简称"/>
+          <FormItem label="产品简称" prop="productAbbr">
+              <Input type="text" v-model="form.productAbbr" placeholder="供应商简称"/>
           </FormItem>
         </Col>
     </Row>
     <Row>
         <Col span="12">
-          <FormItem label="产品代码" prop="code">
-              <Input type="text" v-model="form.code" placeholder="产品代码"/>
+          <FormItem label="产品代码" prop="productCode">
+              <Input type="text" v-model="form.productCode" placeholder="产品代码"/>
           </FormItem>
         </Col>
         <Col span="12">
@@ -25,20 +25,20 @@
         </Col>
     </Row>
     
-    <FormItem label="所属大类" prop="isMain">
-        <RadioGroup v-model="form.isMain">
+    <FormItem label="所属大类" prop="mainClass">
+        <RadioGroup v-model="form.mainClass">
             <Radio :label="0">人身保险</Radio>
             <Radio :label="1">财产保险</Radio>
         </RadioGroup>
     </FormItem>
 
-    <FormItem label="所属细类" prop="distributionChannelAgency">
+    <FormItem label="所属细类" prop="subClass">
       <Row>
         <Col span="3" v-for="(item, index) of subclass" :key="index">
-          <CheckboxGroup v-model="subclassParent">
-            <Checkbox :label="item.pid">{{item.name}}</Checkbox> <span class="cp" @click="showCheck(index)">+</span>
+          <CheckboxGroup v-model="form.subClass" @on-change="changeSubClassA(index)">
+            <Checkbox :label="item.id">{{item.name}}</Checkbox> <span class="cp" @click="showCheck(index)">+</span>
           </CheckboxGroup>
-          <CheckboxGroup class="child-check" v-model="subclassChild[index]" v-show="subClassShow[index]">
+          <CheckboxGroup v-show="subClassShow[index]" class="child-check" v-model="form.subClass" @on-change="changeSubClassB(index)">
             <Checkbox v-for="(unit, unique) of item.children" :key="unique" :label="unit.id">{{unit.name}}</Checkbox>
           </CheckboxGroup>
         </Col>
@@ -46,52 +46,52 @@
       
     </FormItem>
 
-    <FormItem label="保障功能" prop="distributionChannelAgency">
+    <FormItem label="保障功能" prop="function">
       <CheckboxGroup v-model="distributionChannelAgency">
         <Checkbox label="0">家庭保障</Checkbox>
         <Checkbox label="1">健康医疗</Checkbox>
         <Checkbox label="2">子女教育</Checkbox>
         <Checkbox label="3">退休养老</Checkbox>
-        <Checkbox label="2">投资理财</Checkbox>
-        <Checkbox label="3">财富传承</Checkbox>
+        <Checkbox label="4">投资理财</Checkbox>
+        <Checkbox label="5">财富传承</Checkbox>
       </CheckboxGroup>
     </FormItem>
 
-    <FormItem label="适合人群" prop="isMain">
-        <RadioGroup v-model="form.isMain">
+    <FormItem label="适合人群" prop="ageLevel">
+        <RadioGroup v-model="form.ageLevel">
             <Radio :label="0">母婴</Radio>
             <Radio :label="1">儿童</Radio>
-            <Radio :label="0">青中年</Radio>
-            <Radio :label="1">中老年</Radio>
-            <Radio :label="0">老年</Radio>
-            <Radio :label="1">全龄</Radio>
+            <Radio :label="2">青中年</Radio>
+            <Radio :label="3">中老年</Radio>
+            <Radio :label="4">老年</Radio>
+            <Radio :label="5">全龄</Radio>
         </RadioGroup>
     </FormItem>
 
-    <FormItem label="承保方式" prop="isMain">
-        <RadioGroup v-model="form.isMain">
+    <FormItem label="承保方式" prop="underwritingModel">
+        <RadioGroup v-model="form.underwritingModel">
             <Radio :label="0">个人</Radio>
             <Radio :label="1">团体</Radio>
         </RadioGroup>
     </FormItem>
 
-    <FormItem label="承保周期" prop="isMain">
-        <RadioGroup v-model="form.isMain">
+    <FormItem label="承保周期" prop="underwriting_period">
+        <RadioGroup v-model="form.underwriting_period">
             <Radio :label="0">短期</Radio>
             <Radio :label="1">长期</Radio>
         </RadioGroup>
     </FormItem>
 
-    <FormItem label="产品形态" prop="isMain">
-        <RadioGroup v-model="form.isMain">
+    <FormItem label="产品形态" prop="productForm">
+        <RadioGroup v-model="form.productForm">
             <Radio :label="0">主险</Radio>
             <Radio :label="1">附加险</Radio>
-            <Radio :label="1">保险计划</Radio>
+            <Radio :label="2">保险计划</Radio>
         </RadioGroup>
     </FormItem>
 
-    <FormItem label="分销渠道" prop="distributionChannelAgency">
-      <CheckboxGroup v-model="distributionChannelAgency">
+    <FormItem label="分销渠道" prop="distributionChannel">
+      <CheckboxGroup v-model="form.distributionChannel">
         <Checkbox label="0">经代</Checkbox>
         <Checkbox label="1">互联网</Checkbox>
         <Checkbox label="2">个险</Checkbox>
@@ -99,8 +99,8 @@
       </CheckboxGroup>
     </FormItem>
 
-    <FormItem label="在线投保" prop="onlineType">
-      <CheckboxGroup v-model="onlineType">
+    <FormItem label="在线投保" prop="onlineLinkAddress">
+      <CheckboxGroup v-model="onlineLinkAddress">
         <Checkbox :label="0">现保</Checkbox>
         <br>
         <Checkbox :label="3">
@@ -124,10 +124,8 @@
         </Checkbox>
       </CheckboxGroup>
     </FormItem>
-    <FormItem label="险种类型" prop="typeRuleId">
-      <RadioGroup v-model="form.typeRuleId">
-        <Radio v-for="(item, index) in insuranceType" :key="index" :label="item.id">{{item.name}}</Radio>
-      </RadioGroup>
+    <FormItem label="详情页H5链接" prop="h5Url">
+      <Input class="inline-input" type="text" v-model="form.h5Url" placeholder="H5"/>
     </FormItem>
 
   </Form>
@@ -136,19 +134,31 @@
 <script>
 import { getLesseePageByJB } from '@/api/lessee'
 import { getTypeRulePage, getAllInsuranceSubclass } from '@/api/rulesSet/type'
-import { getProductPage, getProductInfoById, addProductInfo, updateProductInfo } from '@/api/product'
+import { getProductPage, getProductInfo, addProductInfo, updateProductInfo } from '@/api/product'
 import selectSupplier from '@/components/selectSupplier'
 
 const defaultForm = {
+  productFullName: '',
+  productAbbr: '',
   supplierId: '',
+  productCode: '',
+  mainClass: '',
+  subClass: [],
   name: '',
-  nameForShort: '',
-  code: '',
-  isMain: 0,
-  sale: 0,
-  distributionChannel: '',
-  onlineApplication: '',
-  typeRuleId: '',
+  function: [],
+  ageLevel: '',
+  underwritingModel: 0,
+  underwriting_period: 0,
+  productForm: '',
+  distributionChannel: [],
+  onlineAddress: [
+    {
+      code: '',
+      linkAddress: '',
+      qrCode: '',
+    }
+  ],
+  h5Url: ''
 }
 
 export default {
@@ -170,31 +180,46 @@ export default {
       onlineLinkAddress: [],
       distributionChannelAgency: [],
       rules: {
-        name: [
+        productFullName: [
             { required: true, message: '不能为空', trigger: 'blur' }
         ],
-        nameForShort: [
+        productAbbr: [
             { required: true, message: '不能为空', trigger: 'blur' }
-        ],
-        isMain: [
-            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
-        ],
-        sale: [
-            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
         ],
         supplierId: [
             { required: true, message: '不能为空', trigger: 'blur' }
         ],
-        code: [
+        mainClass: [
+            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        productCode: [
             { required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        subClass: [
+            { type: 'array', required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        function: [
+            { type: 'array', required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        ageLevel: [
+            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        underwritingModel: [
+            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        underwriting_period: [
+            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        productForm: [
+            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
         ],
         distributionChannel: [
             { type: 'array', required: true, message: '不能为空', trigger: 'blur' }
         ],
-        onlineApplication: [
+        onlineAddress: [
             { type: 'array', required: true, message: '不能为空', trigger: 'blur' }
         ],
-        typeRuleId: [
+        h5Url: [
             { required: true, message: '不能为空', trigger: 'blur' }
         ],
       },
@@ -222,21 +247,21 @@ export default {
       })
       // 获取保险细类
       getAllInsuranceSubclass(1).then(data => {
-        // console.log('InsuranceSubclass', data)
+        console.log('InsuranceSubclass', data)
         this.subclass = data.children
         this.subClassShow.length = this.subclass.length
         this.subClassShow.fill(true, 0, this.subclass.length)
       })
     },
     getData() {
-      this.form.id && getProductInfoById(this.form.id).then(data => {
+      this.form.id && getProductInfo(this.form.id).then(data => {
         console.log(data)
         this.form = data
         // 分销渠道 转为数组
         this.distributionChannelAgency = this.form.distributionChannel.split(',')
         // 在线投保 显示转换
-        this.form.onlineApplication = JSON.parse(this.form.onlineApplication)
-        for (const iterator of this.form.onlineApplication) {
+        this.form.onlineAddress = JSON.parse(this.form.onlineAddress)
+        for (const iterator of this.form.onlineAddress) {
           // this.onlineType[iterator.code] = iterator.code
           this.onlineType.splice(0, iterator.code, iterator.code)
           this.onlineLinkAddress[iterator.code] = iterator.linkAddress
@@ -244,35 +269,46 @@ export default {
       })
     },
     submit() {
-      // 分销渠道 转为提交字符串
-      this.form.distributionChannel = this.distributionChannelAgency.join()
-      // 在线投保 提交转换
-      this.form.onlineApplication = []
-      for (const iterator of this.onlineType) {
-        if ((iterator < 1) || this.onlineLinkAddress[iterator]) {
-          this.form.onlineApplicfvation.push({
-            code: iterator,
-            linkAddress: this.onlineLinkAddress[iterator]
-          })
-        } else {
-           this.$Message.error("在线投保填写不完整，请确认无误后提交")
-           return new Promise((resolve, reject) => {})
-        }
-      }
-      this.form.onlineApplication = JSON.stringify(this.form.onlineApplication)
-
       console.log(this.onlineLinkAddress)
       console.log(this.form)
 
       return this.$refs.form.validate()
       .then(data => {
         if(data) {
-          console.log(this.form)
-          if (this.form.id) {
+          // 在线投保 提交转换和校验
+          this.form.onlineAddress = []
+          for (const iterator of this.onlineType) {
+            if ((iterator < 1) || this.onlineLinkAddress[iterator]) {
+              this.form.onlineAddress.push({
+                code: iterator,
+                linkAddress: this.onlineLinkAddress[iterator]
+              })
+            } else {
+              this.$Message.error("在线投保填写不完整，请确认无误后提交")
+              return new Promise((resolve, reject) => {})
+            }
+          }
+          this.form.onlineAddress = JSON.stringify(this.form.onlineAddress)
+
+          let formData = Object.assign({}, this.form)
+
+          // 数组字段转字符串
+          let trans = ['subClass', 'function', 'distributionChannel']
+          for (const key in formData) {
+            if (formData.hasOwnProperty(key)) {
+              const element = formData[key];
+              if (trans.includes(key)) {
+                formData[key] += '' 
+              }
+            }
+          }
+
+          console.log(formData)
+          if (formData.id) {
             // console.log(1)
-            return updateProductInfo(this.form)
+            return updateProductInfo(formData)
           } else {
-            return addProductInfo(this.form)
+            return addProductInfo(formData)
           }
         } else {
           return new Promise((resolve, reject) => {})
@@ -282,6 +318,36 @@ export default {
     change(val) {
       this.form.supplierId = val.id
       // console.log(val)
+    },
+    changeSubClassA(index) {
+      let data = this.subclass[index].children || []
+      let count = 0
+      // 判断选中当前分类下的条数
+      for (const iterator of data) {
+        if (this.form.subClass.includes(iterator.id)) {
+          count ++
+        }
+      }
+      
+      // 判断执行全选或全取消
+      if (count >= data.length) {
+        // 全取消
+        for (const iterator of data) {
+          this.form.subClass.splice(this.form.subClass.indexOf(iterator.id), 1)
+        }
+        this.form.subClass.splice(this.form.subClass.indexOf(this.subclass[index].id), 1)
+      } else {
+        // 全选
+        for (const iterator of data) {
+          this.form.subClass.includes(iterator.id) || this.form.subClass.push(iterator.id)
+        }
+        this.form.subClass.includes(this.subclass[index].id) || this.form.subClass.push(this.subclass[index].id)
+      }
+      
+      // console.log(this.form.subClass)
+    },
+    changeSubClassB(index) {
+      this.form.subClass.includes(this.subclass[index].id) || this.form.subClass.push(this.subclass[index].id)
     },
     showCheck(index) {
       // console.log(this.subClassShow[index])

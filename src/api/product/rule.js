@@ -7,7 +7,14 @@ const service = config.services.product + '/rule'
  * 根据id查询产品投保规则
  * @param {*} id 产品投保规则主键id
  */
-export const getProductRuleById = (id) => {
+export const getProductRuleInfo = (id) => {
+  return axios.request({
+    url: service + `/info/${id}`,
+    method: 'get'
+  })
+}
+
+export const getProductRule = (id) => {
   return axios.request({
     url: service + `/${id}`,
     method: 'get'
@@ -17,7 +24,7 @@ export const getProductRuleById = (id) => {
 /**
  * 查询产品投保规则初始化数据来源
  */
-export const addProduct = () => {
+export const getProductInitRule = () => {
   return axios.request({
     url: service + `/interval/list`,
     method: 'get'

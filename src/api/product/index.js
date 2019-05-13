@@ -5,12 +5,16 @@ const service = config.services.product
 
 /**
  * 查询产品列表
- * @param {*} params 
+ * @param {*} query 
  */
-export const getProductPage = (params) => {
+export const getProductPage = ({pageNum, pageSize, searchValue, typeRuleId, distributionChannel}) => {
   return axios.request({
-    url: service + `/page/list`,
-    params,
+    url: service + `/page/list/${pageNum}/${pageSize}`,
+    params: {
+      searchValue,
+      typeRuleId,
+      distributionChannel
+    },
     method: 'get'
   })
 }
@@ -43,7 +47,7 @@ export const updateProductInfo = (data) => {
  * 查询产品基本信息
  * @param {*} id 
  */
-export const getProductInfoById = (id) => {
+export const getProductInfo = (id) => {
   return axios.request({
     url: service + `/${id}`,
     method: 'get'
@@ -52,12 +56,23 @@ export const getProductInfoById = (id) => {
 
 /**
  * 根据产品类型查询产品列表
- * @param {*} type 0  主险  1 附加险
+ * @param {*} productForm
  */
-export const getProductPageByType = (type) => {
+export const getProductPageByType = (productForm, params) => {
   return axios.request({
-    url: service + `/list/${type}`,
+    url: service + `/list/${productForm}`,
+    params,
     method: 'get'
   })
 }
 
+/**
+ * 上架产品
+ * @param { } id 
+ */
+export const saleProduct = (id) => {
+  return axios.request({
+    url: service + `/toSale/${id}`,
+    method: 'post'
+  })
+}
