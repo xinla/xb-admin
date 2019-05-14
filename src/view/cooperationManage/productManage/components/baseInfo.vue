@@ -1,24 +1,24 @@
 <template>
   <Form ref="form" :model="form" :rules="rules" :label-width="120">
     <Row>
-        <Col span="12">
-          <FormItem label="产品全称" prop="productAbbr">
+        <Col span="8">
+          <FormItem label="产品全称" prop="productFullName">
               <Input type="text" v-model="form.productFullName" placeholder="供应商名称"/>
           </FormItem>
         </Col>
-        <Col span="12">
+        <Col span="8">
           <FormItem label="产品简称" prop="productAbbr">
               <Input type="text" v-model="form.productAbbr" placeholder="供应商简称"/>
           </FormItem>
         </Col>
     </Row>
     <Row>
-        <Col span="12">
+        <Col span="8">
           <FormItem label="产品代码" prop="productCode">
               <Input type="text" v-model="form.productCode" placeholder="产品代码"/>
           </FormItem>
         </Col>
-        <Col span="12">
+        <Col span="8">
           <FormItem label="所属供应商" prop="supplierId">
              <selectSupplier :val="form.supplierId" type="supplier" @change="change" />
           </FormItem>
@@ -33,27 +33,25 @@
     </FormItem>
 
     <FormItem label="所属细类" prop="subClass">
-      <Row>
-        <Col span="3" v-for="(item, index) of subclass" :key="index">
-          <CheckboxGroup v-model="form.subClass" @on-change="changeSubClassA(index)">
+      <div class="sub-calss" v-for="(item, index) of subclass" :key="index">
+        <CheckboxGroup v-model="form.subClass" @on-change="changeSubClassA(index)">
             <Checkbox :label="item.id">{{item.name}}</Checkbox> <span class="cp" @click="showCheck(index)">+</span>
           </CheckboxGroup>
           <CheckboxGroup v-show="subClassShow[index]" class="child-check" v-model="form.subClass" @on-change="changeSubClassB(index)">
             <Checkbox v-for="(unit, unique) of item.children" :key="unique" :label="unit.id">{{unit.name}}</Checkbox>
           </CheckboxGroup>
-        </Col>
-      </Row>
+      </div>
       
     </FormItem>
 
     <FormItem label="保障功能" prop="function">
-      <CheckboxGroup v-model="distributionChannelAgency">
-        <Checkbox label="0">家庭保障</Checkbox>
-        <Checkbox label="1">健康医疗</Checkbox>
-        <Checkbox label="2">子女教育</Checkbox>
-        <Checkbox label="3">退休养老</Checkbox>
-        <Checkbox label="4">投资理财</Checkbox>
-        <Checkbox label="5">财富传承</Checkbox>
+      <CheckboxGroup v-model="form.function">
+        <Checkbox :label="0">家庭保障</Checkbox>
+        <Checkbox :label="1">健康医疗</Checkbox>
+        <Checkbox :label="2">子女教育</Checkbox>
+        <Checkbox :label="3">退休养老</Checkbox>
+        <Checkbox :label="4">投资理财</Checkbox>
+        <Checkbox :label="5">财富传承</Checkbox>
       </CheckboxGroup>
     </FormItem>
 
@@ -99,28 +97,28 @@
       </CheckboxGroup>
     </FormItem>
 
-    <FormItem label="在线投保" prop="onlineLinkAddress">
-      <CheckboxGroup v-model="onlineLinkAddress">
+    <FormItem label="在线投保" prop="onlineType">
+      <CheckboxGroup v-model="onlineType">
         <Checkbox :label="0">现保</Checkbox>
         <br>
-        <Checkbox :label="3">
+        <Checkbox :label="1">
           APP：
-          <Input class="inline-input" type="text" v-model="onlineLinkAddress[3]" placeholder="APP"/>
-        </Checkbox>
-        <br>
-        <Checkbox :label="1">
-          PC端：
-          <Input class="inline-input" type="text" v-model="onlineLinkAddress[1]" placeholder="PC端"/>
-        </Checkbox>
-        <br>
-        <Checkbox :label="1">
-          H5：
-          <Input class="inline-input" type="text" v-model="onlineLinkAddress[4]" placeholder="H5"/>
+          <Input class="inline-input" type="text" v-model="onlineLinkAddress[1]" placeholder="APP" @on-blur="onlineBlur(1)" />
         </Checkbox>
         <br>
         <Checkbox :label="2">
+          PC端：
+          <Input class="inline-input" type="text" v-model="onlineLinkAddress[2]" placeholder="PC端" @on-blur="onlineBlur(2)" />
+        </Checkbox>
+        <br>
+        <Checkbox :label="3">
+          H5：
+          <Input class="inline-input" type="text" v-model="onlineLinkAddress[3]" placeholder="H5" @on-blur="onlineBlur(3)" />
+        </Checkbox>
+        <br>
+        <Checkbox :label="4">
           小程序：
-          <Input class="inline-input" type="text" v-model="onlineLinkAddress[2]" placeholder="小程序"/>
+          <Input class="inline-input" type="text" v-model="onlineLinkAddress[4]" placeholder="小程序" @on-blur="onlineBlur(4)" />
         </Checkbox>
       </CheckboxGroup>
     </FormItem>
@@ -152,14 +150,15 @@ const defaultForm = {
   productForm: '',
   distributionChannel: [],
   onlineAddress: [
-    {
-      code: '',
-      linkAddress: '',
-      qrCode: '',
-    }
+    // {
+    //   code: '',
+    //   linkAddress: '',
+    //   qrCode: '',
+    // }
   ],
   h5Url: ''
 }
+let oldData = ''
 
 export default {
   components: {
@@ -190,35 +189,38 @@ export default {
             { required: true, message: '不能为空', trigger: 'blur' }
         ],
         mainClass: [
-            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
+            { type: 'number', required: true, message: '不能为空', trigger: 'change' }
         ],
         productCode: [
             { required: true, message: '不能为空', trigger: 'blur' }
         ],
         subClass: [
-            { type: 'array', required: true, message: '不能为空', trigger: 'blur' }
+            { type: 'array', required: true, message: '不能为空', trigger: 'change' }
         ],
         function: [
-            { type: 'array', required: true, message: '不能为空', trigger: 'blur' }
+            { type: 'array', required: true, message: '不能为空', trigger: 'change' }
         ],
         ageLevel: [
-            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
+            { type: 'number', required: true, message: '不能为空', trigger: 'change' }
         ],
         underwritingModel: [
-            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
+            { type: 'number', required: true, message: '不能为空', trigger: 'change' }
         ],
         underwriting_period: [
-            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
+            { type: 'number', required: true, message: '不能为空', trigger: 'change' }
         ],
         productForm: [
-            { type: 'number', required: true, message: '不能为空', trigger: 'blur' }
+            { type: 'number', required: true, message: '不能为空', trigger: 'change' }
         ],
         distributionChannel: [
-            { type: 'array', required: true, message: '不能为空', trigger: 'blur' }
+            { type: 'array', required: true, message: '不能为空', trigger: 'change' }
         ],
-        onlineAddress: [
-            { type: 'array', required: true, message: '不能为空', trigger: 'blur' }
-        ],
+        // onlineAddress: [
+        //     { type: 'array', required: true, message: '不能为空', trigger: 'change' }
+        // ],
+        // onlineType: [
+        //   { type: 'array', required: true, message: '不能为空', trigger: 'change' }
+        // ],
         h5Url: [
             { required: true, message: '不能为空', trigger: 'blur' }
         ],
@@ -269,46 +271,52 @@ export default {
       })
     },
     submit() {
-      console.log(this.onlineLinkAddress)
-      console.log(this.form)
+      // console.log(this.onlineLinkAddress)
+      // console.log(this.form)
+
+      // 在线投保 提交转换和校验
+      this.form.onlineAddress = []
+      for (const iterator of this.onlineType) {
+        if ((iterator === 0) || this.onlineLinkAddress[iterator]) {
+          this.form.onlineAddress.push({
+            code: iterator,
+            linkAddress: this.onlineLinkAddress[iterator]
+          })
+        } else {
+          this.$Message.error("在线投保填写不完整，请确认无误后提交")
+          return new Promise((resolve, reject) => {})
+        }
+      }
+      this.form.onlineAddress = JSON.stringify(this.form.onlineAddress)
 
       return this.$refs.form.validate()
       .then(data => {
         if(data) {
-          // 在线投保 提交转换和校验
-          this.form.onlineAddress = []
-          for (const iterator of this.onlineType) {
-            if ((iterator < 1) || this.onlineLinkAddress[iterator]) {
-              this.form.onlineAddress.push({
-                code: iterator,
-                linkAddress: this.onlineLinkAddress[iterator]
-              })
-            } else {
-              this.$Message.error("在线投保填写不完整，请确认无误后提交")
-              return new Promise((resolve, reject) => {})
-            }
-          }
-          this.form.onlineAddress = JSON.stringify(this.form.onlineAddress)
-
+          
           let formData = Object.assign({}, this.form)
-
-          // 数组字段转字符串
-          let trans = ['subClass', 'function', 'distributionChannel']
-          for (const key in formData) {
-            if (formData.hasOwnProperty(key)) {
-              const element = formData[key];
-              if (trans.includes(key)) {
-                formData[key] += '' 
+          let isNew = oldData !== JSON.stringify(formData)
+          oldData = JSON.stringify(formData)
+          // 过滤重复提交
+          if (isNew) {
+            // 数组字段转字符串
+            let trans = ['subClass', 'function', 'distributionChannel']
+            for (const key in formData) {
+              if (formData.hasOwnProperty(key)) {
+                const element = formData[key];
+                if (trans.includes(key)) {
+                  formData[key] += '' 
+                }
               }
             }
-          }
-
-          console.log(formData)
-          if (formData.id) {
-            // console.log(1)
-            return updateProductInfo(formData)
+            console.log(formData)
+            if (formData.id) {
+              // console.log(1)
+              return updateProductInfo(formData)
+            } else {
+              return addProductInfo(formData)
+            }
           } else {
-            return addProductInfo(formData)
+            return Promise.resolve()
           }
         } else {
           return new Promise((resolve, reject) => {})
@@ -320,7 +328,10 @@ export default {
       // console.log(val)
     },
     changeSubClassA(index) {
+      // 所属细类选择交互
       let data = this.subclass[index].children || []
+      if (data.length === 0) {return}
+
       let count = 0
       // 判断选中当前分类下的条数
       for (const iterator of data) {
@@ -353,6 +364,14 @@ export default {
       // console.log(this.subClassShow[index])
       this.subClassShow[index] = !this.subClassShow[index]
       this.subClassShow.splice()
+    },
+    onlineBlur(index) {
+      // 在线投保输入交互
+      if (this.onlineLinkAddress[index]) {
+        this.onlineType.push(index)
+      } else if (this.onlineType.includes(index)) {
+        this.onlineType.splice(this.onlineType.indexOf(index), 1)
+      }
     }
   }
 }
@@ -364,5 +383,11 @@ export default {
   }
   .child-check{
     margin-left: 15px;
+  }
+  .sub-calss{
+    display: inline-block;
+    width: 10%;
+    max-width: 150px;
+    vertical-align: top;
   }
 </style>
