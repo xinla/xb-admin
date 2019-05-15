@@ -177,7 +177,7 @@ export default {
       form: Object.assign({}, defaultForm),
       onlineType: [],
       onlineLinkAddress: [],
-      distributionChannelAgency: [],
+      // distributionChannelAgency: [],
       rules: {
         productFullName: [
             { required: true, message: '不能为空', trigger: 'blur' }
@@ -260,7 +260,9 @@ export default {
         console.log(data)
         this.form = data
         // 分销渠道 转为数组
-        this.distributionChannelAgency = this.form.distributionChannel.split(',')
+        this.form.distributionChannel = this.form.distributionChannel.split(',')
+        // 保障功能 转为数组
+        this.form.function = this.form.function.split(',')
         // 在线投保 显示转换
         this.form.onlineAddress = JSON.parse(this.form.onlineAddress)
         for (const iterator of this.form.onlineAddress) {
@@ -294,9 +296,9 @@ export default {
         if(data) {
           
           let formData = Object.assign({}, this.form)
+          // 过滤重复提交
           let isNew = oldData !== JSON.stringify(formData)
           oldData = JSON.stringify(formData)
-          // 过滤重复提交
           if (isNew) {
             // 数组字段转字符串
             let trans = ['subClass', 'function', 'distributionChannel']

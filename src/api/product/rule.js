@@ -7,14 +7,18 @@ const service = config.services.product + '/rule'
  * 根据id查询产品投保规则
  * @param {*} id 产品投保规则主键id
  */
-export const getProductRuleInfo = (id) => {
+export const getProductRuleByRuleId = (id) => {
   return axios.request({
     url: service + `/info/${id}`,
     method: 'get'
   })
 }
 
-export const getProductRule = (id) => {
+/**
+ * 根据id查询产品投保规则
+ * @param {*} id 产品主键id
+ */
+export const getProductRuleByProductId = (id) => {
   return axios.request({
     url: service + `/${id}`,
     method: 'get'

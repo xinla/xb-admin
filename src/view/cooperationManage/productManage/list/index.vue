@@ -17,6 +17,10 @@
     :loading="loading"
     :columns="columns"
     :data="list">
+      <template slot-scope="{ row }" slot="productType">
+          {{row.productType | productType}}
+      </template>
+
       <template slot-scope="{ row }" slot="age">
           {{row.applicationAgeStart + '-' + row.applicationAgeEnd + '周岁'}}
       </template>
@@ -27,8 +31,8 @@
         </span>
       </template>
 
-      <template slot-scope="{ row }" slot="onlineApplication">
-        <div v-for="(item, index) in JSON.parse(row.onlineApplication)" :key="index">
+      <template slot-scope="{ row }" slot="onlineAddress">
+        <div v-for="(item, index) in JSON.parse(row.onlineAddress)" :key="index">
           {{item.linkAddress}}
         </div>
       </template>
@@ -69,28 +73,24 @@ const channel = [
       value: 3
   },
 ]
-const typeRuleName = [
-  {
-      label: '经代',
-      value: 0
-  },
-  {
-      label: '互联网',
-      value: 1
-  },
-  {
-      label: '个险',
-      value: 2
-  },
-  {
-      label: '银保',
-      value: 3
-  },
-]
+const productType = []
 export default {
   filters: {
     channel(val) {
       return channel[val].label
+    },
+    productType(val) {
+      let arr = val.split(",")
+      let res = ''
+      for (const _val of arr) {
+        for (const iterator of productType) {
+          if (iterator.value === _val) {
+            res += iterator.label + ','
+            break
+          }
+        }
+      }
+      return res
     }
   },
   data() {
@@ -117,23 +117,23 @@ export default {
         },
         {
             title: '产品代码',
-            key: 'code',
+            key: 'productCode',
             align: 'center'
         },
         {
             title: '产品名称',
-            key: 'productName',
+            key: 'productFullName',
             align: 'center',
             minWidth: 80
         },
         {
             title: '产品类型',
-            key: 'typeRuleName',
+            slot: 'productType',
             align: 'center',
-            filters: typeRuleName,
-            filterMultiple: false,
+            filters: productType,
+            filterMultiple: true,
             filterMethod (value, row) {
-                return row.typeRuleName === 'value'
+                return row.productType.includes(value)
             }
         },
         {
@@ -158,7 +158,7 @@ export default {
         },
         {
             title: '在线投保',
-            slot: 'onlineApplication',
+            slot: 'onlineAddress',
             minWidth: 60,
             align: 'center'
         },
@@ -179,8 +179,16 @@ export default {
   methods: {
     init() {
       this.getData()
+      // 获取产品分类数据
       getTypeRulePage(1).then(data => {
-        console.log(data)
+        // console.log('TypeRule', data)
+        let temp = data.list
+        for (const iterator of temp) {
+          productType.push({
+            label: iterator.name,
+            value: iterator.id
+          })
+        }
       })
     },
     getData(page) {

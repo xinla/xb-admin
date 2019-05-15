@@ -9,8 +9,10 @@ const service = config.services.product
  */
 export const getProductPage = ({pageNum, pageSize, searchValue, typeRuleId, distributionChannel}) => {
   return axios.request({
-    url: service + `/page/list/${pageNum}/${pageSize}`,
+    url: service + `/page/list`,
     params: {
+      pageNum,
+      pageSize,
       searchValue,
       typeRuleId,
       distributionChannel

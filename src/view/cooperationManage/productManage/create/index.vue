@@ -51,8 +51,11 @@ export default {
           case 0: 
           return this.$refs.baseInfo.submit()
           .then(data => {
+            this.$route.query.id = data
+            console.log(data)
             console.log(this.current)
             this.current++
+             window.scrollTo(0, 0)
           })
           break
           case 1: 
@@ -60,6 +63,7 @@ export default {
           .then(data => {
             console.log(this.current)
             this.current++
+             window.scrollTo(0, 0)
           })
           break
           case 2: 
@@ -67,6 +71,7 @@ export default {
           .then(data => {
             console.log(this.current)
             this.current++
+             window.scrollTo(0, 0)
           })
           break
           case 3: 
@@ -74,6 +79,7 @@ export default {
           .then(data => {
             console.log(this.current)
             this.current++
+             window.scrollTo(0, 0)
           })
           break
           case 4: 
@@ -81,6 +87,7 @@ export default {
           .then(data => {
             console.log(this.current)
             this.current++
+             window.scrollTo(0, 0)
           })
           break
           case 5: 
