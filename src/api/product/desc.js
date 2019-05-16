@@ -5,9 +5,9 @@ const service = config.services.product + '/desc'
 
 /**
  * 根据id查询产品说明
- * @param {*} id 产品说明主键id
+ * @param {*} id 产品主键id
  */
-export const getProductDescInfo = (id) => {
+export const getProductDescByProductId = (id) => {
   return axios.request({
     url: service + `/info/${id}`,
     method: 'get'
@@ -18,7 +18,7 @@ export const getProductDescInfo = (id) => {
  * 根据id查询产品说明
  * @param {*} id 产品说明主键id
  */
-export const getProductDesc = (id) => {
+export const getProductDescByDesctId = (id) => {
   return axios.request({
     url: service + `/${id}`,
     method: 'get'

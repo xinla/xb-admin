@@ -252,6 +252,24 @@ export function transLogo(str) {
   
 }
 
+/**
+ * 文件体积格式化
+ * @param {*} num 体积大小，单位Byte
+ */
+export function formatFileSize(num) {
+  num = parseInt(num)
+  if (num < 1e+3) {
+    num += 'B'
+  } else if (num < 1e+6) {
+    num = (num / 1e+3).toFixed(2) + 'KB'
+  } else if (num < 1e+9) {
+    num = (num / 1e+6).toFixed(2) + 'M'
+  } else {
+    num = (num / 1e+9).toFixed(2) + 'G'
+  }
+  return num
+}
+
 const tool = {
   transLogo
 }

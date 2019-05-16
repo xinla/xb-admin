@@ -18,7 +18,7 @@ export const getDistrict = (subdistrict=2, keywords=100000) => {
   return axios.request({
     url: 'https://restapi.amap.com/v3/config/district',
     params: {
-      key: '500a3ef03541f06fac2f747c4ad81ecf',
+      key: '5f70e232462daa68522e88bc11193c93',
       keywords,
       subdistrict,
     },

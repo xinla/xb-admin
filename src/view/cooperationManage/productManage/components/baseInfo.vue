@@ -147,7 +147,7 @@ const defaultForm = {
   ageLevel: '',
   underwritingModel: 0,
   underwriting_period: 0,
-  productForm: '',
+  productForm: 0,
   distributionChannel: [],
   onlineAddress: [
     // {
@@ -311,6 +311,7 @@ export default {
               }
             }
             console.log(formData)
+            this.$route.query.productForm = formData.productForm
             if (formData.id) {
               // console.log(1)
               return updateProductInfo(formData)

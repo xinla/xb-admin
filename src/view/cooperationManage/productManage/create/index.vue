@@ -13,10 +13,10 @@
 
   <baseInfo ref="baseInfo" v-show="current === 0"/>
   <insuranceRules ref="insuranceRules" v-show="current === 1"/>
-  <!-- <rateCalculation ref="rateCalculation" v-show="current === 2"/>
+  <rateCalculation ref="rateCalculation" v-show="current === 2"/>
   <productExplain ref="productExplain" v-show="current === 3"/>
   <additionRisk ref="additionRisk" v-show="current === 4"/>
-  <productAccessory ref="productAccessory" v-show="current === 5"/> -->
+  <productAccessory ref="productAccessory" v-show="current === 5"/>
 
   <div class="ac">
     <Button v-show="current > 0" type="primary" ghost @click="current--">上一步</Button>
@@ -33,14 +33,14 @@ export default {
   components:{
     baseInfo,
     insuranceRules: () => import('../components/insuranceRules'),
-    // productExplain: () => import('../components/productExplain'),
-    // productAccessory: () => import('../components/productAccessory'),
-    // rateCalculation: () => import('../components/rateCalculation'),
-    // additionRisk: () => import('../components/additionRisk'),
+    rateCalculation: () => import('../components/rateCalculation'),
+    productExplain: () => import('../components/productExplain'),
+    additionRisk: () => import('../components/additionRisk'),
+    productAccessory: () => import('../components/productAccessory'),
   },
   data() {
     return {
-      current: 1,
+      current: 5,
     }
   },
   methods: {
@@ -94,7 +94,7 @@ export default {
           return this.$refs.productAccessory.submit()
           .then(data => {
             console.log(this.current)
-            this.$router.push({name: 'productManage'})
+            // this.$router.push({name: 'productManage'})
           })
           break
         }
