@@ -458,6 +458,12 @@ export default {
       } else {
          if (this[type].includes(index)) {
            this[type].splice(this[type].indexOf(index), 1)
+           // 中间减掉，后续数据索引-1补上
+           this[type].forEach((element, unique) => {
+            if (element > index) {
+               this[type][unique] = --element
+            }
+          });
          }
         this.form[type].splice(index, 1)
       }
@@ -483,7 +489,8 @@ export default {
     },
     submit() {
       // console.log(this.form.insuranceFullAmount)
-      this.form.productId = this.$route.query.id || '2257229893945262088'
+      this.form.productId = this.$route.query.id
+      // console.log('productId', this.form.productId)
       return this.$refs.form.validate()
       .then(data => {
         if(data) {
@@ -516,7 +523,7 @@ export default {
             // 数组字段转字符串
             formData['paymentMethod'] += ''
             formData['specialOccupationUnderwriting'] = formData['specialOccupationUnderwriting'].replace(/ /g, ",")
-            console.log(formData)
+            console.log('formData', formData)
             Promise.resolve()
             .then(() => {
               if (formData.id) {
@@ -527,7 +534,7 @@ export default {
               }
             })
             .then(() => {
-              this.getData()
+              // this.getData()
               return Promise.resolve()
             })
           } else {

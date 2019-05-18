@@ -47,7 +47,7 @@ export const updateProductInfo = (data) => {
 
 /**
  * 查询产品基本信息
- * @param {*} id 
+ * @param {*} id 产品基本信息id或产品id
  */
 export const getProductInfo = (id) => {
   return axios.request({

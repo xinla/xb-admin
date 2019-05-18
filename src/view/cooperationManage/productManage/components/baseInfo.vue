@@ -19,8 +19,8 @@
           </FormItem>
         </Col>
         <Col span="8">
-          <FormItem label="所属供应商" prop="supplierId">
-             <selectSupplier :val="form.supplierId" type="supplier" @change="change" />
+          <FormItem label="所属供应商" prop="name">
+             <selectSupplier :val="form.name" type="supplier" @change="change" />
           </FormItem>
         </Col>
     </Row>
@@ -34,7 +34,7 @@
 
     <FormItem label="所属细类" prop="subClass">
       <div class="sub-calss" v-for="(item, index) of subclass" :key="index">
-        <CheckboxGroup v-model="form.subClass" @on-change="changeSubClassA(index)">
+          <CheckboxGroup v-model="form.subClass" @on-change="changeSubClassA(index)">
             <Checkbox :label="item.id">{{item.name}}</Checkbox> <span class="cp" @click="showCheck(index)">+</span>
           </CheckboxGroup>
           <CheckboxGroup v-show="subClassShow[index]" class="child-check" v-model="form.subClass" @on-change="changeSubClassB(index)">
@@ -46,12 +46,12 @@
 
     <FormItem label="保障功能" prop="function">
       <CheckboxGroup v-model="form.function">
-        <Checkbox :label="0">家庭保障</Checkbox>
-        <Checkbox :label="1">健康医疗</Checkbox>
-        <Checkbox :label="2">子女教育</Checkbox>
-        <Checkbox :label="3">退休养老</Checkbox>
-        <Checkbox :label="4">投资理财</Checkbox>
-        <Checkbox :label="5">财富传承</Checkbox>
+        <Checkbox label="0">家庭保障</Checkbox>
+        <Checkbox label="1">健康医疗</Checkbox>
+        <Checkbox label="2">子女教育</Checkbox>
+        <Checkbox label="3">退休养老</Checkbox>
+        <Checkbox label="4">投资理财</Checkbox>
+        <Checkbox label="5">财富传承</Checkbox>
       </CheckboxGroup>
     </FormItem>
 
@@ -73,8 +73,8 @@
         </RadioGroup>
     </FormItem>
 
-    <FormItem label="承保周期" prop="underwriting_period">
-        <RadioGroup v-model="form.underwriting_period">
+    <FormItem label="承保周期" prop="underwritingPeriod">
+        <RadioGroup v-model="form.underwritingPeriod">
             <Radio :label="0">短期</Radio>
             <Radio :label="1">长期</Radio>
         </RadioGroup>
@@ -130,9 +130,10 @@
 </template>
 
 <script>
-import { getLesseePageByJB } from '@/api/lessee'
+import { getSupplierBrandInformation } from '@/api/supplier'
 import { getTypeRulePage, getAllInsuranceSubclass } from '@/api/rulesSet/type'
 import { getProductPage, getProductInfo, addProductInfo, updateProductInfo } from '@/api/product'
+
 import selectSupplier from '@/components/selectSupplier'
 
 const defaultForm = {
@@ -140,13 +141,13 @@ const defaultForm = {
   productAbbr: '',
   supplierId: '',
   productCode: '',
-  mainClass: '',
+  mainClass: 0,
   subClass: [],
   name: '',
   function: [],
-  ageLevel: '',
+  ageLevel: 0,
   underwritingModel: 0,
-  underwriting_period: 0,
+  underwritingPeriod: 0,
   productForm: 0,
   distributionChannel: [],
   onlineAddress: [
@@ -206,7 +207,7 @@ export default {
         underwritingModel: [
             { type: 'number', required: true, message: '不能为空', trigger: 'change' }
         ],
-        underwriting_period: [
+        underwritingPeriod: [
             { type: 'number', required: true, message: '不能为空', trigger: 'change' }
         ],
         productForm: [
@@ -241,40 +242,49 @@ export default {
   },
   methods: {
     init() {
-      this.getData()
       // 获取险种类型
       getTypeRulePage(1).then(data => {
         this.insuranceType = data.list
         // console.log('insuranceType', data.list)
       })
       // 获取保险细类
-      getAllInsuranceSubclass(1).then(data => {
-        console.log('InsuranceSubclass', data)
+      getAllInsuranceSubclass(1)
+      .then(data => {
+        // console.log('InsuranceSubclass', data)
         this.subclass = data.children
         this.subClassShow.length = this.subclass.length
         this.subClassShow.fill(true, 0, this.subclass.length)
+        this.getData()
       })
     },
     getData() {
-      this.form.id && getProductInfo(this.form.id).then(data => {
-        console.log(data)
-        this.form = data
-        // 分销渠道 转为数组
-        this.form.distributionChannel = this.form.distributionChannel.split(',')
-        // 保障功能 转为数组
-        this.form.function = this.form.function.split(',')
+      this.form.id && getProductInfo(this.form.id)
+      .then(data => {
+        console.log('data: ', data)
+
+        // 保险细类,分销渠道,保障功能 转为数组
+        let trans = ['subClass', 'function', 'distributionChannel']
+        for (const iterator of trans) {
+          data[iterator] = data[iterator].split(',')
+        }
         // 在线投保 显示转换
-        this.form.onlineAddress = JSON.parse(this.form.onlineAddress)
-        for (const iterator of this.form.onlineAddress) {
+        data.onlineAddress = JSON.parse(data.onlineAddress)
+        for (const iterator of data.onlineAddress) {
           // this.onlineType[iterator.code] = iterator.code
           this.onlineType.splice(0, iterator.code, iterator.code)
           this.onlineLinkAddress[iterator.code] = iterator.linkAddress
         }
+        this.form = data
+        return getSupplierBrandInformation(this.form.supplierId)
+      })
+      .then(data => {
+        this.form.name = data.name
+        console.log('form: ', this.form)
       })
     },
     submit() {
       // console.log(this.onlineLinkAddress)
-      // console.log(this.form)
+      console.log(this.form)
 
       // 在线投保 提交转换和校验
       this.form.onlineAddress = []
@@ -328,6 +338,7 @@ export default {
     },
     change(val) {
       this.form.supplierId = val.id
+      this.form.name = val.name
       // console.log(val)
     },
     changeSubClassA(index) {

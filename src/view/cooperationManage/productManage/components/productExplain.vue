@@ -284,7 +284,7 @@ export default {
       this.form.describePicture = response.result.fileUrl
     },
     submit() {
-      this.form.productId = this.$route.query.id || '2257229893945262088'
+      this.form.productId = this.$route.query.id
 
       return this.$refs.form.validate()
       .then(data => {
@@ -307,7 +307,7 @@ export default {
         }
       })
       .then(() => {
-        this.getData()
+        // this.getData()
         return Promise.resolve()
       })
     }

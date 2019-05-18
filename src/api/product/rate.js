@@ -5,9 +5,20 @@ const service = config.services.product + '/rate'
 
 /**
  * 根据id查询产品费率
+ * @param {*} id 产品id
+ */
+export const getProductRateByProductId = (id) => {
+  return axios.request({
+    url: service + `/info/${id}`,
+    method: 'get'
+  })
+}
+
+/**
+ * 根据id查询产品费率
  * @param {*} id 产品费率主键id
  */
-export const getProductRate = (id) => {
+export const getProductRateByRateId = (id) => {
   return axios.request({
     url: service + `/${id}`,
     method: 'get'

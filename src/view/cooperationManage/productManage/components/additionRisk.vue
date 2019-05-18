@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { getProductRider, addProductRider, updateProductRider } from '@/api/product/rider'
+import { getProductRiderByProductId, addProductRider, updateProductRider } from '@/api/product/rider'
 import { getProductPageByType } from '@/api/product'
 
 const defaultForm = {
@@ -116,6 +116,8 @@ const defaultForm = {
   }
 };
 
+let oldData = ''
+
 export default {
   data() {
     return {
@@ -124,22 +126,62 @@ export default {
       riskList: []
     };
   },
+  mounted() {
+    this.form.productId = this.$route.query.id;
+    this.getData();
+  },
   methods: {
+    getData() {
+      this.form.productId &&
+        getProductRiderByProductId(this.form.productId).then(data => {
+          console.log(data);
+          this.form = data;
+        });
+    },
     selectChange(data) {
-      this.$set(this.form[0], 'name', data.productFullName)
-      this.$set(this.form[0], 'code', data.productCode)
-      // this.form[0].name = data.productFullName
-      // this.form[0].code = data.productCode
+      this.selectRisk = data
     },
     add() {
-      this.form.push(defaultForm)
+      // debugger
+      this.form.push(Object.assign(defaultForm, 
+        {
+          name: this.selectRisk.productFullName,
+          code: this.selectRisk.productCode
+        })
+      )
+      // console.log(this.form)
+      // console.log(this.selectRisk)
     },
     search(query) {
       // this.$route.query.productForm
-      getProductPageByType(1,query).then(data => {
-        console.log(data)
+      getProductPageByType(this.$route.query.productForm, query).then(data => {
+        // console.log(data)
         this.riskList = data
       })
+    },
+    submit() {
+      this.form.productId = this.$route.query.id
+      return Promise.resolve()
+        .then(data => {
+          if (data) {
+
+            let isNew = oldData !== JSON.stringify(this.form)
+            oldData = JSON.stringify(this.form)
+
+            if (isNew){
+              if (this.form.id) {
+                // console.log(1)
+                return updateProductRider(this.form);
+              } else {
+                return addProductRider(this.form);
+              }
+            }
+          }
+        })
+        .then(() => {
+          // this.getData();
+          return Promise.resolve();
+        });
     }
   }
 };

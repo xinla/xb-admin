@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { getProductRate, addProductRate, updateProductRate } from '@/api/product/rate'
+import { getProductRateByProductId, addProductRate, updateProductRate } from '@/api/product/rate'
 
 const defaultForm = {
   productId: '',
@@ -145,13 +145,13 @@ export default {
   },
   methods: {
     getData() {
-      this.form.productId && getProductRate(this.form.productId).then(data => {
+      this.form.productId && getProductRateByProductId(this.form.productId).then(data => {
         console.log(data)
         this.form = data
       })
     },
     submit() {
-      this.form.productId = this.$route.query.id || '2257229893945262088'
+      this.form.productId = this.$route.query.id
       return this.$refs.form.validate()
       .then(data => {
         if(data) {
@@ -171,7 +171,7 @@ export default {
         }
       })
       .then(() => {
-        this.getData()
+        // this.getData()
         return Promise.resolve()
       })
     }

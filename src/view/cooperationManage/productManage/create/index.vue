@@ -1,5 +1,5 @@
 <template>
-<div>
+<div ref="container" class="container">
   
   <Steps :current="current">
       <Step title="基本信息" content="基本信息">
@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      current: 5,
+      current: 0,
     }
   },
   methods: {
@@ -51,53 +51,51 @@ export default {
           case 0: 
           return this.$refs.baseInfo.submit()
           .then(data => {
+            // console.log('bs data', data)
             this.$route.query.id = data
-            console.log(data)
-            console.log(this.current)
+            // console.log(typeof (this.$route.query.id), this.$route.query.id)
             this.current++
-             window.scrollTo(0, 0)
+            // console.log('current', this.current)
+            return Promise.resolve()
           })
           break
           case 1: 
           return this.$refs.insuranceRules.submit()
           .then(data => {
-            console.log(this.current)
             this.current++
-             window.scrollTo(0, 0)
+            return Promise.resolve()
           })
           break
           case 2: 
           return this.$refs.rateCalculation.submit()
           .then(data => {
-            console.log(this.current)
             this.current++
-             window.scrollTo(0, 0)
+            return Promise.resolve()
           })
           break
           case 3: 
           return this.$refs.productExplain.submit()
           .then(data => {
-            console.log(this.current)
             this.current++
-             window.scrollTo(0, 0)
           })
           break
           case 4: 
           return this.$refs.additionRisk.submit()
           .then(data => {
-            console.log(this.current)
             this.current++
-             window.scrollTo(0, 0)
           })
           break
           case 5: 
           return this.$refs.productAccessory.submit()
           .then(data => {
-            console.log(this.current)
             // this.$router.push({name: 'productManage'})
           })
           break
         }
+      })
+      .then(() => {
+        console.log(this.current)
+        this.$refs.container.scrollTop = 0
       })
       .catch(err => {
         console.warn(err)

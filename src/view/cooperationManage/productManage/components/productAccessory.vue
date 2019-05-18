@@ -54,7 +54,7 @@
 
 <script>
 import {
-  getProductAttachment,
+  getProductAttachmentByProductId,
   addProductAttachment,
   updateProductAttachment
 } from "@/api/product/attachment";
@@ -108,7 +108,7 @@ export default {
   methods: {
     getData() {
       this.form.productId &&
-        getProductAttachment(this.form.productId).then(data => {
+        getProductAttachmentByProductId(this.form.productId).then(data => {
           console.log(data);
           this.form = data;
         });
@@ -135,7 +135,7 @@ export default {
       // console.log(response, file)
     },
     submit() {
-      this.form.productId = this.$route.query.id || "2257229893945262088";
+      this.form.productId = this.$route.query.id
       return Promise.resolve()
         .then(data => {
           if (data) {
@@ -148,7 +148,7 @@ export default {
           }
         })
         .then(() => {
-          this.getData();
+          // this.getData();
           return Promise.resolve();
         });
     }

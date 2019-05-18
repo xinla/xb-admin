@@ -7,9 +7,20 @@ const service = config.services.product + '/rider'
  * 根据id查询产品附加险
  * @param {*} id 产品附加险主键id
  */
-export const getProductRider = (id) => {
+export const getProductRiderByProductId = (id) => {
   return axios.request({
     url: service + `/info/${id}`,
+    method: 'get'
+  })
+}
+
+/**
+ * 根据id查询产品附加险
+ * @param {*} id 产品附加险主键id
+ */
+export const getProductRiderByRiderId = (id) => {
+  return axios.request({
+    url: service + `/${id}`,
     method: 'get'
   })
 }

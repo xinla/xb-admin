@@ -5,9 +5,20 @@ const service = config.services.product + '/attachment'
 
 /**
  * 根据id查询产品附件信息
+ * @param {*} id 产品主键id
+ */
+export const getProductAttachmentByProductId = (id) => {
+  return axios.request({
+    url: service + `/info/${id}`,
+    method: 'get'
+  })
+}
+
+/**
+ * 根据id查询产品附件信息
  * @param {*} id 产品附件表主键id
  */
-export const getProductAttachment = (id) => {
+export const getProductAttachmentByAttachmentId = (id) => {
   return axios.request({
     url: service + `/${id}`,
     method: 'get'
