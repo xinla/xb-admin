@@ -34,11 +34,22 @@
         />
         <!-- <div>
           <Tag color="cyan">cyan</Tag>
-        </div> -->
+        </div>-->
       </div>
-      <Select v-show="!codeShow && specialOccupationUnderwriting.length" v-model="specialOccupationUnderwriting" multiple style="width:30%" :max-tag-count="3" @click.native="codeShow = !codeShow"
-      @on-change="selectChange">
-        <Option v-for="(item, index) in specialOccupationUnderwriting" :value="item" :key="index">{{item}}</Option>
+      <Select
+        v-show="!codeShow && specialOccupationUnderwriting.length"
+        v-model="specialOccupationUnderwriting"
+        multiple
+        style="width:30%"
+        :max-tag-count="3"
+        @click.native="codeShow = !codeShow"
+        @on-change="selectChange"
+      >
+        <Option
+          v-for="(item, index) in specialOccupationUnderwriting"
+          :value="item"
+          :key="index"
+        >{{item}}</Option>
       </Select>
     </FormItem>
 
@@ -55,7 +66,11 @@
         <Radio :label="0">可自选</Radio>
         <Radio :label="1">不可自选</Radio>
       </RadioGroup>
-      <Dropdown v-if="form.basicSumInsuredOptional === 0" style="margin-left: 20px" @on-click="addRow">
+      <Dropdown
+        v-if="form.basicSumInsuredOptional === 0"
+        style="margin-left: 20px"
+        @on-click="addRow"
+      >
         <Button type="primary">
           添加选项
           <Icon type="ios-arrow-down"></Icon>
@@ -83,14 +98,14 @@
         <!--保险计划额添加项 -->
         <CheckboxGroup v-model="insurancePlan">
           <Checkbox :label="index" v-for="(item, index) of form.insurancePlan" :key="index">
-            <Input
+            一档,<Input
               class="inline-input"
               type="number"
               :number="true"
               v-model.trim="form.insurancePlan[index].ruleIntervalValue"
               placeholder="计划"
               @on-blur="handleBlur('insurancePlan', index)"
-            />
+            />万
           </Checkbox>
         </CheckboxGroup>
       </div>
@@ -100,10 +115,10 @@
       <Row v-for="(item, index) of form.minInsured" :key="index">
         <Col span="3">
           <Select v-model="form.minInsured[index].type">
-            <Option v-for="(item, index) in limitType" :value="+index" :key="index">{{ item }}</Option>
+            <Option v-for="(util, unique) of limitType" :value="+unique" :key="unique">{{ util }}</Option>
           </Select>
         </Col>
-        <Col style="display:inline-block;">
+        <Col style="display:inline-block;text-align: left;">
           <div v-if="form.minInsured[index].type === 1">
             <Input type="text" v-model="form.minInsured[index].clientType" placeholder="金额"/>类（级）客户
           </div>
@@ -112,17 +127,19 @@
             <Input type="text" v-model="form.minInsured[index].endAge" placeholder="金额"/>周岁
           </div>
           <div v-if="form.minInsured[index].type === 3">
-            职业风险等级：<Input type="text" v-model="form.minInsured[index].occupationalLevel" placeholder="金额"/>
+            职业风险等级：
+            <Input type="text" v-model="form.minInsured[index].occupationalLevel" placeholder="金额"/>
           </div>
           <div v-if="form.minInsured[index].type === 4">
-            职业代码：<Input type="text" v-model="form.minInsured[index].code" placeholder="金额"/>
+            职业代码：
+            <Input type="text" v-model="form.minInsured[index].code" placeholder="金额"/>
           </div>
         </Col>
         <Col span="4">
           最低
           <Input type="text" style="width:50%;" v-model="form.minInsured[index].minInsured" placeholder="金额"/>元
         </Col>
-        <Col span="3" v-if="index === form.minInsured.length - 1">
+        <Col style="display:inline-block;" v-if="index === form.minInsured.length - 1">
           <Button @click="addRow('minInsured')">新增一行</Button>
         </Col>
       </Row>
@@ -130,10 +147,10 @@
       <Row v-for="(item, index) of form.maxInsured" :key="index + 'x'">
         <Col span="3">
           <Select v-model="form.maxInsured[index].type">
-            <Option v-for="(item, index) in limitType" :value="+index" :key="index">{{ item }}</Option>
+            <Option v-for="(util, unique) of limitType" :value="+unique" :key="unique">{{ util }}</Option>
           </Select>
         </Col>
-        <Col style="display:inline-block;">
+        <Col style="display:inline-block; text-align: left;">
           <div v-if="form.maxInsured[index].type === 1">
             <Input type="text" v-model="form.maxInsured[index].clientType" placeholder="金额"/>类（级）客户
           </div>
@@ -142,17 +159,24 @@
             <Input type="text" v-model="form.maxInsured[index].endAge" placeholder="金额"/>周岁
           </div>
           <div v-if="form.maxInsured[index].type === 3">
-            职业风险等级：<Input type="text" v-model="form.maxInsured[index].occupationalLevel" placeholder="金额"/>
+            职业风险等级：
+            <Input type="text" v-model="form.maxInsured[index].occupationalLevel" placeholder="金额"/>
           </div>
           <div v-if="form.maxInsured[index].type === 4">
-            职业代码：<Input type="text" v-model="form.maxInsured[index].code" placeholder="金额"/>
+            职业代码：
+            <Input type="text" v-model="form.maxInsured[index].code" placeholder="金额"/>
           </div>
         </Col>
         <Col span="4">
           最高
-          <Input type="text" style="width:50%;" v-model="form.maxInsured[index].maxInsured" placeholder="金额"/>元
+          <Input
+            type="text"
+            style="width:50%;"
+            v-model="form.maxInsured[index].maxInsured"
+            placeholder="金额"
+          />元
         </Col>
-        <Col span="3" v-if="index === form.maxInsured.length - 1">
+        <Col style="display:inline-block;" v-if="index === form.maxInsured.length - 1">
           <Button @click="addRow('maxInsured')">新增一行</Button>
         </Col>
       </Row>递增单位
@@ -160,12 +184,12 @@
     </FormItem>
 
     <FormItem label="保险期间">
-      <CheckboxGroup v-model="policyPeriodYear">
+      <!-- <CheckboxGroup v-model="policyPeriodYear">
         <Checkbox v-for="(item, index) of form.policyPeriodYear" v-if="index === 0" :label="index" :key="index">{{item.ruleIntervalName}}</Checkbox>
       </CheckboxGroup>
       <CheckboxGroup v-model="policyPeriodAge">
         <Checkbox v-for="(item, index) of form.policyPeriodAge" v-if="index === 0" :label="index" :key="index + 'x'">{{item.ruleIntervalName}}</Checkbox>
-      </CheckboxGroup>
+      </CheckboxGroup>-->
       <Dropdown style="margin-left: 20px" @on-click="addRow">
         <Button type="primary">
           添加选项
@@ -179,7 +203,7 @@
       <div>
         <!--保险年数添加项 -->
         <CheckboxGroup v-model="policyPeriodYear">
-          <Checkbox v-for="(item, index) of form.policyPeriodYear" v-if="index > 0" :label="index" :key="index">
+          <Checkbox v-for="(item, index) of form.policyPeriodYear" :label="index" :key="index">
             <Input
               class="inline-input"
               type="number"
@@ -193,8 +217,9 @@
 
         <!--保险年龄添加项 -->
         <CheckboxGroup v-model="policyPeriodAge">
-          <Checkbox v-for="(item, index) of form.policyPeriodAge" v-if="index > 0" :label="index" :key="index + 'x'">
-            至<Input
+          <Checkbox v-for="(item, index) of form.policyPeriodAge" :label="index" :key="index + 'x'">
+            至
+            <Input
               class="inline-input"
               type="number"
               :number="true"
@@ -213,7 +238,7 @@
       </CheckboxGroup>
       <CheckboxGroup v-model="paymentPeriodAge">
         <Checkbox v-for="(item, index) of form.paymentPeriodAge" :label="item.ruleIntervalValue" :key="index">{{item.ruleIntervalName}}</Checkbox>
-      </CheckboxGroup> -->
+      </CheckboxGroup>-->
       <Dropdown style="margin-left: 20px" @on-click="addRow">
         <Button type="primary">
           添加选项
@@ -242,7 +267,8 @@
         <!--交费年龄添加项 -->
         <CheckboxGroup v-model="paymentPeriodAge">
           <Checkbox v-for="(item, index) of form.paymentPeriodAge" :label="index" :key="index">
-            至<Input
+            至
+            <Input
               class="inline-input"
               type="number"
               :number="true"
@@ -276,7 +302,12 @@
 </template>
 
 <script>
-import { getProductRuleByProductId, getProductRuleByRuleId, addProductRule, updateProductRule } from '@/api/product/rule'
+import {
+  getProductRuleByProductId,
+  getProductRuleByRuleId,
+  addProductRule,
+  updateProductRule
+} from "@/api/product/rule";
 import Editor from "_c/editor";
 
 const defaultForm = {
@@ -307,28 +338,36 @@ const defaultForm = {
   incrementalUnit: "",
   policyPeriodYear: [
     {
-      productId: '',
+      productId: "",
       ruleIntervalType: 2,
-      ruleIntervalName: '1年',
-      ruleIntervalValue: 1,
+      ruleIntervalName: "1年",
+      ruleIntervalValue: 1
     }
   ],
   policyPeriodAge: [
     {
-      productId: '',
+      productId: "",
       ruleIntervalType: 6,
-      ruleIntervalName: '终身',
-      ruleIntervalValue: -1,
+      ruleIntervalName: "终身",
+      ruleIntervalValue: -1
     }
   ],
   paymentPeriodYear: [],
   paymentPeriodAge: [],
   paymentMethod: [],
-  underwritingRulesText: " ",
+  underwritingRulesText: ""
 };
-const transToArray = ['insuranceFullAmount', 'insurancePlan', 'policyPeriodYear', 'policyPeriodAge', 'paymentPeriodYear', 'paymentPeriodAge']
+const transToArray = [
+  "insuranceFullAmount",
+  "insurancePlan",
+  "policyPeriodYear",
+  "policyPeriodAge",
+  "paymentPeriodYear",
+  "paymentPeriodAge"
+];
 
-let oldData = ''
+let oldData = "";
+
 export default {
   components: {
     Editor
@@ -345,65 +384,156 @@ export default {
       }),
       rules: {
         applicationAgeStart: [
-            { required: true, type: 'number', message: '不能为空', trigger: 'blur' }
+          {
+            required: true,
+            type: "number",
+            message: "不能为空",
+            trigger: "blur"
+          }
         ],
         applicationAgeEnd: [
-            { required: true, type: 'number', message: '不能为空', trigger: 'blur' }
+          {
+            required: true,
+            type: "number",
+            message: "不能为空",
+            trigger: "blur"
+          }
         ],
         applicationAgeDay: [
-            { required: true, type: 'number', message: '不能为空', trigger: 'blur' }
+          {
+            required: true,
+            type: "number",
+            message: "不能为空",
+            trigger: "blur"
+          }
         ],
         renewalAge: [
-            { type: 'number', type: 'number', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "number",
+            type: "number",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         applicationSex: [
-            { required: true, type: 'number', message: '不能为空', trigger: 'blur' }
+          {
+            required: true,
+            type: "number",
+            message: "不能为空",
+            trigger: "blur"
+          }
         ],
         occupationUnderwriting: [
-            { type: 'number', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "number",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         socialInsuranceLimit: [
-            { type: 'number', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "number",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         incrementalUnit: [
-            { type: 'number', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "number",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         basicSumInsuredOptional: [
-            { type: 'number', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "number",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         specialOccupationUnderwriting: [
-            { required: true, message: '不能为空', trigger: 'change' }
+          { required: true, message: "不能为空", trigger: "change" }
         ],
         paymentMethod: [
-            { type: 'array', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "array",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         insuranceFullAmount: [
-            { type: 'array', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "array",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         insurancePlan: [
-            { type: 'array', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "array",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         minInsured: [
-          { type: 'array', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "array",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         maxInsured: [
-          { type: 'array', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "array",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         policyPeriodYear: [
-          { type: 'array', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "array",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         policyPeriodAge: [
-          { type: 'array', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "array",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         paymentPeriodYear: [
-          { type: 'array', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "array",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         paymentPeriodAge: [
-          { type: 'array', required: true, message: '不能为空', trigger: 'change' }
+          {
+            type: "array",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
         ],
         underwritingRulesText: [
-            { required: true, message: '不能为空', trigger: 'blur' }
-        ],
+          { required: true, message: "不能为空", trigger: "blur" }
+        ]
       },
       insuranceFullAmount: [],
       insurancePlan: [],
@@ -412,146 +542,168 @@ export default {
       paymentPeriodYear: [],
       paymentPeriodAge: [],
       codeShow: false,
-      specialOccupationUnderwriting: []
+      specialOccupationUnderwriting: [],
+      disabled: true
     };
   },
   mounted() {
-    this.form.productId = this.$route.query.id
+    this.form.productId = this.$route.query.id;
     // console.log(this.form.productId)
     // this.form.productId || (this.form.productId = this.$route.query.id)
-    this.init()
+    this.init();
   },
   methods: {
     init() {
-      this.getData()
+      this.getData();
     },
     getData() {
-      this.form.productId && getProductRuleByProductId(this.form.productId).then(data => {
-        console.log(data)
-        this.form = data
+      this.form.productId &&
+        getProductRuleByProductId(this.form.productId).then(data => {
+          // console.log(data);
+          this.form = data;
 
-        // 字符串数组转为数组
-        this.form['paymentMethod'] = this.form['paymentMethod'].split(',')
-        
-        // 多选框代理数组
-        for (const iterator of transToArray) {
-          for (let i = 0; i < this[iterator].length; i++) {
-            this[iterator].push(i)
+          let del = ["minInsured", "maxInsured"];
+          for (const val of del) {
+            this.form[val] = JSON.parse(this.form[val]);
+            if (this.disabled && !this.form[val].length) {
+              this.form[val].push({});
+            }
           }
-        }
-        this.transCode()
-      })
+          // paymentMethod字符串数组转为数组
+          this.form["paymentMethod"] = this.form["paymentMethod"].split(",");
+
+          // 特殊职业代理数组显示转换
+          this["specialOccupationUnderwriting"] = this.form["specialOccupationUnderwriting"].split(",");
+
+          // 多选框代理数组
+          for (const iterator of transToArray) {
+            this[iterator] = []
+            for (let i = 0; i < this.form[iterator].length; i++) {
+              this[iterator].push(i);
+            }
+          }
+          // 设置富文本内容
+          this.$refs.editor.setHtml(this.form.underwritingRulesText)
+        });
     },
     addRow(type) {
       this.form[type].push({});
     },
     handleChange(html, text) {
-      // console.log(html, text)
-      this.form.underwritingRulesText = html
-      // console.log(this.form.underwritingRulesText) 
+      // console.log(html, text);
+      this.form.underwritingRulesText = html;
+      // console.log(this.form.underwritingRulesText)
     },
     handleBlur(type, index) {
-      let temp = this.form[type][index]
+      let temp = this.form[type][index];
       if (temp.ruleIntervalValue) {
-        this[type].push(index)
+        this[type].push(index);
         // console.log(typeof temp.ruleIntervalValue)
       } else {
-         if (this[type].includes(index)) {
-           this[type].splice(this[type].indexOf(index), 1)
-           // 中间减掉，后续数据索引-1补上
-           this[type].forEach((element, unique) => {
+        if (this[type].includes(index)) {
+          this[type].splice(this[type].indexOf(index), 1);
+          // 中间减掉，后续数据索引-1补上
+          this[type].forEach((element, unique) => {
             if (element > index) {
-               this[type][unique] = --element
+              this[type][unique] = --element;
             }
           });
-         }
-        this.form[type].splice(index, 1)
+        }
+        this.form[type].splice(index, 1);
       }
-      if (type === 'insuranceFullAmount') {
-        temp.ruleIntervalName = temp.ruleIntervalValue + '万'
-        temp.ruleIntervalType = 1
-      } else if (type === 'insurancePlan') {
-        temp.ruleIntervalName = temp.ruleIntervalValue + '万'
-        temp.ruleIntervalType = 5
-      } else if (type === 'policyPeriodYear') {
-        temp.ruleIntervalName = temp.ruleIntervalValue + '年'
-        temp.ruleIntervalType = 2
-      } else if (type === 'policyPeriodAge') {
-        temp.ruleIntervalName = '至' + temp.ruleIntervalValue + '周岁'
-        temp.ruleIntervalType = 6
-      } else if (type === 'paymentPeriodYear') {
-        temp.ruleIntervalName = temp.ruleIntervalValue + '年'
-        temp.ruleIntervalType = 3
-      } else if (type === 'paymentPeriodAge') {
-        temp.ruleIntervalName = '至' + temp.ruleIntervalValue + '周岁'
-        temp.ruleIntervalType = 4
+      if (type === "insuranceFullAmount") {
+        temp.ruleIntervalName = temp.ruleIntervalValue + "万";
+        temp.ruleIntervalType = 1;
+      } else if (type === "insurancePlan") {
+        temp.ruleIntervalName = "一档," + temp.ruleIntervalValue + "万";
+        temp.ruleIntervalType = 5;
+      } else if (type === "policyPeriodYear") {
+        temp.ruleIntervalName = temp.ruleIntervalValue + "年";
+        temp.ruleIntervalType = 2;
+      } else if (type === "policyPeriodAge") {
+        temp.ruleIntervalName = "至" + temp.ruleIntervalValue + "周岁";
+        temp.ruleIntervalType = 6;
+      } else if (type === "paymentPeriodYear") {
+        temp.ruleIntervalName = temp.ruleIntervalValue + "年";
+        temp.ruleIntervalType = 3;
+      } else if (type === "paymentPeriodAge") {
+        temp.ruleIntervalName = "至" + temp.ruleIntervalValue + "周岁";
+        temp.ruleIntervalType = 4;
       }
     },
     submit() {
       // console.log(this.form.insuranceFullAmount)
-      this.form.productId = this.$route.query.id
+      this.form.productId = this.$route.query.id;
       // console.log('productId', this.form.productId)
-      return this.$refs.form.validate()
-      .then(data => {
-        if(data) {
+      return this.$refs.form.validate().then(data => {
+        if (data) {
           // 剔除保额限制maxInsured，minInsured中的空对象
-          let del = ['minInsured','maxInsured']
+          let del = ["minInsured", "maxInsured"];
           for (const val of del) {
-            for (const iterator of this.form[val]) {
-              if (!iterator.clientType) {
-                this.form[val].splice(this.form[val].indexOf(iterator), 1)
+            let tempArr = [...this.form[val]]
+            for (const iterator of tempArr) {
+              // debugger
+              if (iterator.type === undefined) {
+                this.form[val].splice(this.form[val].indexOf(iterator), 1);
               }
             }
           }
 
-          let formData = Object.assign({}, this.form)
+          let formData = Object.assign({}, this.form);
 
           // checkbox和input混合的选项，提取checkbox实际选择的数据
           for (const agency of transToArray) {
-            let temp = []
+            let temp = [];
             for (const index of this[agency]) {
-              formData[agency][index].productId = formData.productId
-              temp.push(formData[agency][index])
+              // debugger
+              formData[agency][index].productId = formData.productId;
+              temp.push(formData[agency][index]);
             }
-            formData[agency] = temp
+            formData[agency] = temp;
           }
 
-          let isNew = oldData !== JSON.stringify(formData)
-          oldData = JSON.stringify(formData)
+          let isNew = oldData !== JSON.stringify(formData);
+          oldData = JSON.stringify(formData);
           // 过滤重复提交
           if (isNew) {
             // 数组字段转字符串
-            formData['paymentMethod'] += ''
-            formData['specialOccupationUnderwriting'] = formData['specialOccupationUnderwriting'].replace(/ /g, ",")
-            console.log('formData', formData)
+            formData["paymentMethod"] += "";
+            formData["specialOccupationUnderwriting"] = formData[
+              "specialOccupationUnderwriting"
+            ].replace(/ /g, ",");
+            // console.log('formData', formData)
             Promise.resolve()
-            .then(() => {
-              if (formData.id) {
-                // console.log(1)
-                return updateProductRule(formData)
-              } else {
-                return addProductRule(formData)
-              }
-            })
-            .then(() => {
-              // this.getData()
-              return Promise.resolve()
-            })
+              .then(() => {
+                if (formData.id) {
+                  // console.log(1)
+                  return updateProductRule(formData);
+                } else {
+                  return addProductRule(formData);
+                }
+              })
+              .then(() => {
+                this.getData()
+                return Promise.resolve();
+              });
           } else {
-            return Promise.resolve()
+            return Promise.resolve();
           }
         } else {
-          return new Promise((resolve, reject) => {})
+          return new Promise((resolve, reject) => {});
         }
-      })
+      });
     },
     transCode() {
-      this.specialOccupationUnderwriting = this.form.specialOccupationUnderwriting.split(' ')
-      this.codeShow = false
+      this.specialOccupationUnderwriting = this.form.specialOccupationUnderwriting.split(
+        " "
+      );
+      this.codeShow = false;
       // console.log(this.specialOccupationUnderwriting)
     },
     selectChange() {
-      this.form.specialOccupationUnderwriting = this.specialOccupationUnderwriting.join(' ')
+      this.form.specialOccupationUnderwriting = this.specialOccupationUnderwriting.join(
+        " "
+      );
       // console.log(this.form.specialOccupationUnderwriting)
     }
   }
@@ -561,7 +713,8 @@ export default {
 .ivu-select {
   width: 80%;
 }
-.ivu-input-wrapper, .ivu-input-number {
+.ivu-input-wrapper,
+.ivu-input-number {
   width: 100px;
   margin: 0 10px;
 }

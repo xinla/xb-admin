@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import { getSupplierBrandInformation } from '@/api/supplier'
+import { getSupplierDetail } from '@/api/supplier'
 import { getTypeRulePage, getAllInsuranceSubclass } from '@/api/rulesSet/type'
 import { getProductPage, getProductInfo, addProductInfo, updateProductInfo } from '@/api/product'
 
@@ -233,8 +233,6 @@ export default {
       subclassChild: []
     }
   },
-  watch: {
-  },
   mounted() {
     this.form.id = this.$route.query.id
     // this.form.id || (this.form.id = this.$route.query.id)
@@ -254,13 +252,12 @@ export default {
         this.subclass = data.children
         this.subClassShow.length = this.subclass.length
         this.subClassShow.fill(true, 0, this.subclass.length)
-        this.getData()
       })
+      this.getData()
     },
     getData() {
       this.form.id && getProductInfo(this.form.id)
       .then(data => {
-        console.log('data: ', data)
 
         // 保险细类,分销渠道,保障功能 转为数组
         let trans = ['subClass', 'function', 'distributionChannel']
@@ -274,13 +271,16 @@ export default {
           this.onlineType.splice(0, iterator.code, iterator.code)
           this.onlineLinkAddress[iterator.code] = iterator.linkAddress
         }
-        this.form = data
-        return getSupplierBrandInformation(this.form.supplierId)
+        // this.form = data 在此赋值，会导致下面的name  无法响应，带后续研究
+        // 获取供应商名称
+        getSupplierDetail(data.supplierId)
+        .then(_data => {
+          this.form = data
+          this.form.name = _data.xbSupplier.name
+          // console.log('form:', this.form)
+        })
       })
-      .then(data => {
-        this.form.name = data.name
-        console.log('form: ', this.form)
-      })
+      
     },
     submit() {
       // console.log(this.onlineLinkAddress)
@@ -320,7 +320,7 @@ export default {
                 }
               }
             }
-            console.log(formData)
+            // console.log(formData)
             this.$route.query.productForm = formData.productForm
             if (formData.id) {
               // console.log(1)

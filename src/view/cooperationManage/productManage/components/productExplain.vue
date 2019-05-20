@@ -51,7 +51,7 @@
         </Col>
         <Col span="18">
           <Input type="textarea" v-model="item.describe" placeholder="请输入内容" style="width:73%; margin-right: 10px;" />
-          <Button type="primary" @click="add('role')">添加</Button>
+          <!-- <Button type="primary" @click="add('role')">添加</Button> -->
         </Col>
     </Row>
     <Divider />
@@ -243,15 +243,23 @@ export default {
       },
     }
   },
+  mounted() {
+    this.form.productId = this.$route.query.id;
+    // console.log(this.form.productId)
+    // this.form.productId || (this.form.productId = this.$route.query.id)
+    this.getData();
+  },
   methods: {
     getData() {
       this.form.productId && getProductDescByProductId(this.form.productId).then(data => {
-        console.log(data)
+        // console.log('productExplain', data)
+        data.insurableInterest = JSON.parse(data.insurableInterest)
+        data.coverage = JSON.parse(data.coverage)
         this.form = data
       })
     },
     addRow(type) {
-      console.log(1)
+      // console.log(1)
       if (type === 'insurableInterest') {
         this.form[type].push({
           content: [{}
@@ -307,7 +315,7 @@ export default {
         }
       })
       .then(() => {
-        // this.getData()
+        this.getData()
         return Promise.resolve()
       })
     }

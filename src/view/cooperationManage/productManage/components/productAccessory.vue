@@ -109,15 +109,15 @@ export default {
     getData() {
       this.form.productId &&
         getProductAttachmentByProductId(this.form.productId).then(data => {
-          console.log(data);
+          console.log('productAccessory', data);
           this.form = data;
         });
     },
     uploadCourse(response, file, fileList) {
       this.form.productCourse[this.form.productCourse.length - 1].url =
         response.result.fileUrl;
-      this.form.productCourse[this.form.productCourse.length - 1].fileType =
-        response.result.fileType;
+      // this.form.productCourse[this.form.productCourse.length - 1].fileType = response.result.fileType;
+      this.form.productCourse[this.form.productCourse.length - 1].fileType = 0;
       this.form.productCourse[
         this.form.productCourse.length - 1
       ].fileSize = formatFileSize(response.result.fileSize);
@@ -126,29 +126,30 @@ export default {
     },
     uploadRule(response, file, fileList) {
       this.form.applicationRules = response.result.fileUrl;
-      this.form.applicationRulesName = response.result.fileName;
+      this.form.applicationRulesName = response.result.newName;
       // console.log(response, file)
     },
     uploadWording(response, file, fileList) {
       this.form.policyWording = response.result.fileUrl;
-      this.form.policyWordingName = response.result.fileName;
+      this.form.policyWordingName = response.result.newName;
       // console.log(response, file)
     },
     submit() {
       this.form.productId = this.$route.query.id
+      let formData = Object.assign({}, this.form)
+      formData.productCourse.pop()
+      // formData.productCourse = JSON.stringify(formData.productCourse)
       return Promise.resolve()
         .then(data => {
-          if (data) {
-            if (this.form.id) {
-              // console.log(1)
-              return updateProductAttachment(this.form);
-            } else {
-              return addProductAttachment(this.form);
-            }
+          if (formData.id) {
+            // console.log(1)
+            return updateProductAttachment(formData);
+          } else {
+            return addProductAttachment(formData);
           }
         })
         .then(() => {
-          // this.getData();
+          this.getData();
           return Promise.resolve();
         });
     }

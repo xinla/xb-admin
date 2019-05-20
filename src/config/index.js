@@ -52,6 +52,9 @@ config.services = {
   roleGroup: '/roleGroup',
   role: '/role',
   nationality: '/vitNationality',
+  policyDictCategory: '/policyDictCategory',
+  role: '/role',
+  role: '/role',
   role: '/role',
   role: '/role',
 

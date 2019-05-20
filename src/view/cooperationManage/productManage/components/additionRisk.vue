@@ -1,7 +1,7 @@
 <template>
   <Form ref="form" :label-width="80">
     <FormItem label="添加附加险">
-      <Select filterable remote :remote-method="search" style="width:30%;">
+      <Select ref="select" :value="selectRisk.productFullName" filterable remote :remote-method="search" style="width:30%;">
         <Option
           v-for="(option, index) in riskList"
           :value="option.productFullName"
@@ -17,14 +17,17 @@
       <Col span="4">产品名称</Col>
       <Col span="10">附加规则</Col>
     </Row>
-<Row v-for="(item, index) of form" :Key="index">
-      <Col span="3">{{item.name}}-</Col>
-      <Col span="4">{{item.code}}-</Col>
+
+    <Row v-for="(item, index) of form" :Key="index">
+      <Col span="3">{{item.name || "-"}}</Col>
+      <Col span="4">{{item.code || "-"}}</Col>
       <Col span="6">
           <FormItem label="强制搭配险种">
             <RadioGroup v-model="item.compulsoryCollocation">
               <Radio :label="0">无</Radio>
+              <Radio :label="1">强制搭配</Radio>
             </RadioGroup>
+            <Button v-if="item.compulsoryCollocation" type="info" size="small" @click="addChild(index)">添加</Button>
           </FormItem>
           <span>添加</span>
           <FormItem label="搭配比例">
@@ -47,10 +50,11 @@
           </FormItem>最高限额：
           <Input type="number" :number="true" style="width:100px;" v-model="item.maxInsured" placeholder="最高限额"/>
       </Col>
-      <Col span="11">
+
+      <Col span="11" v-if="Object.keys(item.child).length">
         <Row>
-          <Col span="3">{{item.child.name}}</Col>
-          <Col span="4">{{item.child.code}}</Col>
+          <Col span="3">{{item.child.name || "-"}}</Col>
+          <Col span="4">{{item.child.code || "-"}}</Col>
           <Col span="10">
               <FormItem label="强制搭配险种">
                 <RadioGroup v-model="item.child.compulsoryCollocation">
@@ -106,13 +110,13 @@ const defaultForm = {
   insuredLimit: 0, // 保险金额限制    0  无限制    1   有限制
   maxInsured: 0,
   child: {
-    productId: "",
-    productRiderId: "",
-    compulsoryCollocation: "",
-    collocationRatio: "",
-    collocationRatioValue: "",
-    insuredLimit: "",
-    maxInsured: ""
+    // productId: "",
+    // productRiderId: "",
+    // compulsoryCollocation: "",
+    // collocationRatio: "",
+    // collocationRatioValue: "",
+    // insuredLimit: "",
+    // maxInsured: ""
   }
 };
 
@@ -122,66 +126,101 @@ export default {
   data() {
     return {
       form: [],
-      selectRisk: {},
-      riskList: []
+      selectRisk: {
+      },
+      riskList: [],
+      child: {
+        show: false,
+        index: 0
+      }
     };
   },
   mounted() {
-    this.form.productId = this.$route.query.id;
     this.getData();
   },
   methods: {
     getData() {
-      this.form.productId &&
-        getProductRiderByProductId(this.form.productId).then(data => {
-          console.log(data);
+      this.$route.query.id &&
+        getProductRiderByProductId(this.$route.query.id).then(data => {
+          console.log('additionRisk', data);
+          for (const iterator of data) {
+            iterator.child || (iterator.child = {})
+          }
           this.form = data;
+          
         });
     },
     selectChange(data) {
       this.selectRisk = data
+      // console.log(data)
     },
     add() {
       // debugger
-      this.form.push(Object.assign(defaultForm, 
+      if (!Object.keys(this.selectRisk).length) {
+        return
+      }
+      if (this.child.show) {
+        // 添加子附加险
+        this.form[this.child.index].child = Object.assign(defaultForm, 
         {
           name: this.selectRisk.productFullName,
-          code: this.selectRisk.productCode
+          code: this.selectRisk.productCode,
+          productId: this.form[this.child.index].productRiderId,
+          productRiderId: this.selectRisk.id
         })
-      )
+      } else {
+        this.form.push(Object.assign(defaultForm, 
+          {
+            name: this.selectRisk.productFullName,
+            code: this.selectRisk.productCode,
+            productId: this.$route.query.id,
+            productRiderId: this.selectRisk.id
+          })
+        )
+      }
+      this.child.show = false
       // console.log(this.form)
       // console.log(this.selectRisk)
     },
     search(query) {
       // this.$route.query.productForm
-      getProductPageByType(this.$route.query.productForm, query).then(data => {
+      getProductPageByType(1, query).then(data => {
         // console.log(data)
         this.riskList = data
       })
     },
     submit() {
-      this.form.productId = this.$route.query.id
       return Promise.resolve()
         .then(data => {
-          if (data) {
 
-            let isNew = oldData !== JSON.stringify(this.form)
-            oldData = JSON.stringify(this.form)
-
-            if (isNew){
-              if (this.form.id) {
-                // console.log(1)
-                return updateProductRider(this.form);
-              } else {
-                return addProductRider(this.form);
-              }
+          // let isNew = oldData !== JSON.stringify(this.form)
+          // oldData = JSON.stringify(this.form)
+          let formData = [...this.form]
+          for (const iterator of formData) {
+            Object.keys(iterator.child).length || (iterator.child = null)
+          }
+          if (true){
+            if (formData[0].id) {
+              console.log(1)
+              return updateProductRider(formData);
+            } else {
+              console.log(2)
+              return addProductRider(formData);
             }
           }
+          // if (data) {
+          // }
         })
         .then(() => {
-          // this.getData();
+          this.getData();
           return Promise.resolve();
         });
+    },
+    addChild(index) {
+      this.child.show = true
+      this.child.index = index
+      // this.$refs.select.focus()
+      // this.selectRisk.productFullName = ''
     }
   }
 };

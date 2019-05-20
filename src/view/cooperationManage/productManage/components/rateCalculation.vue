@@ -146,7 +146,7 @@ export default {
   methods: {
     getData() {
       this.form.productId && getProductRateByProductId(this.form.productId).then(data => {
-        console.log(data)
+        // console.log(data)
         this.form = data
       })
     },
@@ -158,7 +158,7 @@ export default {
           let isNew = oldData !== JSON.stringify(this.form)
           oldData = JSON.stringify(this.form)
           if (isNew){
-            console.log(this.form)
+            // console.log(this.form)
             if (this.form.id) {
               // console.log(1)
               return updateProductRate(this.form)
@@ -171,7 +171,7 @@ export default {
         }
       })
       .then(() => {
-        // this.getData()
+        this.getData()
         return Promise.resolve()
       })
     }

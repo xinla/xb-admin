@@ -191,9 +191,9 @@ export default {
         }
       })
     },
-    getData(page) {
+    getData(pageNum) {
       this.loading = true;
-      page && (this.query.page = page);
+      pageNum && (this.query.pageNum = pageNum);
       getProductPage(this.query).then(data => {
         console.log(data)
         this.loading = false
@@ -202,8 +202,7 @@ export default {
       })
     },
     search() {
-      this.query.page = 1
-      this.query.size = 10
+      this.query.pageNum = 1
       this.getData()
     },
     goPage(name, query) {
