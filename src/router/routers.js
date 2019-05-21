@@ -449,6 +449,15 @@ export default [
           }
         ]
       },
+      {
+        path: 'digitalDictionary',
+        name: 'digitalDictionary',
+        meta: {
+          icon: '_Insurancerules',
+          title: '数据字典'
+        },
+        component: () => import('@/view/ruleSet/digitalDictionary.vue')
+      },
     ]
   },
   // 行业数据库

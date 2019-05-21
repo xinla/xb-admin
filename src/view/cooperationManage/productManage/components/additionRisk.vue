@@ -1,6 +1,6 @@
 <template>
-  <Form ref="form" :label-width="80">
-    <FormItem label="添加附加险">
+  <Form ref="form" :label-width="90">
+    <FormItem :label="child.show ? '添加强制附加险' : '添加附加险'" :label-width="100">
       <Select ref="select" :value="selectRisk.productFullName" filterable remote :remote-method="search" style="width:30%;">
         <Option
           v-for="(option, index) in riskList"
@@ -29,7 +29,6 @@
             </RadioGroup>
             <Button v-if="item.compulsoryCollocation" type="info" size="small" @click="addChild(index)">添加</Button>
           </FormItem>
-          <span>添加</span>
           <FormItem label="搭配比例">
             <RadioGroup v-model="item.collocationRatio">
               <Radio :label="0">无</Radio>
@@ -61,7 +60,6 @@
                   <Radio :label="0">无</Radio>
                 </RadioGroup>
               </FormItem>
-              <span>添加</span>
               <FormItem label="搭配比例">
                 <RadioGroup v-model="item.child.collocationRatio">
                   <Radio :label="0">无</Radio>
@@ -84,6 +82,7 @@
           </Col>
         </Row>
       </col>
+      <Divider/>
     </Row>
     
     <!-- <FormItem label="附加险" prop="shortName">
@@ -109,15 +108,15 @@ const defaultForm = {
   collocationRatioValue: "", // 搭配比例的值
   insuredLimit: 0, // 保险金额限制    0  无限制    1   有限制
   maxInsured: 0,
-  child: {
-    // productId: "",
-    // productRiderId: "",
-    // compulsoryCollocation: "",
-    // collocationRatio: "",
-    // collocationRatioValue: "",
-    // insuredLimit: "",
-    // maxInsured: ""
-  }
+  // child: {
+  //   // productId: "",
+  //   // productRiderId: "",
+  //   // compulsoryCollocation: "",
+  //   // collocationRatio: "",
+  //   // collocationRatioValue: "",
+  //   // insuredLimit: "",
+  //   // maxInsured: ""
+  // }
 };
 
 let oldData = ''
@@ -142,7 +141,7 @@ export default {
     getData() {
       this.$route.query.id &&
         getProductRiderByProductId(this.$route.query.id).then(data => {
-          console.log('additionRisk', data);
+          // console.log('additionRisk', data);
           for (const iterator of data) {
             iterator.child || (iterator.child = {})
           }
@@ -174,7 +173,8 @@ export default {
             name: this.selectRisk.productFullName,
             code: this.selectRisk.productCode,
             productId: this.$route.query.id,
-            productRiderId: this.selectRisk.id
+            productRiderId: this.selectRisk.id,
+            child: {}
           })
         )
       }
@@ -193,18 +193,16 @@ export default {
       return Promise.resolve()
         .then(data => {
 
-          // let isNew = oldData !== JSON.stringify(this.form)
-          // oldData = JSON.stringify(this.form)
-          let formData = [...this.form]
+          let isNew = oldData !== JSON.stringify(this.form)
+          oldData = JSON.stringify(this.form)
+          let formData = JSON.parse(oldData)
           for (const iterator of formData) {
             Object.keys(iterator.child).length || (iterator.child = null)
           }
-          if (true){
+          if (isNew){
             if (formData[0].id) {
-              console.log(1)
               return updateProductRider(formData);
             } else {
-              console.log(2)
               return addProductRider(formData);
             }
           }

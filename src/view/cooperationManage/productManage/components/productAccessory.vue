@@ -2,19 +2,21 @@
   <Form ref="form" :rules="rules" v-model="form">
     <div class="title-row">投保规则</div>
     <a v-if="form.applicationRules" :href="form.applicationRules">{{form.applicationRulesName}}</a>
-    <Upload :action="uploadUrl" :on-success="uploadRule">
+    <Upload :action="uploadUrl" :show-upload-list="false" :on-success="uploadRule">
       <Button icon="ios-cloud-upload-outline">上传</Button>
     </Upload>
     <Divider/>
 
     <div class="title-row">产品条款</div>
     <a v-if="form.policyWording" :href="form.policyWording">{{form.policyWordingName}}</a>
-    <Upload :action="uploadUrl" :on-success="uploadWording">
+    <Upload :action="uploadUrl" :show-upload-list="false"  :on-success="uploadWording">
       <Button icon="ios-cloud-upload-outline">上传</Button>
     </Upload>
     <Divider/>
 
-    <div class="title-row">产品课件</div>
+    <div class="title-row">产品课件
+      <Button type="info" size="small" @click="addRow()">新增一行</Button>
+    </div>
     <Row class="ac">
       <Col span="4">作者</Col>
       <Col span="4">课件标题</Col>
@@ -40,10 +42,10 @@
         </Select>-->
       </Col>
       <Col span="4">{{item.fileSize || '-'}}</Col>
-      <Col span="4">
-        <a v-if="item.url" :href="item.url">{{item.title}}</a>
-        <Upload v-else :action="uploadUrl" :on-success="uploadCourse">
-          <Button icon="ios-cloud-upload-outline">上传</Button>
+      <Col span="4" class="oe">
+        <a v-if="item.url" :href="item.url">{{item.url}}</a>
+        <Upload :action="uploadUrl" :format="['pdf','ppt']" :on-success="uploadCourse" :on-format-error="formatError">
+          <Button icon="ios-cloud-upload-outline" @click="upload(index)">上传</Button>
         </Upload>
         <!-- <Button type="primary" @click="add('role')">添加</Button> -->
       </Col>
@@ -98,7 +100,8 @@ export default {
             trigger: "change"
           }
         ]
-      }
+      },
+      upIndex: 0,
     };
   },
   mounted() {
@@ -109,36 +112,48 @@ export default {
     getData() {
       this.form.productId &&
         getProductAttachmentByProductId(this.form.productId).then(data => {
-          console.log('productAccessory', data);
+          // console.log('productAccessory', data);
+          data.productCourse = JSON.parse(data.productCourse)
           this.form = data;
         });
     },
     uploadCourse(response, file, fileList) {
-      this.form.productCourse[this.form.productCourse.length - 1].url =
+      this.form.productCourse[this.upIndex].url =
         response.result.fileUrl;
-      // this.form.productCourse[this.form.productCourse.length - 1].fileType = response.result.fileType;
-      this.form.productCourse[this.form.productCourse.length - 1].fileType = 0;
-      this.form.productCourse[
-        this.form.productCourse.length - 1
-      ].fileSize = formatFileSize(response.result.fileSize);
-      this.form.productCourse.push({});
+      // this.form.productCourse[this.form.productCourse.length].fileType = response.result.fileType;
+      this.form.productCourse[this.upIndex].fileType = 0;
+      this.form.productCourse[this.upIndex].fileSize = formatFileSize(response.result.fileSize);
       // console.log(response, file, fileList)
     },
     uploadRule(response, file, fileList) {
       this.form.applicationRules = response.result.fileUrl;
       this.form.applicationRulesName = response.result.newName;
-      // console.log(response, file)
+      console.log(response, file, fileList)
     },
     uploadWording(response, file, fileList) {
       this.form.policyWording = response.result.fileUrl;
       this.form.policyWordingName = response.result.newName;
       // console.log(response, file)
     },
+    addRow() {
+      if (!this.form.productCourse.length) {
+        this.form.productCourse.push({});
+        return
+      }
+      if (this.form.productCourse[this.form.productCourse.length - 1].url) {
+        this.form.productCourse.push({});
+      } else {
+
+      }
+    },
     submit() {
       this.form.productId = this.$route.query.id
       let formData = Object.assign({}, this.form)
-      formData.productCourse.pop()
-      // formData.productCourse = JSON.stringify(formData.productCourse)
+      // 判断课件最后一个对象是否为空，若空则删除
+      if (Object.keys(formData.productCourse[formData.productCourse.length - 1]).length === 0) {
+        formData.productCourse.pop()
+      }
+      formData.productCourse = JSON.stringify(formData.productCourse)
       return Promise.resolve()
         .then(data => {
           if (formData.id) {
@@ -152,11 +167,20 @@ export default {
           this.getData();
           return Promise.resolve();
         });
+    },
+    formatError() {
+      this.$Message.error('文件格式错误，仅限pdf和ppt格式的文件');
+    },
+    upload(index) {
+      this.upIndex = index
     }
   }
 };
 </script>
 <style lang="less" scoped>
+.ivu-upload{
+  float: right;
+}
 .ivu-btn-primary {
 }
 </style>
