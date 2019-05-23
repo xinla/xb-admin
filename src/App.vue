@@ -31,6 +31,6 @@ this.$Modal.confirm({
     title: '提示',
     content: '确定要删除么',
     onOk: () => {
-        this.$Message.info('Clicked ok');
+        this.$Message.info('删除成功');
     },
 })

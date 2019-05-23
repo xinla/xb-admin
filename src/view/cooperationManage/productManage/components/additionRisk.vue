@@ -1,17 +1,21 @@
 <template>
   <Form ref="form" :label-width="90">
-    <FormItem :label="child.show ? '添加强制附加险' : '添加附加险'" :label-width="100">
-      <Select ref="select" :value="selectRisk.productFullName" filterable remote :remote-method="search" style="width:30%;">
-        <Option
-          v-for="(option, index) in riskList"
-          :value="option.productFullName"
-          :key="index"
-          @click.native="selectChange(option)"
-        ></Option>
-      </Select>
-      <Button type="info" @click="add">添加</Button>
-    </FormItem>
+    <Drawer :title="child.show ? '添加强制附加险' : '添加附加险'" :closable="false" v-model="addShow">
+        <FormItem :label-width="0">
+        <Select ref="select" :value="selectRisk.productFullName" filterable remote :remote-method="search">
+          <Option
+            v-for="(option, index) in riskList"
+            :value="option.productFullName"
+            :key="index"
+            @click.native="selectChange(option)"
+          ></Option>
+        </Select>
+        <Button type="info" @click="add">添加</Button>
+      </FormItem>
+    </Drawer>
 
+    <Button type="info" @click="add">添加</Button>
+    
     <Row>
       <Col span="3">产品代码</Col>
       <Col span="4">产品名称</Col>
@@ -19,8 +23,8 @@
     </Row>
 
     <Row v-for="(item, index) of form" :Key="index">
-      <Col span="3">{{item.name || "-"}}</Col>
-      <Col span="4">{{item.code || "-"}}</Col>
+      <Col span="3">{{item.productCode || "-"}}</Col>
+      <Col span="4">{{item.productFullName || "-"}}</Col>
       <Col span="6">
           <FormItem label="强制搭配险种">
             <RadioGroup v-model="item.compulsoryCollocation">
@@ -50,10 +54,10 @@
           <Input type="number" :number="true" style="width:100px;" v-model="item.maxInsured" placeholder="最高限额"/>
       </Col>
 
-      <Col span="11" v-if="Object.keys(item.child).length">
-        <Row>
-          <Col span="3">{{item.child.name || "-"}}</Col>
-          <Col span="4">{{item.child.code || "-"}}</Col>
+      <Col span="10">
+        <Row v-if="Object.keys(item.child).length && item.compulsoryCollocation">
+          <Col span="3">{{item.child.productCode || "-"}}</Col>
+          <Col span="4">{{item.child.productFullName || "-"}}</Col>
           <Col span="10">
               <FormItem label="强制搭配险种">
                 <RadioGroup v-model="item.child.compulsoryCollocation">
@@ -81,7 +85,10 @@
               <Input type="number" :number="true" style="width:100px;" v-model="item.child.maxInsured" placeholder="最高限额"/>
           </Col>
         </Row>
-      </col>
+      </Col>
+      <Col span="1" class="fr">
+        <Button type="error" size="small" @click="deleteRow(index)">删除</Button>
+       </Col>
       <Divider/>
     </Row>
     
@@ -90,7 +97,6 @@
         <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
     </FormItem> -->
-
   </Form>
 </template>
 
@@ -99,8 +105,8 @@ import { getProductRiderByProductId, addProductRider, updateProductRider } from 
 import { getProductPageByType } from '@/api/product'
 
 const defaultForm = {
-  name: '',
-  code: '',
+  productFullName: '',
+  productCode: '',
   productId: "", // 当pid=0时  为主线产品id   当pid不为0时  为附加险产品id',
   productRiderId: "", // 产品附加险id
   compulsoryCollocation: 0, // 强制搭配险种     0    无   1  强制搭配
@@ -131,7 +137,8 @@ export default {
       child: {
         show: false,
         index: 0
-      }
+      },
+      addShow: false
     };
   },
   mounted() {
@@ -141,7 +148,7 @@ export default {
     getData() {
       this.$route.query.id &&
         getProductRiderByProductId(this.$route.query.id).then(data => {
-          // console.log('additionRisk', data);
+          console.log('additionRisk', data);
           for (const iterator of data) {
             iterator.child || (iterator.child = {})
           }
@@ -162,16 +169,16 @@ export default {
         // 添加子附加险
         this.form[this.child.index].child = Object.assign(defaultForm, 
         {
-          name: this.selectRisk.productFullName,
-          code: this.selectRisk.productCode,
+          productFullName: this.selectRisk.productFullName,
+          productCode: this.selectRisk.productCode,
           productId: this.form[this.child.index].productRiderId,
           productRiderId: this.selectRisk.id
         })
       } else {
         this.form.push(Object.assign(defaultForm, 
           {
-            name: this.selectRisk.productFullName,
-            code: this.selectRisk.productCode,
+            productFullName: this.selectRisk.productFullName,
+            productCode: this.selectRisk.productCode,
             productId: this.$route.query.id,
             productRiderId: this.selectRisk.id,
             child: {}
@@ -219,6 +226,16 @@ export default {
       this.child.index = index
       // this.$refs.select.focus()
       // this.selectRisk.productFullName = ''
+    },
+    deleteRow(index) {
+      this.$Modal.confirm({
+          title: '提示',
+          content: '确定要删除么',
+          onOk: () => {
+            this.form.splice(index, 1)
+            this.$Message.info('删除成功');
+          },
+      })
     }
   }
 };
