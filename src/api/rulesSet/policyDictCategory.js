@@ -25,10 +25,10 @@ export const getPolicyDictCategoryDetail = (id, name) => {
 export const getPolicyDictCategoryPage = ({page, size, name}) => {
   return axios.request({
     url: service + `/findAll/${page}/${size}`,
-    params: {
+    data: {
       name
     },
-    method: 'get'
+    method: 'post'
   })
 }
 
@@ -45,21 +45,24 @@ export const savePolicyDictCategory = (data) => {
 }
 
 /**
- * 数字字典->投保数据来源字典表值->根据id 查询详情
- * @param {*} name 供应商名
+ * 数字字典->数值的增加/修改
+ * @param {*} data 
  */
-export const savePolicyDictCategoryValue = (name) => {
+export const savePolicyDictCategoryValue = (data) => {
   return axios.request({
-    url: service + `/save`,
-    params: {
-      name
-    },
-    data: {
-      dictCategoryId: '',  // 
-      categoryNumber: '',  // 标号	
-      categoryValue: '',  // 数值	
-      isShow: '',  // 0可见,1隐藏
-    },
+    url: serviceSub + `/save`,
+    data,
+    method: 'post'
+  })
+}
+
+/**
+ * 数字字典->根据id删除数值
+ * @param {*} id 
+ */
+export const deletePolicyDictCategory = (id) => {
+  return axios.request({
+    url: serviceSub + `/deleteById/${id}`,
     method: 'post'
   })
 }
@@ -70,7 +73,7 @@ export const savePolicyDictCategoryValue = (name) => {
  */
 export const getPolicyDictCategoryValueDetail = ({page, size, CategoryId, name}) => {
   return axios.request({
-    url: service + `/findByCategoryId/${CategoryId}/${page}/${size}`,
+    url: service + `/deleteById/${id}`,
     params: {
       name
     },

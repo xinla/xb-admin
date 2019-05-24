@@ -42,7 +42,7 @@
           <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">编辑</Button>
           <Button type="error" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">详情</Button>
           <Button type="error" size="small" style="margin-right: 5px" @click="goPage('', {id: row.productId})">H5</Button>
-          <Button type="error" size="small" style="margin-right: 5px" @click="goPage('', {id: row.productId})">上架</Button>
+          <Button type="error" size="small" style="margin-right: 5px" @click="sale(row.productId)">上架</Button>
       </template>
     </Table>
 
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { getProductPage } from '@/api/product'
+import { getProductPage, saleProduct } from '@/api/product'
 import { getTypeRulePage } from '@/api/rulesSet/type'
 
 const channel = [
@@ -208,6 +208,11 @@ export default {
     goPage(name, query) {
       this.$router.push({name, query})
     },
+    sale(data) {
+      saleProduct(data).then(res => {
+        this.$Message.info("上架成功");
+      })
+    }
   }
 };
 </script>

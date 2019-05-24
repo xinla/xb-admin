@@ -365,6 +365,36 @@ export default [
         },
         component: () => import('@/view/applicationManage/menuSet.vue'),
       },
+      {
+        path: 'digitalResource',
+        name: 'digitalResource',
+        meta: {
+          icon: '_menu',
+          title: '数据资源',
+        },
+        component: () => import('@/view/applicationManage/digitalResource/index'),
+        redirect: '/applicationManage/digitalResource/proposalTitle',
+        children: [
+          {
+            path: 'proposalTitle',
+            name: 'proposalTitle',
+            meta: {
+              hideInMenu: true,
+              title: '建议书标题库',
+            },
+            component: () => import('@/view/applicationManage/digitalResource/proposalTitle.vue')
+          },
+          {
+            path: 'proposalThumb',
+            name: 'proposalThumb',
+            meta: {
+              hideInMenu: true,
+              title: '建议书封面库',
+            },
+            component: () => import('@/view/applicationManage/digitalResource/proposalThumb.vue')
+          },
+        ]
+      },
     ]
   },
   // 规则配置

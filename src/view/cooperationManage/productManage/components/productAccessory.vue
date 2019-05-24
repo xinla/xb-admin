@@ -44,7 +44,7 @@
       <Col span="4">{{item.fileSize || '-'}}</Col>
       <Col span="4" class="oe">
         <a v-if="item.url" :href="item.url">{{item.url}}</a>
-        <Upload :action="uploadUrl" :format="['pdf','ppt']" :on-success="uploadCourse" :on-format-error="formatError">
+        <Upload :action="uploadUrl" :format="['pdf','ppt']" :on-success="uploadCourse" :show-upload-list="false" :on-format-error="formatError">
           <Button icon="ios-cloud-upload-outline" @click="upload(index)">上传</Button>
         </Upload>
         <!-- <Button type="primary" @click="add('role')">添加</Button> -->
@@ -120,8 +120,8 @@ export default {
     uploadCourse(response, file, fileList) {
       this.form.productCourse[this.upIndex].url =
         response.result.fileUrl;
-      // this.form.productCourse[this.form.productCourse.length].fileType = response.result.fileType;
-      this.form.productCourse[this.upIndex].fileType = 0;
+      this.form.productCourse[this.form.productCourse.length].fileType = response.result.fileType;
+      // this.form.productCourse[this.upIndex].fileType = 0;
       this.form.productCourse[this.upIndex].fileSize = formatFileSize(response.result.fileSize);
       // console.log(response, file, fileList)
     },

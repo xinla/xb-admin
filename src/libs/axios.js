@@ -59,6 +59,11 @@ class HttpRequest {
       if (status === 200 && data.code === 0) {
         return data.result || data.data
       } else {
+        // if (data.code === 201) {
+          
+        // } else {
+          
+        // }
         addErrorLog(res)
         return Promise.reject(res)
       }

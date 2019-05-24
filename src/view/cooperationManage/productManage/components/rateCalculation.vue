@@ -72,10 +72,15 @@
         :number="true" size="small" v-model="form.premiumLimitIncrementalUnit"/>
         元
     </FormItem>
-
-    <Upload action="//jsonplaceholder.typicode.com/posts/">
-        <Button icon="ios-cloud-upload-outline">上传费率表</Button>
-    </Upload>
+    
+    <FormItem label="费率表" prop="premiumLimitMin">
+      <div v-if="form.rateTableUrl">
+        {{form.rateTableUrl}}
+      </div>
+      <Upload v-else :action="uploadUrl" :show-upload-list="false" :data="{productId: form.productId}" :on-success="uploadSuccess">
+          <Button icon="ios-cloud-upload-outline">上传费率表</Button>
+      </Upload>
+      </FormItem>
 
   </Form>
 </template>
@@ -95,13 +100,15 @@ const defaultForm = {
   sexSort: 0, // 是否区分性别  0  不区分性别   1 区分性别	
   socialInsuranceSort: 0, // 是否区分社保  0  不区分社保   1  区分社保 	
   premiumLimitMin: 0, // 保费限制最低	
-  premiumLimitIncrementalUnit: 0
+  premiumLimitIncrementalUnit: 0,
+  rateTableUrl: '' // 费率表名称
 }
 let oldData = ''
 export default {
   data() {
     return {
       form: Object.assign({}, defaultForm),
+      uploadUrl: this.$config.baseUrl.dev + "/insurance/import",
       rules: {
         applicationUnit: [
             { required: true, type: 'number', message: '不能为空', trigger: 'change' }
@@ -174,6 +181,10 @@ export default {
         this.getData()
         return Promise.resolve()
       })
+    },
+    uploadSuccess(response, file, fileList) {
+      // console.log(response, file, fileList)
+      this.form.rateTableUrl = file.name
     }
   }
 }

@@ -22,6 +22,11 @@ const routesB = [
   {name: 'professionTable', text: '职业代码表'},
 ]
 
+const routesC = [
+  {name: 'proposalTitle', text: '建议书标题库'},
+  {name: 'proposalThumb', text: '建议书封面库'},
+]
+
 export default {
   props: {
     type: ''
@@ -32,7 +37,13 @@ export default {
   },
   computed: {
     routes() {
-      return this.type === 'database' ? routesB : routesA
+      if (this.type === 'database') {
+        return routesB
+      } else if (this.type === 'digitalResource') {
+        return routesC
+      } else {
+        return routesA
+      }
     }
   },
 }
