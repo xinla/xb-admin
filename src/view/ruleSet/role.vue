@@ -143,6 +143,11 @@ export default {
           align: "center"
         },
         {
+          title: "id",
+          key: "id",
+          align: "center"
+        },
+        {
           title: "组名称",
           key: "groupName",
           align: "center"
@@ -260,24 +265,23 @@ export default {
     submit(type, item) {
       // console.log('roleGroupForm:', this.roleGroupForm)
       // console.log('roleForm:', this.roleForm)
-      type === 0
+      (type === 0
         ? this.$refs.roleGroupForm.validate()
-        : this.$refs.roleForm
-            .validate()
-            .then(() => {
-              if (item.id || item.roleId) {
-                return type === 0
-                  ? updateRoleGroupRule(item)
-                  : updateRoleRule(item);
-              } else {
-                return type === 0 ? addRoleGroupRule(item) : addRoleRule(item);
-              }
-            })
-            .then(data => {
-              this.getData(type);
-              this.$Message.success("操作成功");
-              this.cancel(type);
-            });
+        : this.$refs.roleForm.validate())
+        .then(() => {
+          if (item.id || item.roleId) {
+            return type === 0
+              ? updateRoleGroupRule(item)
+              : updateRoleRule(item);
+          } else {
+            return type === 0 ? addRoleGroupRule(item) : addRoleRule(item);
+          }
+        })
+        .then(data => {
+          this.getData(type);
+          this.$Message.success("操作成功");
+          this.cancel(type);
+        });
     },
     cancel(type) {
       type === 0 ? (this.roleGroupShow = false) : (this.roleShow = false);

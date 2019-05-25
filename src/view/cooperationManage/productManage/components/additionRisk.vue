@@ -1,6 +1,6 @@
 <template>
   <Form ref="form" :label-width="90">
-    <Drawer :title="child.show ? '添加强制附加险' : '添加附加险'" :closable="false" v-model="addShow">
+    <Drawer :title="child.show ? '添加强制附加险' : '添加附加险'" :closable="false" v-model="addShow" width="350">
         <FormItem :label-width="0">
         <Select ref="select" :value="selectRisk.productFullName" filterable remote :remote-method="search">
           <Option
@@ -10,11 +10,11 @@
             @click.native="selectChange(option)"
           ></Option>
         </Select>
-        <Button type="info" @click="add">添加</Button>
+        <Button type="info" style="display:block; margin: 100px 0 0 auto;" @click="add">添加</Button>
       </FormItem>
     </Drawer>
 
-    <Button type="info" @click="add">添加</Button>
+    <Button type="info" @click="addShow = true, child.show = false">添加</Button>
     
     <Row>
       <Col span="3">产品代码</Col>
@@ -167,7 +167,8 @@ export default {
       }
       if (this.child.show) {
         // 添加子附加险
-        this.form[this.child.index].child = Object.assign(defaultForm, 
+        let tempForm = JSON.parse(JSON.stringify(defaultForm))
+        this.form[this.child.index].child = Object.assign(tempForm, 
         {
           productFullName: this.selectRisk.productFullName,
           productCode: this.selectRisk.productCode,
@@ -175,7 +176,7 @@ export default {
           productRiderId: this.selectRisk.id
         })
       } else {
-        this.form.push(Object.assign(defaultForm, 
+        this.form.push(Object.assign(tempForm, 
           {
             productFullName: this.selectRisk.productFullName,
             productCode: this.selectRisk.productCode,
@@ -224,6 +225,7 @@ export default {
     addChild(index) {
       this.child.show = true
       this.child.index = index
+      this.addShow = true
       // this.$refs.select.focus()
       // this.selectRisk.productFullName = ''
     },

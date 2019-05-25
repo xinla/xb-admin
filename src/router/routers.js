@@ -369,7 +369,7 @@ export default [
         path: 'digitalResource',
         name: 'digitalResource',
         meta: {
-          icon: '_menu',
+          icon: '_Dictionaries',
           title: '数据资源',
         },
         component: () => import('@/view/applicationManage/digitalResource/index'),
@@ -483,7 +483,7 @@ export default [
         path: 'digitalDictionary',
         name: 'digitalDictionary',
         meta: {
-          icon: '_Insurancerules',
+          icon: '_Dictionaries',
           title: '数据字典'
         },
         component: () => import('@/view/ruleSet/digitalDictionary.vue')

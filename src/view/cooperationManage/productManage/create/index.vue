@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      current: 2,
+      current: 4,
     }
   },
   methods: {
@@ -88,7 +88,7 @@ export default {
           case 5: 
           return this.$refs.productAccessory.submit()
           .then(data => {
-            // this.$router.push({name: 'productManage'})
+            this.$router.push({name: 'productManage'})
           })
           break
         }

@@ -13,8 +13,8 @@ const config = {
    * @description api请求基础路径
    */
   baseUrl: {
-    // dev: 'http://192.168.1.64', // 虚拟机
-    dev: 'http://192.168.1.8', // 本地
+    dev: 'http://192.168.1.64', // 虚拟机
+    // dev: 'http://192.168.1.8', // 本地
     dev2: 'http://192.168.1.21:8115/v1',
     pro: 'https://produce.com'
   },

@@ -120,7 +120,7 @@ export default {
     uploadCourse(response, file, fileList) {
       this.form.productCourse[this.upIndex].url =
         response.result.fileUrl;
-      this.form.productCourse[this.form.productCourse.length].fileType = response.result.fileType;
+      this.form.productCourse[this.upIndex].fileType = response.result.fileType;
       // this.form.productCourse[this.upIndex].fileType = 0;
       this.form.productCourse[this.upIndex].fileSize = formatFileSize(response.result.fileSize);
       // console.log(response, file, fileList)

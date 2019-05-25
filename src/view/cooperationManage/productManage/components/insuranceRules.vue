@@ -337,20 +337,20 @@ const defaultForm = {
   ],
   incrementalUnit: "",
   policyPeriodYear: [
-    {
-      productId: "",
-      ruleIntervalType: 2,
-      ruleIntervalName: "1年",
-      ruleIntervalValue: 1
-    }
+    // {
+    //   productId: "",
+    //   ruleIntervalType: 2,
+    //   ruleIntervalName: "1年",
+    //   ruleIntervalValue: 1
+    // }
   ],
   policyPeriodAge: [
-    {
-      productId: "",
-      ruleIntervalType: 6,
-      ruleIntervalName: "终身",
-      ruleIntervalValue: -1
-    }
+    // {
+    //   productId: "",
+    //   ruleIntervalType: 6,
+    //   ruleIntervalName: "终身",
+    //   ruleIntervalValue: -1
+    // }
   ],
   paymentPeriodYear: [],
   paymentPeriodAge: [],
@@ -554,6 +554,7 @@ export default {
   },
   methods: {
     init() {
+      this.$refs.editor.setHtml('')
       this.getData();
     },
     getData() {
@@ -694,10 +695,12 @@ export default {
       });
     },
     transCode() {
-      this.specialOccupationUnderwriting = this.form.specialOccupationUnderwriting.split(
-        " "
-      );
-      this.codeShow = false;
+      if (this.form.specialOccupationUnderwriting) {
+        this.specialOccupationUnderwriting = this.form.specialOccupationUnderwriting.split(
+          " "
+        );
+      }
+        this.codeShow = false;
       // console.log(this.specialOccupationUnderwriting)
     },
     selectChange() {

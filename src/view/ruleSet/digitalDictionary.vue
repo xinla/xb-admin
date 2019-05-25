@@ -77,7 +77,7 @@
         </Row>
       </TabPane>
 
-      <TabPane label="分配">
+      <TabPane label="分配（1.0不考虑）">
         <Row>
           <Col span="6">
             <Card title="Options" icon="ios-options" :padding="0" shadow style="width: 300px;">
@@ -133,7 +133,7 @@
                 icon="ios-options"
                 :padding="0"
                 shadow
-                style="width: 300px;"
+                style="width: 400px;"
               >
                 <template v-for="(unit, unique) in item.vitPolicyDictCategoryVos">
                   <Table
@@ -175,14 +175,22 @@
       <Form ref="form" :model="form" :rules="rules">
         <FormItem>
           <selectSupplier :val="form.name" type="supplier" @change="change"/>
+        </FormItem>请勾选需要编辑的类别
+        <FormItem prop="dictName" style="max-width: 
+        100%;">
+          <CheckboxGroup v-model="form.dictName">
+            <Checkbox v-for="(item, index) in baseClass" :label="item" :key="index"></Checkbox>
+          </CheckboxGroup>
         </FormItem>
 
-        <FormItem prop="dictName">
-          <CheckboxGroup v-model="form.dictName">
-            <Checkbox label="香蕉"></Checkbox>
-            <Checkbox label="苹果"></Checkbox>
-            <Checkbox label="西瓜"></Checkbox>
-          </CheckboxGroup>
+        <FormItem label="继续添加">
+          <Input
+            type="text"
+            v-model.trim="className"
+            placeholder="类别名称"
+            style="width: 50%;margin-right: 5px"
+          />
+          <Button type="primary" size="small" @click="add">添加</Button>
         </FormItem>
 
         <Button
@@ -258,7 +266,7 @@ export default {
       form: {
         name: "",
         supplierId: "",
-        dictName: ["香蕉", "西瓜"]
+        dictName: []
       },
       formB: Object.assign({}, defautlFormB),
       rules: {
@@ -334,6 +342,7 @@ export default {
         {
           title: "匹配值",
           slot: "aa",
+          minWidth: 60,
           align: "center"
         },
         {
@@ -348,7 +357,37 @@ export default {
       show: [0, 0],
       dialogShow: false,
       dialogShowB: false,
-      editIndex: undefined
+      editIndex: undefined,
+      baseClass: [
+        "姓名",
+        "证件类型",
+        "证件号码",
+        "证件有效期",
+        "性别",
+        "生日",
+        "婚姻状况",
+        "教育程度",
+        "国籍",
+        "所在地区",
+        "详细住址",
+        "邮编",
+        "家庭电话",
+        "手机号",
+        "电子邮箱",
+        "单位/学校",
+        "所在地区",
+        "详细住址",
+        "职业名称",
+        "职务内容",
+        "是否兼职",
+        "年收入",
+        "收入来源",
+        "是否有社保",
+        "身高",
+        "体重",
+        "纳税身份声明"
+      ],
+      className: ""
     };
   },
   watch: {},
@@ -362,7 +401,7 @@ export default {
       this.loading = true;
       page && (this.query.page = page);
       getPolicyDictCategoryPage(this.query).then(data => {
-        console.log(data);
+        // console.log(data);
         this.loading = false;
         this.list = data.list;
         this.total = data.total;
@@ -416,21 +455,18 @@ export default {
       // console.log(val)
     },
     submit(type, item) {
-      type === 0
-        ? this.$refs.form.validate()
-        : this.$refs.formB
-            .validate()
-            .then(() => {
-              return type === 0
-                ? savePolicyDictCategory(item)
-                : savePolicyDictCategoryValue(item);
-            })
-            .then(data => {
-              this.getData();
-              this.$Message.success("操作成功");
-              this.dialogShow = false;
-              this.dialogShowB = false;
-            });
+      (type === 0 ? this.$refs.form.validate() : this.$refs.formB.validate())
+        .then(() => {
+          return type === 0
+            ? savePolicyDictCategory(item)
+            : savePolicyDictCategoryValue(item);
+        })
+        .then(data => {
+          this.getData();
+          this.$Message.success("操作成功");
+          this.dialogShow = false;
+          this.dialogShowB = false;
+        });
     },
     edit1(index) {
       this.editIndex = index;
@@ -440,9 +476,20 @@ export default {
         this.getData();
         this.$Message.success("操作成功");
       });
+    },
+    add() {
+      if (!this.baseClass.includes(this.className) && this.className) {
+        this.baseClass.push(this.className);
+        this.className = "";
+      } else {
+        this.$Message.error("名称为空或已存在");
+      }
     }
   }
 };
 </script>
 <style lang="less" scoped>
+/deep/.cc {
+  max-width: 620px;
+}
 </style>
