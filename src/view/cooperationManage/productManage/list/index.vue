@@ -27,12 +27,13 @@
 
       <template slot-scope="{ row }" slot="distributionChannel">
         <span v-for="(item, index) in row.distributionChannel.split(',')" :key="index">
-       {{ item | channel}} ,
+       {{ item | channel}} {{index ? ',' : ''}}
         </span>
       </template>
 
       <template slot-scope="{ row }" slot="onlineAddress">
         <div v-for="(item, index) in JSON.parse(row.onlineAddress)" :key="index">
+          {{item.code === 0 ? '现保' : ''}}
           {{item.linkAddress}}
         </div>
       </template>
@@ -195,7 +196,7 @@ export default {
       this.loading = true;
       pageNum && (this.query.pageNum = pageNum);
       getProductPage(this.query).then(data => {
-        console.log(data)
+        // console.log(data)
         this.loading = false
         this.list = data.list
         this.total = data.total

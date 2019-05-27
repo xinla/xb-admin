@@ -272,8 +272,8 @@ export default {
       this.formAccount.timeEnd = date[1]
     },
     change(item) {
-      console.log(1)
       this.JDId = item.id
+      this.formAll.name = item.name
       // console.log(item)
     },
     create() {

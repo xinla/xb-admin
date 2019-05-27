@@ -616,7 +616,6 @@ export default {
         temp.ruleIntervalName = temp.ruleIntervalValue + "万";
         temp.ruleIntervalType = 1;
       } else if (type === "insurancePlan") {
-        temp.ruleIntervalName = "一档," + temp.ruleIntervalValue + "万";
         temp.ruleIntervalType = 5;
       } else if (type === "policyPeriodYear") {
         temp.ruleIntervalName = temp.ruleIntervalValue + "年";
@@ -658,7 +657,11 @@ export default {
             for (const index of this[agency]) {
               // debugger
               formData[agency][index].productId = formData.productId;
+              if (agency === 'insurancePlan') {
+                formData[agency][index].ruleIntervalName = index
+              }
               temp.push(formData[agency][index]);
+
             }
             formData[agency] = temp;
           }

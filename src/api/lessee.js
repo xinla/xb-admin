@@ -1,6 +1,8 @@
 import axios from '@/libs/api.request'
 import config from '@/config'
 
+import qs from 'qs'
+
 const service = config.services.company
 const serviceBusinessInformation = config.services.businessInformation
 const serviceSub = config.services.mCompany
@@ -178,18 +180,15 @@ export const getLesseeBusinessInfoById = (id) => {
  */
 export const getLesseeBrandInfoById = (id) => {
   return axios.request({
-    url: serviceSub + `/getOneCompany`,
-    params: {
-      id
-    },
-    method: 'get'
+    url: service + `/getOneCompany/${id}`,
+    method: 'get',
   })
 }
 
-/**
- * 修改公司品牌信息
- * @param {object} data 公司品牌信息对象
- */
+// /**
+//  * 修改公司品牌信息
+//  * @param {object} data 公司品牌信息对象
+//  */
 // export const updateLessee = (data) => {
 //   return axios.request({
 //     url: serviceSub + `/updateById`,

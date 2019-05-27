@@ -3,15 +3,13 @@ import config from '@/config/index'
 
 const service = config.services.systemHelp
 
-const serviceSub = config.services.mSystemHelp
-
 /**
  * 获取帮助分页列表
  * @param {*} param0 
  */
 export const getHelpPage = ({page, size}) => {
   return axios.request({
-    url: serviceSub + `/list/${page}/${size}`,
+    url: service + `/findAll/${page}/${size}`,
     method: 'get'
   })
 }
@@ -22,10 +20,7 @@ export const getHelpPage = ({page, size}) => {
  */
 export const getHelpById = (id) => {
   return axios.request({
-    url: serviceSub + `/get`,
-    params: {
-      id
-    },
+    url: service + `/${id}`,
     method: 'get'
   })
 }

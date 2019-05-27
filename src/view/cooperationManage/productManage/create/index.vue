@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      current: 4,
+      current: 0,
     }
   },
   methods: {
@@ -95,7 +95,7 @@ export default {
       })
       .then(() => {
         this.$Message.info('保存成功');
-        console.log(this.current)
+        // console.log(this.current)
         this.$refs.container.scrollTop = 0
       })
       .catch(err => {

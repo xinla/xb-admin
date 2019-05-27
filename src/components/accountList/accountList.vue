@@ -88,11 +88,11 @@ export default {
   methods: {
     init() {
       getRoles(this.query).then(data => {
-        console.log(data)
-        this.listRole = data
+        // console.log(data)
+        this.listRole = data.list
       })
       getInvaNumber(this.query).then(data => {
-        console.log(data)
+        // console.log(data)
         this.listAccount = data
       })
     }

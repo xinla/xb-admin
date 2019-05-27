@@ -2,7 +2,7 @@
   <Form ref="form" :label-width="90">
     <Drawer :title="child.show ? '添加强制附加险' : '添加附加险'" :closable="false" v-model="addShow" width="350">
         <FormItem :label-width="0">
-        <Select ref="select" :value="selectRisk.productFullName" filterable remote :remote-method="search">
+        <Select ref="select" v-model="selectRisk.productFullName" filterable remote :remote-method="search">
           <Option
             v-for="(option, index) in riskList"
             :value="option.productFullName"
@@ -165,9 +165,9 @@ export default {
       if (!Object.keys(this.selectRisk).length) {
         return
       }
+      let tempForm = JSON.parse(JSON.stringify(defaultForm))
       if (this.child.show) {
         // 添加子附加险
-        let tempForm = JSON.parse(JSON.stringify(defaultForm))
         this.form[this.child.index].child = Object.assign(tempForm, 
         {
           productFullName: this.selectRisk.productFullName,
@@ -187,6 +187,7 @@ export default {
         )
       }
       this.child.show = false
+      this.addShow = false
       // console.log(this.form)
       // console.log(this.selectRisk)
     },

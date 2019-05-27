@@ -284,7 +284,7 @@ export default {
     },
     submit() {
       // console.log(this.onlineLinkAddress)
-      console.log(this.form)
+      // console.log(this.form)
 
       // 在线投保 提交转换和校验
       this.form.onlineAddress = []
@@ -382,7 +382,9 @@ export default {
     onlineBlur(index) {
       // 在线投保输入交互
       if (this.onlineLinkAddress[index]) {
-        this.onlineType.push(index)
+        if (!this.onlineType.includes(index)) {
+          this.onlineType.push(index)
+        }
       } else if (this.onlineType.includes(index)) {
         this.onlineType.splice(this.onlineType.indexOf(index), 1)
       }
