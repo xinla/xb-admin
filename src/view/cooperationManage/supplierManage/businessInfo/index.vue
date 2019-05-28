@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { getLesseePageByName, getLesseePageByJB } from '@/api/lessee'
+import { getLesseePageByJB } from '@/api/lessee'
 import businessInfo from '@/components/businessInfo'
 import xNav from '@/view/components/nav'
 export default {

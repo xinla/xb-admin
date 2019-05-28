@@ -5,6 +5,7 @@
     children-prop="districts"
     select-type="radio"
     :data="list" 
+    :empty-text="load"
     @tree-icon-click="flod">
     </tree-table>
   </div>
@@ -53,13 +54,16 @@ export default {
         // },
       ],
       list: [],
+      load: ''
     }
   },
   computed:{},
   watch:{},
   mounted(){
+    this.load = '正在加载...'
     getDistrict(3).then(data  => {
       this.list = data
+      this.load = ''
       // console.log(data)
     })
   },

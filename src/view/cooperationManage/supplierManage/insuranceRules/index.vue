@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { getLesseePageByName, getLesseePageByJB } from '@/api/lessee'
+import {  getLesseePageByJB } from '@/api/lessee'
 import xNav from '@/view/components/nav'
 export default {
   components: {

@@ -50,7 +50,7 @@ export default {
   created(){},
   mounted(){
     getSystemSetPage({page: 1, size: 10}).then(data => {
-      console.log(data)
+      // console.log(data)
     })
   },
   methods:{}

@@ -162,7 +162,7 @@ export default {
     getData() {
       this.loading = true;
       getSupplierProductPage(this.query).then(data => {
-        console.log(data);
+        // console.log(data);
         this.loading = false;
         this.list = data.list;
         this.total = data.total;
@@ -179,11 +179,10 @@ export default {
       this.$router.push({ name, query });
     },
     getListByPage(page) {
-      console.log(1);
       this.loading = true;
       this.query.page = page;
       getLesseePage(this.query).then(data => {
-        console.log(data);
+        // console.log(data);
         this.loading = false;
         this.list = data.list;
       });

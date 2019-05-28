@@ -223,7 +223,7 @@ export default {
       if (this.id) {
         getLesseeById(this.id)
         .then(data => {
-          console.log(data)
+          // console.log(data)
           // let {name, compayAccountType, businessType} = data
           // let _form = {name, compayAccountType, businessType}
           this.formAll = Object.assign({oldXbCompanyBusinessInformationId: data.xbCompanyBusinessInformationId, companyName: data.name}, data)

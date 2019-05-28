@@ -1,19 +1,20 @@
 <template>
   <div>
+    1.0 暂不考虑
     <Row>
       <Col span="12">
-        <Form class="org-form" :model="orgForm" :rules="ruleValidate" :label-width="100">
+        <Form class="org-form" :model="form" :rules="rules" :label-width="100">
           <FormItem label="接口名称">
-            <Input v-model="orgForm.name" placeholder="请输入接口名称"></Input>
+            <Input v-model="form.name" placeholder="请输入接口名称"></Input>
           </FormItem>
           <FormItem label="供应商名称">
-            <Input v-model="orgForm.name" placeholder="请输入供应商名称"></Input>
+            <Input v-model="form.name" placeholder="请输入供应商名称"></Input>
           </FormItem>
           <FormItem label="产品名称">
-            <Input v-model="orgForm.name" placeholder="请输入产品名称"></Input>
+            <Input v-model="form.name" placeholder="请输入产品名称"></Input>
           </FormItem>
           <FormItem label="接口地址">
-            <Input v-model="orgForm.name" placeholder="请输入接口地址"></Input>
+            <Input v-model="form.name" placeholder="请输入接口地址"></Input>
           </FormItem>
           <FormItem label="职业代码表">
             <Upload action="//jsonplaceholder.typicode.com/posts/">
@@ -21,7 +22,7 @@
             </Upload>
           </FormItem>
           <FormItem label="投保规则">
-            <CheckboxGroup v-model="disabledGroup">
+            <CheckboxGroup v-model="form.rules">
                 <Checkbox label="香蕉"></Checkbox>
                 <Checkbox label="苹果"></Checkbox>
                 <Checkbox label="西瓜"></Checkbox>
@@ -37,62 +38,20 @@
 </template>
 
 <script>
-const defautlOrgForm = {
+const defautlForm = {
   name: "",
   type: "",
   des: "",
   site: "",
-  call: ""
+  rules: []
 };
 export default {
   components:{},
   props:{},
   data(){
     return {
-      orgForm: Object.assign({}, defautlOrgForm),
-      supplierColumns: [
-        {
-          title: '序号',
-          type: 'index',
-          align: 'center'
-        },
-        {
-          title: '类型名称',
-          key: 'name',
-          align: 'center'
-        },
-        {
-          title: '操作',
-          slot: 'action',
-          align: 'center'
-        },
-      ],
-      supplierList: [],
-      supplierType: '',
-      productColumns: [
-        {
-          title: '序号',
-          type: 'index',
-          align: 'center'
-        },
-        {
-          title: '分类',
-          key: 'name',
-          align: 'center'
-        },
-        {
-          title: '类型名称',
-          key: 'name',
-          align: 'center'
-        },
-        {
-          title: '操作',
-          slot: 'action',
-          align: 'center'
-        },
-      ],
-      productList: [],
-      productType: '',
+      form: Object.assign({}, defautlForm),
+      rules:{}
     }
   },
   watch:{},

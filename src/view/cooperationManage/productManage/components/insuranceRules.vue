@@ -98,7 +98,7 @@
         <!--保险计划额添加项 -->
         <CheckboxGroup v-model="insurancePlan">
           <Checkbox :label="index" v-for="(item, index) of form.insurancePlan" :key="index">
-            一档,<Input
+            {{character[index]}}档,<Input
               class="inline-input"
               type="number"
               :number="true"
@@ -543,7 +543,19 @@ export default {
       paymentPeriodAge: [],
       codeShow: false,
       specialOccupationUnderwriting: [],
-      disabled: true
+      disabled: true,
+      character: {
+        0: '一',
+        1: '二',
+        2: '三',
+        3: '四',
+        4: '五',
+        5: '六',
+        6: '七',
+        7: '八',
+        8: '九',
+        9: '十',
+      }
     };
   },
   mounted() {
@@ -588,7 +600,11 @@ export default {
         });
     },
     addRow(type) {
-      this.form[type].push({});
+      // debugger
+      let len = this.form[type].length
+      if (!len || Object.keys(this.form[type][len - 1]).length) {
+        this.form[type].push({});
+      }
     },
     handleChange(html, text) {
       // console.log(html, text);
@@ -603,13 +619,15 @@ export default {
       } else {
         if (this[type].includes(index)) {
           this[type].splice(this[type].indexOf(index), 1);
-          // 中间减掉，后续数据索引-1补上
-          this[type].forEach((element, unique) => {
-            if (element > index) {
-              this[type][unique] = --element;
-            }
-          });
         }
+        // 中间减掉，后续数据索引-1补上
+        this[type].forEach((element, unique) => {
+          if (element > index) {
+            this[type][unique] = --element;
+          }
+        });
+        // console.log(this[type])
+        this[type].splice() // 强制触发checkbox dom更新 不可删除
         this.form[type].splice(index, 1);
       }
       if (type === "insuranceFullAmount") {

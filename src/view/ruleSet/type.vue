@@ -208,7 +208,7 @@ export default {
     getData(type) {
       // 0 供应商类型，1 产品类型
       getTypeRulePage(type).then(data => {
-        console.log(data);
+        // console.log(data);
         type === 0
           ? (this.supplierList = data.list)
           : (this.productList = data.list);
@@ -272,7 +272,7 @@ export default {
     },
     async getProductType(id) {
       let res = await getTypeRuleRuleById(id);
-      console.log(res);
+      // console.log(res);
     }
   }
 };

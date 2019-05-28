@@ -322,7 +322,7 @@ export default [
         name: 'messageTemplate',
         meta: {
           icon: '_Messagetemplate',
-          title: '消息模板'
+          title: '消息模板（待定）'
         },
         redirect: 'commonExpressions',
       },
@@ -370,7 +370,7 @@ export default [
         name: 'digitalResource',
         meta: {
           icon: '_Dictionaries',
-          title: '数据资源',
+          title: '数据资源（待定）',
         },
         component: () => import('@/view/applicationManage/digitalResource/index'),
         redirect: '/applicationManage/digitalResource/proposalTitle',
@@ -535,7 +535,7 @@ export default [
         name: 'insuranceProduct',
         meta: {
           icon: '_InsuranceProducts',
-          title: '保险产品'
+          title: '保险产品（待定）'
         },
         component: () => import('@/view/industryDatabase/insuranceProduct.vue'),
       }
@@ -548,7 +548,7 @@ export default [
     component: Main,
     meta: {
       icon: '_Financialsettlement',
-      title: '财务结算',
+      title: '财务结算（待定）',
       hideInMenu: false,
       notCache: true
     },
@@ -599,7 +599,7 @@ export default [
     component: Main,
     meta: {
       icon: '_Datastatistics',
-      title: '数据统计',
+      title: '数据统计（待定）',
       hideInMenu: false,
       notCache: true
     },
@@ -609,7 +609,7 @@ export default [
         name: 'statistics',
         meta: {
           icon: '_Datastatistics',
-          title: '数据统计'
+          title: '数据统计（待定）'
         },
         component: () => import('@/view/dataStatistics')
       },
@@ -632,7 +632,7 @@ export default [
         name: 'systemSetting',
         meta: {
           icon: '_Systemsettings-',
-          title: '系统设置'
+          title: '系统设置（待定）'
         },
         component: () => import('@/view/systemSet/systemSet.vue')
       },
@@ -660,7 +660,7 @@ export default [
         name: 'feedback',
         meta: {
           icon: '_Helpandfeedback',
-          title: '反馈'
+          title: '反馈（待定）'
         },
         component: () => import('@/view/systemSet/feedback.vue')
       },

@@ -148,7 +148,7 @@ export default {
     getData() {
       this.$route.query.id &&
         getProductRiderByProductId(this.$route.query.id).then(data => {
-          console.log('additionRisk', data);
+          // console.log('additionRisk', data);
           for (const iterator of data) {
             iterator.child || (iterator.child = {})
           }
@@ -201,7 +201,6 @@ export default {
     submit() {
       return Promise.resolve()
         .then(data => {
-
           let isNew = oldData !== JSON.stringify(this.form)
           oldData = JSON.stringify(this.form)
           let formData = JSON.parse(oldData)
@@ -209,7 +208,7 @@ export default {
             Object.keys(iterator.child).length || (iterator.child = null)
           }
           if (isNew){
-            if (formData[0].id) {
+            if (formData[0] && formData[0].id) {
               return updateProductRider(formData);
             } else {
               return addProductRider(formData);

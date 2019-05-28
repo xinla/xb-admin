@@ -17,7 +17,7 @@
       <template slot-scope="{ row }" slot="name">
         <div
           class="a"
-          @click="goPage('companyDetail', {id: row.companyId})"
+          @click="goPage('companyDetail', {id: row.id})"
         >{{row.name}}</div>
       </template>
 
@@ -198,7 +198,7 @@ export default {
       this.loading = true;
       page && (this.query.page = page);
       getLesseePage(this.query).then(data => {
-        console.log(data);
+        // console.log(data);
         this.loading = false;
         this.list = data.list;
         this.total = data.total;

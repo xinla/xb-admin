@@ -56,17 +56,17 @@ export default {
       getHelpById(id).then(data => {
         data.classifyId = parseInt(data.classifyId)
         this.form = data
-        console.log(data)
+        // console.log(data)
       })
     }
     getHelpClassify().then(data => {
       this.classifyList = data
-      console.log(this.classifyList)
+      // console.log(this.classifyList)
     })
   },
   methods:{
     handleSubmit() {
-      console.log(this.form)
+      // console.log(this.form)
       this.$refs.form.validate((valid) => {
           if (valid) {
             !this.$route.query.id

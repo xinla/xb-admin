@@ -140,7 +140,7 @@ export default {
   methods: {
     getData() {
       getSupplierBrandInformation(this.form.id).then(data => {
-        console.log('SupplierBrandInformation:', data)
+        // console.log('SupplierBrandInformation:', data)
         this.form = data
         this.form.supplierAndOrganizationVoList = data.supplierAndOrganizationVoList || []
       }) 

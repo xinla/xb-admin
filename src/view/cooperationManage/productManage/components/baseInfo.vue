@@ -322,6 +322,7 @@ export default {
             }
             // console.log(formData)
             this.$route.query.productForm = formData.productForm
+            // console.log(this.$route)
             if (formData.id) {
               // console.log(1)
               return updateProductInfo(formData)

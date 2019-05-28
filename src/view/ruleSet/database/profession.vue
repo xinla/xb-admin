@@ -51,7 +51,7 @@ export default {
       downloadProfessionTable()
     },
     upload(file) {
-      console.log(file)
+      // console.log(file)
     }
   }
 }

@@ -176,13 +176,13 @@ export default {
       this.getData()
       getAllGroupAndRole().then(data => {
         this.roleAndRoleGroup = data
-        console.log(this.roleAndRoleGroup)
+        // console.log(this.roleAndRoleGroup)
       })
     },
     getData() {
       if (this.id) {
         getSupplierUserDetail().then(data => {
-          console.log(data)
+          // console.log(data)
           this.form = data
         })
       }

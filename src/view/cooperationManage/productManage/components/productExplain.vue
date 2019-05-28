@@ -25,6 +25,7 @@
       <Col span="8">标题</Col>
       <Col span="8">算法</Col>
     </Row>
+    <FormItem prop="productCourse">
     <Row v-for="(item, index) of form.insurableInterest" :Key="index">
       <Col span="8">
         <Input
@@ -53,12 +54,14 @@
         </Row>
       </Col>
     </Row>
+    </FormItem>
     <Divider/>
 
     <div class="title-row">
       保险责任
       <Button type="info" size="small" @click="addRow('coverage')">新增一行</Button>
     </div>
+    <FormItem prop="productCourse">
     <Row v-for="(item, index) of form.coverage" :Key="index">
       <Col span="6">
         <Input v-model="item.title" placeholder="请输入标题" style="width:73%; margin-right: 10px;"/>
@@ -73,6 +76,7 @@
         <!-- <Button type="primary" @click="add('role')">添加</Button> -->
       </Col>
     </Row>
+    </FormItem>
     <Divider/>
 
     <div class="title-row">免除责任</div>
@@ -243,6 +247,12 @@ export default {
         typicalPremium: [
           { required: true, message: "不能为空", trigger: "blur" }
         ],
+        insurableInterest: [
+          { required: true, type: 'array', message: "不能为空", trigger: "blur" }
+        ],
+        coverage: [
+          { required: true, type: 'array', message: "不能为空", trigger: "blur" }
+        ],
         exclusion: [{ required: true, message: "不能为空", trigger: "blur" }],
         appBannerPicture: [
           { required: true, message: "不能为空", trigger: "change" }
@@ -295,7 +305,7 @@ export default {
       }
     },
     uploadAppBanner(response, file, fileList) {
-      console.log(response, file);
+      // console.log(response, file);
       this.form.appBannerPicture = response.result.fileUrl;
     },
     uploadWebBanner(response, file, fileList) {
@@ -327,9 +337,8 @@ export default {
             oldData = JSON.stringify(this.form);
 
             if (isNew) {
-              console.log(this.form);
+              // console.log(this.form);
               if (this.form.id) {
-                // console.log(1)
                 return updateProductDesc(this.form);
               } else {
                 return addProductDesc(this.form);

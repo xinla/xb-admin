@@ -162,7 +162,7 @@ export default {
     getData() {
       this.loading = true;
       getLesseePageByJB(this.query).then(data => {
-        console.log(data);
+        // console.log(data);
         this.loading = false;
         this.list = data.list;
         this.total = data.total;

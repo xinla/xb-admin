@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { getLesseePageByName, getLesseePageByJB } from "@/api/lessee"
+import { getLesseePageByJB } from "@/api/lessee"
 import invoiceState from './components/invoiceState'
 import invoiceInfo from './components/invoiceInfo'
 import mailInfo from './components/mailInfo'

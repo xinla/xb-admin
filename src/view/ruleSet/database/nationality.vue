@@ -36,7 +36,7 @@ export default {
   methods:{
     getData() {
       nationalityTable().then(data => {
-        console.log(data)
+        // console.log(data)
         this.list = data.list
       })
     }

@@ -265,7 +265,7 @@ export default {
           // this.company = data.xbCompany
           // this.listHonor = data.honor
           // this.listEvents = data.bigEvents
-          console.log("data5:", data);
+          // console.log("data5:", data);
         });
       }
     },
@@ -273,7 +273,7 @@ export default {
       this.disabled = false;
     },
     save() {
-      console.log(this.form.xbCompany);
+      // console.log(this.form.xbCompany);
       updateLessee(this.form.xbCompany).then(data => {
         this.$Message.success("修改成功");
         this.disabled = true;

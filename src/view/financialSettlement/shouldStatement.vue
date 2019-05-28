@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { getLesseePageByName, getLesseePageByJB } from "@/api/lessee";
+import { getLesseePageByJB } from "@/api/lessee";
 export default {
   name: "home",
   data() {

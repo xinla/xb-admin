@@ -62,7 +62,7 @@ export default {
         }
       })
       .then(data => {
-        console.log('data', data)
+        // console.log('data', data)
         this.loading = false
         this.lesseeList = data.list
       })
