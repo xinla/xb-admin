@@ -69,3 +69,26 @@ export const getHelpClassify = () => {
     method: 'get'
   })
 }
+
+/**
+ * 反馈保存创 
+ * @param {*} data 
+ */
+export const saveFeedback = (data) => {
+  return axios.request({
+    url: service + `/feedBack/save`,
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 查询所有反馈创 
+ * @param {*} param0 
+ */
+export const getFeedbackPage = ({page, size}) => {
+  return axios.request({
+    url: service + `/feedBack/findAll/${page}/${size}`,
+    method: 'get'
+  })
+}

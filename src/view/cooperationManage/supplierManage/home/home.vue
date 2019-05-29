@@ -1,10 +1,10 @@
 <template>
   <div>
-    <!-- <div class="title">供应商列表</div> -->
+    <!-- <div class="title">品牌列表</div> -->
 
     <Row style="padding-bottom: 10px;">
       <Col span="16">
-        <Button type="info" @click="goPage('createSupplier')">新建供应商</Button>
+        <Button type="info" @click="goPage('createSupplier')">新建品牌</Button>
       </Col>
       <Col span="8">
         <Input v-model="query.name" placeholder="搜索公司" style="width:73%; margin-right: 10px;"/>
@@ -134,13 +134,13 @@ export default {
           align: "center"
         },
         {
-          title: "供应商名称",
+          title: "品牌名称",
           slot: "name",
           minWidth: 80,
           align: "center"
         },
         {
-          title: "供应商类型",
+          title: "品牌类型",
           slot: "typeRule",
           align: "center",
           filters: typeRule,

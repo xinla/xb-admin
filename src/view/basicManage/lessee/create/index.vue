@@ -100,7 +100,6 @@
 import { getLesseePageByJB, getLesseeById, getRoles, getRolesAndGroups, updateLessee, addLessee } from '@/api/lessee'
 import selectSupplier from '@/components/selectSupplier'
 
-
 const dafaultForm = {
   name: '',
   compayAccountType: '',

@@ -5,7 +5,8 @@
     remote
     :remote-method="search"
     :loading="loading"
-    :disabled="disabled">
+    :disabled="disabled"
+    placeholder="请输入后选择">
       <!-- <Option :value="defaultValue" key="10000">{{defaultValue}}</Option> -->
       <Option v-for="(option, index) in lesseeList" 
       :value="option.name"

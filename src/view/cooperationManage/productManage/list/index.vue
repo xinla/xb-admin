@@ -7,7 +7,7 @@
           <Button type="info" @click="goPage('createProduct')">新建产品</Button>
         </Col>
         <Col span="6">
-          <Input v-model="query.searchValue" placeholder="搜索供应商/产品名称/代码" style="width:73%; margin-right: 10px;" />
+          <Input v-model="query.searchValue" placeholder="搜索品牌/产品名称/代码" style="width:73%; margin-right: 10px;" />
           <Button type="info" @click="search()">搜索</Button>
         </Col>
     </Row>
@@ -111,7 +111,7 @@ export default {
             align: 'center'
         },
         {
-            title: '供应商名称',
+            title: '品牌名称',
             key: 'supplierName',
             align: 'center',
             minWidth: 80

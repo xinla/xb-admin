@@ -90,7 +90,50 @@ export default [
           hideInMenu: true,
         },
         component: () => import('@/view/basicManage/lessee/detail')
-      }
+      },
+      // 权限配置
+      {
+        path: 'authoritySet',
+        name: 'authoritySet',
+        meta: {
+          icon: '_Generalpurposedatabase',
+          title: '权限配置'
+        },
+        component: () => import('@/view/basicManage/authoritySet/index.vue'),
+        redirect: '/basicManage/authoritySet/SaaS',
+        children: [
+          {
+            path: 'SaaS',
+            name: 'SaaS',
+            meta: {
+              hideInMenu: true,
+              icon: 'md-funnel',
+              title: 'SaaS'
+            },
+            component: () => import('@/view/basicManage/authoritySet/saas.vue')
+          },
+          {
+            path: 'insurance',
+            name: 'insurance',
+            meta: {
+              hideInMenu: true,
+              icon: 'md-funnel',
+              title: '保险'
+            },
+            component: () => import('@/view/basicManage/authoritySet/insurance.vue'),
+          },
+          {
+            path: 'credit',
+            name: 'credit',
+            meta: {
+              hideInMenu: true,
+              icon: 'md-funnel',
+              title: '信贷'
+            },
+            component: () => import('@/view/basicManage/authoritySet/credit.vue'),
+          }
+        ]
+      },
     ]
   },
   // 合作管理
@@ -109,7 +152,7 @@ export default [
         name: 'supplierManage',
         meta: {
           icon: '_Suppliermanagement',
-          title: '供应商管理'
+          title: '品牌管理'
         },
         component: () => import('@/view/cooperationManage/supplierManage/home')
       },
@@ -120,7 +163,7 @@ export default [
         meta: {
           icon: 'md-funnel',
           hideInMenu: true,
-          title: '新建供应商'
+          title: '新建品牌'
         },
         component: () => import('@/view/cooperationManage/supplierManage/create')
       },
@@ -356,21 +399,21 @@ export default [
         },
         component: () => import('@/view/applicationManage/messageTemplate/intelligentSecretary.vue'),
       },
-      {
-        path: 'menuSet',
-        name: 'menuSet',
-        meta: {
-          icon: '_menu',
-          title: '菜单配置',
-        },
-        component: () => import('@/view/applicationManage/menuSet.vue'),
-      },
+      // {
+      //   path: 'menuSet',
+      //   name: 'menuSet',
+      //   meta: {
+      //     icon: '_menu',
+      //     title: '菜单配置',
+      //   },
+      //   component: () => import('@/view/applicationManage/menuSet.vue'),
+      // },
       {
         path: 'digitalResource',
         name: 'digitalResource',
         meta: {
           icon: '_Dictionaries',
-          title: '数据资源（待定）',
+          title: '保险建议书（待定）',
         },
         component: () => import('@/view/applicationManage/digitalResource/index'),
         redirect: '/applicationManage/digitalResource/proposalTitle',
@@ -660,7 +703,7 @@ export default [
         name: 'feedback',
         meta: {
           icon: '_Helpandfeedback',
-          title: '反馈（待定）'
+          title: '反馈'
         },
         component: () => import('@/view/systemSet/feedback.vue')
       },

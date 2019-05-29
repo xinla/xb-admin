@@ -676,7 +676,7 @@ export default {
               // debugger
               formData[agency][index].productId = formData.productId;
               if (agency === 'insurancePlan') {
-                formData[agency][index].ruleIntervalName = index
+                formData[agency][index].ruleIntervalName = index + 1
               }
               temp.push(formData[agency][index]);
 
