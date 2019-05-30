@@ -1,28 +1,27 @@
 <template>
   <div>
-    <xNav type="authoritySet" />
-
-    <router-view></router-view>
+    <Tabs v-model="type">
+        <TabPane label="SaaS" name="1"></TabPane>
+        <TabPane label="保险" name="2"></TabPane>
+        <TabPane label="信贷" name="0"></TabPane>
+        <TabPane label="基金" name="3"></TabPane>
+    </Tabs>
+    <saas :x-type="parseInt(this.type)" :key='parseInt(this.type)' />
   </div>
 </template>
 
 <script>
-import xNav from '@/view/components/nav'
+import saas from './saas'
 
 export default {
   components:{
-    xNav
+    saas
   },
-  props:{},
   data(){
     return {
+      type: '1'
     }
-  },
-  computed:{},
-  watch:{},
-  created(){},
-  mounted(){},
-  methods:{}
+  }
 }
 </script>
 <style lang="less" scoped>

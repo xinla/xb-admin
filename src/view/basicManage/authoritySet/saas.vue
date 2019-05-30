@@ -13,16 +13,16 @@
           </Select>
         </FormItem>
 
-        <FormItem prop="type" label="菜单类型">
+        <FormItem prop="classify" label="菜单类型">
         <Select v-model="query.classify" style="width:100px">
           <Option v-for="(value, key) in menuType" :value="+key" :key="key">{{ value }}</Option>
         </Select>
         </FormItem>
-        <FormItem prop="type" label="可见状态">
+        <!-- <FormItem prop="type" label="可见状态">
         <Select v-model="query.isVo" style="width:100px">
           <Option v-for="(value, key) in isVo" :value="+key" :key="key">{{ value }}</Option>
         </Select>
-        </FormItem>
+        </FormItem> -->
         <Input v-model="query.name" placeholder="搜索公司" style="width:35%; margin-right: 10px;"/>
         <Button type="info" @click="search()">搜索</Button>
         </Form>
@@ -73,7 +73,13 @@
                 <Option v-for="(unit) in item.childList" :value="unit.id" :key="unit.id">{{ unit.name }}
                 </Option>
             </OptionGroup> -->
-              <Option v-for="item in menuList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+              <Option v-for="item in menuList" v-show="form.classify === '' || form.classify === 1" :value="item.id" :key="item.id">{{ item.name }}</Option>
+              
+              <Option v-for="item in catalog" v-show="form.classify === '' || form.classify === 3" :value="item.id" :key="item.id">{{ item.name }}</Option>
+
+              <Option v-for="item in applicationList" v-show="form.classify === '' || form.classify === 
+              0" :value="item.id" :key="item.id">{{ item.name }}</Option>
+              
           </Select>
         </FormItem>
 
@@ -89,8 +95,8 @@
           <Input v-model="form.permissionIdentifying" placeholder="请输入权限标识"></Input>
         </FormItem>
 
-        <FormItem prop="permissionIdentifying" label="图标地址">
-          <Input v-model="form.permissionIdentifying" placeholder="请输入图标地址"></Input>
+        <FormItem prop="imageUrl" label="图标地址">
+          <Input v-model="form.imageUrl" placeholder="请输入图标地址"></Input>
         </FormItem>
 
         <FormItem>
@@ -105,7 +111,7 @@
 </template>
 
 <script>
-import { getAllMenu, getMenuPage, modifyMenu, deleteMenu, addMenu } from "@/api/menuSet"
+import { getAllMenu, getMenuPage, deleteMenu, saveMenu } from "@/api/menuSet"
 import memuRecursive from './components/memuRecursive'
 import dialogBox from '@/components/dialogBox'
 
@@ -117,17 +123,18 @@ const defautlForm = {
   menuUrl: '',
   permissionIdentifying: '',
   pid: 0,
-  type: ''
+  type: '',
+  imageUrl: ''
 }
 const menuType= {
-  0: '目录',
-  1: '应用',
-  2: '菜单',
-  3: '操作'
+  0: '菜单',
+  1: '操作',
+  2: '目录',
+  3: '应用'
 }
 const type= {
   0: '信贷',
-  1: '总后台',
+  1: 'SaaS',
   2: '保险',
   3: '基金'
 }
@@ -148,9 +155,17 @@ export default {
       return isVo[val]
     },
   },
+  props: {
+    xType: {
+      type: Number,
+      default: 2 // 2:保险,1:Saas,0:信贷,3:基金
+    }
+  },
   data(){
     return {
       menuList: [],
+      catalog: [],
+      applicationList: [],
       menuType: Object.assign({}, menuType),
       type: Object.assign({}, type),
       isVo: Object.assign({}, isVo),
@@ -158,9 +173,8 @@ export default {
         page: 1,
         size: 10,
         id: '',
-        type: '',
+        type: this.xType,
         classify: '',
-        isVo: '',
         name: ''
       },
       form: Object.assign({}, defautlForm),
@@ -227,6 +241,9 @@ export default {
         classify: [
             { required: true, type: 'number', message: '不能为空', trigger: 'change' },
         ],
+        pid: [
+            { required: true, message: '不能为空', trigger: 'change' },
+        ],
         menuUrl: [
             { required: true, message: '不能为空', trigger: 'blur' },
         ],
@@ -234,7 +251,6 @@ export default {
             { required: true, message: '不能为空', trigger: 'blur' },
         ]
       },
-      isEdit: false,
       formShow: false,
       isfold: false,
       total: 0
@@ -245,24 +261,39 @@ export default {
   },
   methods:{
     getData() {
-      getAllMenu().then(data => {
-        let menuList = []
+      getAllMenu(this.query).then(data => {
+        this.menuList = []
+        this.catalog = []
+        this.applicationList = []
         // console.log(data)
         this.list = data
-        this.menuList = recursiveMenu(data)
+        recursiveMenu.call(this, data)
+        // this.menuList = recursiveMenu(data)
         // console.log(this.menuList)
 
         function recursiveMenu(data) {
           
           for (const iterator of data) {
             // 提取所有菜单
-            menuList.push({
-              id: iterator.id,
-              name: iterator.name
-            })
-            recursiveMenu(iterator.childList)
+            if (iterator.classify === 0) {
+              this.menuList.push({
+                id: iterator.id,
+                name: iterator.name
+              })
+            } else if (iterator.classify === 2) {
+              this.catalog.push({
+                id: iterator.id,
+                name: iterator.name
+              })
+            } else if (iterator.classify === 3) {
+              this.applicationList.push({
+                id: iterator.id,
+                name: iterator.name
+              })
+            }
+            recursiveMenu.call(this, iterator.childList)
           }
-          return menuList
+          // return menuList
         }
       })
     },
@@ -274,26 +305,18 @@ export default {
     },
     handleReset() {
       this.$refs['form'].resetFields();
-      this.isEdit = false
       this.formShow = false
     },
     edit(mes) {
       // console.log(mes)
       this.form = Object.assign({}, mes) 
-      this.isEdit = true
       this.formShow = true
     },
     submit() {
       // console.log(this.form)
       this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.isEdit 
-            ? modifyMenu(this.form).then(data => {
-              this.$Message.success('修改成功')
-              this.handleReset()
-              this.getData()
-            })
-            : addMenu(this.form).then(data => {
+            saveMenu(this.form).then(data => {
               this.$Message.success('创建成功')
               this.handleReset()
               this.getData()
@@ -307,7 +330,6 @@ export default {
     addChild(data) {
       this.form = Object.assign({}, defautlForm),
       this.form.pid = data && data.id || 0
-      this.isEdit = false
       this.formShow = true
     },
     deleteMenu(data) {

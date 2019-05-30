@@ -100,39 +100,39 @@ export default [
           title: '权限配置'
         },
         component: () => import('@/view/basicManage/authoritySet/index.vue'),
-        redirect: '/basicManage/authoritySet/SaaS',
-        children: [
-          {
-            path: 'SaaS',
-            name: 'SaaS',
-            meta: {
-              hideInMenu: true,
-              icon: 'md-funnel',
-              title: 'SaaS'
-            },
-            component: () => import('@/view/basicManage/authoritySet/saas.vue')
-          },
-          {
-            path: 'insurance',
-            name: 'insurance',
-            meta: {
-              hideInMenu: true,
-              icon: 'md-funnel',
-              title: '保险'
-            },
-            component: () => import('@/view/basicManage/authoritySet/insurance.vue'),
-          },
-          {
-            path: 'credit',
-            name: 'credit',
-            meta: {
-              hideInMenu: true,
-              icon: 'md-funnel',
-              title: '信贷'
-            },
-            component: () => import('@/view/basicManage/authoritySet/credit.vue'),
-          }
-        ]
+        // redirect: '/basicManage/authoritySet/SaaS',
+        // children: [
+        //   {
+        //     path: 'SaaS',
+        //     name: 'SaaS',
+        //     meta: {
+        //       hideInMenu: true,
+        //       icon: 'md-funnel',
+        //       title: 'SaaS'
+        //     },
+        //     component: () => import('@/view/basicManage/authoritySet/saas.vue')
+        //   },
+        //   {
+        //     path: 'insurance',
+        //     name: 'insurance',
+        //     meta: {
+        //       hideInMenu: true,
+        //       icon: 'md-funnel',
+        //       title: '保险'
+        //     },
+        //     component: () => import('@/view/basicManage/authoritySet/insurance.vue'),
+        //   },
+        //   {
+        //     path: 'credit',
+        //     name: 'credit',
+        //     meta: {
+        //       hideInMenu: true,
+        //       icon: 'md-funnel',
+        //       title: '信贷'
+        //     },
+        //     component: () => import('@/view/basicManage/authoritySet/credit.vue'),
+        //   }
+        // ]
       },
     ]
   },
