@@ -474,7 +474,6 @@ export default [
         path: 'professionTable',
         name: 'professionTable',
         meta: {
-          hideInMenu: true,
           icon: 'md-funnel',
           title: '职业代码表'
         },

@@ -55,7 +55,7 @@ export default {
     // 退出登录
     handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout(state.userId, state.token).then(() => {
           commit('setToken', '')
           commit('setAccess', [])
           resolve()

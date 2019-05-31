@@ -10,16 +10,15 @@
 const routes1 = [
   {name: 'businessInfo', text: '工商信息'},
   {name: 'brandInfo', text: '品牌信息'},
-  {name: 'organizationalStructure', text: '组织架构'},
+  // {name: 'organizationalStructure', text: '组织架构'},
   {name: 'productList', text: '产品列表'},
-  {name: 'news', text: '新闻资讯'},
+  // {name: 'news', text: '新闻资讯'},
   {name: 'ascoCode', text: '职业代码表'},
   {name: 'insuranceRules', text: '投保规则'},
 ]
 const routes2 = [
   {name: 'nationalityTable', text: '国籍表'},
   {name: 'districtTable', text: '行政区划表'},
-  {name: 'professionTable', text: '职业代码表'},
 ]
 
 const routes3 = [
@@ -28,9 +27,7 @@ const routes3 = [
 ]
 
 const routes4 = [
-  {name: 'SaaS', text: 'SaaS'},
-  {name: 'insurance', text: '保险'},
-  {name: 'credit', text: '信贷'},
+
 ]
 
 export default {
@@ -47,8 +44,6 @@ export default {
         return routes2
       } else if (this.type === 'digitalResource') {
         return routes3
-      } else if (this.type === 'authoritySet') {
-        return routes4
       } else {
         return routes1
       }

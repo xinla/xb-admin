@@ -53,7 +53,7 @@ export const EditUser = (id, token) => {
   return axios.request({
     url: service + '/' + id,
     method: 'put',
-    header: {
+    headers: {
       token: 'xbkj' + token
     }
   })
@@ -63,11 +63,14 @@ export const EditUser = (id, token) => {
  * 用户退出
  * @param {*}  
  */
-export const logout = (token) => {
+export const logout = (id, token) => {
   return axios.request({
     url: service+ '/logout',
     method: 'post',
-    header: {
+    data: {
+      id
+    },
+    headers: {
       token: 'xbkj' + token
     }
   })
