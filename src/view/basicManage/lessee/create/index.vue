@@ -122,7 +122,9 @@ const defaultFormAccount = {
 }
 const compayAccountType = {
   0: '体验',
-  1: '商用'
+  1: '基础',
+  2: '高级',
+  3: '旗舰',
 }
 const businessType= {
   0: '保险',

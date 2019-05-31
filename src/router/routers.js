@@ -188,16 +188,16 @@ export default [
         },
         component: () => import('@/view/cooperationManage/supplierManage/brandInfo')
       },
-      {
-        path: 'organizationalStructure',
-        name: 'organizationalStructure',
-        meta: {
-          icon: 'md-funnel',
-          hideInMenu: true,
-          title: '组织架构'
-        },
-        component: () => import('@/view/cooperationManage/supplierManage/organizationalStructure')
-      },
+      // {
+      //   path: 'organizationalStructure',
+      //   name: 'organizationalStructure',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     hideInMenu: true,
+      //     title: '组织架构'
+      //   },
+      //   component: () => import('@/view/cooperationManage/supplierManage/organizationalStructure')
+      // },
       {
         path: 'productList',
         name: 'productList',
@@ -208,16 +208,16 @@ export default [
         },
         component: () => import('@/view/cooperationManage/supplierManage/productList')
       },
-      {
-        path: 'news',
-        name: 'news',
-        meta: {
-          icon: 'md-funnel',
-          hideInMenu: true,
-          title: '新闻资讯'
-        },
-        component: () => import('@/view/cooperationManage/supplierManage/news')
-      },
+      // {
+      //   path: 'news',
+      //   name: 'news',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     hideInMenu: true,
+      //     title: '新闻资讯'
+      //   },
+      //   component: () => import('@/view/cooperationManage/supplierManage/news')
+      // },
       {
         path: 'ascoCode',
         name: 'ascoCode',
@@ -365,7 +365,7 @@ export default [
         name: 'messageTemplate',
         meta: {
           icon: '_Messagetemplate',
-          title: '消息模板（待定）'
+          title: '消息模板'
         },
         redirect: 'commonExpressions',
       },
@@ -399,21 +399,12 @@ export default [
         },
         component: () => import('@/view/applicationManage/messageTemplate/intelligentSecretary.vue'),
       },
-      // {
-      //   path: 'menuSet',
-      //   name: 'menuSet',
-      //   meta: {
-      //     icon: '_menu',
-      //     title: '菜单配置',
-      //   },
-      //   component: () => import('@/view/applicationManage/menuSet.vue'),
-      // },
       {
         path: 'digitalResource',
         name: 'digitalResource',
         meta: {
           icon: '_Dictionaries',
-          title: '保险建议书（待定）',
+          title: '保险建议书',
         },
         component: () => import('@/view/applicationManage/digitalResource/index'),
         redirect: '/applicationManage/digitalResource/proposalTitle',
@@ -423,7 +414,7 @@ export default [
             name: 'proposalTitle',
             meta: {
               hideInMenu: true,
-              title: '建议书标题库',
+              title: '标题库',
             },
             component: () => import('@/view/applicationManage/digitalResource/proposalTitle.vue')
           },
@@ -432,7 +423,7 @@ export default [
             name: 'proposalThumb',
             meta: {
               hideInMenu: true,
-              title: '建议书封面库',
+              title: '封面库',
             },
             component: () => import('@/view/applicationManage/digitalResource/proposalThumb.vue')
           },
@@ -447,7 +438,7 @@ export default [
     component: Main,
     meta: {
       icon: '_Ruleconfiguration',
-      title: '规则配置',
+      title: '规则引擎',
       hideInMenu: false,
       notCache: true
     },
@@ -457,27 +448,37 @@ export default [
         name: 'typeRule',
         meta: {
           icon: '_Typerule',
-          title: '类型规则'
+          title: '数据字典'
         },
         component: () => import('@/view/ruleSet/type.vue')
       },
+      // {
+      //   path: 'characterRule',
+      //   name: 'characterRule',
+      //   meta: {
+      //     icon: '_Rolerule',
+      //     title: '角色规则'
+      //   },
+      //   component: () => import('@/view/ruleSet/role.vue')
+      // },
+      // {
+      //   path: 'insureRule',
+      //   name: 'insureRule',
+      //   meta: {
+      //     icon: '_Insurancerules',
+      //     title: '数据字典'
+      //   },
+      //   component: () => import('@/view/ruleSet/insure.vue')
+      // },
       {
-        path: 'characterRule',
-        name: 'characterRule',
+        path: 'professionTable',
+        name: 'professionTable',
         meta: {
-          icon: '_Rolerule',
-          title: '角色规则'
+          hideInMenu: true,
+          icon: 'md-funnel',
+          title: '职业代码表'
         },
-        component: () => import('@/view/ruleSet/role.vue')
-      },
-      {
-        path: 'insureRule',
-        name: 'insureRule',
-        meta: {
-          icon: '_Insurancerules',
-          title: '投保规则'
-        },
-        component: () => import('@/view/ruleSet/insure.vue')
+        component: () => import('@/view/ruleSet/database/profession.vue'),
       },
       // 通用数据库
       {
@@ -510,16 +511,6 @@ export default [
             },
             component: () => import('@/view/ruleSet/database/district.vue'),
           },
-          {
-            path: 'professionTable',
-            name: 'professionTable',
-            meta: {
-              hideInMenu: true,
-              icon: 'md-funnel',
-              title: '职业代码表'
-            },
-            component: () => import('@/view/ruleSet/database/profession.vue'),
-          }
         ]
       },
       {
@@ -527,10 +518,10 @@ export default [
         name: 'digitalDictionary',
         meta: {
           icon: '_Dictionaries',
-          title: '数据字典'
+          title: '投保匹配'
         },
         component: () => import('@/view/ruleSet/digitalDictionary.vue')
-      },
+      }
     ]
   },
   // 行业数据库
@@ -577,6 +568,7 @@ export default [
         path: 'insuranceProduct',
         name: 'insuranceProduct',
         meta: {
+          hideInMenu: true,
           icon: '_InsuranceProducts',
           title: '保险产品（待定）'
         },
@@ -592,7 +584,7 @@ export default [
     meta: {
       icon: '_Financialsettlement',
       title: '财务结算（待定）',
-      hideInMenu: false,
+      hideInMenu: true,
       notCache: true
     },
     children: [
@@ -643,7 +635,7 @@ export default [
     meta: {
       icon: '_Datastatistics',
       title: '数据统计（待定）',
-      hideInMenu: false,
+      hideInMenu: true,
       notCache: true
     },
     children: [
@@ -674,6 +666,7 @@ export default [
         path: 'systemSetting',
         name: 'systemSetting',
         meta: {
+          hideInMenu: true,
           icon: '_Systemsettings-',
           title: '系统设置（待定）'
         },
@@ -707,20 +700,6 @@ export default [
         },
         component: () => import('@/view/systemSet/feedback.vue')
       },
-    ]
-  },
-
-  {
-    path: '/customerService',
-    name: 'customerService',
-    component: Main,
-    meta: {
-      icon: '_Customerservice',
-      title: '现报云客服',
-      hideInMenu: false,
-      notCache: true
-    },
-    children: [
       {
         path: 'service',
         name: 'service',
@@ -732,6 +711,29 @@ export default [
       },
     ]
   },
+
+  // {
+  //   path: '/customerService',
+  //   name: 'customerService',
+  //   component: Main,
+  //   meta: {
+  //     icon: '_Customerservice',
+  //     title: '现报云客服',
+  //     hideInMenu: false,
+  //     notCache: true
+  //   },
+  //   children: [
+  //     {
+  //       path: 'service',
+  //       name: 'service',
+  //       meta: {
+  //         icon: '_Customerservice',
+  //         title: '现保云客服'
+  //       },
+  //       component: () => import('@/view/customerService')
+  //     },
+  //   ]
+  // },
 
   {
     path: '/401',

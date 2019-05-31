@@ -23,8 +23,8 @@ const routes2 = [
 ]
 
 const routes3 = [
-  {name: 'proposalTitle', text: '建议书标题库'},
-  {name: 'proposalThumb', text: '建议书封面库'},
+  {name: 'proposalTitle', text: '标题库'},
+  {name: 'proposalThumb', text: '封面库'},
 ]
 
 const routes4 = [
