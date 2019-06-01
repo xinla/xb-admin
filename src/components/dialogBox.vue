@@ -1,6 +1,6 @@
 <template>
-  <div v-show="value" class="mask" @click.self="cancel">
-    <div class="cc">
+  <div v-show="value" class="mask fc" @click.self="cancel">
+    <div class="dialog">
       <div class="cancel cp" @click="cancel">x</div>
       <b class="title"><slot name="title"/></b>
       <slot/>
@@ -36,7 +36,8 @@ export default {
   .mask {
     left: 0;
   }
-  .cc{
+  .dialog{
+    position: relative;
     background: #fff;
     padding: 15px 45px;
     border-radius: 8px;
