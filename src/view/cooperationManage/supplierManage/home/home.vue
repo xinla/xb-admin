@@ -18,7 +18,7 @@
       </template>
 
       <template slot-scope="{ row }" slot="name">
-        <div class="a" @click="goPage('businessInfo', {id: row.id})">
+        <div class="a" @click="goPage('businessInfo', {id: row.id, readOnly: true})">
           {{row.name}}
         </div>
       </template>
@@ -43,17 +43,20 @@
 
       <template slot-scope="{ row }" slot="action">
         <Button
+          type="info"
+          size="small"
+          @click="goPage('businessInfo', {id: row.id, readOnly: true})"
+        >详情</Button>
+        <Button
           type="primary"
           size="small"
-          style="margin-right: 5px"
           @click="goPage('createSupplier', {id: row.id})"
         >编辑</Button>
         <Button
           type="error"
           size="small"
-          style="margin-right: 5px"
-          @click="goPage('businessInfo', {id: row.id})"
-        >详情</Button>
+          @click="remove(row)"
+        >删除</Button>
       </template>
     </Table>
 
@@ -65,11 +68,13 @@
       @on-change="getData"
     />
 
-    <div v-show="cooperationCompanShow">
-      <div>合作企业 <span class="fr" @click="close">x</span></div>
+
+    <dialogBox v-model="cooperationCompanShow">
+      <template slot="title">合作企业</template>
+      <template>
       <Table border :columns="cooperationCompanyColumns" :data="cooperationCompanyList">
         <template slot-scope="{ row }" slot="name">
-          <div class="a" @click="goPage('businessInfo', {id: row.id})">
+          <div class="a" @click="goPage('companyDetail', {id: row.id})">
             {{row.name}}
           </div>
         </template>
@@ -82,14 +87,16 @@
         style="text-align:center;margin-top:20px;"
         @on-change="getDataCooperationCompany"
       />
-    </div>
+      </template>
+    </dialogBox>
 
   </div>
 
 </template>
 
 <script>
-import { getSupplierPage, getCooperationCompanyPage } from "@/api/supplier";
+import { getSupplierPage, getCooperationCompanyPage, deleteSupplier } from "@/api/supplier";
+import dialogBox from "@/components/dialogBox";
 
 const typeRule = [
   {
@@ -110,6 +117,7 @@ const distributionChannel = {
 
 export default {
   name: "home",
+  components: { dialogBox },
   filters: {
     typeRule(val) {
       return typeRule[val].label
@@ -225,7 +233,7 @@ export default {
       this.loading = true;
       page && (this.query.page = page);
       getSupplierPage(this.query).then(data => {
-        console.log(data);
+        // console.log(data);
         this.loading = false;
         this.list = data.list;
         this.total = data.total;
@@ -234,7 +242,7 @@ export default {
     getDataCooperationCompany(page) {
       page && (this.cooperationCompanyQuery.page = page);
       getCooperationCompanyPage(this.cooperationCompanyQuery).then(data => {
-        console.log(data);
+        console.log('CooperationCompany:', data);
         this.cooperationCompanyList = data.list;
         this.cooperationCompanyTotal = data.total;
       });
@@ -256,6 +264,22 @@ export default {
     goPage(name, query) {
       this.$router.push({ name, query });
     },
+    remove(data) {
+      if (data.saleProductNum > 0) {
+        this.$Message.error("改品牌下存在在售产品，不可删除");
+      } else {
+        this.$Modal.confirm({
+          title: "提示",
+          content: "确定要删除吗",
+          onOk: () => {
+            deleteSupplier(data.id).then(res => {
+              this.getData();
+              this.$Message.success("操作成功");
+            });
+          }
+        })
+      }
+    }
   }
 };
 </script>
@@ -264,5 +288,11 @@ export default {
 .title {
   padding: 0px 0px 20px 10px;
   font-size: 20px;
+}
+.ivu-btn-small{
+  margin-right: 5px;
+}
+/deep/.dialog{
+  width: 60%;
 }
 </style>

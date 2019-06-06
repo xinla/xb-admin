@@ -10,7 +10,7 @@
           :data="districtsList"
           placeholder="所在省市"
           change-on-select
-          style="width:200px;display:inline-block;"
+          style="width:30%;display:inline-block;margin-right: 2%;"
           v-model="selectDistrict"
         ></Cascader>
         <Input v-model="query.name" placeholder="搜索公司" style="width:40%; margin-right: 10px;"/>

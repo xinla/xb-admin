@@ -24,4 +24,10 @@ html,body{
 #app {
   .size;
 }
+/deep/.ivu-input[disabled], /deep/.ivu-select-disabled .ivu-select-selection{
+  background:none;
+  color: #000;
+  border: 0;
+  cursor: auto;
+}
 </style>

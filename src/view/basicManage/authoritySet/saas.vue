@@ -67,7 +67,7 @@
           </RadioGroup>
         </FormItem>
         
-        <FormItem prop="pid" label="从属关系">
+        <FormItem prop="pid" label="从属关系" v-if="form.classify != 2">
           <Select v-model="form.pid">
             <!-- <OptionGroup v-for="(item) in list" :key="item.id" :label="item.name" >
                 <Option v-for="(unit) in item.childList" :value="unit.id" :key="unit.id">{{ unit.name }}

@@ -2,7 +2,7 @@
   <Form ref="form" :label-width="90">
     <Drawer :title="child.show ? '添加强制附加险' : '添加附加险'" :closable="false" v-model="addShow" width="350">
         <FormItem :label-width="0">
-        <Select ref="select" v-model="selectRisk.productFullName" filterable remote :remote-method="search">
+        <Select ref="select" filterable remote :remote-method="search">
           <Option
             v-for="(option, index) in riskList"
             :value="option.productFullName"
@@ -207,7 +207,8 @@ export default {
           for (const iterator of formData) {
             Object.keys(iterator.child).length || (iterator.child = null)
           }
-          if (isNew){
+          // 过滤重复提交(暂废弃)
+          if (true) {
             if (formData[0] && formData[0].id) {
               return updateProductRider(formData);
             } else {

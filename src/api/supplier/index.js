@@ -6,7 +6,7 @@ const serviceBusinessInformation = config.services.businessInformation
 const serviceSub = config.services.mCompany
 
 /**
- * 供应商->模糊查询
+ * 品牌->模糊查询
  * @param {*} param0 
  */
 export const getSupplierPage = ({page, size, name}) => {
@@ -20,8 +20,8 @@ export const getSupplierPage = ({page, size, name}) => {
 }
 
 /**
- * 供应商->根据id查询
- * @param {*} id 供应商id
+ * 品牌->根据id查询
+ * @param {*} id 品牌id
  */
 export const getSupplierDetail = (id) => {
   return axios.request({
@@ -31,7 +31,7 @@ export const getSupplierDetail = (id) => {
 }
 
 /**
- * 供应商->条件查询
+ * 品牌->条件查询
  * @param {*} param0 
  */
 // export const getSupplierPage = ({page, size}) => {
@@ -45,11 +45,11 @@ export const getSupplierDetail = (id) => {
 // }
 
 /**
- * 供应商->添加
+ * 品牌->添加/修改
  * @param {*} id 保险公司id
  * @param {*} data 
  */
-export const addSupplier = (id, data) => {
+export const saveSupplier = (id, data) => {
   return axios.request({
     url: service + `/${id}`,
     data,
@@ -58,18 +58,7 @@ export const addSupplier = (id, data) => {
 }
 
 /**
- * 供应商->修改
- * @param {*} data 
- */
-export const updateSupplier = (data) => {
-  return axios.request({
-    url: service + `/${data.id}`,
-    data,
-    method: 'put'
-  })
-}
-/**
- * 产品列表->查询供应商产品
+ * 产品列表->查询品牌产品
  * @param {*} query 
  * @param {*} sale 0在售,1停售
  */
@@ -83,7 +72,7 @@ export const getSupplierProductPage = (query) => {
 }
 
 /**
- * 供应商->根据供应商id查询合作企业列表
+ * 品牌->根据品牌id查询合作企业列表
  * @param {*} param0 
  */
 export const getCooperationCompanyPage = ({page, size, supplierId}) => {
@@ -97,7 +86,7 @@ export const getCooperationCompanyPage = ({page, size, supplierId}) => {
 }
 
 /**
- * 品牌信息->根据供应商id查询
+ * 品牌信息->根据品牌id查询
  * @param {*} supplierId 
  */
 export const getSupplierBrandInformation = (supplierId) => {
@@ -111,8 +100,8 @@ export const getSupplierBrandInformation = (supplierId) => {
 }
 
 /**
- * 工商信息->根据供应商id查询
- * @param {*} id 供应商id
+ * 工商信息->根据品牌id查询
+ * @param {*} id 品牌id
  */
 export const getSupplierBusinessInformation = (id) => {
   return axios.request({
@@ -129,5 +118,12 @@ export const getInsureAllProvice = () => {
   return axios.request({
     url: service + `/findAllProvince`,
     method: 'get'
+  })
+}
+
+export const deleteSupplier = (id) => {
+  return axios.request({
+    url: service + `/delete/${id}`,
+    method: 'POST'
   })
 }

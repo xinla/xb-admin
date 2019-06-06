@@ -1,75 +1,121 @@
 <template>
   <Select
-    v-model="val"
+    ref="select"
     filterable
     remote
+    clearable
     :remote-method="search"
     :loading="loading"
     :disabled="disabled"
-    placeholder="请输入后选择">
-      <!-- <Option :value="defaultValue" key="10000">{{defaultValue}}</Option> -->
-      <Option v-for="(option, index) in lesseeList" 
+    :placeholder="val || '请输入后选择'"
+    @on-clear="clear"
+    @on-query-change="queryChange"
+  >
+    <Option
+      v-for="(option, index) in list"
       :value="option.name"
       :key="index"
-      @click.native="$emit('change', option)">
-      {{option.name}}
-      </Option>
+      @click.native="$emit('change', option)"
+    >{{option.name}}</Option>
   </Select>
 </template>
 
 <script>
-import { getLesseePageByJB } from '@/api/lessee'
-import { getSupplierPage } from '@/api/supplier'
+import { getLesseePageByJB } from "@/api/lessee";
+import { getSupplierPage } from "@/api/supplier";
 
 export default {
-  name: 'selectSupplier',
-  props:{
-    val: '',
+  name: "selectSupplier",
+  props: {
+    val: "",
     disabled: {
       type: Boolean,
       default: false
     },
     type: {
       type: String,
-      default: 'lessee'
+      default: "agency"
     },
-    defaultValue: ''
+    defaultValue: ""
   },
-  data(){
+  data() {
     return {
       loading: false,
-      lesseeList: [],
+      list: [],
       query: {
         page: 1,
         size: 10,
         type: 1,
-        name: ''
-      },
+        name: ""
+      }
+    };
+  },
+  mounted() {
+    // console.log(this.val + 8);
+    if (this.val) {
+      new Promise((resolve, reject) => {
+        resolve();
+      })
+        .then(() => {
+          this.query.name = this.val;
+          if (this.type === "agency") {
+            return getLesseePageByJB(this.query);
+          } else if (this.type === "insurance") {
+            this.query.type = 0;
+            return getLesseePageByJB(this.query);
+          } else if (this.type === "brand") {
+            return getSupplierPage(this.query);
+          }
+        })
+        .then(({ list }) => {
+          // FIX: 结果出现同名保险公司，这里取第一条数据
+          // console.log(list)
+          list && this.$emit("change", list[0]);
+        });
     }
   },
-  methods:{
+  methods: {
     search(query) {
-      // debugger
-      this.query.name = query
-      this.loading = true
+      // console.log(query + 2)
+      // console.log(this.val + 1);
+      this.query.name = query;
+      this.loading = true;
       new Promise((resolve, reject) => {
-        resolve()
+        resolve();
       })
-      .then(() => {
-        if (this.type === 'lessee') {
-          return getLesseePageByJB(this.query)
-        } else if (this.type === 'supplier') {
-          return getSupplierPage(this.query)
-        }
-      })
-      .then(data => {
-        // console.log('data', data)
-        this.loading = false
-        this.lesseeList = data.list
-      })
+        .then(() => {
+          if (this.type === "agency") {
+            return getLesseePageByJB(this.query);
+          } else if (this.type === "insurance") {
+            this.query.type = 0;
+            return getLesseePageByJB(this.query);
+          } else if (this.type === "brand") {
+            return getSupplierPage(this.query);
+          }
+        })
+        .then(data => {
+          // console.log('data', data)
+          this.loading = false;
+          this.list = data.list;
+        });
+    },
+    clear() {
+      // console.log(1);
+      this.val = "";
+      // this.$refs.select.clearSingleSelect()
+      // this.$refs.select.setQuery()
+    },
+    queryChange(query) {
+      // console.log(query)
+      if (!query) {
+        this.$refs.select.clearSingleSelect();
+      }
     }
+    // change(data) {
+    //   console.log(data + 3)
+    // }
   }
-}
+};
 </script>
 <style lang="less" scoped>
 </style>

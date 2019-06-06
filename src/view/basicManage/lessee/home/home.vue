@@ -34,14 +34,14 @@
       </template>
 
       <template slot-scope="{ row }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createLessee', {id: row.id})">编辑</Button>
         <Button
-          type="error"
+          type="info"
           size="small"
-          style="margin-right: 5px"
           @click="goPage('lesseeDetail', {id: row.id})"
         >详情</Button>
-        <Button type="error" size="small" @click="set(row)">{{row.outageTime ? '启用' : '停用'}}</Button>
+        <Button type="primary" size="small" @click="goPage('createLessee', {id: row.id})">编辑</Button>
+        <Button type="warning" size="small" @click="set(row)">{{row.outageTime ? '启用' : '停用'}}</Button>
+        <Button type="error" size="small" @click="remove(row)">删除</Button>
       </template>
 
     </Table>
@@ -85,13 +85,13 @@ const businessType = [
 ]
 const isActive = [
   {
-    label: "正常",
-    value: 0
-  },
-  {
     label: "停用",
     value: 1
-  }
+  },
+  {
+    label: "正常",
+    value: 2
+  },
 ]
 
 export default {
@@ -182,7 +182,7 @@ export default {
         {
           title: "操作",
           slot: "action",
-          width: 200,
+          minWidth: 80,
           align: "center"
         }
       ],
@@ -210,8 +210,9 @@ export default {
       this.getData();
     },
     set(data) {
-      let temp = data.outageTime ? 0 : 1
-      setState(data.id, temp).then(data => {
+      let state = data.outageTime ? 2 : 1
+      setState(data.id, state).then(res => {
+        this.$Message.success("操作成功");
         this.getData()
         // console.log(data)
       })
@@ -219,6 +220,22 @@ export default {
     goPage(name, query) {
       this.$router.push({ name, query });
     },
+    remove(data) {
+      if (!data.outageTime) {
+        this.$Message.error("当前租户正在启用中，无法删除，请停用后再尝试");
+      } else {
+        this.$Modal.confirm({
+          title: "提示",
+          content: "是否删除当前租户？删除后该租户下所有成员无法登陆现保系统",
+          onOk: () => {
+            setState(data.id, 0).then(data => {
+              this.getData();
+              this.$Message.success("操作成功");
+            });
+          }
+        })
+      }
+    }
   }
 };
 </script>

@@ -5,7 +5,7 @@ import qs from 'qs'
 
 const service = config.services.company
 const serviceBusinessInformation = config.services.businessInformation
-const serviceSub = config.services.mCompany
+const serviceSub = config.services.saas
 
 /**
  * 根据公司查询全部租户
@@ -13,7 +13,7 @@ const serviceSub = config.services.mCompany
  * @param {*} size 
  * @param {*} name 供应商名称
  */
-export const getLesseePage = ({page, size, name}) => {
+export const getLesseePage = ({ page, size, name }) => {
   return axios.request({
     url: service + `/${page}/${size}`,
     params: {
@@ -24,11 +24,14 @@ export const getLesseePage = ({page, size, name}) => {
 }
 
 /**
- * getLesseeById
+ * 租户详情查询
  */
-export const getLesseeById = (id) => {
+export const getLesseeDetail = (id) => {
   return axios.request({
-    url: service + `/${id}`,
+    url: serviceSub + `/getCompanyInfo`,
+    params: {
+      companyId: id
+    },
     method: 'get'
   })
 }
@@ -40,7 +43,7 @@ export const getLesseeById = (id) => {
  * @param {*} type 1是经代,0是保险
  * @param 公司 name 经代/保险公司名
  */
-export const getLesseePageByJB = ({page, size, type, name, provinceName, areaName}) => {
+export const getLesseePageByJB = ({ page, size, type, name, provinceName, areaName }) => {
   return axios.request({
     url: service + `/jdFindAll/${page}/${size}`,
     data: {
@@ -57,17 +60,27 @@ export const getLesseePageByJB = ({page, size, type, name, provinceName, areaNam
 }
 
 /**
- * 租户停用/启用
+ * 租户停用/启用/删除
  * @param {*} id 租户id
- * @param {*} state 0启用->1禁用
+ * @param {*} state 0:删除（删除需在停用状态下）1:停用2:启用
  */
 export const setState = (id, state) => {
   return axios.request({
-    url: service + `/${id}/${state}`,
+    url: serviceSub + `/updateCompanyState`,
+    data: {
+      companyId: id,
+      state
+    },
     method: 'put',
-    header: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    transformRequest: [function (data) {
+      let ret = ''
+      for (let it in data) {
+        if (data[it] != undefined) {
+          ret += it + '=' + data[it] + '&'
+        }
+      }
+      return ret
+    }],
   })
 }
 
@@ -76,11 +89,11 @@ export const setState = (id, state) => {
  * @param {*} id 经代公司id
  * @param {*} company 租户信息
  */
-export const addLessee = (id, company) => {
+export const addLessee = (data) => {
   return axios.request({
-    url: service + `/${id}`,
+    url: serviceSub + `/insertCompany`,
     method: 'post',
-    data: company
+    data
   })
 }
 
@@ -90,9 +103,9 @@ export const addLessee = (id, company) => {
  */
 export const updateLessee = (data) => {
   return axios.request({
-    url: service + `/updateCompany`,
+    url: serviceSub + `/updateCompany`,
     data,
-    method: 'POST',
+    method: 'put',
   })
 }
 
@@ -125,7 +138,7 @@ export const updateLessee = (data) => {
  * @param {*} page 
  * @param {*} size 
  */
-export const getRoles = ({page, size, companyId}) => {
+export const getRoles = ({ page, size, companyId }) => {
   return axios.request({
     url: service + `/findNumber/${page}/${size}`,
     params: {
@@ -153,7 +166,7 @@ export const getRolesAndGroups = (name) => {
  * 获取体验账号
  * @param {*} name 
  */
-export const getInvaNumber = ({page, size, companyId}) => {
+export const getInvaNumber = ({ page, size, companyId }) => {
   return axios.request({
     url: service + `/findInvaNumber/${page}/${size}`,
     params: {

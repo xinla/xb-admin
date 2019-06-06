@@ -15,13 +15,13 @@ const config = {
   baseUrl: {
     dev: 'http://192.168.1.64', // 虚拟机
     // dev: 'http://192.168.1.8', // 本地
-    dev2: 'http://192.168.1.21:8115/v1',
+    dev2: 'http://192.168.1.150:8888',
     pro: 'http://112.31.212.46:8118'
   },
   /**
    * @description 默认打开的首页的路由name值，默认为home
    */
-  homeName: 'home',
+  homeName: 'lessee',
   /**
    * @description 需要加载的插件
    */
@@ -54,13 +54,13 @@ config.services = {
   nationality: '/vitNationality',
   policyDictCategory: '/policyDictCategory',
   insurance: '/insurance',
-  role: '/role',
+  proposal: '/vitProposal',
   role: '/role',
   role: '/role',
 
 
   mSystemHelp: config.baseUrl.dev2 + '/systemHelp',
-  mCompany: config.baseUrl.dev2 + '/company',
+  saas: config.baseUrl.dev2 + '/api/permission/company/saas',
 }
 
 export default config

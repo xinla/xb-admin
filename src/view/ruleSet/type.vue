@@ -194,9 +194,18 @@ export default {
       for (const iterator of val) {
         this.producParentList[iterator.id] = iterator.name;
       }
+    },
+    productShow(val) {
+      if (!val) {
+        this.cancel()
+      }
+    },
+    supplierShow(val) {
+      if (!val) {
+        this.cancel()
+      }
     }
   },
-  computed: {},
   mounted() {
     this.init();
   },
@@ -268,6 +277,8 @@ export default {
         });
     },
     cancel(type) {
+      this.$refs.supplierForm.resetFields()
+      this.$refs.productForm.resetFields();
       type === 0 ? (this.supplierShow = false) : (this.productShow = false);
     },
     async getProductType(id) {

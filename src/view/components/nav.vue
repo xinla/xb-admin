@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <router-link v-for="(item, index) of routes" :key="index" class="tab-li" :to="{name: item.name, query: {id: $route.query.id}}">
+    <router-link v-for="(item, index) of routes" :key="index" class="tab-li" :to="{name: item.name, query: $route.query}">
       {{item.text}}
     </router-link>
   </nav>
@@ -13,8 +13,8 @@ const routes1 = [
   // {name: 'organizationalStructure', text: '组织架构'},
   {name: 'productList', text: '产品列表'},
   // {name: 'news', text: '新闻资讯'},
-  {name: 'ascoCode', text: '职业代码表'},
-  {name: 'insuranceRules', text: '投保规则'},
+  // {name: 'ascoCode', text: '职业代码表'},
+  // {name: 'insuranceRules', text: '投保规则'},
 ]
 const routes2 = [
   {name: 'nationalityTable', text: '国籍表'},

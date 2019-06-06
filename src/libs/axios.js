@@ -2,7 +2,7 @@ import axios from 'axios'
 import store from '@/store'
 import { Spin, Message } from 'iview'
 const addErrorLog = errorInfo => {
-  const { statusText, status, request: { responseText, responseURL } } = errorInfo
+  const { data, statusText, status, request: { responseText, responseURL } } = errorInfo
   // let info = {
   //   type: 'ajax',
   //   code: status,
@@ -11,17 +11,17 @@ const addErrorLog = errorInfo => {
   // }
   // if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
   Message.error({
-      content: `错误: 路径: ${responseURL}, 返回值 : ${responseText}`,
-      duration: 3
-    })
-  }
+    content: `错误: 路径: ${responseURL}, 返回值 : ${responseText}`,
+    duration: 3
+  })
+}
 
 class HttpRequest {
-  constructor (baseUrl = baseURL) {
+  constructor(baseUrl = baseURL) {
     this.baseUrl = baseUrl
     this.queue = {}
   }
-  getInsideConfig () {
+  getInsideConfig() {
     const config = {
       baseURL: this.baseUrl,
       headers: {
@@ -30,13 +30,13 @@ class HttpRequest {
     }
     return config
   }
-  destroy (url) {
+  destroy(url) {
     delete this.queue[url]
     if (!Object.keys(this.queue).length) {
       // Spin.hide()
     }
   }
-  interceptors (instance, url) {
+  interceptors(instance, url) {
     // 请求拦截
     instance.interceptors.request.use(config => {
       // 添加全局的loading...
@@ -59,12 +59,14 @@ class HttpRequest {
       if (status === 200 && data.code === 0) {
         return data.result || data.data
       } else {
-        // if (data.code === 201) {
-          
-        // } else {
-          
-        // }
-        addErrorLog(res)
+        if (data.code === 201) {
+          Message.error({
+            content: `产品已存在`,
+            duration: 3
+          })
+        } else {
+          addErrorLog(res)
+        }
         return Promise.reject(res)
       }
     }, error => {
@@ -73,7 +75,7 @@ class HttpRequest {
       return Promise.reject(error)
     })
   }
-  request (options) {
+  request(options) {
     const instance = axios.create()
     options = Object.assign(this.getInsideConfig(), options)
     this.interceptors(instance, options.url)

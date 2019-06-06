@@ -3,9 +3,9 @@
 
     <table class="ac">
       <tr>
-        <th>代码</th>
-        <th>内容</th>
-        <th>两位代码</th>
+        <th style="width: 25%;">代码</th>
+        <th style="width: 30%;">内容</th>
+        <th style="width: 45%;">两位代码</th>
       </tr>
       <tr v-for="(item, index) in list" :key="index">
         <td>{{item.nationalCode}}</td>
@@ -44,4 +44,11 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+table{
+  width: 100%;
+  line-height: 50px;
+}
+td{
+  border-bottom: 1px solid #eee;
+}
 </style>

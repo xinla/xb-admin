@@ -1,6 +1,6 @@
 <template>
   <Form ref="form" :rules="rules" v-model="form">
-    <div class="title-row">投保规则</div>
+    <div class="title-row">投保规则<span class="tip">（必填项）</span></div>
     <a v-if="form.applicationRules" :href="form.applicationRules">{{form.applicationRulesName}}</a>
     <!-- <FormItem prop="applicationRules"> -->
     <Upload :action="uploadUrl" :show-upload-list="false" :on-success="uploadRule">
@@ -9,7 +9,7 @@
     <!-- </FormItem> -->
     <Divider/>
 
-    <div class="title-row">产品条款</div>
+    <div class="title-row">产品条款<span class="tip">（必填项）</span></div>
     <a v-if="form.policyWording" :href="form.policyWording">{{form.policyWordingName}}</a>
     <!-- <FormItem prop="policyWording"> -->
     <Upload :action="uploadUrl" :show-upload-list="false" :on-success="uploadWording">
@@ -19,7 +19,7 @@
     <Divider/>
 
     <div class="title-row">
-      产品课件
+      产品课件<span class="tip">（必填项）</span>
       <Button type="info" size="small" @click="addRow()">新增一行</Button>
     </div>
     <Row class="ac">

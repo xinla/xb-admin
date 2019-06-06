@@ -10,7 +10,7 @@
           :data="districtsList"
           placeholder="所在省市"
           change-on-select
-          style="width:30%;display:inline-block;"
+          style="width:30%;display:inline-block;margin-right: 2%;"
           v-model="selectDistrict"
         ></Cascader>
         <Input v-model="query.name" placeholder="搜索公司" style="width:40%; margin-right: 10px;"/>
@@ -20,7 +20,7 @@
 
     <Table border :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="name" >
-        <div class="a" @click="$router.push({name: 'companyDetail', query: {id: row.companyId}})">{{row.name}}</div>
+        <div class="a" @click="$router.push({name: 'companyDetail', query: {id: row.supplierId, type: 'supplier'}})">{{row.name}}</div>
       </template>
       <template slot-scope="{ row }" slot="action">
         <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row)">编辑</Button>
@@ -156,7 +156,7 @@ export default {
     getData() {
       this.loading = true;
       getLesseePageByJB(this.query).then(data => {
-        // console.log(data);
+        console.log(data);
         this.loading = false;
         this.list = data.list;
         this.total = data.total;

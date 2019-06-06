@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      current: 0,
+      current: 1,
     }
   },
   methods: {
@@ -52,7 +52,7 @@ export default {
           return this.$refs.baseInfo.submit()
           .then(data => {
             // console.log('bs data', data)
-            data && (this.$route.query.id = data)
+            // data && (this.$route.query.id = data)
             // console.log(typeof (this.$route.query.id), this.$route.query.id)
             this.current++
             // console.log('current', this.current)

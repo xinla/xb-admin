@@ -96,43 +96,51 @@ export default [
         path: 'authoritySet',
         name: 'authoritySet',
         meta: {
-          icon: '_Generalpurposedatabase',
+          icon: '_Jurisdiction',
           title: '权限配置'
         },
         component: () => import('@/view/basicManage/authoritySet/index.vue'),
-        // redirect: '/basicManage/authoritySet/SaaS',
-        // children: [
-        //   {
-        //     path: 'SaaS',
-        //     name: 'SaaS',
-        //     meta: {
-        //       hideInMenu: true,
-        //       icon: 'md-funnel',
-        //       title: 'SaaS'
-        //     },
-        //     component: () => import('@/view/basicManage/authoritySet/saas.vue')
-        //   },
-        //   {
-        //     path: 'insurance',
-        //     name: 'insurance',
-        //     meta: {
-        //       hideInMenu: true,
-        //       icon: 'md-funnel',
-        //       title: '保险'
-        //     },
-        //     component: () => import('@/view/basicManage/authoritySet/insurance.vue'),
-        //   },
-        //   {
-        //     path: 'credit',
-        //     name: 'credit',
-        //     meta: {
-        //       hideInMenu: true,
-        //       icon: 'md-funnel',
-        //       title: '信贷'
-        //     },
-        //     component: () => import('@/view/basicManage/authoritySet/credit.vue'),
-        //   }
-        // ]
+        redirect: '/basicManage/authoritySet/resourceList',
+        children: [
+          {
+            path: 'resourceList',
+            name: 'resourceList',
+            meta: {
+              icon: '_Resourcelist',
+              title: '资源列表'
+            },
+            component: () => import('@/view/basicManage/authoritySet/index.vue')
+          },
+          // {
+          //   path: 'SaaS2',
+          //   name: '资源列表2',
+          //   meta: {
+          //     icon: 'md-funnel',
+          //     title: 'SaaS'
+          //   },
+          //   component: () => import('@/view/basicManage/authoritySet/index.vue')
+          // },
+          // {
+          //   path: 'insurance',
+          //   name: 'insurance',
+          //   meta: {
+          //     hideInMenu: true,
+          //     icon: 'md-funnel',
+          //     title: '保险'
+          //   },
+          //   component: () => import('@/view/basicManage/authoritySet/insurance.vue'),
+          // },
+          // {
+          //   path: 'credit',
+          //   name: 'credit',
+          //   meta: {
+          //     hideInMenu: true,
+          //     icon: 'md-funnel',
+          //     title: '信贷'
+          //   },
+          //   component: () => import('@/view/basicManage/authoritySet/credit.vue'),
+          // }
+        ]
       },
     ]
   },
@@ -218,26 +226,26 @@ export default [
       //   },
       //   component: () => import('@/view/cooperationManage/supplierManage/news')
       // },
-      {
-        path: 'ascoCode',
-        name: 'ascoCode',
-        meta: {
-          icon: 'md-funnel',
-          hideInMenu: true,
-          title: '职业代码表' 
-        },
-        component: () => import('@/view/cooperationManage/supplierManage/ascoCode')
-      },
-      {
-        path: 'insuranceRules',
-        name: 'insuranceRules',
-        meta: {
-          icon: 'md-funnel',
-          hideInMenu: true,
-          title: '投保规则'
-        },
-        component: () => import('@/view/cooperationManage/supplierManage/insuranceRules')
-      },
+      // {
+      //   path: 'ascoCode',
+      //   name: 'ascoCode',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     hideInMenu: true,
+      //     title: '职业代码表' 
+      //   },
+      //   component: () => import('@/view/cooperationManage/supplierManage/ascoCode')
+      // },
+      // {
+      //   path: 'insuranceRules',
+      //   name: 'insuranceRules',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     hideInMenu: true,
+      //     title: '投保规则'
+      //   },
+      //   component: () => import('@/view/cooperationManage/supplierManage/insuranceRules')
+      // },
       // 产品管理
       {
         path: 'productManage',
@@ -352,22 +360,33 @@ export default [
     },
     children: [
       {
-        path: 'systemMessage',
-        name: 'systemMessage',
+        path: 'instantMessage',
+        name: 'instantMessage',
         meta: {
-          icon: '_systemnotification',
-          title: '系统通知'
+          icon: '_Message',
+          title: '即时通讯'
         },
-        component: () => import('@/view/applicationManage/systemMessage.vue')
-      },
-      {
-        path: 'messageTemplate',
-        name: 'messageTemplate',
-        meta: {
-          icon: '_Messagetemplate',
-          title: '消息模板'
-        },
-        redirect: 'commonExpressions',
+        component: () => import('@/view/applicationManage/systemMessage.vue'),
+        children: [
+          {
+            path: 'systemMessage',
+            name: 'systemMessage',
+            meta: {
+              icon: '_systemnotification',
+              title: '系统消息'
+            },
+            component: () => import('@/view/applicationManage/systemMessage.vue')
+          },
+          {
+            path: 'messageTemplate',
+            name: 'messageTemplate',
+            meta: {
+              icon: '_Messagetemplate',
+              title: '消息模板'
+            },
+            redirect: '/applicationManage/commonExpressions',
+          },
+        ]
       },
       {
         path: 'commonExpressions',
@@ -403,7 +422,7 @@ export default [
         path: 'digitalResource',
         name: 'digitalResource',
         meta: {
-          icon: '_Dictionaries',
+          icon: '_Recommendation',
           title: '保险建议书',
         },
         component: () => import('@/view/applicationManage/digitalResource/index'),
@@ -474,7 +493,7 @@ export default [
         path: 'professionTable',
         name: 'professionTable',
         meta: {
-          icon: 'md-funnel',
+          icon: '_Code',
           title: '职业代码表'
         },
         component: () => import('@/view/ruleSet/database/profession.vue'),
@@ -676,7 +695,7 @@ export default [
         name: 'help',
         meta: {
           icon: '_Helpandfeedback',
-          title: '帮助'
+          title: '帮助手册'
         },
         component: () => import('@/view/systemSet/help.vue')
       },
@@ -694,8 +713,8 @@ export default [
         path: 'feedback',
         name: 'feedback',
         meta: {
-          icon: '_Helpandfeedback',
-          title: '反馈'
+          icon: '_feedback',
+          title: '问题反馈'
         },
         component: () => import('@/view/systemSet/feedback.vue')
       },

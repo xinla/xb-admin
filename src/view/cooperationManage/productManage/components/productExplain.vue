@@ -336,7 +336,8 @@ export default {
             let isNew = oldData !== JSON.stringify(this.form);
             oldData = JSON.stringify(this.form);
 
-            if (isNew) {
+            // 过滤重复提交(暂废弃)
+            if (true) {
               // console.log(this.form);
               if (this.form.id) {
                 return updateProductDesc(this.form);

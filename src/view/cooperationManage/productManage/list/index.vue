@@ -21,8 +21,16 @@
           {{row.productType | productType}}
       </template>
 
-      <template slot-scope="{ row }" slot="age">
+      <!-- <template slot-scope="{ row }" slot="age">
           {{row.applicationAgeStart + '-' + row.applicationAgeEnd + '周岁'}}
+      </template> -->
+
+      <template slot-scope="{ row }" slot="isSale">
+          {{row.isSale === 1 ? '在售' : '停售'}}
+      </template>
+
+      <template slot-scope="{ row }" slot="publishStatus">
+          {{row.isSale | publishStatus}}
       </template>
 
       <template slot-scope="{ row }" slot="distributionChannel">
@@ -40,10 +48,11 @@
       
 
       <template slot-scope="{ row }" slot="action">
+          <Button type="info" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">详情</Button>
           <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">编辑</Button>
-          <Button type="error" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">详情</Button>
-          <Button type="error" size="small" style="margin-right: 5px" @click="goPage('', {id: row.productId})">H5</Button>
-          <Button type="error" size="small" style="margin-right: 5px" @click="sale(row.productId)">上架</Button>
+          <Button type="warning" size="small" style="margin-right: 5px" :to="'http://' + row.h5Url" target="_blank">H5</Button>
+          <Button type="success" size="small" style="margin-right: 5px" @click="sale(row.productId)">{{row.isSale === 1 ? '下架' : '上架'}}</Button>
+          <Button type="error" size="small" style="margin-right: 5px" @click="remove(row)">删除</Button>
       </template>
     </Table>
 
@@ -53,7 +62,7 @@
 </template>
 
 <script>
-import { getProductPage, saleProduct } from '@/api/product'
+import { getProductPage, saleProduct, deleteProduct } from '@/api/product'
 import { getTypeRulePage } from '@/api/rulesSet/type'
 
 const channel = [
@@ -75,6 +84,16 @@ const channel = [
   },
 ]
 const productType = []
+const publishStatus = [
+  {
+      label: '未发布',
+      value: 0
+  },
+  {
+      label: '已发布',
+      value: 1
+  },
+]
 export default {
   filters: {
     channel(val) {
@@ -92,6 +111,9 @@ export default {
         }
       }
       return res
+    },
+    publishStatus(val) {
+      return publishStatus[val].label
     }
   },
   data() {
@@ -108,7 +130,8 @@ export default {
         {
             title: '序号',
             type: 'index',
-            align: 'center'
+            align: 'center',
+            maxWidth: 60
         },
         {
             title: '品牌名称',
@@ -125,12 +148,13 @@ export default {
             title: '产品名称',
             key: 'productFullName',
             align: 'center',
-            minWidth: 80
+            minWidth: 40
         },
         {
             title: '产品类型',
             slot: 'productType',
             align: 'center',
+            minWidth: 80,
             filters: productType,
             filterMultiple: true,
             filterMethod (value, row) {
@@ -141,20 +165,27 @@ export default {
             title: '分销渠道',
             slot: 'distributionChannel',
             align: 'center',
+            minWidth: 80,
             filters: channel,
             filterMultiple: false,
             filterMethod (value, row) {
               return row.distributionChannel === 'value'
             }
         },
+        // {
+        //     title: '投保年龄',
+        //     slot: 'age',
+        //     align: 'center'
+        // },
+        // {
+        //     title: '投保期限',
+        //     key: 'applicationDuration',
+        //     align: 'center'
+        // },
         {
-            title: '投保年龄',
-            slot: 'age',
-            align: 'center'
-        },
-        {
-            title: '投保期限',
-            key: 'applicationDuration',
+            title: '在售状态',
+            slot: 'isSale',
+            width: 100,
             align: 'center'
         },
         {
@@ -164,9 +195,19 @@ export default {
             align: 'center'
         },
         {
+            title: '发布状态',
+            slot: 'publishStatus',
+            align: 'center',
+            filters: publishStatus,
+            filterMultiple: false,
+            filterMethod (value, row) {
+              return row.isSale === 'value'
+            }
+        },
+        {
             title: '操作',
             slot: 'action',
-            minWidth: 80,
+            minWidth: 150,
             align: 'center',
         }
       ],
@@ -211,8 +252,25 @@ export default {
     },
     sale(data) {
       saleProduct(data).then(res => {
-        this.$Message.info("上架成功");
+        this.$Message.info("执行成功");
+        this.getData()
       })
+    },
+    remove(data) {
+      if (data.isSale) {
+        this.$Message.error("在售产品，不可删除，请知悉");
+      } else {
+        this.$Modal.confirm({
+          title: "提示",
+          content: "确定要删除吗",
+          onOk: () => {
+            deleteProduct(data.productId).then(res => {
+              this.getData();
+              this.$Message.success("操作成功");
+            });
+          }
+        })
+      }
     }
   }
 };

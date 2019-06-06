@@ -1,14 +1,19 @@
 <template>
   <Form ref="form" :model="form" :rules="rules" :label-width="80">
     <FormItem label="年龄限制">
-      <InputNumber v-model="form.applicationAgeStart" placeholder="年龄限制启始"></InputNumber>周岁 至
-      <InputNumber v-model="form.applicationAgeEnd" placeholder="年龄限制结束"></InputNumber>周岁
+      <InputNumber :min="0" :max="120" v-model="form.applicationAgeStart" placeholder="年龄限制启始"></InputNumber>周岁 至
+      <InputNumber
+        :min="form.applicationAgeStart"
+        :max="120"
+        v-model="form.applicationAgeEnd"
+        placeholder="年龄限制结束"
+      ></InputNumber>周岁
       0岁填写
-      <InputNumber v-model="form.applicationAgeDay" placeholder="出生多少天"></InputNumber>天
+      <InputNumber :min="0" :max="366" v-model="form.applicationAgeDay" placeholder="出生多少天"></InputNumber>天
     </FormItem>
 
     <FormItem label="续保年龄" prop="renewalAge">
-      <InputNumber v-model="form.renewalAge" placeholder="续保年龄"></InputNumber>周岁
+      <InputNumber :min="0" :max="120" v-model="form.renewalAge" placeholder="续保年龄"></InputNumber>周岁
     </FormItem>
 
     <FormItem label="性别限制" prop="applicationSex">
@@ -21,7 +26,8 @@
 
     <FormItem label="职业限制">
       最高职业风险等级
-      <InputNumber v-model="form.occupationUnderwriting" placeholder="最高风险等级"></InputNumber>
+      <span class="tip">（请输入0-6之间的数字）</span>
+      <InputNumber :max="6" :min="0" v-model="form.occupationUnderwriting" placeholder="最高风险等级"></InputNumber>
       <Button @click="codeShow = !codeShow">添加特殊限制职业</Button>
       <div v-show="codeShow">
         限制投保职业代码（多个以空格分开）
@@ -98,7 +104,8 @@
         <!--保险计划额添加项 -->
         <CheckboxGroup v-model="insurancePlan">
           <Checkbox :label="index" v-for="(item, index) of form.insurancePlan" :key="index">
-            {{character[index]}}档,<Input
+            {{character[index]}}档,
+            <Input
               class="inline-input"
               type="number"
               :number="true"
@@ -137,7 +144,12 @@
         </Col>
         <Col span="4">
           最低
-          <Input type="text" style="width:50%;" v-model="form.minInsured[index].minInsured" placeholder="金额"/>元
+          <Input
+            type="text"
+            style="width:50%;"
+            v-model="form.minInsured[index].minInsured"
+            placeholder="金额"
+          />元
         </Col>
         <Col style="display:inline-block;" v-if="index === form.minInsured.length - 1">
           <Button @click="addRow('minInsured')">新增一行</Button>
@@ -545,16 +557,16 @@ export default {
       specialOccupationUnderwriting: [],
       disabled: true,
       character: {
-        0: '一',
-        1: '二',
-        2: '三',
-        3: '四',
-        4: '五',
-        5: '六',
-        6: '七',
-        7: '八',
-        8: '九',
-        9: '十',
+        0: "一",
+        1: "二",
+        2: "三",
+        3: "四",
+        4: "五",
+        5: "六",
+        6: "七",
+        7: "八",
+        8: "九",
+        9: "十"
       }
     };
   },
@@ -566,7 +578,7 @@ export default {
   },
   methods: {
     init() {
-      this.$refs.editor.setHtml('')
+      this.$refs.editor.setHtml("");
       this.getData();
     },
     getData() {
@@ -586,22 +598,24 @@ export default {
           this.form["paymentMethod"] = this.form["paymentMethod"].split(",");
 
           // 特殊职业代理数组显示转换
-          this["specialOccupationUnderwriting"] = this.form["specialOccupationUnderwriting"].split(",");
+          this["specialOccupationUnderwriting"] = this.form[
+            "specialOccupationUnderwriting"
+          ].split(",");
 
           // 多选框代理数组
           for (const iterator of transToArray) {
-            this[iterator] = []
+            this[iterator] = [];
             for (let i = 0; i < this.form[iterator].length; i++) {
               this[iterator].push(i);
             }
           }
           // 设置富文本内容
-          this.$refs.editor.setHtml(this.form.underwritingRulesText)
+          this.$refs.editor.setHtml(this.form.underwritingRulesText);
         });
     },
     addRow(type) {
       // debugger
-      let len = this.form[type].length
+      let len = this.form[type].length;
       if (!len || Object.keys(this.form[type][len - 1]).length) {
         this.form[type].push({});
       }
@@ -627,7 +641,7 @@ export default {
           }
         });
         // console.log(this[type])
-        this[type].splice() // 强制触发checkbox dom更新 不可删除
+        this[type].splice(); // 强制触发checkbox dom更新 不可删除
         this.form[type].splice(index, 1);
       }
       if (type === "insuranceFullAmount") {
@@ -653,67 +667,65 @@ export default {
       // console.log(this.form.insuranceFullAmount)
       this.form.productId = this.$route.query.id;
       // console.log('productId', this.form.productId)
-      return this.$refs.form.validate().then(data => {
-        if (data) {
-          // 剔除保额限制maxInsured，minInsured中的空对象
-          let del = ["minInsured", "maxInsured"];
-          for (const val of del) {
-            let tempArr = [...this.form[val]]
-            for (const iterator of tempArr) {
-              // debugger
-              if (iterator.type === undefined) {
-                this.form[val].splice(this.form[val].indexOf(iterator), 1);
-              }
-            }
-          }
-
-          let formData = Object.assign({}, this.form);
-
-          // checkbox和input混合的选项，提取checkbox实际选择的数据
-          for (const agency of transToArray) {
-            let temp = [];
-            for (const index of this[agency]) {
-              // debugger
-              formData[agency][index].productId = formData.productId;
-              if (agency === 'insurancePlan') {
-                formData[agency][index].ruleIntervalName = index + 1
-              }
-              temp.push(formData[agency][index]);
-
-            }
-            formData[agency] = temp;
-          }
-
-          let isNew = oldData !== JSON.stringify(formData);
-          oldData = JSON.stringify(formData);
-          // 过滤重复提交
-          if (isNew) {
-            // 数组字段转字符串
-            formData["paymentMethod"] += "";
-            formData["specialOccupationUnderwriting"] = formData[
-              "specialOccupationUnderwriting"
-            ].replace(/ /g, ",");
-            // console.log('formData', formData)
-            Promise.resolve()
-              .then(() => {
-                if (formData.id) {
-                  // console.log(1)
-                  return updateProductRule(formData);
-                } else {
-                  return addProductRule(formData);
+      return this.$refs.form
+        .validate()
+        .then(data => {
+          if (data) {
+            // 剔除保额限制maxInsured，minInsured中的空对象
+            let del = ["minInsured", "maxInsured"];
+            for (const val of del) {
+              let tempArr = [...this.form[val]];
+              for (const iterator of tempArr) {
+                // debugger
+                if (iterator.type === undefined) {
+                  this.form[val].splice(this.form[val].indexOf(iterator), 1);
                 }
-              })
-              .then(() => {
-                this.getData()
-                return Promise.resolve();
-              });
+              }
+            }
+
+            let formData = Object.assign({}, this.form);
+
+            // checkbox和input混合的选项，提取checkbox实际选择的数据
+            for (const agency of transToArray) {
+              let temp = [];
+              for (const index of this[agency]) {
+                // debugger
+                formData[agency][index].productId = formData.productId;
+                if (agency === "insurancePlan") {
+                  formData[agency][index].ruleIntervalName = index + 1;
+                }
+                temp.push(formData[agency][index]);
+              }
+              formData[agency] = temp;
+            }
+
+            let isNew = oldData !== JSON.stringify(formData);
+            oldData = JSON.stringify(formData);
+            // 过滤重复提交(暂废弃)
+            if (true) {
+              // 数组字段转字符串
+              formData["paymentMethod"] += "";
+              formData["specialOccupationUnderwriting"] = formData[
+                "specialOccupationUnderwriting"
+              ].replace(/ /g, ",");
+              // console.log('formData', formData)
+              if (formData.id) {
+                // console.log(1)
+                return updateProductRule(formData);
+              } else {
+                return addProductRule(formData);
+              }
+            } else {
+              return Promise.resolve();
+            }
           } else {
-            return Promise.resolve();
+            return Promise.reject();
           }
-        } else {
-          return new Promise((resolve, reject) => {});
-        }
-      });
+        })
+        .then(() => {
+          this.getData();
+          return Promise.resolve();
+        });
     },
     transCode() {
       if (this.form.specialOccupationUnderwriting) {
@@ -721,7 +733,7 @@ export default {
           " "
         );
       }
-        this.codeShow = false;
+      this.codeShow = false;
       // console.log(this.specialOccupationUnderwriting)
     },
     selectChange() {
@@ -744,6 +756,9 @@ export default {
 }
 .ivu-btn {
   margin: 0 10px;
+}
+.tip {
+  color: #f40;
 }
 </style>
 

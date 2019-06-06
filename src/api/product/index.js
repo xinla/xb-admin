@@ -78,3 +78,14 @@ export const saleProduct = (id) => {
     method: 'post'
   })
 }
+
+/**
+ * 根据id删除产品
+ * @param {*} id 
+ */
+export const deleteProduct = (id) => {
+  return axios.request({
+    url: service + `/delete/${id}`,
+    method: 'post'
+  })
+}

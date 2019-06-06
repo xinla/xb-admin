@@ -1,18 +1,21 @@
 <template>
-  <businessInfo/>
+  <businessInfo :type="type" :key="type"/>
 </template>
 
 <script>
-import {  } from '@/api/lessee'
 import businessInfo from '@/components/businessInfo'
+
 export default {
   components: {
     businessInfo,
   },
   data() {
     return {
-
+      type: ''
     }
+  },
+  mounted() {
+    this.type = this.$route.query.type
   },
   methods: {
   }

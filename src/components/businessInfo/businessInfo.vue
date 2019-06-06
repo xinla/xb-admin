@@ -107,14 +107,14 @@ export default {
   methods: {
     init() {
       this.id || this.$Message.error('没有参数或参数错误')
-      if (this.type === 'lessee') {
+      if (!this.type || this.type === 'lessee') {
         getLesseeBusinessInfoById(this.id).then(data => {
-          this.form = data[0]
+          data[0] ? (this.form = data[0]) : this.$Message.error('没有记录')
           // console.log('LesseeBusinessInformation', data)
         })
       } else if (this.type === 'supplier') {
         getSupplierBusinessInformation(this.id).then(data => {
-          this.form = data[0]
+          data[0] ? (this.form = data[0]) : this.$Message.error('没有记录')
           // console.log('SupplierBusinessInformation ', data)
         })
       }

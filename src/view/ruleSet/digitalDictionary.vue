@@ -171,10 +171,10 @@
     </Tabs>
 
     <dialogBox v-model="dialogShow">
-      <template slot="title">添加供应商类别</template>
+      <template slot="title">添加品牌类别</template>
       <Form ref="form" :model="form" :rules="rules">
         <FormItem>
-          <selectSupplier :val="form.name" type="supplier" @change="change"/>
+          <selectSupplier :val="form.name" type="insurance" @change="change"/>
         </FormItem>请勾选需要编辑的类别
         <FormItem prop="dictName" style="max-width: 
         100%;">
@@ -254,7 +254,6 @@ const defautlFormB = {
 };
 export default {
   components: { dialogBox, selectSupplier },
-  props: {},
   data() {
     return {
       query: {
@@ -390,9 +389,18 @@ export default {
       className: ""
     };
   },
-  watch: {},
-  computed: {},
-  created() {},
+  watch: {
+    dialogShow(val) {
+      if (!val) {
+        this.cancel();
+      }
+    },
+    dialogShowB(val) {
+      if (!val) {
+        this.cancel();
+      }
+    }
+  },
   mounted() {
     this.getData();
   },
@@ -456,6 +464,13 @@ export default {
     },
     submit(type, item) {
       (type === 0 ? this.$refs.form.validate() : this.$refs.formB.validate())
+        .then(data => {
+          if (data) {
+            return Promise.resolve();
+          } else {
+            return Promise.reject();
+          }
+        })
         .then(() => {
           return type === 0
             ? savePolicyDictCategory(item)
@@ -484,12 +499,16 @@ export default {
       } else {
         this.$Message.error("名称为空或已存在");
       }
+    },
+    cancel() {
+      this.$refs.form.resetFields();
+      this.$refs.formB.resetFields();
     }
   }
 };
 </script>
 <style lang="less" scoped>
-/deep/.cc {
+/deep/.dialog {
   max-width: 620px;
 }
 </style>

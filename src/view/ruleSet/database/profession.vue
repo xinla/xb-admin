@@ -2,9 +2,9 @@
   <div>
     <Row>
       <Col span="12">
-        <Form ref="form" :model="form" :label-width="80" inline>
-          <FormItem label="供应商">
-            <selectSupplier :val="form.name" type="supplier" @change="change"/>
+        <Form ref="form" :model="form" :label-width="40" inline>
+          <FormItem label="品牌">
+            <selectSupplier :val="form.name" type="brand" @change="change"/>
           </FormItem>
         </Form>
       </Col>
@@ -19,24 +19,37 @@
             :before-upload="beforeUpload"
             :on-success="uploadSuccess"
           >
-            <Button icon="ios-cloud-upload-outline">上传表格</Button>
+            <Button icon="ios-cloud-upload-outline" :loading="loading">
+              <span v-if="!loading">上传表格</span>
+              <span v-else>Loading...</span>
+            </Button>
           </Upload>
         </div>
       </Col>
     </Row>
 
-    <Table border :columns="columns" :data="list" style="text-align: center;">
+    <tree-table
+      :expand-type="false"
+      :columns="columns"
+      :selectable="true"
+      children-prop="children"
+      select-type="radio"
+      :is-fold="false"
+      empty-text="Loading..."
+      :data="list"
+    >
       <template slot-scope="{ row }" slot="cmmonCareer">
         <RadioGroup v-model="row.cmmonCareer">
           <Radio :label="0">不常用</Radio>
           <Radio :label="1">常用</Radio>
         </RadioGroup>
       </template>
-
-      <template slot-scope="{ row }" slot="action">
-        <Button type="primary" @click="submit(row)">确定</Button>
+      <template slot="action" slot-scope="{ row }">
+        <Button type="primary" size="small" @click="submit(row)">确定</Button>
+        <!-- <Button type="success" size="small" @click="addChild(row)">添加下级</Button> -->
+        <!-- <Button type="error" size="small" @click="deleteMenu(row)">删除</Button> -->
       </template>
-    </Table>
+    </tree-table>
 
     <Page
       :total="total"
@@ -67,6 +80,7 @@ export default {
         this.$config.baseUrl.dev + this.$config.services.profession + "/import",
       loading: false,
       query: {
+        id: 0,
         page: 1,
         size: 10
       },
@@ -93,12 +107,14 @@ export default {
         },
         {
           title: "设为常用",
-          slot: "cmmonCareer",
+          type: "template",
+          template: "cmmonCareer",
           align: "center"
         },
         {
           title: "设为常用",
-          slot: "action",
+          type: "template",
+          template: "action",
           align: "center"
         }
       ],
@@ -114,12 +130,12 @@ export default {
   methods: {
     getData(page) {
       page && (this.query.page = page);
-      this.loading = true;
+      // this.loading = true;
       getProfessionPage(this.query).then(res => {
         // console.log("ProfessionPage: ", res);
         this.loading = false;
-        this.list = res.list;
         this.total = res.total;
+        this.list = res.list;
       });
     },
     download() {
@@ -127,13 +143,20 @@ export default {
     },
     beforeUpload() {
       if (!this.form.supplierId) {
-        this.$Message.error("请选择供应商后再上传");
+        this.$Message.error("请选择品牌后再上传");
         return false;
       }
+      this.loading = true;
     },
     uploadSuccess(response, file, fileList) {
-      // console.log(response, file, fileList)
+      // console.log(response, file, fileList);
       // this.form.rateTableUrl = file.name
+      if (response.code === 0) {
+        this.getData();
+        this.$Message.success("上传成功");
+      } else {
+        this.$Message.error("上传失败");
+      }
     },
     change(item) {
       this.form.supplierId = item.id;
@@ -141,9 +164,10 @@ export default {
       // console.log(item)
     },
     submit(data) {
-      updateProfession(data).then((res) => {
+      console.log(data);
+      updateProfession(data).then(res => {
         this.$Message.success("设置成功");
-      })
+      });
     }
   }
 };
