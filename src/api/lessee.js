@@ -5,7 +5,9 @@ import qs from 'qs'
 
 const service = config.services.company
 const serviceBusinessInformation = config.services.businessInformation
-const serviceSub = config.services.saas
+let serviceSub = config.services.saas
+
+serviceSub = (process.env.NODE_ENV === 'development' ? config.baseUrl.dev1 : config.baseUrl.pro1) + serviceSub
 
 /**
  * 根据公司查询全部租户
@@ -184,6 +186,41 @@ export const getLesseeBusinessInfoById = (id) => {
   return axios.request({
     url: serviceBusinessInformation + `/findAll/${id}`,
     method: 'get'
+  })
+}
+
+/**
+ * 获取保险/经代公司工商信息
+ * @param {*} id 
+ */
+export const getCompanyBusinessInformation = (id) => {
+  return axios.request({
+    url: serviceBusinessInformation + `/${id}`,
+    method: 'get'
+  })
+}
+
+/**
+ * 增加/修改 保险/经代公司工商信息
+ * @param {*} data 
+ */
+export const saveCompanyBusinessInformation = (data) => {
+  return axios.request({
+    url: serviceBusinessInformation,
+    data,
+    method: 'post'
+  })
+}
+
+/**
+ * 删除 保险/经代公司工商信息
+ * @param {*} data 
+ */
+export const deleteCompanyBusinessInformation = (data) => {
+  return axios.request({
+    url: serviceBusinessInformation + '/delete',
+    data,
+    method: 'post'
   })
 }
 

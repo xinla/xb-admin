@@ -11,7 +11,7 @@
       <TabPane label="类别">
         <Row>
           <Col span="6">
-            <Card title="Options" icon="ios-options" :padding="0" shadow style="width: 300px;">
+            <Card title="品牌" icon="ios-options" :padding="0" shadow style="width: 300px;">
               <CellGroup @on-click="clickClass">
                 <Cell
                   v-for="(item, index) in list"
@@ -174,7 +174,7 @@
       <template slot="title">添加品牌类别</template>
       <Form ref="form" :model="form" :rules="rules">
         <FormItem>
-          <selectSupplier :val="form.name" type="insurance" @change="change"/>
+          <selectSupplier :val="form.name" type="brand" @change="change"/>
         </FormItem>请勾选需要编辑的类别
         <FormItem prop="dictName" style="max-width: 
         100%;">
@@ -409,10 +409,10 @@ export default {
       this.loading = true;
       page && (this.query.page = page);
       getPolicyDictCategoryPage(this.query).then(data => {
-        // console.log(data);
+        console.log('PolicyDictCategoryPage: ', data);
         this.loading = false;
-        this.list = data.list;
-        this.total = data.total;
+        this.list = data;
+        // this.total = data.total;
       });
     },
     search() {

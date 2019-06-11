@@ -7,12 +7,24 @@
       </Col>
     </Row>
 
-    <Table border :columns="columns" :data="list">
+    <Table border :loading="loading" :columns="columns" :data="list">
+      <template slot-scope="{ row }" slot="cover">
+        <img :src="row.cover" class="logo">
+      </template>
+
       <template slot-scope="{ row }" slot="action">
         <Button type="primary" size="small" style="margin-right: 5px" @click="edit(1, row)">编辑</Button>
         <Button type="error" size="small" style="margin-right: 5px" @click="remove(row.id)">删除</Button>
       </template>
     </Table>
+
+    <Page
+      :total="total"
+      show-elevator
+      show-total
+      style="text-align:center;margin-top:20px;"
+      @on-change="getData"
+    />
 
     <dialogBox v-model="isShow">
       <template slot="title">添加分类</template>
@@ -37,11 +49,11 @@
         <Form ref="form1" :model="form1" :rules="rules">
           <FormItem prop="classifyId">
             <Select v-model="form1.classifyId">
-              <Option v-for="(item, index) in list2" :value="+item.id" :key="index">{{ item.value }}</Option>
+              <Option v-for="(item, index) in list2" :value="item.id" :key="index">{{ item.value }}</Option>
             </Select>
           </FormItem>
 
-          <FormItem prop="cover">
+          <FormItem prop="cover" label="上传封面">
             <Upload
               :action="$config.baseUrl.dev + '/upload'"
               :show-upload-list="false"
@@ -81,7 +93,7 @@ const form = {
 };
 
 const form1 = {
-  classifyId: undefined,
+  classifyId: "",
   title: "",
   cover: "",
   type: 1,
@@ -95,11 +107,12 @@ export default {
   components: { dialogBox },
   data() {
     return {
+      loading: true,
       query: {
         page: 1,
         size: 10,
         type: 1,
-        classifyId: undefined
+        classifyId: ""
       },
       columns: [
         {
@@ -114,7 +127,7 @@ export default {
         },
         {
           title: "标题",
-          key: "title",
+          slot: "cover",
           align: "center"
         },
         {
@@ -124,16 +137,25 @@ export default {
         }
       ],
       list: [],
-      list2: [],
+      list2: [
+        {id: '1', value: '健康类'},
+        {id: '2', value: '养老类'},
+        {id: '3', value: '教育类'},
+        {id: '4', value: '保障类'},
+        {id: '5', value: '理财类'},
+        {id: '6', value: '人寿类'},
+        {id: '7', value: '意外类'},
+      ],
       rules: {
         value: [{ required: true, message: "不能为空", trigger: "blur" }],
         cover: [{ required: true, message: "不能为空", trigger: "change" }],
-        classifyId: [{ required: true, type: 'number', message: "不能为空", trigger: "change" }]
+        classifyId: [{ required: true, message: "不能为空", trigger: "change" }]
       },
       form: Object.assign({}, form),
       form1: Object.assign({}, form1),
       isShow: false,
-      isShow1: false
+      isShow1: false,
+      total: 0
     };
   },
   computed: {},
@@ -153,14 +175,19 @@ export default {
     this.getData();
   },
   methods: {
-    getData() {
+    getData(page) {
+      this.loading = true;
+      page && (this.query.page = page);
       getProposalPage(this.query).then(res => {
         // console.log('ProposalPage: ', res);
+        this.loading = false;
         this.list = res.list;
+        this.total = res.total;
       });
       getProposalDictPage(this.query).then(res => {
         // console.log("ProposalDictPage", res);
-        this.list2 = res.list;
+        // 先写死，后期获取
+        // this.list2 = res.list;
       });
     },
     edit(_type, item) {
@@ -228,7 +255,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.upload-icon{
+.upload-icon {
   border: 1px dashed #000;
   font-size: 36px;
   padding: 30px;
@@ -237,5 +264,6 @@ export default {
 .logo {
   width: 220px;
   height: 100px;
+  margin: 5px 0;
 }
 </style>

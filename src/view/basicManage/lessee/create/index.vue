@@ -122,6 +122,7 @@ const dafaultForm = {
   compayAccountType: 0,
   businessType: 0, // 0保险,1信贷,2基金
   listAdmin: [],
+  agentCompanyId: '',
   exmap: []
 };
 const defaultFormRole = {
@@ -320,7 +321,7 @@ export default {
       this.formAccount.timeEnd = date[1];
     },
     change(item) {
-      this.JDId = item.id;
+      this.formAll.agentCompanyId = item.id;
       this.formAll.name = item.name;
       // console.log(item)
     },

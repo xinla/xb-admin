@@ -5,7 +5,7 @@
         基本信息
         <div class="fr">
           <!-- <Button size="small" type="primary" @click="edit">编辑</Button> -->
-          <Button size="small" type="primary" @click="save">保存</Button>
+          <!-- <Button size="small" type="primary" @click="save">保存</Button> -->
         </div>
       </div>
       <table>

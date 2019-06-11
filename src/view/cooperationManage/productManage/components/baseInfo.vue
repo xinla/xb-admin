@@ -89,6 +89,13 @@
       </RadioGroup>
     </FormItem>
 
+    <FormItem label="在售状态" prop="isSale">
+      <RadioGroup v-model="form.isSale">
+        <Radio :label="0">停售</Radio>
+        <Radio :label="1">在售</Radio>
+      </RadioGroup>
+    </FormItem>
+
     <FormItem label="产品形态" prop="productForm">
       <RadioGroup v-model="form.productForm">
         <Radio :label="0">主险</Radio>
@@ -220,6 +227,7 @@ const defaultForm = {
   underwritingPeriod: 0,
   productForm: 0,
   distributionChannel: [],
+  isSale: 0,
   onlineAddress: [
     // {
     //   code: '',
@@ -298,6 +306,14 @@ export default {
           }
         ],
         underwritingPeriod: [
+          {
+            type: "number",
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
+        ],
+        isSale: [
           {
             type: "number",
             required: true,

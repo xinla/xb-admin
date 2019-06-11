@@ -2,7 +2,7 @@
   <div>
     <Row style="padding-bottom: 10px;">
       <Col span="16">
-        <Button type="info" @click="edit()">新建</Button>
+        <Button type="info" @click="goPage('')">新建</Button>
       </Col>
       <Col span="8">
         所在省市
@@ -19,15 +19,12 @@
     </Row>
 
     <Table border :loading="loading" :columns="columns" :data="list">
-      <template slot-scope="{ row }" slot="name">
-        <div
-          class="a"
-          @click="$router.push({name: 'companyDetail', query: {id: row.id, type: 'company'}})"
-        >{{row.name}}</div>
+      <template slot-scope="{ row }" slot="name" >
+        <div class="a" @click="$router.push({name: 'companyDetail', query: {id: row.id, type: 'company'}})">{{row.name}}</div>
       </template>
       <template slot-scope="{ row }" slot="action">
         <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row)">编辑</Button>
-        <Button type="error" size="small" style="margin-right: 5px" @click="remove(row)">删除</Button>
+        <Button type="error" size="small" style="margin-right: 5px" @click="deleteItem(row)">删除</Button>
         <Button type="error" size="small" @click="set(row)">转移</Button>
       </template>
     </Table>
@@ -37,7 +34,7 @@
       show-elevator
       show-total
       style="text-align:center;margin-top:20px;"
-      @on-change="getData"
+      @on-change="getDataPage"
     />
 
     <dialogBox v-model="isShow">
@@ -107,6 +104,11 @@ const form = {
   _address: ''
 };
 export default {
+  // filters: {
+  //   timeFormat(val) {
+  //     return val.substring(0, val.indexOf("T"));
+  //   }
+  // },
   components: { dialogBox },
   props: {
     type: {
@@ -121,7 +123,7 @@ export default {
       query: {
         page: 1,
         size: 10,
-        type: 0, // 1是经代,0是保险( json格式)
+        type: 1, // 1是经代,0是保险( json格式)
         name: "",
         provinceName: "",
         areaName: ""
@@ -165,7 +167,7 @@ export default {
         {
           title: "公司状态",
           key: "managementStatus",
-          align: "center"
+          align: "center",
         },
         {
           title: "操作",
@@ -174,69 +176,45 @@ export default {
           align: "center"
         }
       ],
-      rules: {
-        _address: [{ required: true, message: "不能为空", trigger: "blur" }],
-        name: [{ required: true, message: "不能为空", trigger: "blur" }],
-        establishTime: [{ required: true, message: "不能为空", trigger: "blur" }],
-        managementStatus: [{ required: true, message: "不能为空", trigger: "change" }],
-        _selectDistrict: [{ required: true, type: 'array', message: "不能为空", trigger: "change" }]
-      },
       form: Object.assign({}, form),
       list: [],
       districtsList: [], // 行政区划表
       selectDistrict: [], // 选择的省市
-      total: 0,
-      isShow: false,
-      stateList: ["存续", "在业", "吊销", "注销", "迁入", "迁出", "停业", "结算"],
-      // stateList: {
-      //   0: "存续",
-      //   1: "在业",
-      //   2: "吊销",
-      //   3: "注销",
-      //   4: "迁入",
-      //   5: "迁出",
-      //   6: "停业",
-      //   7: "结算"
-      // }
+      total: 0
     };
   },
   watch: {
-    selectDistrict(val) {
-      this.query.provinceName = val[0] || "";
-      this.query.areaName = val[1] || "";
-    },
-    "form._selectDistrict"(val) {
-      this.form.provinceName = val[0] || "";
-      this.form.areaName = val[1] || "";
-      // console.log(this.form)
-    },
-    isShow(val) {
-      if (!val) {
-        this.cancel();
-      }
+    selectDistrict() {
+      this.query.provinceName = this.selectDistrict[0] || "";
+      this.query.areaName = this.selectDistrict[1] || "";
     }
   },
   mounted() {
     // 获取行政区划数据
-    getDistrict().then(data => {
-      // console.log(data)
+    getDistrict()
+    .then(data => {
+      // console.log(data.data.districts[0].districts)
       let districtsFull = data;
       recursiveExtract(this.districtsList, districtsFull);
       // console.log(this.districtsList)
 
-      // 递归提取省市
+      // 提取省市 （若使用递归会报：栈溢出错误，带后续探究）
       function recursiveExtract(arr1, arr2) {
-        for (const iterator of arr2) {
+        for (const iterator of districtsFull) {
           arr1.push({
             value: iterator.name,
             label: iterator.name,
             children: []
           });
-          iterator.districts.length &&
-            recursiveExtract(
-              arr1[arr1.length - 1].children,
-              iterator.districts
-            );
+          if (iterator.districts.length) {
+            for (const iterator of iterator.districts) {
+              arr1[arr1.length - 1].children.push({
+                value: iterator.name,
+                label: iterator.name
+              });
+            }
+          }
+          // iterator.districts.length && recursiveExtract(arr1[arr1.length - 1].children, iterator.districts)
         }
       }
     });
@@ -244,9 +222,8 @@ export default {
     this.getData();
   },
   methods: {
-    getData(page) {
+    getData() {
       this.loading = true;
-      page && (this.query.page = page);
       getLesseePageByJB(this.query).then(data => {
         // console.log(data);
         this.loading = false;
@@ -260,51 +237,16 @@ export default {
       // console.log(this.query);
       this.getData();
     },
-    edit(data) {
-      this.isShow = true;
-      this.form = Object.assign({}, form);
-      data && (this.form = Object.assign({}, data));
-      this.form._selectDistrict = [this.form.provinceName, this.form.areaName]
-      this.form._address = this.form.companyAddress
-    },
-    remove(data) {
-      this.$Modal.confirm({
-        title: "提示",
-        content: "确定要删除吗",
-        onOk: () => {
-          deleteCompanyBusinessInformation(data).then(res => {
-            this.getData();
-            this.$Message.success("操作成功");
-          });
-        }
-      });
-    },
+    edit(data) {},
+    deleteItem(data) {},
+    goDetail(data) {},
     set(data) {},
-    changeTime(data) {
-      // console.log(data)
-      this.form.establishTime = data;
+    goPage(name) {
+      this.$router.push({ name });
     },
-    submit(item) {
-      console.log(item);
-      this.form.companyAddress = this.form.provinceName + this.form.areaName + this.form._address
-      this.$refs.form
-        .validate()
-        .then(data => {
-          if (data) {
-            return saveCompanyBusinessInformation(item);
-          } else {
-            return Promise.reject();
-          }
-        })
-        .then(data => {
-          this.getData();
-          this.$Message.success("操作成功");
-          this.cancel();
-        });
-    },
-    cancel() {
-      this.$refs.form.resetFields();
-      this.isShow = false;
+    getDataPage(page) {
+      this.query.page = +page;
+      this.getData()
     }
   }
 };

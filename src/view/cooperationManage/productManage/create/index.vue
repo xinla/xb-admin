@@ -11,12 +11,12 @@
       <Step title="产品附件" content="产品附件"></Step>
   </Steps>
 
-  <baseInfo ref="baseInfo" v-show="current === 0"/>
-  <insuranceRules ref="insuranceRules" v-show="current === 1"/>
-  <rateCalculation ref="rateCalculation" v-show="current === 2"/>
-  <productExplain ref="productExplain" v-show="current === 3"/>
-  <additionRisk ref="additionRisk" v-show="current === 4"/>
-  <productAccessory ref="productAccessory" v-show="current === 5"/>
+  <baseInfo ref="baseInfo" v-show="current === 0" :key="key + 1" />
+  <insuranceRules ref="insuranceRules" v-show="current === 1" :key="key + 2" />
+  <rateCalculation ref="rateCalculation" v-show="current === 2" :key="key + 3" />
+  <productExplain ref="productExplain" v-show="current === 3" :key="key + 4" />
+  <additionRisk ref="additionRisk" v-show="current === 4" :key="key + 5" />
+  <productAccessory ref="productAccessory" v-show="current === 5" :key="key + 6" />
 
   <div class="ac">
     <Button v-show="current > 0" type="primary" ghost @click="current--">上一步</Button>
@@ -40,7 +40,12 @@ export default {
   },
   data() {
     return {
-      current: 1,
+      current: 0,
+    }
+  },
+  computed: {
+    key() {
+      return Math.floor(Math.random()*100)
     }
   },
   methods: {

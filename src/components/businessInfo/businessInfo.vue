@@ -60,17 +60,17 @@
 </template>
 
 <script>
-import { getLesseeBusinessInfoById } from "@/api/lessee";
+import { getLesseeBusinessInfoById, getCompanyBusinessInformation } from "@/api/lessee";
 import { getSupplierBusinessInformation } from "@/api/supplier";
 import { transLogo } from "@/libs/tools";
 
 export default {
   name: 'businessInfo',
   props: {
-    id: {
-      type: [Number, String],
-      default: ''
-    },
+    // id: {
+    //   type: [Number, String],
+    //   default: ''
+    // },
     type: {
       type: String,
       default: 'lessee'
@@ -100,12 +100,18 @@ export default {
       }
     }
   },
+  computed: {
+    id() {
+      return this.$route.query.id
+    }
+  },
   mounted() {
-    this.id || (this.id = this.$route.query.id)
+    // this.id || (this.id = this.$route.query.id)
     this.init()
   },
   methods: {
     init() {
+      // debugger
       this.id || this.$Message.error('没有参数或参数错误')
       if (!this.type || this.type === 'lessee') {
         getLesseeBusinessInfoById(this.id).then(data => {
@@ -116,6 +122,11 @@ export default {
         getSupplierBusinessInformation(this.id).then(data => {
           data[0] ? (this.form = data[0]) : this.$Message.error('没有记录')
           // console.log('SupplierBusinessInformation ', data)
+        })
+      } else if (this.type === 'company') {
+        getCompanyBusinessInformation(this.id).then(data => {
+          data ? (this.form = data) : this.$Message.error('没有记录')
+          // console.log('CompanyBusinessInfo ', data)
         })
       }
       

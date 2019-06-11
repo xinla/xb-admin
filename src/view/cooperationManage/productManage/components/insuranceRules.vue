@@ -303,13 +303,14 @@
     </FormItem>
 
     <Tabs value="name1">
-      <TabPane label="风险保额" name="name1">风险保额的内容</TabPane>
+      <TabPane label="风险保额" name="name1">
+        <!-- <div>投保规则文本</div> -->
+        <editor ref="editor" :value="form.underwritingRulesText" @on-change="handleChange"/>
+      </TabPane>
       <TabPane label="体检规则" name="name2">体检规则的内容</TabPane>
       <TabPane label="财务核保" name="name3">财务核保的内容</TabPane>
     </Tabs>
 
-    <div>投保规则文本</div>
-    <editor ref="editor" :value="form.underwritingRulesText" @on-change="handleChange"/>
   </Form>
 </template>
 

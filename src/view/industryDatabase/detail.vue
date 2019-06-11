@@ -11,11 +11,13 @@ export default {
   },
   data() {
     return {
-      type: ''
+      // type: ''
     }
   },
-  mounted() {
-    this.type = this.$route.query.type
+  computed: {
+    type() {
+      return this.$route.query.type
+    }
   },
   methods: {
   }

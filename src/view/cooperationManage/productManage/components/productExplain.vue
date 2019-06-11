@@ -26,34 +26,38 @@
       <Col span="8">算法</Col>
     </Row>
     <FormItem prop="productCourse">
-    <Row v-for="(item, index) of form.insurableInterest" :Key="index">
-      <Col span="8">
-        <Input
-          v-model="item.scheduleName"
-          placeholder="请输入标题"
-          style="width:73%; margin-right: 10px;"
-        />
-      </Col>
-      <Col span="16">
-        <Row v-for="(unit, unique) of item.content" :Key="unique + 'x'">
-          <Col span="12">
-            <Input v-model="unit.title" placeholder="请输入内容" style="width:73%; margin-right: 10px;"/>
-          </Col>
-          <Col span="12">
-            <Input
-              v-model="unit.algorithm"
-              placeholder="请输入内容"
-              style="width:73%; margin-right: 10px;"
-            />
-            <Button
-              v-if="unique === item.content.length - 1"
-              type="info"
-              @click="item.content.push({})"
-            >添加</Button>
-          </Col>
-        </Row>
-      </Col>
-    </Row>
+      <Row v-for="(item, index) of form.insurableInterest" :Key="index">
+        <Col span="8">
+          <Input
+            v-model="item.scheduleName"
+            placeholder="请输入标题"
+            style="width:73%; margin-right: 10px;"
+          />
+        </Col>
+        <Col span="16">
+          <Row v-for="(unit, unique) of item.content" :Key="unique + 'x'">
+            <Col span="12">
+              <Input
+                v-model="unit.title"
+                placeholder="请输入内容"
+                style="width:73%; margin-right: 10px;"
+              />
+            </Col>
+            <Col span="12">
+              <Input
+                v-model="unit.algorithm"
+                placeholder="请输入内容"
+                style="width:73%; margin-right: 10px;"
+              />
+              <Button
+                v-if="unique === item.content.length - 1"
+                type="info"
+                @click="item.content.push({})"
+              >添加</Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     </FormItem>
     <Divider/>
 
@@ -62,20 +66,20 @@
       <Button type="info" size="small" @click="addRow('coverage')">新增一行</Button>
     </div>
     <FormItem prop="productCourse">
-    <Row v-for="(item, index) of form.coverage" :Key="index">
-      <Col span="6">
-        <Input v-model="item.title" placeholder="请输入标题" style="width:73%; margin-right: 10px;"/>
-      </Col>
-      <Col span="18">
-        <Input
-          type="textarea"
-          v-model="item.describe"
-          placeholder="请输入内容"
-          style="width:73%; margin-right: 10px;"
-        />
-        <!-- <Button type="primary" @click="add('role')">添加</Button> -->
-      </Col>
-    </Row>
+      <Row v-for="(item, index) of form.coverage" :Key="index">
+        <Col span="6">
+          <Input v-model="item.title" placeholder="请输入标题" style="width:73%; margin-right: 10px;"/>
+        </Col>
+        <Col span="18">
+          <Input
+            type="textarea"
+            v-model="item.describe"
+            placeholder="请输入内容"
+            style="width:73%; margin-right: 10px;"
+          />
+          <!-- <Button type="primary" @click="add('role')">添加</Button> -->
+        </Col>
+      </Row>
     </FormItem>
     <Divider/>
 
@@ -191,6 +195,12 @@
 
     <div class="title-row">图片描述</div>
     <FormItem label="Web" prop="describePicture">
+      <div v-for="(item, index) in form.describePicture" class="img-wrap" :key="index">
+        <img class="logo" :src="item">
+        <div class="mask-img">
+          <i class="iconfont iconCancel-circle cp" @click="remove('describePicture', index)"></i>
+        </div>
+      </div>
       <Upload
         :action="uploadUrl"
         :show-upload-list="false"
@@ -198,8 +208,7 @@
         accept="image/*"
         :on-success="uploadDescribe"
       >
-        <img class="logo" v-if="form.describePicture" :src="form.describePicture">
-        <div v-else class="upload-icon cp">+</div>
+        <div class="upload-icon cp">+</div>
       </Upload>
     </FormItem>
     <Divider/>
@@ -233,7 +242,7 @@ const defaultForm = {
   pcNavigationPicture: "", // pc   导航图
   appCoverPicture: "", // app  封面图
   pcCoverPicture: "", // pc   封面图
-  describePicture: "" // 图片描述
+  describePicture: [] // 图片描述
 };
 let oldData = "";
 
@@ -248,10 +257,20 @@ export default {
           { required: true, message: "不能为空", trigger: "blur" }
         ],
         insurableInterest: [
-          { required: true, type: 'array', message: "不能为空", trigger: "blur" }
+          {
+            required: true,
+            type: "array",
+            message: "不能为空",
+            trigger: "blur"
+          }
         ],
         coverage: [
-          { required: true, type: 'array', message: "不能为空", trigger: "blur" }
+          {
+            required: true,
+            type: "array",
+            message: "不能为空",
+            trigger: "blur"
+          }
         ],
         exclusion: [{ required: true, message: "不能为空", trigger: "blur" }],
         appBannerPicture: [
@@ -273,7 +292,12 @@ export default {
           { required: true, message: "不能为空", trigger: "change" }
         ],
         describePicture: [
-          { required: true, message: "不能为空", trigger: "change" }
+          {
+            required: true,
+            type: "array",
+            message: "不能为空",
+            trigger: "change"
+          }
         ]
       }
     };
@@ -291,6 +315,7 @@ export default {
           // console.log('productExplain', data)
           data.insurableInterest = JSON.parse(data.insurableInterest);
           data.coverage = JSON.parse(data.coverage);
+          data.describePicture = data.describePicture.split(",")
           this.form = data;
         });
     },
@@ -324,7 +349,7 @@ export default {
       this.form.pcCoverPicture = response.result.fileUrl;
     },
     uploadDescribe(response, file, fileList) {
-      this.form.describePicture = response.result.fileUrl;
+      this.form.describePicture.push(response.result.fileUrl);
     },
     submit() {
       this.form.productId = this.$route.query.id;
@@ -333,16 +358,20 @@ export default {
         .validate()
         .then(data => {
           if (data) {
+            let formData = Object.assign({}, this.form);
             let isNew = oldData !== JSON.stringify(this.form);
             oldData = JSON.stringify(this.form);
 
             // 过滤重复提交(暂废弃)
             if (true) {
               // console.log(this.form);
-              if (this.form.id) {
-                return updateProductDesc(this.form);
+              // 数组字段转字符串
+              formData.describePicture += ''
+
+              if (formData.id) {
+                return updateProductDesc(formData);
               } else {
-                return addProductDesc(this.form);
+                return addProductDesc(formData);
               }
             }
           } else {
@@ -353,6 +382,15 @@ export default {
           this.getData();
           return Promise.resolve();
         });
+    },
+    remove(type, index) {
+      this.$Modal.confirm({
+          title: "提示",
+          content: "确定删除吗?",
+          onOk: () => {
+            this.form[type].splice(index, 1)
+          }
+        })
     }
   }
 };
@@ -363,6 +401,10 @@ export default {
   width: 30%;
   display: inline-block;
 }
+.ivu-upload {
+  display: inline-block;
+  vertical-align: middle;
+}
 .upload-icon {
   border: 1px dashed #000;
   font-size: 36px;
@@ -370,9 +412,29 @@ export default {
   line-height: 21px;
 }
 .logo {
-  width: 90px;
-  height: 85px;
+  width: 89px;
+  height: 83px;
   cursor: pointer;
+}
+.img-wrap {
+    display: inline-block;
+    position: relative;
+    margin: 5px;
+}
+.img-wrap:hover .mask-img {
+display: flex;
+}
+.mask-img{
+  position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+        background: rgba(62, 62, 62, 0.77);
+    color: #eee;
 }
 </style>
 

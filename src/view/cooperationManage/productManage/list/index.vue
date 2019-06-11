@@ -30,7 +30,7 @@
       </template>
 
       <template slot-scope="{ row }" slot="publishStatus">
-          {{row.isSale | publishStatus}}
+          {{row.isPublish | publishStatus}}
       </template>
 
       <template slot-scope="{ row }" slot="distributionChannel">
@@ -48,10 +48,10 @@
       
 
       <template slot-scope="{ row }" slot="action">
-          <Button type="info" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">详情</Button>
           <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">编辑</Button>
           <Button type="warning" size="small" style="margin-right: 5px" :to="'http://' + row.h5Url" target="_blank">H5</Button>
-          <Button type="success" size="small" style="margin-right: 5px" @click="sale(row.productId)">{{row.isSale === 1 ? '下架' : '上架'}}</Button>
+          <Button type="success" size="small" style="margin-right: 5px" @click="sale(row)">{{row.isSale === 1 ? '停售' : '在售'}}</Button>
+          <Button type="info" size="small" style="margin-right: 5px" @click="publish(row)">{{row.isPublish === 1 ? '撤回' : '发布'}}</Button>
           <Button type="error" size="small" style="margin-right: 5px" @click="remove(row)">删除</Button>
       </template>
     </Table>
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { getProductPage, saleProduct, deleteProduct } from '@/api/product'
+import { getProductPage, saleProduct, publishProduct, deleteProduct } from '@/api/product'
 import { getTypeRulePage } from '@/api/rulesSet/type'
 
 const channel = [
@@ -201,7 +201,7 @@ export default {
             filters: publishStatus,
             filterMultiple: false,
             filterMethod (value, row) {
-              return row.isSale === 'value'
+              return row.isPublish === 'value'
             }
         },
         {
@@ -251,7 +251,15 @@ export default {
       this.$router.push({name, query})
     },
     sale(data) {
-      saleProduct(data).then(res => {
+      let status = data.isSale === 1 ? 0 : 1
+      saleProduct(data.productId, status).then(res => {
+        this.$Message.info("执行成功");
+        this.getData()
+      })
+    },
+    publish(data) {
+      let status = data.isPublish === 1 ? 0 : 1
+      publishProduct(data.productId, status).then(res => {
         this.$Message.info("执行成功");
         this.getData()
       })

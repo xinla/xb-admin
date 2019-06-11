@@ -69,12 +69,25 @@ export const getProductPageByType = (productForm, params) => {
 }
 
 /**
- * 上架产品
- * @param { } id 
+ * 在售/停售产品
+ * @param { } id 产品id
+ * @param { } status 0 停售  1 在售
  */
-export const saleProduct = (id) => {
+export const saleProduct = (id, status) => {
   return axios.request({
-    url: service + `/toSale/${id}`,
+    url: service + `/sale/${id}/${status}`,
+    method: 'post'
+  })
+}
+
+/**
+ * 
+ * @param {*} id 产品id
+ * @param {*} status 0 撤回 1  发布
+ */
+export const publishProduct = (id, status) => {
+  return axios.request({
+    url: service + `/publish/${id}/${status}`,
     method: 'post'
   })
 }

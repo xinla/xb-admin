@@ -145,9 +145,9 @@ export default {
       form: Object.assign({}, defaultForm),
       formChild: Object.assign({}, defaultFormChild),
       rules: {
-        name: [
-            { required: true, message: '不能为空', trigger: this.change }
-        ],
+        // name: [
+        //     { required: true, message: '不能为空', trigger: 'change' }
+        // ],
         nameForShort: [
             { required: true, message: '不能为空', trigger: 'blur' }
         ],

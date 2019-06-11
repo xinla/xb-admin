@@ -1,23 +1,34 @@
 <template>
-  <Select
-    ref="select"
-    filterable
-    remote
-    clearable
-    :remote-method="search"
-    :loading="loading"
-    :disabled="disabled"
-    :placeholder="val || '请输入后选择'"
-    @on-clear="clear"
-    @on-query-change="queryChange"
-  >
-    <Option
-      v-for="(option, index) in list"
-      :value="option.name"
-      :key="index"
-      @click.native="$emit('change', option)"
-    >{{option.name}}</Option>
-  </Select>
+  <div>
+    <Select
+      ref="select"
+      filterable
+      remote
+      clearable
+      :remote-method="search"
+      :loading="loading"
+      :disabled="disabled"
+      :placeholder="val || '请输入后选择'"
+      @on-clear="clear"
+      @on-query-change="queryChange"
+      @blur.native="blur"
+    >
+      <Option
+        v-for="(option, index) in list"
+        :value="option.name"
+        :key="index"
+        @click.native="$emit('change', option)"
+      >{{option.name}}</Option>
+    </Select>
+    <Button
+      v-show="query.name && !list.length"
+      class="search-btn"
+      size="small"
+      type="primary"
+      ghost
+      @click="goSearch"
+    >去匹配</Button>
+  </div>
 </template>
 
 <script>
@@ -97,6 +108,8 @@ export default {
           // console.log('data', data)
           this.loading = false;
           this.list = data.list;
+          if (!data.list.length) {
+          }
         });
     },
     clear() {
@@ -110,12 +123,20 @@ export default {
       if (!query) {
         this.$refs.select.clearSingleSelect();
       }
+    },
+    goSearch() {
+      console.log(1);
     }
     // change(data) {
     //   console.log(data + 3)
-    // }
+    // },
   }
 };
 </script>
 <style lang="less" scoped>
+.search-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
 </style>

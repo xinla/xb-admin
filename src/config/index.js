@@ -15,8 +15,9 @@ const config = {
   baseUrl: {
     dev: 'http://192.168.1.64', // 虚拟机
     // dev: 'http://192.168.1.8', // 本地
-    dev2: 'http://192.168.1.150:8888',
-    pro: 'http://112.31.212.46:8118'
+    dev1: 'http://192.168.1.150:8888',
+    pro: 'http://112.31.212.46:8118',
+    pro1: 'http://112.31.212.46:8888'
   },
   /**
    * @description 默认打开的首页的路由name值，默认为home
@@ -59,8 +60,8 @@ config.services = {
   role: '/role',
 
 
-  mSystemHelp: config.baseUrl.dev2 + '/systemHelp',
-  saas: config.baseUrl.dev2 + '/api/permission/company/saas',
+  // mSystemHelp: config.baseUrl.dev2 + '/systemHelp',
+  saas: '/api/permission/company/saas',
 }
 
 export default config

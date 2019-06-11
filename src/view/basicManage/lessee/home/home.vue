@@ -65,8 +65,16 @@ const compayAccountType = [
     value: 0
   },
   {
-    label: "商用",
+    label: "基础",
     value: 1
+  },
+  {
+    label: "高级",
+    value: 2
+  },
+  {
+    label: "旗舰",
+    value: 3
   }
 ]
 const businessType = [
