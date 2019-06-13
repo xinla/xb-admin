@@ -30,8 +30,8 @@
     <Table 
       :columns="columns"
       :data="list">
-      <template slot-scope="{ row, index }" slot="action">
-          <Button type="primary" size="small"  @click="edit(row)">编辑</Button>
+      <template slot-scope="{ row }" slot="action">
+          <Button type="primary" size="small" :disabled="row.status == 0"  @click="edit(row)">编辑</Button>
           <Button type="error" size="small" @click="deleteMessage(row)">删除</Button>
           <Button type="primary" size="small" @click="row.status && send(row)">{{row.status == 0 ? '已推送' : '推送'}}</Button>
       </template>
@@ -160,6 +160,8 @@ export default {
       })
     },
     send(mes) {
+      mes.senderId = this.$store.state.user.userId
+      // console.log(this.$store.state.user.userId)
       sendMessage(mes).then(data => {
         mes.status = 0
         this.$Message.success('推送成功')

@@ -12,7 +12,7 @@
     <div class="title-row">产品条款<span class="tip">（必填项）</span></div>
     <a v-if="form.policyWording" :href="form.policyWording">{{form.policyWordingName}}</a>
     <!-- <FormItem prop="policyWording"> -->
-    <Upload :action="uploadUrl" :show-upload-list="false" :on-success="uploadWording">
+    <Upload :action="uploadUrl" :show-upload-list="false" :on-success="uploadWording" :data='{image: true}'>
       <Button icon="ios-cloud-upload-outline">上传</Button>
     </Upload>
     <!-- </FormItem> -->
@@ -81,6 +81,7 @@ const defaultForm = {
   applicationRulesName: "", // 投保规则上传的文件名
   policyWording: "", // 产品条款上传的oss地址
   policyWordingName: "",
+  policyWordingImages: "", // 产品条款上传的pdf转图片oss地址
   productCourse: [
     {
       writer: "",
@@ -96,7 +97,7 @@ const defaultForm = {
 export default {
   data() {
     return {
-      uploadUrl: this.$config.baseUrl.dev + "/upload",
+      uploadUrl: this.$config.services.upload,
       form: Object.assign({}, defaultForm),
       rules: {
         applicationRules: [
@@ -148,6 +149,7 @@ export default {
     uploadWording(response, file, fileList) {
       this.form.policyWording = response.result.fileUrl;
       this.form.policyWordingName = response.result.newName;
+      this.form.policyWordingImages = response.result.imageUrl
       // console.log(response, file)
     },
     addRow() {

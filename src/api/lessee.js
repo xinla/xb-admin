@@ -225,6 +225,30 @@ export const deleteCompanyBusinessInformation = (data) => {
 }
 
 /**
+ * 爬虫接口爬取工商信息
+ * @param {*} data 名称
+ */
+export const crawlCompanyList = (data) => {
+  return axios.request({
+    url: serviceBusinessInformation + '/getRCreditCompany',
+    params: {
+      companyName: data
+    },
+    method: 'get'
+  })
+}
+
+export const saveCrawlCompany = (data) => {
+  return axios.request({
+    url: serviceBusinessInformation + '/getCompanyData',
+    params: {
+      detailHref: data
+    },
+    method: 'get'
+  })
+}
+
+/**
  * 租户品牌信息
  * @param {*} id 租户id
  */

@@ -11,17 +11,16 @@
       :placeholder="val || '请输入后选择'"
       @on-clear="clear"
       @on-query-change="queryChange"
-      @blur.native="blur"
     >
       <Option
         v-for="(option, index) in list"
         :value="option.name"
         :key="index"
-        @click.native="$emit('change', option)"
+        @click.native="selectChange(option)"
       >{{option.name}}</Option>
     </Select>
     <Button
-      v-show="query.name && !list.length"
+      v-show="query.name && !list.length && isMatch"
       class="search-btn"
       size="small"
       type="primary"
@@ -32,7 +31,7 @@
 </template>
 
 <script>
-import { getLesseePageByJB } from "@/api/lessee";
+import { getLesseePageByJB, crawlCompanyList, saveCrawlCompany } from "@/api/lessee";
 import { getSupplierPage } from "@/api/supplier";
 
 export default {
@@ -58,7 +57,9 @@ export default {
         size: 10,
         type: 1,
         name: ""
-      }
+      },
+      isCrawl: false,
+      isMatch: true
     };
   },
   mounted() {
@@ -91,6 +92,7 @@ export default {
       // console.log(this.val + 1);
       this.query.name = query;
       this.loading = true;
+          this.isMatch = true
       new Promise((resolve, reject) => {
         resolve();
       })
@@ -107,6 +109,7 @@ export default {
         .then(data => {
           // console.log('data', data)
           this.loading = false;
+          this.isCrawl = false
           this.list = data.list;
           if (!data.list.length) {
           }
@@ -125,7 +128,31 @@ export default {
       }
     },
     goSearch() {
-      console.log(1);
+      this.isCrawl = true
+      this.loading = true;
+      crawlCompanyList(this.query.name).then(res => {
+        if (res.length) {
+          for (const iterator of res) {
+            iterator.name = iterator.companyName
+          }
+          this.list = res
+          this.loading = false;
+          this.$Message.success('匹配成功，点击输入框可查看列表')
+        } else {
+          this.$Message.warning('未匹配的相关结果')
+        }
+      })
+    },
+    selectChange(option) {
+      if (this.isCrawl) {
+        saveCrawlCompany(option.detailHref).then(res => {
+          this.isMatch = false
+          this.$emit('change', {name: option.name, id: res.id})
+          // console.log({name: option.name, id: res.id})
+        })
+      } else {
+        this.$emit('change', option)
+      }
     }
     // change(data) {
     //   console.log(data + 3)

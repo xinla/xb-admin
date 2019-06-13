@@ -59,9 +59,10 @@ config.services = {
   role: '/role',
   role: '/role',
 
-
+  upload: (process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro) + '/upload',
   // mSystemHelp: config.baseUrl.dev2 + '/systemHelp',
   saas: '/api/permission/company/saas',
 }
+
 
 export default config
