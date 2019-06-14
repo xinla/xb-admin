@@ -108,7 +108,7 @@ export default {
   data() {
     return {
       form: Object.assign({}, defaultForm),
-      uploadUrl: this.$config.baseUrl.dev + "/insurance/import",
+      uploadUrl: this.$config.domain + "/insurance/import",
       rules: {
         applicationUnit: [
             { required: true, type: 'number', message: '不能为空', trigger: 'change' }

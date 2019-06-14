@@ -6,7 +6,7 @@
         <TabPane label="信贷" name="0"></TabPane>
         <TabPane label="基金" name="3"></TabPane>
     </Tabs>
-    <saas :x-type="parseInt(this.type)" :key='parseInt(this.type)' />
+    <saas :x-type="parseInt(this.type)" :key='this.type' />
   </div>
 </template>
 

@@ -1,7 +1,8 @@
 <template>
   <div>
     <tree-table :expand-type="false" :columns="columns" 
-    :selectable="true"
+    :selectable="false"
+    :show-row-hover="false"
     children-prop="districts"
     select-type="radio"
     :data="list" 

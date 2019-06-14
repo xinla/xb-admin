@@ -77,7 +77,7 @@ export default {
         name: ""
       },
       uploadUrl:
-        this.$config.baseUrl.dev + this.$config.services.profession + "/import",
+        this.$config.domain + this.$config.services.profession + "/import",
       loading: false,
       query: {
         id: 0,

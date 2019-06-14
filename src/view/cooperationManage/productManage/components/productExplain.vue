@@ -249,7 +249,7 @@ let oldData = "";
 export default {
   data() {
     return {
-      uploadUrl: this.$config.baseUrl.dev + "/upload",
+      uploadUrl: this.$config.services.upload,
       form: Object.assign({}, defaultForm),
       rules: {
         coreBuy: [{ required: true, message: "不能为空", trigger: "blur" }],

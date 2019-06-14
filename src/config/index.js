@@ -34,6 +34,7 @@ const config = {
   },
   
 }
+config.domain = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 
 config.services = {
   company: '/xbcompany',
@@ -59,7 +60,7 @@ config.services = {
   role: '/role',
   role: '/role',
 
-  upload: (process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro) + '/upload',
+  upload: config.domain + '/upload',
   // mSystemHelp: config.baseUrl.dev2 + '/systemHelp',
   saas: '/api/permission/company/saas',
 }

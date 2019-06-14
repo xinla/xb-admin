@@ -73,10 +73,14 @@
                 <Option v-for="(unit) in item.childList" :value="unit.id" :key="unit.id">{{ unit.name }}
                 </Option>
             </OptionGroup> -->
+              <!-- 菜单 -->
               <Option v-for="item in menuList" v-show="form.classify === '' || form.classify === 1" :value="item.id" :key="item.id">{{ item.name }}</Option>
               
-              <Option v-for="item in catalog" v-show="form.classify === '' || form.classify === 3" :value="item.id" :key="item.id">{{ item.name }}</Option>
+              <!-- 目录 -->
+              <Option v-for="item in catalog" v-show="form.classify === '' || form.classify === 3 || form.classify === 
+              0" :value="item.id" :key="item.id">{{ item.name }}</Option>
 
+              <!-- 应用 -->
               <Option v-for="item in applicationList" v-show="form.classify === '' || form.classify === 
               0" :value="item.id" :key="item.id">{{ item.name }}</Option>
               
@@ -261,6 +265,7 @@ export default {
   },
   methods:{
     getData() {
+      // console.log(this.query)
       getAllMenu(this.query).then(data => {
         this.menuList = []
         this.catalog = []
