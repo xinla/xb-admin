@@ -127,19 +127,19 @@
         </Col>
         <Col style="display:inline-block;text-align: left;">
           <div v-if="form.minInsured[index].type === 1">
-            <Input type="text" v-model="form.minInsured[index].clientType" placeholder="金额"/>类（级）客户
+            <Input type="text" v-model="form.minInsured[index].clientType" placeholder="请输入"/>类（级）客户
           </div>
           <div v-else-if="form.minInsured[index].type === 2">
-            <Input type="text" v-model="form.minInsured[index].startAge" placeholder="金额"/>周岁至
-            <Input type="text" v-model="form.minInsured[index].endAge" placeholder="金额"/>周岁
+            <Input type="text" v-model="form.minInsured[index].startAge" placeholder="请输入"/>周岁至
+            <Input type="text" v-model="form.minInsured[index].endAge" placeholder="请输入"/>周岁
           </div>
           <div v-if="form.minInsured[index].type === 3">
             职业风险等级：
-            <Input type="text" v-model="form.minInsured[index].occupationalLevel" placeholder="金额"/>
+            <Input type="text" v-model="form.minInsured[index].occupationalLevel" placeholder="请输入"/>
           </div>
           <div v-if="form.minInsured[index].type === 4">
             职业代码：
-            <Input type="text" v-model="form.minInsured[index].code" placeholder="金额"/>
+            <Input type="text" v-model="form.minInsured[index].code" placeholder="请输入"/>
           </div>
         </Col>
         <Col span="4">
@@ -148,7 +148,7 @@
             type="text"
             style="width:50%;"
             v-model="form.minInsured[index].minInsured"
-            placeholder="金额"
+            placeholder="请输入"
           />元
         </Col>
         <Col style="display:inline-block;" v-if="index === form.minInsured.length - 1">
@@ -164,19 +164,19 @@
         </Col>
         <Col style="display:inline-block; text-align: left;">
           <div v-if="form.maxInsured[index].type === 1">
-            <Input type="text" v-model="form.maxInsured[index].clientType" placeholder="金额"/>类（级）客户
+            <Input type="text" v-model="form.maxInsured[index].clientType" placeholder="请输入"/>类（级）客户
           </div>
           <div v-else-if="form.maxInsured[index].type === 2">
-            <Input type="text" v-model="form.maxInsured[index].startAge" placeholder="金额"/>周岁至
-            <Input type="text" v-model="form.maxInsured[index].endAge" placeholder="金额"/>周岁
+            <Input type="text" v-model="form.maxInsured[index].startAge" placeholder="请输入"/>周岁至
+            <Input type="text" v-model="form.maxInsured[index].endAge" placeholder="请输入"/>周岁
           </div>
           <div v-if="form.maxInsured[index].type === 3">
             职业风险等级：
-            <Input type="text" v-model="form.maxInsured[index].occupationalLevel" placeholder="金额"/>
+            <Input type="text" v-model="form.maxInsured[index].occupationalLevel" placeholder="请输入"/>
           </div>
           <div v-if="form.maxInsured[index].type === 4">
             职业代码：
-            <Input type="text" v-model="form.maxInsured[index].code" placeholder="金额"/>
+            <Input type="text" v-model="form.maxInsured[index].code" placeholder="请输入"/>
           </div>
         </Col>
         <Col span="4">
@@ -185,7 +185,7 @@
             type="text"
             style="width:50%;"
             v-model="form.maxInsured[index].maxInsured"
-            placeholder="金额"
+            placeholder="请输入"
           />元
         </Col>
         <Col style="display:inline-block;" v-if="index === form.maxInsured.length - 1">
@@ -305,7 +305,7 @@
     <Tabs value="name1">
       <TabPane label="风险保额" name="name1">
         <!-- <div>投保规则文本</div> -->
-        <editor ref="editor" :value="form.underwritingRulesText" @on-change="handleChange"/>
+        <editor ref="editor" :value="form.underwritingRulesText" @on-change="editorChange"/>
       </TabPane>
       <TabPane label="体检规则" name="name2">体检规则的内容</TabPane>
       <TabPane label="财务核保" name="name3">财务核保的内容</TabPane>
@@ -621,7 +621,7 @@ export default {
         this.form[type].push({});
       }
     },
-    handleChange(html, text) {
+    editorChange(html, text) {
       // console.log(html, text);
       this.form.underwritingRulesText = html;
       // console.log(this.form.underwritingRulesText)

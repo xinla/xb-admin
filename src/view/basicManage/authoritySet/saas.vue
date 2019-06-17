@@ -1,21 +1,22 @@
 <template>
   <div>
     <Row style="padding-bottom: 10px;">
-      <Col span="10">
+      <Col span="14">
         <Button type="info" @click="addChild()">新建</Button>
         <Button type="info" @click="isfold = !isfold">折叠/展开</Button>
       </Col>
-      <Col span="14">
+      <Col span="10">
       <Form ref="form" :model="query" inline :label-width="60">
-        <FormItem prop="type" label="业务类型">
+        <!-- <FormItem prop="type" label="业务类型">
           <Select v-model="query.type" style="width:100px">
             <Option v-for="(value, key) in type" :value="+key" :key="key">{{ value }}</Option>
           </Select>
-        </FormItem>
+        </FormItem> -->
 
         <FormItem prop="classify" label="菜单类型">
         <Select v-model="query.classify" style="width:100px">
           <Option v-for="(value, key) in menuType" :value="+key" :key="key">{{ value }}</Option>
+          <Option value="" :key="100">全部</Option>
         </Select>
         </FormItem>
         <!-- <FormItem prop="type" label="可见状态">
@@ -23,7 +24,7 @@
           <Option v-for="(value, key) in isVo" :value="+key" :key="key">{{ value }}</Option>
         </Select>
         </FormItem> -->
-        <Input v-model="query.name" placeholder="搜索公司" style="width:35%; margin-right: 10px;"/>
+        <Input v-model="query.name" placeholder="搜索公司" style="width:55%; margin-right: 10px;"/>
         <Button type="info" @click="search()">搜索</Button>
         </Form>
       </Col>
@@ -55,11 +56,11 @@
       <template slot="title">新建菜单</template>
       <Form ref="form" class="org-form" :model="form" :rules="rules" :label-width="70">
         
-        <FormItem prop="type" label="业务类型">
+        <!-- <FormItem prop="type" label="业务类型">
           <RadioGroup v-model="form.type">
             <Radio v-for="(value, key) in type" :label="+key" :key="key">{{value}}</Radio>
           </RadioGroup>
-        </FormItem>
+        </FormItem> -->
         
         <FormItem prop="classify" label="资源类型">
           <RadioGroup v-model="form.classify">
@@ -239,9 +240,9 @@ export default {
         name: [
             { required: true, message: '不能为空', trigger: 'blur' },
         ],
-        type: [
-            { required: true, type: 'number', message: '类型错误或为空', trigger: 'change' },
-        ],
+        // type: [
+        //     { required: true, type: 'number', message: '类型错误或为空', trigger: 'change' },
+        // ],
         classify: [
             { required: true, type: 'number', message: '不能为空', trigger: 'change' },
         ],
@@ -258,6 +259,14 @@ export default {
       formShow: false,
       isfold: false,
       total: 0
+    }
+  },
+  watch: {
+    formShow(val) {
+      !val && this.$refs['form'].resetFields()
+    },
+    'form.classify'(val) {
+      this.form.pid = 0
     }
   },
   mounted(){
@@ -303,6 +312,7 @@ export default {
       })
     },
     search() {
+        // console.log(this.query)
       getMenuPage(this.query).then(data => {
         // console.log(data)
          this.list = data.list
@@ -319,6 +329,7 @@ export default {
     },
     submit() {
       // console.log(this.form)
+      this.form.type = this.xType
       this.$refs['form'].validate((valid) => {
           if (valid) {
             saveMenu(this.form).then(data => {
@@ -339,7 +350,7 @@ export default {
     },
     deleteMenu(data) {
       // console.log(data)
-      if (data.childList.length) {
+      if (data.childList && data.childList.length) {
         this.$Message.warning({
           content: '此项含有子项，不可直接删除！',
           closable: true,

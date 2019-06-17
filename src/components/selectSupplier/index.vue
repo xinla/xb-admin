@@ -11,12 +11,12 @@
       :placeholder="val || '请输入后选择'"
       @on-clear="clear"
       @on-query-change="queryChange"
+      @on-change="selectChange"
     >
       <Option
         v-for="(option, index) in list"
-        :value="option.name"
+        :value="JSON.stringify(option)"
         :key="index"
-        @click.native="selectChange(option)"
       >{{option.name}}</Option>
     </Select>
     <Button
@@ -144,10 +144,12 @@ export default {
       })
     },
     selectChange(option) {
+      option = JSON.parse(option)
       if (this.isCrawl) {
         saveCrawlCompany(option.detailHref).then(res => {
           this.isMatch = false
           this.$emit('change', {name: option.name, id: res.id})
+          // console.log(res)
           // console.log({name: option.name, id: res.id})
         })
       } else {

@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      current: 5,
+      current: 1,
     }
   },
   computed: {

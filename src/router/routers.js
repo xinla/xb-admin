@@ -30,7 +30,7 @@ export default [
   {
     path: '/',
     name: '_home',
-    redirect: '/home',
+    redirect: '/basicManage/lessee',
     component: Main,
     meta: {
       hideInMenu: true,

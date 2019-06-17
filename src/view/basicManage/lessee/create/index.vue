@@ -323,11 +323,15 @@ export default {
     change(item) {
       this.formAll.agentCompanyId = item.id;
       this.formAll.name = item.name;
-      // console.log(item)
+      // console.log('item', item)
     },
     create() {
       // debugger
       // console.log(this.formAll)
+      if (!this.formAll.agentCompanyId) {
+        this.$Message.success("该代理公司id不存在，请记录名称并询问后台");
+        return
+      }
       Promise.resolve()
         .then(() => {
           return this.id
