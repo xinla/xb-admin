@@ -22,7 +22,7 @@
       </tr>
       <tr>
         <th>所属行业</th>
-        <td>{{form.managementStatus}}</td>
+        <td>{{form.industryInvoled}}</td>
         <th>成立日期</th>
         <td>{{form.establishTime}}</td>
       </tr>

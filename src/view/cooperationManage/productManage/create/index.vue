@@ -40,13 +40,16 @@ export default {
   },
   data() {
     return {
-      current: 1,
+      current: 0,
     }
   },
   computed: {
     key() {
       return Math.floor(Math.random()*100)
     }
+  },
+  mounted() {
+      console.log(this.key)
   },
   methods: {
     submit(current) {

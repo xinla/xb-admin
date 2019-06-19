@@ -223,31 +223,31 @@ import {
   updateProductDesc
 } from "@/api/product/desc";
 
-const defaultForm = {
-  productId: "",
-  coreBuy: "", // 核心买点
-  typicalPremium: "", // 典型费率
-  // 保险利益   [{"scheduleName":"计划一","content":[{"title":"重大疾病(100种)
-  insurableInterest: [
-    {
-      content: [{}]
-    }
-  ],
-  // 保险责任   [{"title":"重大疾病保险金","describe":"若被保险人于等待期内发病（见释义）或被确诊患有本合同约定的重大疾病，我们 将向您无息返还本合同累计已交纳的保险费，本合同效力终止。
-  coverage: [{}],
-  exclusion: "", // 责任免除
-  appBannerPicture: "", // app  banner图
-  webBannerPicture: "", // web banner图
-  appNavigationPicture: "", // app  导航图
-  pcNavigationPicture: "", // pc   导航图
-  appCoverPicture: "", // app  封面图
-  pcCoverPicture: "", // pc   封面图
-  describePicture: [] // 图片描述
-};
 let oldData = "";
 
 export default {
   data() {
+    const defaultForm = {
+      productId: "",
+      coreBuy: "", // 核心买点
+      typicalPremium: "", // 典型费率
+      // 保险利益   [{"scheduleName":"计划一","content":[{"title":"重大疾病(100种)
+      insurableInterest: [
+        {
+          content: [{}]
+        }
+      ],
+      // 保险责任   [{"title":"重大疾病保险金","describe":"若被保险人于等待期内发病（见释义）或被确诊患有本合同约定的重大疾病，我们 将向您无息返还本合同累计已交纳的保险费，本合同效力终止。
+      coverage: [{}],
+      exclusion: "", // 责任免除
+      appBannerPicture: "", // app  banner图
+      webBannerPicture: "", // web banner图
+      appNavigationPicture: "", // app  导航图
+      pcNavigationPicture: "", // pc   导航图
+      appCoverPicture: "", // app  封面图
+      pcCoverPicture: "", // pc   封面图
+      describePicture: [] // 图片描述
+    };
     return {
       uploadUrl: this.$config.services.upload,
       form: Object.assign({}, defaultForm),
@@ -315,7 +315,7 @@ export default {
           // console.log('productExplain', data)
           data.insurableInterest = JSON.parse(data.insurableInterest);
           data.coverage = JSON.parse(data.coverage);
-          data.describePicture = data.describePicture.split(",")
+          data.describePicture = data.describePicture.split(",");
           this.form = data;
         });
     },
@@ -366,7 +366,7 @@ export default {
             if (true) {
               // console.log(this.form);
               // 数组字段转字符串
-              formData.describePicture += ''
+              formData.describePicture += "";
 
               if (formData.id) {
                 return updateProductDesc(formData);
@@ -385,12 +385,12 @@ export default {
     },
     remove(type, index) {
       this.$Modal.confirm({
-          title: "提示",
-          content: "确定删除吗?",
-          onOk: () => {
-            this.form[type].splice(index, 1)
-          }
-        })
+        title: "提示",
+        content: "确定删除吗?",
+        onOk: () => {
+          this.form[type].splice(index, 1);
+        }
+      });
     }
   }
 };
@@ -417,24 +417,24 @@ export default {
   cursor: pointer;
 }
 .img-wrap {
-    display: inline-block;
-    position: relative;
-    margin: 5px;
+  display: inline-block;
+  position: relative;
+  margin: 5px;
 }
 .img-wrap:hover .mask-img {
-display: flex;
+  display: flex;
 }
-.mask-img{
+.mask-img {
   position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    align-items: center;
-    justify-content: center;
-        background: rgba(62, 62, 62, 0.77);
-    color: #eee;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(62, 62, 62, 0.77);
+  color: #eee;
 }
 </style>
 

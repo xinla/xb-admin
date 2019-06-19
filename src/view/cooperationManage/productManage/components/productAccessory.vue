@@ -75,27 +75,27 @@ import {
 } from "@/api/product/attachment";
 import { formatFileSize } from "@/libs/tools";
 
-const defaultForm = {
-  productId: "", //
-  applicationRules: "", // 投保规则上传的OSS地址
-  applicationRulesName: "", // 投保规则上传的文件名
-  policyWording: "", // 产品条款上传的oss地址
-  policyWordingName: "",
-  policyWordingImages: "", // 产品条款上传的pdf转图片oss地址
-  productCourse: [
-    {
-      writer: "",
-      title: "",
-      subtitle: "",
-      fileType: "",
-      fileSize: "",
-      url: ""
-    }
-  ]
-};
 
 export default {
   data() {
+    const defaultForm = {
+      productId: "", //
+      applicationRules: "", // 投保规则上传的OSS地址
+      applicationRulesName: "", // 投保规则上传的文件名
+      policyWording: "", // 产品条款上传的oss地址
+      policyWordingName: "",
+      policyWordingImages: "", // 产品条款上传的pdf转图片oss地址
+      productCourse: [
+        {
+          writer: "",
+          title: "",
+          subtitle: "",
+          fileType: "",
+          fileSize: "",
+          url: ""
+        }
+      ]
+    };
     return {
       uploadUrl: this.$config.services.upload,
       form: Object.assign({}, defaultForm),
@@ -163,6 +163,9 @@ export default {
       }
     },
     submit() {
+      if (!this.form.applicationRulesName || !this.form.policyWordingName || !this.form.productCourse[0].fileSize) {
+        this
+      }
       this.form.productId = this.$route.query.id;
       let formData = Object.assign({}, this.form);
       // 判断课件最后一个对象是否为空，若空则删除

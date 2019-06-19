@@ -135,7 +135,11 @@
           </div>
           <div v-if="form.minInsured[index].type === 3">
             职业风险等级：
-            <Input type="text" v-model="form.minInsured[index].occupationalLevel" placeholder="请输入"/>
+            <Input
+              type="text"
+              v-model="form.minInsured[index].occupationalLevel"
+              placeholder="请输入"
+            />
           </div>
           <div v-if="form.minInsured[index].type === 4">
             职业代码：
@@ -172,7 +176,11 @@
           </div>
           <div v-if="form.maxInsured[index].type === 3">
             职业风险等级：
-            <Input type="text" v-model="form.maxInsured[index].occupationalLevel" placeholder="请输入"/>
+            <Input
+              type="text"
+              v-model="form.maxInsured[index].occupationalLevel"
+              placeholder="请输入"
+            />
           </div>
           <div v-if="form.maxInsured[index].type === 4">
             职业代码：
@@ -310,7 +318,6 @@
       <TabPane label="体检规则" name="name2">体检规则的内容</TabPane>
       <TabPane label="财务核保" name="name3">财务核保的内容</TabPane>
     </Tabs>
-
   </Form>
 </template>
 
@@ -323,53 +330,6 @@ import {
 } from "@/api/product/rule";
 import Editor from "_c/editor";
 
-const defaultForm = {
-  productId: "",
-  applicationAgeStart: 0,
-  applicationAgeEnd: 0,
-  applicationAgeDay: 0,
-  renewalAge: 0,
-  applicationSex: 0,
-  occupationUnderwriting: 0,
-  specialOccupationUnderwriting: "",
-  socialInsuranceLimit: 0,
-  basicSumInsuredOptional: 0,
-  insuranceFullAmount: [],
-  insurancePlan: [],
-  minInsured: [
-    {
-      type: 0,
-      minInsured: 0
-    }
-  ],
-  maxInsured: [
-    {
-      type: 0,
-      maxInsured: 0
-    }
-  ],
-  incrementalUnit: "",
-  policyPeriodYear: [
-    // {
-    //   productId: "",
-    //   ruleIntervalType: 2,
-    //   ruleIntervalName: "1年",
-    //   ruleIntervalValue: 1
-    // }
-  ],
-  policyPeriodAge: [
-    // {
-    //   productId: "",
-    //   ruleIntervalType: 6,
-    //   ruleIntervalName: "终身",
-    //   ruleIntervalValue: -1
-    // }
-  ],
-  paymentPeriodYear: [],
-  paymentPeriodAge: [],
-  paymentMethod: [],
-  underwritingRulesText: ""
-};
 const transToArray = [
   "insuranceFullAmount",
   "insurancePlan",
@@ -386,6 +346,53 @@ export default {
     Editor
   },
   data() {
+    const defaultForm = {
+      productId: "",
+      applicationAgeStart: 0,
+      applicationAgeEnd: 0,
+      applicationAgeDay: 0,
+      renewalAge: 0,
+      applicationSex: 0,
+      occupationUnderwriting: 0,
+      specialOccupationUnderwriting: "",
+      socialInsuranceLimit: 0,
+      basicSumInsuredOptional: 0,
+      insuranceFullAmount: [],
+      insurancePlan: [],
+      minInsured: [
+        {
+          type: 0,
+          minInsured: 0
+        }
+      ],
+      maxInsured: [
+        {
+          type: 0,
+          maxInsured: 0
+        }
+      ],
+      incrementalUnit: "",
+      policyPeriodYear: [
+        // {
+        //   productId: "",
+        //   ruleIntervalType: 2,
+        //   ruleIntervalName: "1年",
+        //   ruleIntervalValue: 1
+        // }
+      ],
+      policyPeriodAge: [
+        // {
+        //   productId: "",
+        //   ruleIntervalType: 6,
+        //   ruleIntervalName: "终身",
+        //   ruleIntervalValue: -1
+        // }
+      ],
+      paymentPeriodYear: [],
+      paymentPeriodAge: [],
+      paymentMethod: [],
+      underwritingRulesText: ""
+    };
     return {
       form: Object.assign({}, defaultForm),
       limitType: Object.freeze({
@@ -629,13 +636,16 @@ export default {
     handleBlur(type, index) {
       let temp = this.form[type][index];
       if (temp.ruleIntervalValue) {
-        this[type].push(index);
+        // 利用set的值唯一特性
+        let set = new Set(this[type]);
+        set.add(index);
+        this[type] = [...set];
         // console.log(typeof temp.ruleIntervalValue)
       } else {
         if (this[type].includes(index)) {
           this[type].splice(this[type].indexOf(index), 1);
         }
-        // 中间减掉，后续数据索引-1补上
+        // 中间减掉，后续数据索引减1补上
         this[type].forEach((element, unique) => {
           if (element > index) {
             this[type][unique] = --element;
