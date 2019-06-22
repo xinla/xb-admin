@@ -3,7 +3,7 @@
     <Table border :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="type">{{row.type | type}}</template>
       <template slot-scope="{ row }" slot="imgUrl">
-        <img class="img" v-for="(item, index) in row.imgUrl.split(',')" :src="item" :key="index">
+        <img class="img" v-for="(item, index) in (row.imgUrl ? row.imgUrl.split(',') : [])" :src="item" :key="index">
       </template>
     </Table>
 
@@ -97,7 +97,7 @@ export default {
       page && (this.query.page = page)
       this.loading = true;
       getFeedbackPage(this.query).then(res => {
-        // console.log("FeedbackPage: ", res);
+        console.log("FeedbackPage: ", res);
         this.loading = false;
         this.list = res.list;
         this.total = res.total

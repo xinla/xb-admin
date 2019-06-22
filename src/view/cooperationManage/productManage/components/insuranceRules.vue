@@ -94,7 +94,7 @@
               class="inline-input"
               type="number"
               :number="true"
-              v-model.trim="form.insuranceFullAmount[index].ruleIntervalValue"
+              v-model.trim="form.insuranceFullAmount[index].ruleIntervalName"
               placeholder="金额"
               @on-blur="handleBlur('insuranceFullAmount', index)"
             />万
@@ -303,10 +303,7 @@
 
     <FormItem label="交费方式" prop="paymentMethod">
       <CheckboxGroup v-model="form.paymentMethod">
-        <Checkbox label="年交"></Checkbox>
-        <Checkbox label="半年交"></Checkbox>
-        <Checkbox label="季交"></Checkbox>
-        <Checkbox label="月交"></Checkbox>
+        <Checkbox v-for="(item, index) in paymentMethod" :label="String(index)" :key="index">{{item}}</Checkbox>
       </CheckboxGroup>
     </FormItem>
 
@@ -575,7 +572,8 @@ export default {
         7: "八",
         8: "九",
         9: "十"
-      }
+      },
+      paymentMethod: ['年交', '半年交', '季交', '月交']
     };
   },
   mounted() {
@@ -656,7 +654,7 @@ export default {
         this.form[type].splice(index, 1);
       }
       if (type === "insuranceFullAmount") {
-        temp.ruleIntervalName = temp.ruleIntervalValue + "万";
+        temp.ruleIntervalValue = temp.ruleIntervalName * 10000;
         temp.ruleIntervalType = 1;
       } else if (type === "insurancePlan") {
         temp.ruleIntervalType = 5;
@@ -705,6 +703,9 @@ export default {
                 if (agency === "insurancePlan") {
                   formData[agency][index].ruleIntervalName = index + 1;
                 }
+                // if (agency === "insuranceFullAmount") {
+                //   formData[agency][index].ruleIntervalValue *= 10000;
+                // }
                 temp.push(formData[agency][index]);
               }
               formData[agency] = temp;

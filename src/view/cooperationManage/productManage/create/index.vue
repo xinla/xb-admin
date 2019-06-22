@@ -48,9 +48,9 @@ export default {
       return Math.floor(Math.random()*100)
     }
   },
-  mounted() {
-      console.log(this.key)
-  },
+  // mounted() {
+  //     console.log(this.key)
+  // },
   methods: {
     submit(current) {
       Promise.resolve()

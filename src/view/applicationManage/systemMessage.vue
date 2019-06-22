@@ -8,7 +8,11 @@
             <Input type="text" v-model="form.title" placeholder="通知标题"/>
           </FormItem>
           <FormItem label="跳转链接" prop="linkUrl">
-            <Input type="text" v-model="form.linkUrl" placeholder="格式如: www.xbkj.com"/>
+            <Input
+              type="text"
+              v-model="form.linkUrl"
+              placeholder="格式如: http(https)://www.xbkj.com"
+            />
           </FormItem>
           <FormItem label="推送时间" prop="noticedAt">
             <DatePicker
@@ -24,22 +28,22 @@
         <Col span="8">
           <FormItem label="通知封面" prop="coverUrl">
             <Upload
-            :action="uploadUrl"
-            :show-upload-list="false"
-            :format="['jpg','jpeg','png']"
-            accept="image/*"
-            :on-success="uploadSuccess"
-          >
-            <img class="logo" v-if="form.coverUrl" :src="form.coverUrl">
-            <div v-else class="upload-icon cp">+</div>
-          </Upload>
+              :action="uploadUrl"
+              :show-upload-list="false"
+              :format="['jpg','jpeg','png']"
+              accept="image/*"
+              :on-success="uploadSuccess"
+            >
+              <img class="logo" v-if="form.coverUrl" :src="form.coverUrl">
+              <div v-else class="upload-icon cp">+</div>
+            </Upload>
           </FormItem>
         </Col>
       </Row>
       <Row>
         <Col span="12">
-        <FormItem label="通知内容" prop="content">
-          <Input type="textarea" v-model="form.content" placeholder="通知内容"/>
+          <FormItem label="通知内容" prop="content">
+            <Input type="textarea" v-model="form.content" placeholder="通知内容"/>
             <!-- <editor ref="editor" :value="form.content" @on-change="editorChange"/> -->
           </FormItem>
           <div class="ac">
@@ -56,10 +60,10 @@
     <Table :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="content">
         <div v-html="row.content"></div>
-        </template>
+      </template>
       <template slot-scope="{ row }" slot="coverUrl">
         <img class="logo" :src="row.coverUrl">
-        </template>
+      </template>
       <template slot-scope="{ row }" slot="action">
         <Button type="primary" size="small" :disabled="row.status == 0" @click="edit(row)">编辑</Button>
         <Button type="error" size="small" @click="deleteMessage(row)">删除</Button>
@@ -98,7 +102,7 @@ export default {
   data() {
     const validateUrl = (rule, value, callback) => {
       if (value && !validateURL(value)) {
-        callback(new Error("链接格式有误，请确认，格式如: www.xbkj.com"));
+        callback(new Error("链接格式有误，请确认")); // 格式如: http://www.xbkj.com
       }
       callback();
     };
@@ -141,7 +145,10 @@ export default {
       rules: {
         title: [{ required: true, message: "不能为空", trigger: "blur" }],
         coverUrl: [{ required: true, message: "不能为空", trigger: "change" }],
-        linkUrl: [{ validator: validateUrl, trigger: "blur" }],
+        linkUrl: [
+          { required: true, message: "不能为空", trigger: "blur" },
+          { validator: validateUrl, trigger: "blur" }
+        ],
         content: [{ required: true, message: "不能为空", trigger: "blur" }],
         noticedAt: [{ required: true, message: "不能为空", trigger: "change" }]
       },
@@ -217,7 +224,7 @@ export default {
     },
     uploadSuccess(response, file, fileList) {
       this.form.coverUrl = response.result.fileUrl;
-    },
+    }
     // editorChange(html, text) {
     //   // console.log(html, text);
     //   this.form.content = html;

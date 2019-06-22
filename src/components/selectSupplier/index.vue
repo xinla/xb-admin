@@ -65,9 +65,7 @@ export default {
   mounted() {
     // console.log(this.val + 8);
     if (this.val) {
-      new Promise((resolve, reject) => {
-        resolve();
-      })
+      Promise.resolve()
         .then(() => {
           this.query.name = this.val;
           if (this.type === "agency") {
@@ -81,8 +79,8 @@ export default {
         })
         .then(({ list }) => {
           // FIX: 结果出现同名保险公司，这里取第一条数据
-          // console.log(list)
-          list && this.$emit("change", list[0]);
+          console.log('LesseePageByJB: ', list)
+          list && list.length && this.$emit("change", list[0]);
         });
     }
   },
@@ -93,9 +91,7 @@ export default {
       this.query.name = query;
       this.loading = true;
           this.isMatch = true
-      new Promise((resolve, reject) => {
-        resolve();
-      })
+      Promise.resolve()
         .then(() => {
           if (this.type === "agency") {
             return getLesseePageByJB(this.query);

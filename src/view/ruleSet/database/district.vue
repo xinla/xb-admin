@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- @tree-icon-click="flod" -->
     <tree-table
       :expand-type="false"
       :columns="columns"
@@ -9,6 +8,7 @@
       children-prop="districts"
       :data="list"
       :empty-text="load"
+    @tree-icon-click="flod"
     ></tree-table>
   </div>
 </template>
@@ -24,7 +24,6 @@ export default {
       return await getPostcode(val);
     }
   },
-  props: {},
   data() {
     return {
       columns: [
@@ -67,24 +66,24 @@ export default {
       this.list = data;
       this.load = "";
       console.log(data);
-      for (const iterator of data) {
-        for (const iterator1 of iterator.districts) {
-          getPostcode(iterator.name).then(data => {
-            // iterator.postcode = data
-            this.$set(iterator, "postcode", data);
-            // console.log(iterator)
-            // console.log(row)
-          });
-          for (const iterator2 of iterator1.districts) {
-            getPostcode(iterator2.name).then(data => {
-              // iterator.postcode = data
-              this.$set(iterator2, "postcode", data);
-              // console.log(iterator)
-              // console.log(row)
-            });
-          }
-        }
-      }
+      // for (const iterator of data) {
+      //   for (const iterator1 of iterator.districts) {
+      //     getPostcode(iterator.name).then(data => {
+      //       // iterator.postcode = data
+      //       this.$set(iterator, "postcode", data);
+      //       // console.log(iterator)
+      //       // console.log(row)
+      //     });
+      //     for (const iterator2 of iterator1.districts) {
+      //       getPostcode(iterator2.name).then(data => {
+      //         // iterator.postcode = data
+      //         this.$set(iterator2, "postcode", data);
+      //         // console.log(iterator)
+      //         // console.log(row)
+      //       });
+      //     }
+      //   }
+      // }
     });
   },
   methods: {
@@ -94,13 +93,18 @@ export default {
     //   return res
     // }
     flod(row, rowIndex, $event) {
-      for (const iterator of row.districts) {
-        getPostcode(iterator.name).then(data => {
-          // iterator.postcode = data
-          this.$set(iterator, "postcode", data);
-          // console.log(iterator)
-          // console.log(row)
-        });
+      console.log(1)
+      console.log(row)
+      if (!(row.districts[0] && row.districts[0].postcode)) {
+        for (const iterator of row.districts) {
+          getPostcode(iterator.name).then(data => {
+            console.log(data)
+            // iterator.postcode = data
+            this.$set(iterator, "postcode", data);
+            // console.log(iterator)
+            // console.log(row)
+          });
+        }
       }
     }
   }

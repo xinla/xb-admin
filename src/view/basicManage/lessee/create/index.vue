@@ -6,7 +6,7 @@
       <Row>
         <Col span="10">
           <FormItem label="租户名称" prop="name">
-            <selectSupplier :val="formAll.name" @change="change"/>
+            <selectSupplier :val="formAll.name" @change="change" :key="formAll.name"/>
           </FormItem>
           <FormItem label="业务类型" prop="businessType">
             <RadioGroup v-model="formAll.businessType">
@@ -328,7 +328,7 @@ export default {
     create() {
       // debugger
       // console.log(this.formAll)
-      if (!this.formAll.agentCompanyId) {
+      if (!this.id && !this.formAll.agentCompanyId) {
         this.$Message.success("该代理公司id不存在，请记录名称并询问后台");
         return
       }

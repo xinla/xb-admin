@@ -27,12 +27,13 @@
 
       <template slot-scope="{ row }" slot="onlineApplication">
         <div v-for="(item, index) in JSON.parse(row.onlineApplication)" :key="index">
+          {{item.code === 0 ? '现保' : ''}}
           {{item.linkAddress}}
         </div>
       </template>
 
       <template slot-scope="{ row }" slot="action">
-          <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.pid})">编辑</Button>
+          <Button type="primary" size="small" :disabled="row.publish === 1" style="margin-right: 5px" @click="goPage('createProduct', {id: row.pid})">编辑</Button>
           <Button type="error" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.pid})">详情</Button>
       </template>
     </Table>
@@ -55,8 +56,8 @@ import { getTypeRulePage } from '@/api/rulesSet/type'
 import xNav from "@/view/components/nav";
 
 const saleState = {
-  0: '在售',
-  1: '停售',
+  0: '停售',
+  1: '在售',
 }
 
 export default {
