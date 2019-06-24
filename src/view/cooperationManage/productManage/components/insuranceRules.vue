@@ -109,7 +109,7 @@
               class="inline-input"
               type="number"
               :number="true"
-              v-model.trim="form.insurancePlan[index].ruleIntervalValue"
+              v-model.trim="form.insurancePlan[index].ruleIntervalName"
               placeholder="计划"
               @on-blur="handleBlur('insurancePlan', index)"
             />万
@@ -633,7 +633,7 @@ export default {
     },
     handleBlur(type, index) {
       let temp = this.form[type][index];
-      if (temp.ruleIntervalValue) {
+      if (temp.ruleIntervalValue || temp.ruleIntervalName) {
         // 利用set的值唯一特性
         let set = new Set(this[type]);
         set.add(index);
@@ -657,6 +657,7 @@ export default {
         temp.ruleIntervalValue = temp.ruleIntervalName * 10000;
         temp.ruleIntervalType = 1;
       } else if (type === "insurancePlan") {
+        temp.ruleIntervalValue = temp.ruleIntervalName * 10000;
         temp.ruleIntervalType = 5;
       } else if (type === "policyPeriodYear") {
         temp.ruleIntervalName = temp.ruleIntervalValue + "年";
@@ -700,9 +701,9 @@ export default {
               for (const index of this[agency]) {
                 // debugger
                 formData[agency][index].productId = formData.productId;
-                if (agency === "insurancePlan") {
-                  formData[agency][index].ruleIntervalName = index + 1;
-                }
+                // if (agency === "insurancePlan") {
+                //   formData[agency][index].ruleIntervalName = index + 1;
+                // }
                 // if (agency === "insuranceFullAmount") {
                 //   formData[agency][index].ruleIntervalValue *= 10000;
                 // }
