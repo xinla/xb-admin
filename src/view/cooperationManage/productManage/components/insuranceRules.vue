@@ -218,6 +218,7 @@
         <DropdownMenu slot="list">
           <DropdownItem name="policyPeriodYear">年数</DropdownItem>
           <DropdownItem name="policyPeriodAge">年龄</DropdownItem>
+          <DropdownItem name="allLife">终身</DropdownItem>
         </DropdownMenu>
       </Dropdown>
       <div>
@@ -238,15 +239,20 @@
         <!--保险年龄添加项 -->
         <CheckboxGroup v-model="policyPeriodAge">
           <Checkbox v-for="(item, index) of form.policyPeriodAge" :label="index" :key="index + 'x'">
-            至
-            <Input
-              class="inline-input"
-              type="number"
-              :number="true"
-              v-model.trim="form.policyPeriodAge[index].ruleIntervalValue"
-              placeholder="年龄"
-              @on-blur="handleBlur('policyPeriodAge', index)"
-            />周岁
+            <template v-if="form.policyPeriodAge[index].ruleIntervalValue != -1">
+              至
+              <Input
+                class="inline-input"
+                type="number"
+                :number="true"
+                v-model.trim="form.policyPeriodAge[index].ruleIntervalValue"
+                placeholder="年龄"
+                @on-blur="handleBlur('policyPeriodAge', index)"
+              />周岁
+            </template>
+            <template v-else>
+              终身
+            </template>
           </Checkbox>
         </CheckboxGroup>
       </div>
@@ -621,6 +627,23 @@ export default {
     },
     addRow(type) {
       // debugger
+      if (type === 'allLife') {
+        for (const iterator of this.form.policyPeriodAge) {
+          if (iterator.ruleIntervalValue == -1) {
+            this.$Message.error('选项已存在');
+            return
+          }
+        }
+        this.policyPeriodAge.push(this.form.policyPeriodAge.length)
+        this.form.policyPeriodAge.push({
+          productId: "",
+          ruleIntervalType: 6,
+          ruleIntervalName: "终身",
+          ruleIntervalValue: -1
+        })
+        return
+      }
+
       let len = this.form[type].length;
       if (!len || Object.keys(this.form[type][len - 1]).length) {
         this.form[type].push({});

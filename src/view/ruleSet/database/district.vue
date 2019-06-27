@@ -8,8 +8,13 @@
       children-prop="districts"
       :data="list"
       :empty-text="load"
-    @tree-icon-click="flod"
-    ></tree-table>
+    >
+      <template slot="postcode" slot-scope="scope">
+        <div v-if="scope.row.level === 'province'" :key="1">--</div>
+        <div v-else-if="scope.row.postcode" :key="2">{{scope.row.postcode}}</div>
+        <div v-else class="cp" @click="getCode(scope.row)" :key="3">获取邮编</div>
+      </template>
+    </tree-table>
   </div>
 </template>
 
@@ -41,6 +46,8 @@ export default {
         {
           title: "邮编",
           key: "postcode",
+          type: "template",
+          template: "postcode",
           headerAlign: "center",
           align: "center"
         }
@@ -65,47 +72,21 @@ export default {
     getDistrict(3).then(data => {
       this.list = data;
       this.load = "";
-      console.log(data);
-      // for (const iterator of data) {
-      //   for (const iterator1 of iterator.districts) {
-      //     getPostcode(iterator.name).then(data => {
-      //       // iterator.postcode = data
-      //       this.$set(iterator, "postcode", data);
-      //       // console.log(iterator)
-      //       // console.log(row)
-      //     });
-      //     for (const iterator2 of iterator1.districts) {
-      //       getPostcode(iterator2.name).then(data => {
-      //         // iterator.postcode = data
-      //         this.$set(iterator2, "postcode", data);
-      //         // console.log(iterator)
-      //         // console.log(row)
-      //       });
-      //     }
-      //   }
-      // }
+      // console.log(data);
     });
   },
   methods: {
-    // async postcode(address) {
-    //   let res = await getPostcode(address)
-    //   console.log(res)
-    //   return res
-    // }
-    flod(row, rowIndex, $event) {
-      console.log(1)
-      console.log(row)
-      if (!(row.districts[0] && row.districts[0].postcode)) {
-        for (const iterator of row.districts) {
-          getPostcode(iterator.name).then(data => {
-            console.log(data)
-            // iterator.postcode = data
-            this.$set(iterator, "postcode", data);
-            // console.log(iterator)
-            // console.log(row)
-          });
-        }
-      }
+    getCode(data) {
+      // console.log(data);
+      this.$Spin.show()
+      getPostcode(data.name).then(res => {
+        // iterator.postcode = data
+        console.log(res);
+        this.$Spin.hide()
+        this.$set(data, "postcode", res);
+        // console.log(iterator)
+        // console.log(row)
+      });
     }
   }
 };

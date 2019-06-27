@@ -71,7 +71,14 @@ class HttpRequest {
       }
     }, error => {
       this.destroy(url)
-      addErrorLog(error.response)
+      if (error.response) {
+        addErrorLog(error.response)
+      } else {
+        Message.error({
+          content: `网络错误或服务器拒绝连接`,
+          duration: 3
+        })
+      }
       return Promise.reject(error)
     })
   }
