@@ -121,9 +121,12 @@ export const getInsureAllProvice = () => {
   })
 }
 
-export const deleteSupplier = (id) => {
+export const deleteSupplier = (id, userId) => {
   return axios.request({
     url: service + `/delete/${id}`,
-    method: 'POST'
+    method: 'POST',
+    headers: {
+      userId
+    }
   })
 }

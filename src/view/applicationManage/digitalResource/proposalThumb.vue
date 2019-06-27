@@ -55,7 +55,7 @@
 
           <FormItem prop="cover" label="上传封面">
             <Upload
-              :action="$config.baseUrl.dev + '/upload'"
+              :action="$config.services.upload"
               :show-upload-list="false"
               :format="['jpg','jpeg','png']"
               accept="image/*"

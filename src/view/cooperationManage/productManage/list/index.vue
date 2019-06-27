@@ -272,7 +272,7 @@ export default {
           title: "提示",
           content: "确定要删除吗",
           onOk: () => {
-            deleteProduct(data.productId).then(res => {
+            deleteProduct(data.productId, this.$store.state.user.userId).then(res => {
               this.getData();
               this.$Message.success("操作成功");
             });

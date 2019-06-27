@@ -14,7 +14,7 @@ const config = {
    */
   baseUrl: {
     dev: 'http://192.168.1.64', // 虚拟机 liusiyuan
-    // dev: 'http://192.168.1.8', // 本地
+    // dev: 'http://192.168.1.32', // 本地
     dev1: 'http://192.168.1.150:8888', // caikefu
     pro: 'http://112.31.212.46:8118', // line
     pro1: 'http://112.31.212.46:8888' // caikefu

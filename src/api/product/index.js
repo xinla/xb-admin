@@ -96,9 +96,12 @@ export const publishProduct = (id, status) => {
  * 根据id删除产品
  * @param {*} id 
  */
-export const deleteProduct = (id) => {
+export const deleteProduct = (id, userId) => {
   return axios.request({
     url: service + `/delete/${id}`,
-    method: 'post'
+    method: 'post',
+    headers: {
+      userId
+    }
   })
 }

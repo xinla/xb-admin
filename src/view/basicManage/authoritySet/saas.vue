@@ -24,7 +24,7 @@
           <Option v-for="(value, key) in isVo" :value="+key" :key="key">{{ value }}</Option>
         </Select>
         </FormItem> -->
-        <Input v-model="query.name" placeholder="搜索公司" style="width:55%; margin-right: 10px;"/>
+        <Input v-model="query.name" placeholder="搜索名称" style="width:55%; margin-right: 10px;"/>
         <Button type="info" @click="search()">搜索</Button>
         </Form>
       </Col>
