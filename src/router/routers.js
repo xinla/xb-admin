@@ -30,8 +30,8 @@ export default [
   {
     path: '/',
     name: '_home',
-    redirect: '/basicManage/lessee',
     component: Main,
+    redirect: '/basicManage/lessee',
     meta: {
       hideInMenu: true,
       notCache: true
@@ -40,6 +40,7 @@ export default [
       {
         path: '/home',
         name: 'home',
+        redirect: '/basicManage/lessee',
         meta: {
           hideInMenu: true,
           title: '首页',

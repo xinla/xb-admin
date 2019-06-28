@@ -5,7 +5,7 @@
     <Form class="form " inline :model="query" :label-width="80">
       <FormItem label="在售状态:">
         <Select v-model="query.sale" clearable>
-            <Option v-for="(value, key) in saleState" :value="value" :key="key">{{ value }}</Option>
+            <Option v-for="(value, key) in saleState" :value="key" :key="key">{{ value }}</Option>
         </Select>
       </FormItem>
       <FormItem label="产品类型:">

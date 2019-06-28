@@ -243,22 +243,22 @@ export default {
     init() {
       // console.log(1)
       if (this.type === "lessee") {
-        getLesseeBrandInfoById(this.id)
-          .then(data => {
-            // console.log("lesseeBrandInfo:", data);
-            this.form = data;
-            return getDistrict(0, data.provinceId || 370000);
-            // this.company = data.xbCompany
-            // this.listHonor = data.honor
-            // this.listEvents = data.bigEvents
-          })
-          .then(res => {
-            this.registerArea += res.name;
-            return getDistrict(0, res.cityId || 370600);
-          })
-          .then(res => {
-            this.registerArea += res.name;
-          });
+        getLesseeBrandInfoById(this.id).then(data => {
+          console.log("lesseeBrandInfo:", data);
+          this.form = data;
+          return getDistrict(0, data.xbCompany.provinceId || 370000)
+            .then(res => {
+              this.registerArea += res.name;
+              return getDistrict(0, data.xbCompany.cityId || 370600);
+            })
+            .then(res => {
+              console.log("registerArea:", res);
+              this.registerArea += res.name;
+            });
+          // this.company = data.xbCompany
+          // this.listHonor = data.honor
+          // this.listEvents = data.bigEvents
+        });
       } else if (this.type === "supplier") {
         getSupplierBrandInformation(this.id).then(data => {
           this.form = data;
