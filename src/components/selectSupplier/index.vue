@@ -17,6 +17,7 @@
         v-for="(option, index) in list"
         :value="JSON.stringify(option)"
         :key="index"
+        :disabled="Boolean(option.relation)"
       >{{option.name}}</Option>
     </Select>
     <Button
@@ -79,7 +80,7 @@ export default {
         })
         .then(({ list }) => {
           // FIX: 结果出现同名保险公司，这里取第一条数据
-          console.log('LesseePageByJB: ', list)
+          // console.log('LesseePageByJB: ', list)
           list && list.length && this.$emit("change", list[0]);
         });
     }

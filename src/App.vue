@@ -30,4 +30,8 @@ html,body{
   border: 0;
   cursor: auto;
 }
+// iview 弹出确认框
+.ivu-modal-mask, .ivu-modal-wrap{
+  z-index: 10002 !important;
+}
 </style>
