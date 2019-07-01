@@ -173,9 +173,8 @@ const defaultForm = {
   companyWebsite: "",
   contactPhone: "",
   nationalServicePhone: "",
-  supplierDescription: "",
   professionUrl: "",
-  companyProfile: "",
+  supplierDescription: "",
   foundingTime: "",
   vitDictProvinceId: [],
   xbSupplierOrganization: []
@@ -202,9 +201,8 @@ export default {
         companyWebsite: "",
         contactPhone: "",
         nationalServicePhone: "",
-        supplierDescription: "",
         professionUrl: "",
-        companyProfile: "",
+        supplierDescription: "",
         foundingTime: "",
         vitDictProvinceId: [],
         xbSupplierOrganization: []
@@ -234,13 +232,10 @@ export default {
         contactPhone: [
           { required: true, message: "不能为空", trigger: "blur" }
         ],
-        supplierDescription: [
-          { required: true, message: "不能为空", trigger: "blur" }
-        ],
         professionUrl: [
           { required: true, message: "不能为空", trigger: "blur" }
         ],
-        companyProfile: [
+        supplierDescription: [
           { required: true, message: "不能为空", trigger: "blur" }
         ],
         foundingTime: [
@@ -310,7 +305,7 @@ export default {
             //   this.$set(this.form, 'vitDictProvinceId', vitDictProvinceId)
             // }
             // 设置富文本内容
-            this.$refs.editor.setHtml(this.form.companyProfile);
+            this.$refs.editor.setHtml(this.form.supplierDescription);
             // console.log('form:', this.form)
           } else {
             this.$Message.error("暂无此记录，请稍后重试");
@@ -354,7 +349,7 @@ export default {
     },
     handleChange(html, text) {
       // console.log(html, text);
-      this.form.companyProfile = html;
+      this.form.supplierDescription = html;
       // console.log(this.form.underwritingRulesText)
     },
     add() {

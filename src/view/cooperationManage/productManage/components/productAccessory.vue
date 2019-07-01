@@ -1,6 +1,8 @@
 <template>
-  <Form ref="form" :rules="rules" v-model="form">
-    <div class="title-row">投保规则<span class="tip">（必填项）</span></div>
+  <Form ref="form" v-model="form">
+    <div class="title-row">投保规则
+      <!-- <span class="tip">（必填项）</span> -->
+    </div>
     <a v-if="form.applicationRules" :href="form.applicationRules">{{form.applicationRulesName}}</a>
     <!-- <FormItem prop="applicationRules"> -->
     <Upload :action="uploadUrl" :show-upload-list="false" :on-success="uploadRule">
@@ -9,7 +11,9 @@
     <!-- </FormItem> -->
     <Divider/>
 
-    <div class="title-row">产品条款<span class="tip">（必填项）</span></div>
+    <div class="title-row">产品条款
+      <!-- <span class="tip">（必填项）</span> -->
+    </div>
     <a v-if="form.policyWording" :href="form.policyWording">{{form.policyWordingName}}</a>
     <!-- <FormItem prop="policyWording"> -->
     <Upload :action="uploadUrl" :show-upload-list="false" :on-success="uploadWording" :data='{image: true}'>
@@ -19,7 +23,8 @@
     <Divider/>
 
     <div class="title-row">
-      产品课件<span class="tip">（必填项）</span>
+      产品课件
+      <!-- <span class="tip">（必填项）</span> -->
       <Button type="info" size="small" @click="addRow()">新增一行</Button>
     </div>
     <Row class="ac">
@@ -163,9 +168,12 @@ export default {
       }
     },
     submit() {
-      if (!this.form.applicationRulesName || !this.form.policyWordingName || !this.form.productCourse[0].fileSize) {
-        this
-      }
+      // 必填字段判断
+      // if (!this.form.applicationRulesName || !this.form.policyWordingName || !this.form.productCourse[0].fileSize) {
+        // this.$Message.error("信息填写不完整");
+      //   return
+      // }
+
       this.form.productId = this.$route.query.id;
       let formData = Object.assign({}, this.form);
       // 判断课件最后一个对象是否为空，若空则删除
@@ -179,20 +187,11 @@ export default {
 
       return Promise.resolve()
         .then(() => {
-          if (
-            this.form.applicationRules &&
-            this.form.policyWording &&
-            this.form.productCourse[0].url
-          ) {
-            if (formData.id) {
-              // console.log(1)
-              return updateProductAttachment(formData);
-            } else {
-              return addProductAttachment(formData);
-            }
+          if (formData.id) {
+            // console.log(1)
+            return updateProductAttachment(formData);
           } else {
-            this.$Message.error("信息填写不完整");
-            return new Promise((resolve, reject) => {});
+            return addProductAttachment(formData);
           }
         })
         .then(() => {

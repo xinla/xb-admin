@@ -1,5 +1,5 @@
 <template>
-  <Form ref="form" :model="form" :rules="rules" :label-width="80">
+  <Form ref="form" :model="form" :label-width="80">
     <FormItem label="年龄限制">
       <InputNumber :min="0" :max="120" v-model="form.applicationAgeStart" placeholder="年龄限制启始"></InputNumber>周岁 至
       <InputNumber
@@ -316,7 +316,7 @@
     <Tabs value="name1">
       <TabPane label="风险保额" name="name1">
         <!-- <div>投保规则文本</div> -->
-        <editor ref="editor" :value="form.underwritingRulesText" @on-change="editorChange"/>
+        <editor ref="editor" v-show="0" :value="form.underwritingRulesText" @on-change="editorChange"/>
       </TabPane>
       <TabPane label="体检规则" name="name2">体检规则的内容</TabPane>
       <TabPane label="财务核保" name="name3">财务核保的内容</TabPane>

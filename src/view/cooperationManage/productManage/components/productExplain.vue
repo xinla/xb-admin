@@ -1,5 +1,5 @@
 <template>
-  <Form ref="form" :model="form" :rules="rules">
+  <Form ref="form" :model="form">
     <Row>
       <Col span="8">
         <div class="title-row">核心亮点</div>

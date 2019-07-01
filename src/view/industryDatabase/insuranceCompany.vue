@@ -202,8 +202,9 @@ export default {
   },
   watch: {
     selectDistrict(val) {
-      this.query.provinceName = val[0] || "";
+      this.query.provinceName = val[0].replace(/省/, '') || "";
       this.query.areaName = val[1] || "";
+      // console.log(this.query.provinceName)
     },
     "form._selectDistrict"(val) {
       this.form.provinceName = val[0] || "";

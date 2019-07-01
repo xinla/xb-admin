@@ -690,7 +690,7 @@ export default [
           title: '系统设置（待定）'
         },
         component: () => import('@/view/systemSet/systemSet.vue')
-      },
+      },     
       {
         path: 'help',
         name: 'help',
@@ -709,6 +709,25 @@ export default [
           title: '新建帮助'
         },
         component: () => import('@/view/systemSet/createHelp.vue')
+      },
+      {
+        path: 'version',
+        name: 'version',
+        meta: {
+          icon: '_version',
+          title: '版本日志'
+        },
+        component: () => import('@/view/systemSet/version')
+      },
+      {
+        path: 'createVersion',
+        name: 'createVersion',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '新建版本日志'
+        },
+        component: () => import('@/view/systemSet/version/create.vue')
       },
       {
         path: 'feedback',

@@ -1,5 +1,5 @@
 <template>
-  <Form ref="form" :model="form" :rules="rules" :label-width="120">
+  <Form ref="form" :model="form" :label-width="120">
     <Row>
       <Col span="8">
         <FormItem label="产品全称" prop="productFullName">
@@ -65,14 +65,14 @@
     </FormItem>
 
     <FormItem label="适合人群" prop="ageLevel">
-      <RadioGroup v-model="form.ageLevel">
-        <Radio :label="0">母婴</Radio>
-        <Radio :label="1">儿童</Radio>
-        <Radio :label="2">青中年</Radio>
-        <Radio :label="3">中老年</Radio>
-        <Radio :label="4">老年</Radio>
-        <Radio :label="5">全龄</Radio>
-      </RadioGroup>
+      <CheckboxGroup v-model="form.ageLevel">
+        <Checkbox label="0">母婴</Checkbox>
+        <Checkbox label="1">少儿</Checkbox>
+        <Checkbox label="2">青中年</Checkbox>
+        <Checkbox label="3">中老年</Checkbox>
+        <Checkbox label="4">老年</Checkbox>
+        <Checkbox label="5">全龄</Checkbox>
+      </CheckboxGroup>
     </FormItem>
 
     <FormItem label="承保方式" prop="underwritingModel">
@@ -222,7 +222,7 @@ const defaultForm = {
   subClass: [],
   name: "",
   function: [],
-  ageLevel: 0,
+  ageLevel: [],
   underwritingModel: 0,
   underwritingPeriod: 0,
   productForm: 0,
@@ -291,7 +291,7 @@ export default {
         ],
         ageLevel: [
           {
-            type: "number",
+            type: "array",
             required: true,
             message: "不能为空",
             trigger: "change"
@@ -382,7 +382,7 @@ export default {
       this.form.id &&
         getProductInfo(this.form.id).then(data => {
           // 保险细类,分销渠道,保障功能 转为数组
-          let trans = ["subClass", "function", "distributionChannel"];
+          let trans = ["subClass", "function", "ageLevel", "distributionChannel"];
           for (const iterator of trans) {
             data[iterator] = data[iterator].split(",");
           }
@@ -419,12 +419,13 @@ export default {
           return new Promise((resolve, reject) => {});
         }
       }
-      if (Object.keys(this.onlineType).length) {
-        this.form.onlineAddress = JSON.stringify(this.form.onlineAddress);
-      } else {
-        this.$Message.error("请填写在线投保信息");
-        return new Promise((resolve, reject) => {});
-      }
+
+      // if (Object.keys(this.onlineType).length) {
+      //   this.form.onlineAddress = JSON.stringify(this.form.onlineAddress);
+      // } else {
+      //   this.$Message.error("请填写在线投保信息");
+      //   return new Promise((resolve, reject) => {});
+      // }
 
       return this.$refs.form
         .validate()
@@ -436,7 +437,7 @@ export default {
             // 过滤重复提交(暂废弃)
             if (true) {
               // 数组字段转字符串
-              let trans = ["subClass", "function", "distributionChannel"];
+              let trans = ["subClass", "function", "ageLevel", "distributionChannel"];
               for (const key in formData) {
                 if (formData.hasOwnProperty(key)) {
                   const element = formData[key];

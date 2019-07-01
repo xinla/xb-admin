@@ -173,7 +173,7 @@
     <dialogBox v-model="dialogShow">
       <template slot="title">添加品牌类别</template>
       <Form ref="form" :model="form" :rules="rules">
-        <FormItem>
+        <FormItem v-if="dialogShow">
           <selectSupplier :val="form.name" type="brand" @change="change"/>
         </FormItem>请勾选需要编辑的类别
         <FormItem prop="dictName" style="max-width: 
@@ -358,6 +358,7 @@ export default {
       dialogShowB: false,
       editIndex: undefined,
       baseClass: [
+        '投保人与被保人的关系',
         "姓名",
         "证件类型",
         "证件号码",

@@ -1,5 +1,5 @@
 <template>
-  <Form ref="form" :model="form" :rules="rules" :label-width="120">
+  <Form ref="form" :model="form" :label-width="120">
 
     <FormItem label="投保单位" prop="applicationUnit">
         <RadioGroup v-model="form.applicationUnit">
@@ -27,7 +27,7 @@
     <FormItem label="交费方式计费系数">
       年：
       <Input type="number" 
-        :number="true" size="small" v-model="form.paymentMethodRatioYear"/>
+        :number="true" size="small" disabled v-model="form.paymentMethodRatioYear"/>
       半年：
         <Input type="number" 
         :number="true" size="small" v-model="form.paymentMethodRatioHalfYear"/>
@@ -93,7 +93,7 @@ const defaultForm = {
   applicationUnit: 0,
   rateCountMethod: 0,
   countUnit: 0,
-  paymentMethodRatioYear: 0, // 交费方式计费系数年	
+  paymentMethodRatioYear: 1, // 交费方式计费系数年	
   paymentMethodRatioHalfYear: 0, // 交费方式计费系数半年	
   paymentMethodRatioQuarter: 0, // 交费方式计费系数季度	
   paymentMethodRatioMonth: 0, // 交费方式计费系数月	
