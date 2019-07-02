@@ -30,7 +30,7 @@
       </template>
       
       <template slot-scope="{ row }" slot="saleProductNum">
-        <div class="a" @click="goPage('productList', {id: row.id})">
+        <div class="a" @click="goPage('productList', {id: row.id, sale: 1})">
           {{row.saleProductNum}}
         </div>
       </template>

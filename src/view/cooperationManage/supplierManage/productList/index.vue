@@ -6,6 +6,7 @@
       <FormItem label="在售状态:">
         <Select v-model="query.sale" clearable>
             <Option v-for="(value, key) in saleState" :value="key" :key="key">{{ value }}</Option>
+            <Option value="" key="6">全部</Option>
         </Select>
       </FormItem>
       <FormItem label="产品类型:">
@@ -150,6 +151,9 @@ export default {
   },
   mounted() {
     this.query.supplierId = this.$route.query.id
+    this.query.sale = JSON.stringify(this.$route.query.sale) ? String(this.$route.query.sale) : ''
+
+    // console.log(typeof this.query.sale)
     this.init()
   },
   methods: {
@@ -170,6 +174,7 @@ export default {
       });
     },
     search() {
+      console.log(this.query)
       this.query.page = 1;
       this.getData()
     },
