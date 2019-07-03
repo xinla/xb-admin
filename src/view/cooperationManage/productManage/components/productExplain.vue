@@ -31,8 +31,13 @@
           <Input
             v-model="item.scheduleName"
             placeholder="请输入标题"
-            style="width:73%; margin-right: 10px;"
+            style="width:60%; margin-right: 10px;"
           />
+          <Button
+                v-if="index > 0"
+                type="error"
+                @click="remove('insurableInterest', index)"
+              >删除该计划</Button>
         </Col>
         <Col span="16">
           <Row v-for="(unit, unique) of item.content" :Key="unique + 'x'">
@@ -47,13 +52,18 @@
               <Input
                 v-model="unit.algorithm"
                 placeholder="请输入内容"
-                style="width:73%; margin-right: 10px;"
+                style="width:50%; margin-right: 10px;"
               />
               <Button
                 v-if="unique === item.content.length - 1"
                 type="info"
-                @click="item.content.push({})"
+                @click="addItem(item.content)"
               >添加</Button>
+              <Button
+                v-if="unique > 0"
+                type="error"
+                @click="remove2(item.content, unique)"
+              >删除</Button>
             </Col>
           </Row>
         </Col>
@@ -69,6 +79,11 @@
       <Row v-for="(item, index) of form.coverage" :Key="index">
         <Col span="6">
           <Input v-model="item.title" placeholder="请输入标题" style="width:73%; margin-right: 10px;"/>
+          <Button
+                v-if="index > 0"
+                type="error"
+                @click="remove('coverage', index)"
+              >删除</Button>
         </Col>
         <Col span="18">
           <Input
@@ -321,12 +336,15 @@ export default {
     },
     addRow(type) {
       // console.log(1)
-      if (type === "insurableInterest") {
+
+      if (type === "insurableInterest" && this.form[type][this.form[type].length - 1].scheduleName) {
         this.form[type].push({
           content: [{}]
         });
-      } else {
+      } else if (type === 'coverage' && this.form[type][this.form[type].length - 1].title) {
         this.form[type].push({});
+      } else {
+        this.$Message.error('上一条信息请填写完整，再添加下一条')
       }
     },
     uploadAppBanner(response, file, fileList) {
@@ -391,6 +409,19 @@ export default {
           this.form[type].splice(index, 1);
         }
       });
+    },
+    addItem(data) {
+      if (data[data.length - 1].title) data.push({})
+      else this.$Message.error('上一条信息请填写完整，再添加下一条')
+    },
+    remove2(data, index) {
+      this.$Modal.confirm({
+        title: "提示",
+        content: "确定删除吗?",
+        onOk: () => {
+          data.splice(index, 1);
+        }
+      });
     }
   }
 };
@@ -435,6 +466,9 @@ export default {
   justify-content: center;
   background: rgba(62, 62, 62, 0.77);
   color: #eee;
+}
+.ivu-btn{
+  margin-right: 5px;
 }
 </style>
 
