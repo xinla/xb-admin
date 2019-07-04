@@ -730,6 +730,25 @@ export default [
         component: () => import('@/view/systemSet/version/create.vue')
       },
       {
+        path: 'sensitive',
+        name: 'sensitive',
+        meta: {
+          icon: '_version',
+          title: '敏感词'
+        },
+        component: () => import('@/view/systemSet/sensitive')
+      },
+      {
+        path: 'createSensitive',
+        name: 'createSensitive',
+        meta: {
+          icon: 'md-funnel',
+          hideInMenu: true,
+          title: '新建敏感词'
+        },
+        component: () => import('@/view/systemSet/sensitive/create.vue')
+      },
+      {
         path: 'feedback',
         name: 'feedback',
         meta: {

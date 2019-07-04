@@ -60,6 +60,7 @@ config.services = {
   insurance: '/insurance',
   proposal: '/vitProposal',
   version: '/version',
+  sensitive: '/v1/sensitive',
   role: '/role',
 
   upload: config.domain + '/upload',
