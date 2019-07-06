@@ -10,10 +10,15 @@ const addErrorLog = errorInfo => {
   //   url: responseURL
   // }
   // if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
-  Message.error({
-    content: `错误: 路径: ${responseURL}, 返回值 : ${responseText}`,
-    duration: 3
-  })
+  process.env.NODE_ENV === 'development'
+    ? Message.error({
+      content: `错误: 路径: ${responseURL}, 返回值 : ${responseText}`,
+      duration: 3
+    })
+    : Message.error({
+      content: `${responseText}`,
+      duration: 3
+    })
 }
 
 class HttpRequest {

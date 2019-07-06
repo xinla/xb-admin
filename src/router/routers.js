@@ -733,7 +733,7 @@ export default [
         path: 'sensitive',
         name: 'sensitive',
         meta: {
-          icon: '_version',
+          icon: '_Sensitive',
           title: '敏感词'
         },
         component: () => import('@/view/systemSet/sensitive')

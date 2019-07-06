@@ -264,7 +264,9 @@ export default {
       this.isShow = true;
       this.form = Object.assign({}, form);
       data && (this.form = Object.assign({}, data));
+      this.form.provinceName.match(/省/g) || (this.form.provinceName += '省')
       this.form._selectDistrict = [this.form.provinceName, this.form.areaName]
+      // let reg = new RegExp(this.form.provinceName + this.form.areaName, g)
       this.form._address = this.form.companyAddress
     },
     remove(data) {
@@ -285,7 +287,7 @@ export default {
       this.form.establishTime = data;
     },
     submit(item) {
-      console.log(item);
+      // console.log(item);
       this.form.companyAddress = this.form.provinceName + this.form.areaName + this.form._address
       this.$refs.form
         .validate()

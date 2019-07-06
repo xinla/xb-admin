@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 /dist
+/vit-admin
 
 /tests/e2e/videos/
 /tests/e2e/screenshots/
@@ -24,3 +25,4 @@ yarn-error.log*
 *.sw*
 
 build/env.js
+vit-admin/css/chunk-0be2.7000abe2.css

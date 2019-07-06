@@ -14,7 +14,7 @@
               placeholder="格式如: http(https)://www.xbkj.com"
             />
           </FormItem>
-          <FormItem label="推送时间" prop="noticedAt">
+          <!-- <FormItem label="推送时间" prop="noticedAt">
             <DatePicker
               :value="form.noticedAt"
               type="datetime"
@@ -23,7 +23,7 @@
               style="width: 200px"
               @on-change="change"
             ></DatePicker>
-          </FormItem>
+          </FormItem> -->
         </Col>
         <Col span="8">
           <FormItem label="通知封面" prop="coverUrl">
@@ -130,10 +130,10 @@ export default {
           title: "跳转链接",
           key: "linkUrl"
         },
-        {
-          title: "推送时间",
-          key: "noticedAt"
-        },
+        // {
+        //   title: "推送时间",
+        //   key: "noticedAt"
+        // },
         {
           title: "操作",
           slot: "action",
@@ -218,10 +218,10 @@ export default {
         this.$Message.success("推送成功");
       });
     },
-    change(data) {
-      // console.log(data)
-      this.form.noticedAt = data;
-    },
+    // change(data) {
+    //   // console.log(data)
+    //   this.form.noticedAt = data;
+    // },
     uploadSuccess(response, file, fileList) {
       this.form.coverUrl = response.result.fileUrl;
     }

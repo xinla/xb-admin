@@ -16,7 +16,7 @@
           </FormItem>
 
           <FormItem label="品牌简称" prop="nameForShort">
-            <Input type="text" :disabled="disabled" v-model="form.nameForShort" placeholder="品牌简称"/>
+            <Input type="text" :disabled="disabled" v-model="form.nameForShort" placeholder="品牌简称" />
           </FormItem>
 
           <FormItem label="品牌成立日期" prop="foundingTime">
@@ -48,7 +48,7 @@
               accept="image/*"
               :on-success="upFile"
             >
-              <img class="logo" v-if="form.logo" :src="form.logo">
+              <img class="logo" v-if="form.logo" :src="form.logo" />
               <div v-else class="upload-icon cp">+</div>
             </Upload>
           </FormItem>
@@ -69,7 +69,7 @@
           </FormItem>
         </Col>
       </Row>
-      <Divider/>
+      <Divider />
 
       <div class="title-row">联系方式</div>
       <Row>
@@ -84,7 +84,7 @@
           </FormItem>
 
           <FormItem label="联系电话" prop="contactPhone">
-            <Input type="text" :disabled="disabled" v-model="form.contactPhone" placeholder="联系电话"/>
+            <Input type="text" :disabled="disabled" v-model="form.contactPhone" placeholder="联系电话" />
           </FormItem>
         </Col>
         <Col span="10">
@@ -109,13 +109,13 @@
       </Row>
 
       <div class="title-row">公司简介</div>
-      <editor ref="editor" :value="form.underwritingRulesText" @on-change="handleChange"/>
-      <Divider/>
+      <editor ref="editor" :value="form.supplierDescription" @on-change="handleChange" />
+      <Divider />
 
       <div class="title-row">分公司</div>
       <Table border :columns="columns" :data="form.xbSupplierOrganization">
         <template slot-scope="{ row, index }" slot="action">
-          <Icon type="ios-close-circle-outline" @click="remove(index)"/>
+          <Icon type="ios-close-circle-outline" @click="remove(index)" />
         </template>
       </Table>
 

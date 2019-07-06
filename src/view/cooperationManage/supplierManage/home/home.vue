@@ -7,38 +7,28 @@
         <Button type="info" @click="goPage('createSupplier')">新建品牌</Button>
       </Col>
       <Col span="8">
-        <Input v-model="query.name" placeholder="搜索公司" style="width:73%; margin-right: 10px;"/>
+        <Input v-model="query.name" placeholder="搜索公司" style="width:73%; margin-right: 10px;" />
         <Button type="info" @click="search()">搜索</Button>
       </Col>
     </Row>
 
     <Table border :loading="loading" :columns="columns" :data="list">
-      <template slot-scope="{ row }" slot="typeRule">
-        {{row.typeRule | typeRule}}
-      </template>
+      <template slot-scope="{ row }" slot="typeRule">{{row.typeRule | typeRule}}</template>
 
       <template slot-scope="{ row }" slot="name">
-        <div class="a" @click="goPage('businessInfo', {id: row.id, readOnly: true})">
-          {{row.name}}
-        </div>
+        <div class="a" @click="goPage('businessInfo', {id: row.id, readOnly: true})">{{row.name}}</div>
       </template>
-      
+
       <template slot-scope="{ row }" slot="productNum">
-        <div class="a" @click="goPage('productList', {id: row.id})">
-          {{row.productNum}}
-        </div>
+        <div class="a" @click="goPage('productList', {id: row.id})">{{row.productNum}}</div>
       </template>
-      
+
       <template slot-scope="{ row }" slot="saleProductNum">
-        <div class="a" @click="goPage('productList', {id: row.id, sale: 1})">
-          {{row.saleProductNum}}
-        </div>
+        <div class="a" @click="goPage('productList', {id: row.id, sale: 1})">{{row.saleProductNum}}</div>
       </template>
 
       <template slot-scope="{ row }" slot="cooperationCompanyNum">
-        <div class="a" @click="showCooperationCompany(row.id)">
-          {{row.cooperationCompanyNum}}
-        </div>
+        <div class="a" @click="showCooperationCompany(row.id)">{{row.cooperationCompanyNum}}</div>
       </template>
 
       <template slot-scope="{ row }" slot="action">
@@ -47,16 +37,8 @@
           size="small"
           @click="goPage('businessInfo', {id: row.id, readOnly: true})"
         >详情</Button>
-        <Button
-          type="primary"
-          size="small"
-          @click="goPage('createSupplier', {id: row.id})"
-        >编辑</Button>
-        <Button
-          type="error"
-          size="small"
-          @click="remove(row)"
-        >删除</Button>
+        <Button type="primary" size="small" @click="goPage('createSupplier', {id: row.id})">编辑</Button>
+        <Button type="error" size="small" @click="remove(row)">删除</Button>
       </template>
     </Table>
 
@@ -68,62 +50,61 @@
       @on-change="getData"
     />
 
-
     <dialogBox v-model="cooperationCompanShow">
       <template slot="title">合作企业</template>
       <template>
-      <Table border :columns="cooperationCompanyColumns" :data="cooperationCompanyList">
-        <template slot-scope="{ row }" slot="name">
-          <div class="a" @click="goPage('companyDetail', {id: row.id})">
-            {{row.name}}
-          </div>
-        </template>
-      </Table>
+        <Table border :columns="cooperationCompanyColumns" :data="cooperationCompanyList">
+          <template slot-scope="{ row }" slot="name">
+            <div class="a" @click="goPage('companyDetail', {id: row.id})">{{row.name}}</div>
+          </template>
+        </Table>
 
-      <Page
-        :total="cooperationCompanyTotal"
-        show-elevator
-        show-total
-        style="text-align:center;margin-top:20px;"
-        @on-change="getDataCooperationCompany"
-      />
+        <Page
+          :total="cooperationCompanyTotal"
+          show-elevator
+          show-total
+          style="text-align:center;margin-top:20px;"
+          @on-change="getDataCooperationCompany"
+        />
       </template>
     </dialogBox>
-
   </div>
-
 </template>
 
 <script>
-import { getSupplierPage, getCooperationCompanyPage, deleteSupplier } from "@/api/supplier";
+import {
+  getSupplierPage,
+  getCooperationCompanyPage,
+  deleteSupplier
+} from "@/api/supplier";
 import dialogBox from "@/components/dialogBox";
 
 const typeRule = [
   {
     value: 0,
-    label: '寿险'
+    label: "寿险"
   },
   {
     value: 1,
-    label: '财险'
+    label: "财险"
   }
-]
+];
 const distributionChannel = {
-  0: '经代',
-  1:' 互联网',
-  2: '个险',
-  3: '银保'
-}
+  0: "经代",
+  1: " 互联网",
+  2: "个险",
+  3: "银保"
+};
 
 export default {
   name: "home",
   components: { dialogBox },
   filters: {
     typeRule(val) {
-      return typeRule[val].label
+      return typeRule[val].label;
     },
     distributionChannel(val) {
-      return distributionChannel[val]
+      return distributionChannel[val];
     }
   },
   data() {
@@ -139,6 +120,7 @@ export default {
         {
           title: "序号",
           type: "index",
+          maxWidth: 80,
           align: "center"
         },
         {
@@ -200,7 +182,7 @@ export default {
       cooperationCompanyQuery: {
         page: 1,
         size: 10,
-        supplierId: ''
+        supplierId: ""
       },
       cooperationCompanyColumns: [
         {
@@ -226,7 +208,7 @@ export default {
     };
   },
   mounted() {
-    this.getData()
+    this.getData();
   },
   methods: {
     getData(page) {
@@ -242,24 +224,24 @@ export default {
     getDataCooperationCompany(page) {
       page && (this.cooperationCompanyQuery.page = page);
       getCooperationCompanyPage(this.cooperationCompanyQuery).then(data => {
-        console.log('CooperationCompany:', data);
+        console.log("CooperationCompany:", data);
         this.cooperationCompanyList = data.list;
         this.cooperationCompanyTotal = data.total;
       });
     },
     showCooperationCompany(id) {
-      this.cooperationCompanyQuery.page = 1
-      this.cooperationCompanyQuery.supplierId = id
-      this.cooperationCompanShow = true
-      this.getDataCooperationCompany()
+      this.cooperationCompanyQuery.page = 1;
+      this.cooperationCompanyQuery.supplierId = id;
+      this.cooperationCompanShow = true;
+      this.getDataCooperationCompany();
     },
     close() {
-      this.cooperationCompanShow = false
+      this.cooperationCompanShow = false;
     },
     search() {
       this.query.page = 1;
       this.query.size = 10;
-      this.getData()
+      this.getData();
     },
     goPage(name, query) {
       this.$router.push({ name, query });
@@ -277,7 +259,7 @@ export default {
               this.$Message.success("操作成功");
             });
           }
-        })
+        });
       }
     }
   }
@@ -289,10 +271,10 @@ export default {
   padding: 0px 0px 20px 10px;
   font-size: 20px;
 }
-.ivu-btn-small{
+.ivu-btn-small {
   margin-right: 5px;
 }
-/deep/.dialog{
+/deep/.dialog {
   width: 60%;
 }
 </style>

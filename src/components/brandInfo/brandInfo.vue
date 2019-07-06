@@ -12,35 +12,35 @@
         <tr>
           <th>公司名称</th>
           <td>
-            <Input type="text" :disabled="disabled" v-model="form.xbCompany.name"/>
+            <Input type="text" :disabled="disabled" v-model="form.xbCompany.name" />
           </td>
           <th>公司简称</th>
           <td>
-            <Input type="text" :disabled="disabled" v-model="form.xbCompany.companyForShort"/>
+            <Input type="text" :disabled="disabled" v-model="form.xbCompany.companyForShort" />
           </td>
           <th>公司类型</th>
           <td>
-            <Input type="text" :disabled="disabled" v-model="form.xbCompany.comapnyType"/>
+            <Input type="text" :disabled="disabled" v-model="form.xbCompany.comapnyType" />
           </td>
         </tr>
         <tr>
           <th>英文名称</th>
           <td>
-            <Input type="text" :disabled="disabled" v-model="form.xbCompany.englishName"/>
+            <Input type="text" :disabled="disabled" v-model="form.xbCompany.englishName" />
           </td>
           <th>英文简称</th>
           <td>
-            <Input type="text" :disabled="disabled" v-model="form.xbCompany.englishNameForShort"/>
+            <Input type="text" :disabled="disabled" v-model="form.xbCompany.englishNameForShort" />
           </td>
           <th>注册地</th>
           <td>
-            <Input type="text" :disabled="disabled" v-model="registerArea"/>
+            <Input type="text" :disabled="disabled" v-model="registerArea" />
           </td>
         </tr>
         <tr>
           <th>总部地址</th>
           <td>
-            <Input type="text" :disabled="disabled" v-model="form.xbCompany.headquartersAddress"/>
+            <Input type="text" :disabled="disabled" v-model="form.xbCompany.headquartersAddress" />
           </td>
           <th>注册日期</th>
           <td>
@@ -65,24 +65,25 @@
         </tr>
       </table>
 
-      <Divider/>
+      <Divider />
 
       <div class="title-row">公司简介</div>
-      <Input
+      <!-- <Input
         type="textarea"
         placeholder="公司介绍"
         :autosize="true"
         :disabled="disabled"
         :rows="3"
         v-model="form.xbCompany.companyContent"
-      />
+      />-->
+      <editor ref="editor" :value="form.xbCompany.companyContent" @on-change="handleChange" />
 
-      <Divider/>
+      <Divider />
 
       <div class="title-row">公司荣誉</div>
       <Table border :columns="columns" :data="form.honor">
         <template slot-scope="{ row }" slot="action">
-          <img class="logo" :src="row.url" @click="zoom(row.url)">
+          <img class="logo" :src="row.url" @click="zoom(row.url)" />
         </template>
       </Table>
       <!-- 添加公司荣誉 -->
@@ -110,7 +111,7 @@
             />
           </Col>
           <Col span="6">
-            <img class="logo" v-if="formHonor.url" :src="formHonor.url">
+            <img class="logo" v-if="formHonor.url" :src="formHonor.url" />
             <Upload
               :action="uploadUrl"
               :show-upload-list="false"
@@ -128,13 +129,13 @@
         </Form>
       </Row>
 
-      <Divider/>
+      <Divider />
 
       <div class="title-row">公司足迹</div>
       <Timeline>
         <TimelineItem v-for="(item, index) in form.bigEvents" :key="index">
-          <Input type="text" :disabled="disabled" v-model="form.bigEvents[index].time"/>
-          <Input type="text" :disabled="disabled" v-model="form.bigEvents[index].bigEvents"/>
+          <Input type="text" :disabled="disabled" v-model="form.bigEvents[index].time" />
+          <Input type="text" :disabled="disabled" v-model="form.bigEvents[index].bigEvents" />
         </TimelineItem>
       </Timeline>
 
@@ -155,7 +156,7 @@
     </Form>
 
     <div v-if="zoomUrl" class="mask" @click="zoomUrl = undefined">
-      <img class="zoom cc" :src="zoomUrl">
+      <img class="zoom cc" :src="zoomUrl" />
     </div>
   </div>
 </template>
@@ -165,9 +166,13 @@ import { getLesseeBrandInfoById, updateLessee, editLessee } from "@/api/lessee";
 import { getSupplierBrandInformation } from "@/api/supplier";
 import { getDistrict } from "@/api/common";
 import { formatDate } from "@/libs/tools";
+import Editor from "_c/editor";
 
 export default {
   name: "brandInfo",
+  components: {
+    Editor
+  },
   props: {
     id: {
       type: [Number, String],
@@ -241,11 +246,14 @@ export default {
   },
   methods: {
     init() {
+      this.$refs.editor.setHtml("");
       // console.log(1)
       if (this.type === "lessee") {
         getLesseeBrandInfoById(this.id).then(data => {
           console.log("lesseeBrandInfo:", data);
           this.form = data;
+          // 设置富文本内容
+          this.$refs.editor.setHtml(this.form.xbCompany.companyContent);
           return getDistrict(0, data.xbCompany.provinceId || 370000)
             .then(res => {
               this.registerArea += res.name;
@@ -255,6 +263,7 @@ export default {
               console.log("registerArea:", res);
               this.registerArea += res.name;
             });
+            // 若注册地无数据则默认显示山东省烟台市
           // this.company = data.xbCompany
           // this.listHonor = data.honor
           // this.listEvents = data.bigEvents
@@ -262,6 +271,8 @@ export default {
       } else if (this.type === "supplier") {
         getSupplierBrandInformation(this.id).then(data => {
           this.form = data;
+          // 设置富文本内容
+          this.$refs.editor.setHtml(this.form.xbCompany.companyContent);
           // this.company = data.xbCompany
           // this.listHonor = data.honor
           // this.listEvents = data.bigEvents
@@ -294,6 +305,11 @@ export default {
     uploadSuccess(response, file, fileList) {
       this.$set(this.formHonor, "url", response.result.fileUrl);
       // console.log(this.formHonor)
+    },
+    handleChange(html, text) {
+      // console.log(html, text);
+      this.form.xbCompany.companyContent = html;
+      // console.log(this.form.underwritingRulesText)
     }
   }
 };
