@@ -3,7 +3,7 @@
     <FormItem label="年龄限制">
       <InputNumber :min="0" :max="120" v-model="form.applicationAgeStart" placeholder="年龄限制启始"></InputNumber>周岁 至
       <InputNumber
-        :min="form.applicationAgeStart"
+        :min="0"
         :max="120"
         v-model="form.applicationAgeEnd"
         placeholder="年龄限制结束"
@@ -777,7 +777,15 @@ export default {
         " "
       );
       // console.log(this.form.specialOccupationUnderwriting)
-    }
+    },
+    // ageBlur(val) {
+    //   console.log(val)
+    //   if (this.form.applicationAgeEnd > this.form.applicationAgeStart) {
+    //     this.form.applicationAgeEnd = val
+    //   } else {
+        
+    //   }
+    // }
   }
 };
 </script>

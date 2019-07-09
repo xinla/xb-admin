@@ -83,12 +83,23 @@ export const saveFeedback = (data) => {
 }
 
 /**
- * 查询所有反馈创 
+ * 查询所有反馈
  * @param {*} param0 
  */
 export const getFeedbackPage = ({page, size}) => {
   return axios.request({
     url: service + `/feedBack/findAll/${page}/${size}`,
+    method: 'get'
+  })
+}
+
+/**
+ * 获取反馈详情
+ * @param {*} id 
+ */
+export const getFeedbackDetail = (id) => {
+  return axios.request({
+    url: service + `/feedBack/${id}`,
     method: 'get'
   })
 }

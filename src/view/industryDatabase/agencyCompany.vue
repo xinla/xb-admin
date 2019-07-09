@@ -25,6 +25,9 @@
           @click="$router.push({name: 'companyDetail', query: {id: row.id, type: 'company'}})"
         >{{row.name}}</div>
       </template>
+      <template slot-scope="{ row }" slot="area">
+        <div>{{row.provinceName ? (row.provinceName + row.areaName) : row.areaName}}</div>
+      </template>
       <template slot-scope="{ row }" slot="action">
         <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row)">编辑</Button>
         <Button type="error" size="small" style="margin-right: 5px" @click="remove(row)">删除</Button>
@@ -141,13 +144,8 @@ export default {
           minWidth: 160
         },
         {
-          title: "所在省",
-          key: "provinceName",
-          align: "center"
-        },
-        {
-          title: "所在市",
-          key: "areaName",
+          title: "所在省市",
+          slot: "area",
           align: "center"
         },
         {

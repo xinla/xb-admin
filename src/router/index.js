@@ -12,6 +12,12 @@ const router = new Router({
   routes,
   // mode: 'history'
 })
+
+Router.prototype.go = function () {
+  this.isBack = true;
+  window.history.go(-1);
+}
+
 const LOGIN_PAGE_NAME = 'login'
 
 const turnTo = (to, access, next) => {

@@ -62,7 +62,7 @@ export default [
       hideInMenu: false,
       notCache: true
     },
-    children:[
+    children: [
       {
         path: 'lessee',
         name: 'lessee',
@@ -368,6 +368,7 @@ export default [
           title: '即时通讯'
         },
         component: () => import('@/view/applicationManage/systemMessage.vue'),
+        // redirect: '/applicationManage/systemMessage',
         children: [
           {
             path: 'systemMessage',
@@ -690,7 +691,7 @@ export default [
           title: '系统设置（待定）'
         },
         component: () => import('@/view/systemSet/systemSet.vue')
-      },     
+      },
       {
         path: 'help',
         name: 'help',
@@ -750,12 +751,35 @@ export default [
       },
       {
         path: 'feedback',
-        name: 'feedback',
+        name: '_feedback',
         meta: {
           icon: '_feedback',
           title: '问题反馈'
         },
-        component: () => import('@/view/systemSet/feedback.vue')
+        component: () => import('@/view/systemSet/feedback/index.vue'),
+        redirect: '/systemSet/feedback/home',
+        children: [
+          {
+            path: 'home',
+            name: 'feedback',
+            meta: {
+              icon: '_feedback',
+              hideInMenu: true,
+              title: '问题反馈'
+            },
+            component: () => import('@/view/systemSet/feedback/home.vue'),
+          },
+          {
+            path: 'detail',
+            name: 'feedbackDetail',
+            meta: {
+              icon: '_feedback',
+              hideInMenu: true,
+              title: '反馈详情'
+            },
+            component: () => import('@/view/systemSet/feedback/detail'),
+          }
+        ]
       },
       {
         path: 'service',

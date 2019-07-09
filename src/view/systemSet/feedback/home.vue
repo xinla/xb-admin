@@ -5,6 +5,9 @@
       <template slot-scope="{ row }" slot="imgUrl">
         <img class="img" v-for="(item, index) in (row.imgUrl ? row.imgUrl.split(',') : [])" :src="item" :key="index">
       </template>
+      <template slot-scope="{ row }" slot="action">
+        <Button type="primary" size="small" style="margin-right: 5px" @click="goDetail(row.id)">详情</Button>
+      </template>
     </Table>
 
     <Page :total="total" show-elevator show-total style="text-align:center;margin-top:20px;" @on-change="getData"/>
@@ -83,6 +86,12 @@ export default {
           title: "时间",
           key: "createTime",
           align: "center"
+        },
+        {
+          title: "操作",
+          slot: "action",
+          minWidth: 30,
+          align: "center"
         }
       ],
       list: [],
@@ -97,11 +106,14 @@ export default {
       page && (this.query.page = page)
       this.loading = true;
       getFeedbackPage(this.query).then(res => {
-        console.log("FeedbackPage: ", res);
+        // console.log("FeedbackPage: ", res);
         this.loading = false;
         this.list = res.list;
         this.total = res.total
       });
+    },
+    goDetail(id) {
+      this.$router.push({name: 'feedbackDetail', query: {id}})
     }
   }
 };
@@ -110,5 +122,6 @@ export default {
 .img{
   width: 70px;
   height: 70px;
+  margin: 2px 5px 2px 0;
 }
 </style>
