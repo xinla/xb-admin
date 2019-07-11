@@ -87,7 +87,7 @@
         </Row>
       </Col>
       <Col span="1" class="fr">
-        <Button type="error" size="small" @click="deleteRow(index)">删除</Button>
+        <Button type="error" size="small" @click="deleteRow(index, item)">删除</Button>
        </Col>
       <Divider/>
     </Row>
@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import { getProductRiderByProductId, addProductRider, updateProductRider } from '@/api/product/rider'
+import { getProductRiderByProductId, addProductRider, updateProductRider, deleteProductRider } from '@/api/product/rider'
 import { getProductPageByType } from '@/api/product'
 
 const defaultForm = {
@@ -148,7 +148,7 @@ export default {
     getData() {
       this.$route.query.id &&
         getProductRiderByProductId(this.$route.query.id).then(data => {
-          // console.log('additionRisk', data);
+          console.log('additionRisk', data);
           for (const iterator of data) {
             iterator.child || (iterator.child = {})
           }
@@ -230,13 +230,15 @@ export default {
       // this.$refs.select.focus()
       // this.selectRisk.productFullName = ''
     },
-    deleteRow(index) {
+    deleteRow(index, item) {
       this.$Modal.confirm({
           title: '提示',
           content: '确定要删除么',
           onOk: () => {
+            deleteProductRider(item.id).then(() => {
             this.form.splice(index, 1)
             this.$Message.info('删除成功');
+            })
           },
       })
     }

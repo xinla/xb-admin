@@ -216,9 +216,9 @@
           <Icon type="ios-arrow-down"></Icon>
         </Button>
         <DropdownMenu slot="list">
-          <DropdownItem name="policyPeriodYear">年数</DropdownItem>
-          <DropdownItem name="policyPeriodAge">年龄</DropdownItem>
-          <DropdownItem name="allLife">终身</DropdownItem>
+          <DropdownItem name="policyPeriodYear">年满型</DropdownItem>
+          <DropdownItem name="policyPeriodAge">岁满型</DropdownItem>
+          <!-- <DropdownItem name="allLife">终身</DropdownItem> -->
         </DropdownMenu>
       </Dropdown>
       <div>
@@ -227,8 +227,6 @@
           <Checkbox v-for="(item, index) of form.policyPeriodYear" :label="index" :key="index">
             <Input
               class="inline-input"
-              type="number"
-              :number="true"
               v-model.trim="form.policyPeriodYear[index].ruleIntervalValue"
               placeholder="年数"
               @on-blur="handleBlur('policyPeriodYear', index)"
@@ -243,8 +241,6 @@
               至
               <Input
                 class="inline-input"
-                type="number"
-                :number="true"
                 v-model.trim="form.policyPeriodAge[index].ruleIntervalValue"
                 placeholder="年龄"
                 @on-blur="handleBlur('policyPeriodAge', index)"
@@ -271,8 +267,8 @@
           <Icon type="ios-arrow-down"></Icon>
         </Button>
         <DropdownMenu slot="list">
-          <DropdownItem name="paymentPeriodYear">年数</DropdownItem>
-          <DropdownItem name="paymentPeriodAge">年龄</DropdownItem>
+          <DropdownItem name="paymentPeriodYear">年满型</DropdownItem>
+          <DropdownItem name="paymentPeriodAge">岁满型</DropdownItem>
         </DropdownMenu>
       </Dropdown>
       <div>
@@ -281,8 +277,6 @@
           <Checkbox v-for="(item, index) of form.paymentPeriodYear" :label="index" :key="index">
             <Input
               class="inline-input"
-              type="number"
-              :number="true"
               v-model.trim="form.paymentPeriodYear[index].ruleIntervalValue"
               placeholder="年数"
               @on-blur="handleBlur('paymentPeriodYear', index)"
@@ -296,8 +290,6 @@
             至
             <Input
               class="inline-input"
-              type="number"
-              :number="true"
               v-model.trim="form.paymentPeriodAge[index].ruleIntervalValue"
               placeholder="年龄"
               @on-blur="handleBlur('paymentPeriodAge', index)"
@@ -627,22 +619,22 @@ export default {
     },
     addRow(type) {
       // debugger
-      if (type === 'allLife') {
-        for (const iterator of this.form.policyPeriodAge) {
-          if (iterator.ruleIntervalValue == -1) {
-            this.$Message.error('选项已存在');
-            return
-          }
-        }
-        this.policyPeriodAge.push(this.form.policyPeriodAge.length)
-        this.form.policyPeriodAge.push({
-          productId: "",
-          ruleIntervalType: 6,
-          ruleIntervalName: "终身",
-          ruleIntervalValue: -1
-        })
-        return
-      }
+      // if (type === 'allLife') {
+      //   for (const iterator of this.form.policyPeriodAge) {
+      //     if (iterator.ruleIntervalValue == -1) {
+      //       this.$Message.error('选项已存在');
+      //       return
+      //     }
+      //   }
+      //   this.policyPeriodAge.push(this.form.policyPeriodAge.length)
+      //   this.form.policyPeriodAge.push({
+      //     productId: "",
+      //     ruleIntervalType: 6,
+      //     ruleIntervalName: "终身",
+      //     ruleIntervalValue: -1
+      //   })
+      //   return
+      // }
 
       let len = this.form[type].length;
       if (!len || Object.keys(this.form[type][len - 1]).length) {

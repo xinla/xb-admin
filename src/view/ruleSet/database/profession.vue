@@ -132,7 +132,7 @@ export default {
       page && (this.query.page = page);
       // this.loading = true;
       getProfessionPage(this.query).then(res => {
-        // console.log("ProfessionPage: ", res);
+        console.log("ProfessionPage: ", res);
         this.loading = false;
         this.total = res.total;
         this.list = res.list;

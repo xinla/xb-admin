@@ -13,14 +13,23 @@ const config = {
    * @description api请求基础路径
    */
   baseUrl: {
-    dev: 'http://192.168.1.64', // 虚拟机 liusiyuan
-    // dev: 'http://192.168.1.32', // 本地
+    // dev: 'http://192.168.1.64', // 虚拟机 liusiyuan
+    dev: 'http://192.168.1.32', // 本地
     dev1: 'http://192.168.1.150:8888', // caikefu
     // pro: 'http://112.31.212.46:8118', // line
     pro: 'http://47.98.153.101:8118', // ali line
     // pro1: 'http://112.31.212.46:8888' // caikefu
     pro1: 'https://gateway.visualinsur.cn:8888' // ali caikefu
   },
+  // baseUrl: {
+  //   // dev: 'http://192.168.1.64', // 虚拟机 liusiyuan
+  //   dev: 'http://47.98.153.101:8118', // 本地
+  //   dev1: 'https://gateway.visualinsur.cn:8888', // caikefu
+  //   // pro: 'http://112.31.212.46:8118', // line
+  //   pro: 'http://47.98.153.101:8118', // ali line
+  //   // pro1: 'http://112.31.212.46:8888' // caikefu
+  //   pro1: 'https://gateway.visualinsur.cn:8888' // ali caikefu
+  // },
   /**
    * @description 默认打开的首页的路由name值，默认为home
    */

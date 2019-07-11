@@ -390,7 +390,7 @@ export default {
           data.onlineAddress = JSON.parse(data.onlineAddress);
           for (const iterator of data.onlineAddress) {
             // this.onlineType[iterator.code] = iterator.code
-            this.onlineType.splice(0, iterator.code, iterator.code);
+            this.onlineType.includes(iterator.code) || this.onlineType.splice(iterator.code, 0, iterator.code);
             this.onlineLinkAddress[iterator.code] = iterator.linkAddress;
           }
           // this.form = data 在此赋值，会导致下面的name  无法响应，带后续研究

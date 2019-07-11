@@ -23,7 +23,7 @@
             <DatePicker
               :disabled="disabled"
               type="date"
-              format="yyyy-MM-dd HH:mm:ss"
+              format="yyyy-MM-dd"
               placeholder="选择时间"
               style="width: 100%;"
               :value="form.foundingTime"
@@ -42,7 +42,7 @@
         <Col span="8">
           <FormItem label="品牌Logo" prop="logo">
             <Upload
-              :action="$config.baseUrl.dev + '/upload'"
+              :action="$config.services.upload"
               :show-upload-list="false"
               :format="['jpg','jpeg','png']"
               accept="image/*"
@@ -274,14 +274,14 @@ export default {
       ]
     };
   },
-  mounted() {
-    this.$route.query.id && (this.form.id = this.$route.query.id);
-    this.init();
-  },
   computed: {
     disabled() {
       return Boolean(this.$route.query.readOnly);
     }
+  },
+  mounted() {
+    this.$route.query.id && (this.form.id = this.$route.query.id);
+    this.init();
   },
   methods: {
     init() {
@@ -366,8 +366,9 @@ export default {
       });
     },
     changeTime(data) {
-      // console.log(data)
-      this.form.foundingTime = data;
+      this.form.foundingTime = data + ' 00:00:00';
+      // this.form.foundingTime += ' 00:00:00'
+      // console.log(this.form.foundingTime)
     }
   }
 };

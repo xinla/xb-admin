@@ -16,7 +16,7 @@ const addErrorLog = errorInfo => {
       duration: 3
     })
     : Message.error({
-      content: `${responseText}`,
+      content: `${JSON.parse(responseText).message}`,
       duration: 3
     })
 }

@@ -49,3 +49,9 @@ export const updateProductRider = (data) => {
   })
 }
 
+export const deleteProductRider = (data) => {
+  return axios.request({
+    url: service + `/delete/${data}`,
+    method: 'post'
+  })
+}

@@ -216,6 +216,10 @@ export default {
     }
   },
   mounted() {
+    // deleteProduct('2297837298202443782', this.$store.state.user.userId).then(res => {
+    //           this.getData();
+    //           this.$Message.success("操作成功");
+    //         });
     this.init()
   },
   methods: {
@@ -237,7 +241,7 @@ export default {
       this.loading = true;
       pageNum && (this.query.pageNum = pageNum);
       getProductPage(this.query).then(data => {
-        // console.log(data)
+        console.log(data)
         this.loading = false
         this.list = data.list
         this.total = data.total
