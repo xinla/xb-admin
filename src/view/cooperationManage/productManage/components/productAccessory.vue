@@ -5,7 +5,7 @@
     </div>
     <a v-if="form.applicationRules" :href="form.applicationRules">{{form.applicationRulesName}}</a>
     <!-- <FormItem prop="applicationRules"> -->
-    <Upload :action="uploadUrl" :show-upload-list="false" :on-success="uploadRule">
+    <Upload :action="uploadUrl" :show-upload-list="false" :on-success="uploadRule" :data='{image: true}'>
       <Button icon="ios-cloud-upload-outline">上传</Button>
     </Upload>
     <!-- </FormItem> -->
@@ -87,6 +87,7 @@ export default {
       productId: "", //
       applicationRules: "", // 投保规则上传的OSS地址
       applicationRulesName: "", // 投保规则上传的文件名
+      applicationRulesImages: '', // 投保规则上传的pdf转图片oss地址
       policyWording: "", // 产品条款上传的oss地址
       policyWordingName: "",
       policyWordingImages: "", // 产品条款上传的pdf转图片oss地址
@@ -149,6 +150,7 @@ export default {
     uploadRule(response, file, fileList) {
       this.form.applicationRules = response.result.fileUrl;
       this.form.applicationRulesName = response.result.newName;
+      this.form.applicationRulesImages = response.result.imageUrl
       // console.log(response, file, fileList);
     },
     uploadWording(response, file, fileList) {
