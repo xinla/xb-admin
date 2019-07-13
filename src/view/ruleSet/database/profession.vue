@@ -34,7 +34,7 @@
       :selectable="true"
       children-prop="children"
       select-type="radio"
-      :is-fold="false"
+      :is-fold="true"
       empty-text="Loading..."
       :data="list"
     >
@@ -135,7 +135,7 @@ export default {
         console.log("ProfessionPage: ", res);
         this.loading = false;
         this.total = res.total;
-        this.list = res.list;
+        this.list = res.children;
       });
     },
     download() {
