@@ -133,7 +133,7 @@ export default {
       this.list2 = [];
       if (row.level === "district") {
         this.$Spin.show();
-        getDistrict(1, row.name).then(res => {
+        getDistrict(1, row.adcode).then(res => {
           this.dialogShow = true;
           // row.districts = data;
           this.$Spin.hide();
