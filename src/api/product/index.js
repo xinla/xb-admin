@@ -84,10 +84,11 @@ export const saleProduct = (id, status) => {
  * 
  * @param {*} id 产品id
  * @param {*} status 0 撤回 1  发布
+ * @param {*} userId 0 用户id
  */
-export const publishProduct = (id, status) => {
+export const publishProduct = (id, status, userId) => {
   return axios.request({
-    url: service + `/publish/${id}/${status}`,
+    url: service + `/publish/${id}/${status}/${userId}`,
     method: 'post'
   })
 }

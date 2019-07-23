@@ -263,7 +263,7 @@ export default {
     },
     publish(data) {
       let status = data.isPublish === 1 ? 0 : 1
-      publishProduct(data.productId, status).then(res => {
+      publishProduct(data.productId, status, this.$store.state.user.userId).then(res => {
         this.$Message.info("执行成功");
         this.getData()
       })

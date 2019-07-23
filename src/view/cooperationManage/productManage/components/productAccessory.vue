@@ -150,7 +150,7 @@ export default {
     uploadRule(response, file, fileList) {
       this.form.applicationRules = response.result.fileUrl;
       this.form.applicationRulesName = response.result.newName;
-      this.form.applicationRulesImages = response.result.imageUrl
+      this.form.applicationRulesImages = response.result.imageUrl || response.result.fileUrl
       // console.log(response, file, fileList);
     },
     uploadWording(response, file, fileList) {
