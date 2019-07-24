@@ -56,7 +56,7 @@
       show-elevator
       show-total
       style="text-align:center;margin-top:20px;"
-      @on-change="getData"
+      @on-change="getPage"
     />
   </div>
 </template>
@@ -119,6 +119,7 @@ export default {
         }
       ],
       list: [],
+      listAll: [],
       total: 0
     };
   },
@@ -134,8 +135,9 @@ export default {
       getProfessionPage(this.query).then(res => {
         console.log("ProfessionPage: ", res);
         this.loading = false;
-        this.total = res.total;
-        this.list = res.children;
+        this.total = res.children.length;
+        this.listAll = res.children;
+        this.list = res.children.slice(0, 9)
       });
     },
     download() {
@@ -168,6 +170,12 @@ export default {
       updateProfession(data).then(res => {
         this.$Message.success("设置成功");
       });
+    },
+    getPage(page) {
+      let start = (page - 1) * 10
+      let end = start + 9
+      console.log(typeof page)
+      this.list = this.listAll.slice(start, end)
     }
   }
 };
