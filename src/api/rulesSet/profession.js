@@ -4,6 +4,7 @@ import config from '@/config'
 const service = config.services.profession
 
 /**
+ * (未用)
  * 职业代码表->上传
  * @param {*} file 文件
  * @param {*} supplierId 供应商id 
@@ -21,11 +22,12 @@ export const importProfessionTable = ({file, supplierId}) => {
 /**
  * 查询所有职业代码
  */
-export const getProfessionPage = ({id, page, size}) => {
+export const getProfessionPage = ({supplierId, params, page, size}) => {
   return axios.request({
     url: service + `/findAll/${page}/${size}`,
     params: {
-      id
+      supplierId,
+      params
     },
     method: 'get'
   })
@@ -42,5 +44,10 @@ export const updateProfession = (data) => {
   })
 }
 
-
-
+export const getProfessionBy = (params) => {
+  return axios.request({
+    url: service + `/findByParams`,
+    method: 'get',
+    params
+  })
+}

@@ -15,7 +15,20 @@
           <Input type="text" v-model="form.versionNum" placeholder="版本号"></Input>
         </FormItem>
         <FormItem prop="download" label="下载地址">
-          <Input type="text" v-model="form.download" placeholder="格式如: http(https)://www.xbkj.com"></Input>
+          <!-- <Input type="text" v-model="form.download" placeholder="格式如: http(https)://www.xbkj.com"></Input> -->
+          <span class="cp" v-if="form.download">{{form.download}}</span>
+          <Upload
+            :action="$config.services.upload"
+            :format="['apk']"
+            :show-upload-list="false"
+            :before-upload="beforeUpload"
+            :on-success="uploadSuccess"
+            :on-format-error="formatError"
+          >
+            <Button icon="ios-cloud-upload-outline" :loading="upLoading">
+              <span>上传</span>
+            </Button>
+          </Upload>
         </FormItem>
         <!-- <FormItem prop="classifyId" label="分类">
           <Select v-model="form.classifyId" style="width:200px">
@@ -81,7 +94,8 @@ export default {
           { validator: validateUrl, trigger: "blur" }
         ],
         versionNum: [{ required: true, message: "不能为空", trigger: "blur" }]
-      }
+      },
+      upLoading: false
     };
   },
   mounted() {
@@ -121,6 +135,27 @@ export default {
       // console.log(html, text);
       this.form.content = html;
       // console.log(this.form.underwritingRulesText)
+    },
+    beforeUpload() {
+      // if (!this.form.supplierId) {
+      //   this.$Message.error("请选择品牌后再上传");
+      //   return false;
+      // }
+      this.upLoading = true;
+    },
+    uploadSuccess(response, file, fileList) {
+      // console.log(response, file, fileList);
+      if (response.code === 0) {
+        this.form.download = response.result.fileUrl;
+        this.upLoading = false;
+        this.$Message.success("上传成功");
+      } else {
+        this.$Message.error("上传失败");
+      }
+    },
+    formatError() {
+      this.upLoading = false;
+      this.$Message.error("文件格式错误，仅限apk格式的文件");
     }
   }
 };
