@@ -123,7 +123,7 @@
         <Col span="6">
           <Input
             :disabled="disabled"
-            v-model="formChild.organizationDesc"
+            v-model="formChild.name"
             placeholder="请输入名称"
             style="width:73%; margin-right: 10px;"
           />
@@ -180,9 +180,10 @@ const defaultForm = {
   xbSupplierOrganization: []
 };
 const defaultFormChild = {
-  organizationDesc: "",
+  name: "",
   organizationAddress: "",
-  organizationPhone: ""
+  organizationPhone: "",
+  type: 2
 };
 export default {
   components: {
@@ -257,7 +258,7 @@ export default {
       columns: [
         {
           title: "名称",
-          key: "organizationDesc"
+          key: "name"
         },
         {
           title: "地址",

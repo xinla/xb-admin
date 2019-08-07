@@ -48,10 +48,10 @@
       
 
       <template slot-scope="{ row }" slot="action">
-          <Button type="primary" size="small" :disabled="row.isPublish === 1" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">编辑</Button>
+          <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">编辑</Button>
           <Button type="warning" size="small" style="margin-right: 5px" :to="'http://' + row.h5Url" target="_blank">H5</Button>
           <Button type="success" size="small" style="margin-right: 5px" @click="sale(row)">{{row.isSale === 1 ? '停售' : '在售'}}</Button>
-          <Button type="info" size="small" style="margin-right: 5px" @click="publish(row)">{{row.isPublish === 1 ? '撤回' : '发布'}}</Button>
+          <Button v-if="row.isPublish === 0" type="info" size="small" style="margin-right: 5px" @click="publish(row)">发布</Button>
           <Button type="error" size="small" style="margin-right: 5px" @click="remove(row)">删除</Button>
       </template>
     </Table>
@@ -262,8 +262,8 @@ export default {
       })
     },
     publish(data) {
-      let status = data.isPublish === 1 ? 0 : 1
-      publishProduct(data.productId, status, this.$store.state.user.userId).then(res => {
+      // let status = data.isPublish === 1 ? 0 : 1
+      publishProduct(data.productId, 1, this.$store.state.user.userId).then(res => {
         this.$Message.info("执行成功");
         this.getData()
       })

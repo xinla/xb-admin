@@ -4,7 +4,7 @@ import config from '@/config/index'
 const service = config.services.version
 
 /**
- * 获取帮助分页列表
+ * 获取版本分页列表
  * @param {*} param0 
  */
 export const getVersionPage = ({page, size}) => {
@@ -15,7 +15,7 @@ export const getVersionPage = ({page, size}) => {
 }
 
 /**
- * 根据ID获取帮助的详细信息
+ * 根据ID获取版本的详细信息
  * @param {*} id 
  */
 export const getVersionDetail = (id) => {
@@ -26,8 +26,8 @@ export const getVersionDetail = (id) => {
 }
 
 /**
- * 增加/修改/删除帮助
- * @param {Obj} data 帮助对象
+ * 增加/修改/删除版本
+ * @param {Obj} data 版本对象
  */
 export const saveVersion = (data) => {
   return axios.request({
