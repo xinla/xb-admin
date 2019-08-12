@@ -124,12 +124,12 @@ export default {
       upIndex: 0
     };
   },
-  mounted() {
-    this.form.productId = this.$route.query.id;
-    this.getData();
-  },
+  // mounted() {
+  //   this.getData();
+  // },
   methods: {
     getData() {
+      this.form.productId = this.$route.query.id;
       this.form.productId &&
         getProductAttachmentByProductId(this.form.productId).then(data => {
           // console.log('productAccessory', data);

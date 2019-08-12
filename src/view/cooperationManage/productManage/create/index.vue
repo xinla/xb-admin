@@ -41,6 +41,7 @@ export default {
   data() {
     return {
       current: 0,
+      firstArray: []
     }
   },
   computed: {
@@ -63,34 +64,52 @@ export default {
             // data && (this.$route.query.id = data)
             // console.log(typeof (this.$route.query.id), this.$route.query.id)
             this.current++
+            if (!this.firstArray.includes(this.current)) {
+              this.firstArray.push(this.current)
+              this.$route.query.edit && this.$refs.insuranceRules.getData()
+            }
+            // this.$refs.baseInfo.getData()
             // console.log('current', this.current)
-            return Promise.resolve()
           })
           break
           case 1: 
           return this.$refs.insuranceRules.submit()
           .then(data => {
             this.current++
-            return Promise.resolve()
+            if (!this.firstArray.includes(this.current)) {
+              this.firstArray.push(this.current)
+              this.$route.query.edit && this.$refs.rateCalculation.getData()
+            }
           })
           break
           case 2: 
           return this.$refs.rateCalculation.submit()
           .then(data => {
             this.current++
-            return Promise.resolve()
+            if (!this.firstArray.includes(this.current)) {
+              this.firstArray.push(this.current)
+              this.$route.query.edit && this.$refs.productExplain.getData()
+            }
           })
           break
           case 3: 
           return this.$refs.productExplain.submit()
           .then(data => {
             this.current++
+            if (!this.firstArray.includes(this.current)) {
+              this.firstArray.push(this.current)
+              this.$route.query.edit && this.$refs.additionRisk.getData()
+            }
           })
           break
           case 4: 
           return this.$refs.additionRisk.submit()
           .then(data => {
             this.current++
+            if (!this.firstArray.includes(this.current)) {
+              this.firstArray.push(this.current)
+              this.$route.query.edit && this.$refs.productAccessory.getData()
+            }
           })
           break
           case 5: 

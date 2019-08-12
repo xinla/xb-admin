@@ -69,6 +69,11 @@ class HttpRequest {
             content: `产品已存在`,
             duration: 3
           })
+        } else if (data.code === 300) {
+          Message.warning({
+            content: `产品不存在或信息不完整`,
+            duration: 3
+          })
         } else {
           addErrorLog(res)
         }

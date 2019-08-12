@@ -4,7 +4,7 @@
 
     <Row style="padding-bottom: 10px;">
         <Col span="18">
-          <Button type="info" @click="goPage('createProduct')">新建产品</Button>
+          <Button type="info" @click="goPage('createProduct', {create: true})">新建产品</Button>
         </Col>
         <Col span="6">
           <Input v-model="query.searchValue" placeholder="搜索品牌/产品名称/代码" style="width:73%; margin-right: 10px;" />
@@ -35,7 +35,7 @@
 
       <template slot-scope="{ row }" slot="distributionChannel">
         <span v-for="(item, index) in row.distributionChannel.split(',')" :key="index">
-       {{ item | channel}} {{index ? ',' : ''}}
+       {{Number(item) ? ',' : ''}} {{ item | channel}}
         </span>
       </template>
 
@@ -48,7 +48,7 @@
       
 
       <template slot-scope="{ row }" slot="action">
-          <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId})">编辑</Button>
+          <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId, edit: true})">编辑</Button>
           <Button type="warning" size="small" style="margin-right: 5px" :to="'http://' + row.h5Url" target="_blank">H5</Button>
           <Button type="success" size="small" style="margin-right: 5px" @click="sale(row)">{{row.isSale === 1 ? '停售' : '在售'}}</Button>
           <Button v-if="row.isPublish === 0" type="info" size="small" style="margin-right: 5px" @click="publish(row)">发布</Button>
@@ -97,7 +97,9 @@ const publishStatus = [
 export default {
   filters: {
     channel(val) {
-      return channel[val].label
+      if (val != '' && val != 'null') {
+        return channel[val].label
+      }
     },
     productType(val) {
       let arr = val.split(",")

@@ -575,17 +575,14 @@ export default {
     };
   },
   mounted() {
-    this.form.productId = this.$route.query.id;
     // console.log(this.form.productId)
     // this.form.productId || (this.form.productId = this.$route.query.id)
-    this.init();
+    // this.getData();
   },
   methods: {
-    init() {
-      this.$refs.editor.setHtml("");
-      this.getData();
-    },
     getData() {
+      this.form.productId = this.$route.query.id;
+      this.$refs.editor.setHtml("");
       this.form.productId &&
         getProductRuleByProductId(this.form.productId).then(data => {
           // console.log(data);

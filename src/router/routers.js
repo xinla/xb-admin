@@ -670,6 +670,29 @@ export default [
       },
     ]
   },
+  // 数据字典
+  {
+    path: '/dataDictionary',
+    name: 'dataDictionary',
+    component: Main,
+    meta: {
+      icon: '_Datastatistics',
+      title: '数据字典',
+      hideInMenu: false,
+      notCache: true
+    },
+    children: [
+      {
+        path: 'index',
+        name: 'dataDictionaryIndex',
+        meta: {
+          icon: '_Datastatistics',
+          title: '数据字典'
+        },
+        component: () => import('@/view/dataDictionary')
+      },
+    ]
+  },
   // 系统设置
   {
     path: '/systemSet',

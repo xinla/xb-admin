@@ -1,6 +1,9 @@
 <template>
   <div id="app">
+    <transition name="slide">
+
     <router-view/>
+    </transition>
   </div>
 </template>
 
@@ -24,6 +27,18 @@ html,body{
 #app {
   .size;
 }
+.slide-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-enter, .slide-leave-to
+/* .slide-down-leave-active for below version 2.1.8 */ {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
 /deep/.ivu-input[disabled], /deep/.ivu-select-disabled .ivu-select-selection{
   background:none;
   color: #000;

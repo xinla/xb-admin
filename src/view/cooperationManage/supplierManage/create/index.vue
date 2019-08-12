@@ -67,6 +67,19 @@
               >{{ item.province }}</Option>
             </Select>
           </FormItem>
+
+          <FormItem label="品牌Logo" prop="logo">
+            <Upload
+              :action="$config.services.upload"
+              :show-upload-list="false"
+              :format="['jpg','jpeg','png']"
+              accept="image/*"
+              :on-success="upFile1"
+            >
+              <img class="logo" v-if="form.logo" :src="form.logo" />
+              <div v-else class="upload-icon cp">+</div>
+            </Upload>
+          </FormItem>
         </Col>
       </Row>
       <Divider />
@@ -342,6 +355,13 @@ export default {
       }
       // console.log(response, file, fileList)
       // console.log(response.result.fileUrl)
+    },
+    upFile1(response, file, fileList) {
+      if (!response.result) {
+        this.$Message.error(response.message);
+      } else {
+        this.form.logo = response.result.fileUrl;
+      }
     },
     change(val) {
       this.form.name = val.name;

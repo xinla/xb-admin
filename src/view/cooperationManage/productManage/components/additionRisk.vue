@@ -44,6 +44,8 @@
           {{item.child.collocationRatio === 2 ? "最高" : ""}}
            比例：
           <Input type="text" style="width:100px;" v-model="item.collocationRatioValue" placeholder="比例"/>
+          最高比例：
+          <Input type="text" style="width:100px;" v-model="item.collocationRatioValue" placeholder="比例"/>
 
           <FormItem label="保险金额限制" prop="site">
             <RadioGroup v-model="item.insuredLimit">
@@ -142,7 +144,7 @@ export default {
     };
   },
   mounted() {
-    this.getData();
+    // this.getData();
   },
   methods: {
     getData() {

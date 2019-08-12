@@ -194,11 +194,11 @@ export default {
     };
   },
   mounted() {
-    this.form.productId = this.$route.query.id;
-    this.getData();
+    // this.getData();
   },
   methods: {
     getData() {
+      this.form.productId = this.$route.query.id;
       this.form.productId &&
         getProductRateByProductId(this.form.productId).then(data => {
           // console.log(data)
