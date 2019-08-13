@@ -63,22 +63,30 @@ class HttpRequest {
       // code 0:成功，-1/其它:错误
       if (status === 200 && data.code === 0) {
         return JSON.stringify(data.result) ? data.result : data.data
+      } else if (data.code === 201) {
+        Message.error({
+          content: `产品已存在`,
+          duration: 3
+        })
+      } else if (data.code === 300) {
+        Message.error({
+          content: `产品不存在`,
+          duration: 3
+        })
+      } else if (data.code === 306) {
+        Message.warning({
+          content: `该产品信息未创建或未完成`,
+          duration: 2
+        })
       } else {
-        if (data.code === 201) {
-          Message.error({
-            content: `产品已存在`,
-            duration: 3
-          })
-        } else if (data.code === 300) {
-          Message.warning({
-            content: `产品不存在或信息不完整`,
-            duration: 3
-          })
-        } else {
-          addErrorLog(res)
-        }
-        return Promise.reject(res)
+        addErrorLog(res)
       }
+      if (process.env.NODE_ENV === 'development') {
+        return Promise.reject(res) // 这样控制台会显示报错日志
+      } else {
+        return new Promise(() => {})
+      }
+
     }, error => {
       this.destroy(url)
       if (error.response) {

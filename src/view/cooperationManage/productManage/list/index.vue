@@ -35,7 +35,7 @@
 
       <template slot-scope="{ row }" slot="distributionChannel">
         <span v-for="(item, index) in row.distributionChannel.split(',')" :key="index">
-       {{Number(item) ? ',' : ''}} {{ item | channel}}
+       {{Number(item) && index ? ',' : ''}} {{ item | channel}}
         </span>
       </template>
 
