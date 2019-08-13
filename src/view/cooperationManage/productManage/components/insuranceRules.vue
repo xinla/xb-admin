@@ -586,6 +586,9 @@ export default {
       this.form.productId &&
         getProductRuleByProductId(this.form.productId).then(data => {
           // console.log(data);
+          if (!data) {
+           return 
+          }
           this.form = data;
 
           let del = ["minInsured", "maxInsured"];

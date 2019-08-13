@@ -328,6 +328,9 @@ export default {
       this.form.productId &&
         getProductDescByProductId(this.form.productId).then(data => {
           // console.log('productExplain', data)
+          if (!data) {
+           return 
+          }
           data.insurableInterest = JSON.parse(data.insurableInterest);
           data.coverage = JSON.parse(data.coverage);
           data.describePicture = data.describePicture.split(",");

@@ -133,6 +133,9 @@ export default {
       this.form.productId &&
         getProductAttachmentByProductId(this.form.productId).then(data => {
           // console.log('productAccessory', data);
+          if (!data) {
+           return 
+          }
           data.productCourse = JSON.parse(data.productCourse);
           this.form = data;
         });

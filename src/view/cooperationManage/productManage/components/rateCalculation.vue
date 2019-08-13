@@ -202,6 +202,9 @@ export default {
       this.form.productId &&
         getProductRateByProductId(this.form.productId).then(data => {
           // console.log(data)
+          if (!data) {
+           return 
+          }
           this.form = data;
         });
     },

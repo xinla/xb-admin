@@ -27,6 +27,7 @@ html,body{
 #app {
   .size;
 }
+// 全屏转换动画
 .slide-enter-active {
   transition: all 0.3s ease;
 }
@@ -35,7 +36,21 @@ html,body{
 }
 .slide-enter, .slide-leave-to
 /* .slide-down-leave-active for below version 2.1.8 */ {
-  transform: translateY(10px);
+  transform: translateY(-100px);
+  opacity: 0;
+}
+
+// 内页转换动画
+.slide-inside-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-inside-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-inside-enter, .slide-inside-leave-to
+/* .slide-down-leave-active for below version 2.1.8 */ {
+  position: absolute;
+  transform: translateX(10px);
   opacity: 0;
 }
 

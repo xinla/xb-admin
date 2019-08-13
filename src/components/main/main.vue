@@ -57,9 +57,11 @@
             />
           </div>
           <Content class="content-wrapper">
+            <transition name="slide-inside">
             <keep-alive :include="cacheList">
               <router-view/>
             </keep-alive>
+            </transition>
           </Content>
         </Layout>
       </Content>

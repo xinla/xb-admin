@@ -151,6 +151,9 @@ export default {
       this.$route.query.id &&
         getProductRiderByProductId(this.$route.query.id).then(data => {
           console.log('additionRisk', data);
+          if (!data) {
+           return 
+          } 
           for (const iterator of data) {
             iterator.child || (iterator.child = {})
           }

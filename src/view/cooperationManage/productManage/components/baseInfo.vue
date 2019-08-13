@@ -381,6 +381,9 @@ export default {
       this.form.id = this.$route.query.id;
       this.form.id &&
         getProductInfo(this.form.id).then(data => {
+          if (!data) {
+           return 
+          }
           // 保险细类,分销渠道,保障功能 转为数组
           let trans = ["subClass", "function", "ageLevel", "distributionChannel"];
           for (const iterator of trans) {

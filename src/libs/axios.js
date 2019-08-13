@@ -73,6 +73,11 @@ class HttpRequest {
           content: `产品不存在`,
           duration: 3
         })
+      } else if (data.code === 302) {
+        Message.error({
+          content: `该产品信息产品信息不完整或创建失败`,
+          duration: 3
+        })
       } else if (data.code === 306) {
         Message.warning({
           content: `该产品信息未创建或未完成`,
@@ -84,7 +89,7 @@ class HttpRequest {
       if (process.env.NODE_ENV === 'development') {
         return Promise.reject(res) // 这样控制台会显示报错日志
       } else {
-        return new Promise(() => {})
+        return new Promise(() => { })
       }
 
     }, error => {
