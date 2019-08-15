@@ -49,7 +49,7 @@
               :on-success="upFile"
             >
               <img class="logo" v-if="form.logo" :src="form.logo" />
-              <div v-else class="upload-icon cp">+</div>
+              <div v-else class="cp">+</div>
             </Upload>
           </FormItem>
 
@@ -68,7 +68,7 @@
             </Select>
           </FormItem>
 
-          <FormItem label="品牌Logo" prop="logo">
+          <FormItem label="宣传图" prop="logo">
             <Upload
               :action="$config.services.upload"
               :show-upload-list="false"
@@ -76,8 +76,8 @@
               accept="image/*"
               :on-success="upFile1"
             >
-              <img class="logo" v-if="form.logo" :src="form.logo" />
-              <div v-else class="upload-icon cp">+</div>
+              <img class="logo" v-if="form.publicityImage" :src="form.publicityImage" />
+              <div v-else class="cp">+</div>
             </Upload>
           </FormItem>
         </Col>
@@ -161,6 +161,86 @@
           <Button type="info" @click="add">添加</Button>
         </Col>
       </Row>
+      <Divider />
+
+      <div class="title-row">
+        公司足迹
+        <Button type="info" size="small" @click="add(0)">添加</Button>
+      </div>
+      <Row
+        style="margin-top: 20px;"
+        v-for="(item, index) of form.xbCompanyCard"
+        :key="index"
+        v-if="item.type == 0"
+      >
+        <Col span="10">
+          <Input
+            :disabled="disabled"
+            v-model="item.bigEvents"
+            placeholder="请输入大事记"
+            style="width:73%; margin-right: 10px;"
+          />
+        </Col>
+        <Col span="10">
+          <DatePicker
+            :disabled="disabled"
+            type="date"
+            format="yyyy-MM-dd"
+            placeholder="请选择时间"
+            style="width:73%; margin-right: 10px;"
+            :value="item.time"
+            @on-change="(data) => {item.time = data + ' 00:00:00'}"
+          ></DatePicker>
+        </Col>
+        <Col span="4">
+          <Button type="info" @click="remove(index, 'card')">删除</Button>
+        </Col>
+      </Row>
+      <Divider />
+
+      <div class="title-row">
+        公司荣誉
+        <Button type="info" size="small" @click="add(1)">添加</Button>
+      </div>
+      <Row
+        style="margin-top: 20px;"
+        v-for="(item, index) of form.xbCompanyCard"
+        :key="index"
+        v-if="item.type == 1"
+      >
+        <Col span="5">
+          <Input :disabled="disabled" v-model="item.certificationAuthority" placeholder="请输入颁发机构" />
+        </Col>
+        <Col span="5">
+          <Input :disabled="disabled" v-model="item.honorName" placeholder="请输入荣誉名称" />
+        </Col>
+        <Col span="5">
+          <DatePicker
+            :disabled="disabled"
+            type="date"
+            format="yyyy-MM-dd"
+            placeholder="请选择时间"
+            :value="item.prizeTime"
+            @on-change="(data) => {item.prizeTime = data + ' 00:00:00'}"
+          ></DatePicker>
+        </Col>
+        <Col span="5">
+          <Upload
+            :action="$config.services.upload"
+            :show-upload-list="false"
+            :format="['jpg','jpeg','png']"
+            accept="image/*"
+            :on-success="upFile2"
+            @click.native="upload(index)"
+          >
+            <img class="logo cp" v-if="item.url" :src="item.url" />
+            <Button v-else icon="ios-cloud-upload-outline">上传证书或奖杯照片</Button>
+          </Upload>
+        </Col>
+        <Col span="4">
+          <Button type="info" @click="remove(index, 'card')">删除</Button>
+        </Col>
+      </Row>
 
       <Button v-if="!disabled" type="primary" @click="submit">确认</Button>
     </Form>
@@ -177,26 +257,41 @@ import {
 import selectSupplier from "@/components/selectSupplier";
 import Editor from "_c/editor";
 
-const defaultForm = {
-  name: "",
-  nameForShort: "",
-  typeRule: 0, // 0寿险,1财险
-  logo: "",
-  companyAddress: "",
-  companyWebsite: "",
-  contactPhone: "",
-  nationalServicePhone: "",
-  professionUrl: "",
-  supplierDescription: "",
-  foundingTime: "",
-  vitDictProvinceId: [],
-  xbSupplierOrganization: []
-};
+// const defaultForm = {
+//   name: "",
+//   nameForShort: "",
+//   typeRule: 0, // 0寿险,1财险
+//   logo: "",
+//   companyAddress: "",
+//   companyWebsite: "",
+//   contactPhone: "",
+//   nationalServicePhone: "",
+//   professionUrl: "",
+//   supplierDescription: "",
+//   foundingTime: "",
+//   vitDictProvinceId: [],
+//   xbSupplierOrganization: []
+// };
+// 子公司默认表单
 const defaultFormChild = {
   name: "",
   organizationAddress: "",
   organizationPhone: "",
   type: 2
+};
+// 公司足迹和荣誉默认表单
+const defaultFormChild1 = {
+  type: "", // 0:公司足迹 1:公司荣誉
+  time: "", // 时间
+  bigEvents: "", // 大事记
+  certificationAuthority: "", // 颁发机构
+  honorName: "", // 荣誉名称
+  prizeTime: "", // 获奖时间
+  url: "", // 证书文件路径
+  companyId: "", // 公司id
+  sypplierId: "", // 供应商id
+  createTime: "", // 创建时间
+  updateTime: "" // 更新时间
 };
 export default {
   components: {
@@ -218,10 +313,13 @@ export default {
         professionUrl: "",
         supplierDescription: "",
         foundingTime: "",
+        publicityImage: "",
         vitDictProvinceId: [],
-        xbSupplierOrganization: []
+        xbSupplierOrganization: [],
+        xbCompanyCard: []
       },
       formChild: Object.assign({}, defaultFormChild),
+      formChild1: Object.assign({}, defaultFormChild1),
       rules: {
         // name: [
         //     { required: true, message: '不能为空', trigger: 'change' }
@@ -283,9 +381,11 @@ export default {
         },
         {
           title: "操作",
-          slot: "action"
+          slot: "action",
+          // width: '16%',
         }
-      ]
+      ],
+      uploadIndex: 0
     };
   },
   computed: {
@@ -309,7 +409,7 @@ export default {
     getData() {
       if (this.form.id) {
         getSupplierDetail(this.form.id).then(data => {
-          // console.log('SupplierDetail', data)
+          console.log("SupplierDetail", data);
           if (data) {
             this.form = data.xbSupplier;
             // let vitDictProvinceId = data.xbSupplier.vitDictProvinceId
@@ -360,7 +460,14 @@ export default {
       if (!response.result) {
         this.$Message.error(response.message);
       } else {
-        this.form.logo = response.result.fileUrl;
+        this.form.publicityImage = response.result.fileUrl;
+      }
+    },
+    upFile2(response, file, fileList) {
+      if (!response.result) {
+        this.$Message.error(response.message);
+      } else {
+        this.form.xbCompanyCard[this.uploadIndex].url = response.result.fileUrl;
       }
     },
     change(val) {
@@ -373,23 +480,38 @@ export default {
       this.form.supplierDescription = html;
       // console.log(this.form.underwritingRulesText)
     },
-    add() {
-      this.form.xbSupplierOrganization.push(this.formChild);
-      this.formChild = Object.assign({}, defaultFormChild);
+    add(type) {
+      if (type != undefined) {
+        defaultFormChild1.type = type;
+        this.form.xbCompanyCard || (this.form.xbCompanyCard = []);
+        this.form.xbCompanyCard.push(Object.assign({}, defaultFormChild1));
+        console.log(this.form.xbCompanyCard);
+      } else {
+        this.form.xbSupplierOrganization.push(this.formChild);
+        this.formChild = Object.assign({}, defaultFormChild);
+      }
     },
-    remove(index) {
+    remove(index, type) {
       this.$Modal.confirm({
         title: "提示",
         content: "确定要删除么",
         onOk: () => {
-          this.form.xbSupplierOrganization.splice(index, 1);
+          if (type == undefined) {
+            this.form.xbSupplierOrganization.splice(index, 1);
+          } else {
+            this.form.xbCompanyCard.splice(index, 1);
+          }
         }
       });
     },
     changeTime(data) {
-      this.form.foundingTime = data + ' 00:00:00';
+      this.form.foundingTime = data + " 00:00:00";
       // this.form.foundingTime += ' 00:00:00'
       // console.log(this.form.foundingTime)
+    },
+    upload(index) {
+      this.uploadIndex = index;
+      console.log(index);
     }
   }
 };
