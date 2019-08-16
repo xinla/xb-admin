@@ -45,11 +45,12 @@
               :action="$config.services.upload"
               :show-upload-list="false"
               :format="['jpg','jpeg','png']"
+              :on-format-error="formatError"
               accept="image/*"
               :on-success="upFile"
             >
               <img class="logo" v-if="form.logo" :src="form.logo" />
-              <div v-else class="cp">+</div>
+              <div v-else class="upload-icon cp">+</div>
             </Upload>
           </FormItem>
 
@@ -73,11 +74,12 @@
               :action="$config.services.upload"
               :show-upload-list="false"
               :format="['jpg','jpeg','png']"
+              :on-format-error="formatError"
               accept="image/*"
               :on-success="upFile1"
             >
               <img class="logo" v-if="form.publicityImage" :src="form.publicityImage" />
-              <div v-else class="cp">+</div>
+              <div v-else class="upload-icon cp">+</div>
             </Upload>
           </FormItem>
         </Col>
@@ -229,6 +231,7 @@
             :action="$config.services.upload"
             :show-upload-list="false"
             :format="['jpg','jpeg','png']"
+            :on-format-error="formatError"
             accept="image/*"
             :on-success="upFile2"
             @click.native="upload(index)"
@@ -512,7 +515,10 @@ export default {
     upload(index) {
       this.uploadIndex = index;
       console.log(index);
-    }
+    },
+    formatError() {
+      this.$Message.error("文件格式错误，仅限'jpg','jpeg','png'格式的文件");
+    },
   }
 };
 </script>
