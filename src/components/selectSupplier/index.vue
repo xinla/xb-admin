@@ -9,7 +9,6 @@
       :loading="loading"
       :disabled="disabled"
       :placeholder="val || '请输入后选择'"
-      @on-clear="clear"
       @on-query-change="queryChange"
       @on-change="selectChange"
     >
@@ -112,12 +111,6 @@ export default {
           }
         });
     },
-    clear() {
-      // console.log(1);
-      this.val = "";
-      // this.$refs.select.clearSingleSelect()
-      // this.$refs.select.setQuery()
-    },
     queryChange(query) {
       // console.log(query)
       if (!query) {
@@ -141,7 +134,8 @@ export default {
       })
     },
     selectChange(option) {
-      option = JSON.parse(option)
+      // console.log('selectChange: ', option)
+      option = JSON.parse(option || '{}')
       if (this.isCrawl) {
         saveCrawlCompany(option.detailHref).then(res => {
           this.isMatch = false

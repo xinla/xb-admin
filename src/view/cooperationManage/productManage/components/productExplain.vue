@@ -4,13 +4,13 @@
       <Col span="8">
         <div class="title-row">核心亮点</div>
         <FormItem prop="coreBuy" style="width:80%;">
-          <Input v-model="form.coreBuy" placeholder="请输入产品主要特色，不超过30字"/>
+          <Input v-model="form.coreBuy" placeholder="请输入产品主要特色，不超过200字"/>
         </FormItem>
       </Col>
       <Col span="8">
         <div class="title-row">典型费率</div>
         <FormItem prop="typicalPremium" style="width:80%;">
-          <Input v-model="form.typicalPremium" placeholder="请输入产品主要特色，不超过30字"/>
+          <Input v-model="form.typicalPremium" placeholder="请输入产品主要特色，不超过200字"/>
         </FormItem>
       </Col>
     </Row>
@@ -103,7 +103,7 @@
       <Input
         type="textarea"
         v-model="form.exclusion"
-        placeholder="请输入产品主要特色，不超过30字"
+        placeholder="请输入产品免除责任"
         style="width:50%;"
       />
     </FormItem>
