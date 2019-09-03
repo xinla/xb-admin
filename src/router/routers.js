@@ -1,4 +1,5 @@
 import Main from '@/components/main'
+import MainSub from '@/components/routerView'
 import parentView from '@/components/parent-view'
 
 /**
@@ -100,17 +101,17 @@ export default [
           icon: '_Jurisdiction',
           title: '权限配置'
         },
-        component: () => import('@/view/basicManage/authoritySet/index.vue'),
-        redirect: '/basicManage/authoritySet/resourceList',
+        component: MainSub,
+        // redirect: '/basicManage/authoritySet/resourceList',
         children: [
           {
             path: 'resourceList',
             name: 'resourceList',
             meta: {
               icon: '_Resourcelist',
-              title: '资源列表'
+              title: '菜单管理'
             },
-            component: () => import('@/view/basicManage/authoritySet/index.vue')
+            component: () => import('@/view/basicManage/authoritySet/menuManage')
           },
           // {
           //   path: 'SaaS2',
@@ -350,12 +351,12 @@ export default [
   },
 
   {
-    path: '/applicationManage',
-    name: 'applicationManage',
+    path: '/functionManage',
+    name: 'functionManage',
     component: Main,
     meta: {
       icon: '_Applicationmanagement',
-      title: '应用管理',
+      title: '功能管理',
       hideInMenu: false,
       notCache: true
     },
@@ -450,6 +451,15 @@ export default [
           },
         ]
       },
+      {
+        path: 'applicationManage',
+        name: 'applicationManage',
+        meta: {
+          icon: '_Recommendation',
+          title: '应用管理',
+        },
+        component: () => import('@/view/applicationManage/applicationManage/index'),
+      }
     ]
   },
   // 规则配置
@@ -690,7 +700,7 @@ export default [
           title: '数据字典'
         },
         component: () => import('@/view/dataDictionary')
-      },
+      }
     ]
   },
   // 系统设置

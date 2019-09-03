@@ -13,8 +13,10 @@ const config = {
    * @description api请求基础路径
    */
   baseUrl: {
+    // 测试服
     // dev: 'http://192.168.1.64', // 虚拟机 liusiyuan
     dev: 'http://192.168.1.32', // 本地
+    dev2: 'http://192.168.1.32:8888', // v2.0本地
     dev1: 'http://192.168.1.150:8888', // caikefu
     
     // pro: 'http://112.31.212.46:8118', // line
@@ -22,6 +24,7 @@ const config = {
     // pro1: 'http://112.31.212.46:8888' // caikefu
     pro1: 'http://192.168.1.26:8888' // ali caikefu
   },
+  // 正式服
   // baseUrl: {
   //   // dev: 'http://192.168.1.64', // 虚拟机 liusiyuan
   //   dev: 'http://47.98.153.101:8118', // 本地
@@ -48,6 +51,7 @@ const config = {
   
 }
 config.domain = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
+config.domainV2 = process.env.NODE_ENV === 'development' ? config.baseUrl.dev2 : config.baseUrl.pro
 
 config.services = {
   company: '/xbcompany',
@@ -72,6 +76,7 @@ config.services = {
   proposal: '/vitProposal',
   version: '/version',
   sensitive: '/v1/sensitive',
+  dataDitionary: '/api/base/v1/dataDict',
   role: '/role',
 
   upload: config.domain + '/upload',

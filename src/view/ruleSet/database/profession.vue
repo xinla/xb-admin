@@ -4,7 +4,14 @@
       <Col span="12">
         <Form ref="form" :model="query" :label-width="40" inline>
           <FormItem label="品牌">
-            <selectSupplier :val="query.supplierId" type="brand" @change="change" />
+            <Select v-model="query.supplierId" style="width:200px">
+              <Option
+                v-for="item in listBrand"
+                :value="item.id"
+                :key="item.id"
+              >{{ item.name }}</Option>
+            </Select>
+            <!-- <selectSupplier :val="query.supplierId" type="brand" @change="change" /> -->
           </FormItem>
           <FormItem :label-width="0">
             <Input v-model="query.params" placeholder="搜索名称/代码" style="margin-right: 10px;" />
@@ -113,8 +120,8 @@
       </template>
       <template slot="action" slot-scope="{ row }">
         <Button type="primary" size="small" @click="submit(row)">确定</Button>
-    <!-- <Button type="success" size="small" @click="addChild(row)">添加下级</Button>-->
-    <!--<Button type="error" size="small" @click="deleteMenu(row)">删除</Button> -->
+        <!-- <Button type="success" size="small" @click="addChild(row)">添加下级</Button>-->
+        <!--<Button type="error" size="small" @click="deleteMenu(row)">删除</Button> -->
       </template>
     </Table>
 
@@ -132,7 +139,8 @@
 import {
   getProfessionPage,
   updateProfession,
-  getProfessionBy
+  getProfessionBy,
+  getProfessionAllBrand
 } from "@/api/rulesSet/profession";
 import selectSupplier from "@/components/selectSupplier";
 
@@ -201,7 +209,8 @@ export default {
         {
           title: "职业代码",
           key: "occupationCode",
-          align: "center"
+          align: "center",
+          width: 120
         },
         {
           title: "职业名称",
@@ -212,13 +221,13 @@ export default {
           title: "职业风险等级",
           key: "occupationRiskLevel",
           align: "center",
-          width: 80
+          width: 120
         },
         {
           title: "住院风险等级",
           key: "hospitalRiskLeve",
           align: "center",
-          width: 80
+          width: 120
         },
         {
           title: "设为常用",
@@ -231,17 +240,20 @@ export default {
           type: "template",
           slot: "action",
           align: "center",
+          width: 150
         }
       ],
       list: [],
       // listAll: [],
-      total: 0
+      total: 0,
+      listBrand: []
     };
   },
   computed: {},
   watch: {},
   mounted() {
     this.getData();
+    this.getAllBrand()
   },
   methods: {
     getData(page) {
@@ -254,6 +266,12 @@ export default {
         this.list = res.list;
         // this.getPage()
       });
+    },
+    getAllBrand() {
+      getProfessionAllBrand().then((res) => {
+        console.log("AllBrand: ", res);
+        this.listBrand = res
+      })
     },
     download() {
       downloadProfessionTable();
@@ -272,6 +290,7 @@ export default {
         this.upLoading = false;
         this.$Message.success("上传成功");
         this.getData();
+        this.getAllBrand()
       } else {
         this.$Message.error("上传失败");
       }
@@ -281,9 +300,9 @@ export default {
       // this.form.name = item.name;
       // console.log(item)
     },
-    change(item) {
-      this.query.supplierId = item.id;
-    },
+    // change(item) {
+    //   this.query.supplierId = item.id;
+    // },
     submit(data) {
       console.log(data);
       updateProfession(data).then(res => {

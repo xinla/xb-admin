@@ -14,6 +14,9 @@ Vue.use(TreeTable)
 Vue.use(OrgTree)
 Vue.use(Tool)
 
+import dialogBox from '@/components/dialogBox'
+Vue.component('dialogBox', dialogBox)
+
 import config from '@/config'
 import importDirective from '@/directive'
 import { directive as clickOutside } from 'v-click-outside-x'

@@ -30,7 +30,7 @@ class HttpRequest {
     const config = {
       baseURL: this.baseUrl,
       headers: {
-        //
+        Auth_token: localStorage.Auth_token
       }
     }
     return config

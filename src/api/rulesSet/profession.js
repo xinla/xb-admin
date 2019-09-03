@@ -44,6 +44,16 @@ export const updateProfession = (data) => {
   })
 }
 
+/**
+ * 获取所有职业代码表的品牌
+ */
+export const getProfessionAllBrand = () => {
+  return axios.request({
+    url: service + `/findAllSupplierId`,
+    method: 'get',
+  })
+}
+
 export const getProfessionBy = (params) => {
   return axios.request({
     url: service + `/findByParams`,
