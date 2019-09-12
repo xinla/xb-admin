@@ -66,6 +66,9 @@ const defaultForm = {
   forceUpdate: 1
 };
 export default {
+  props: {
+    form: () => defaultForm
+  },
   components: {
     Editor
   },
@@ -77,7 +80,7 @@ export default {
       callback();
     };
     return {
-      form: Object.assign({}, defaultForm),
+      // form: Object.assign({}, defaultForm),
       rules: {
         title: [{ required: true, message: "不能为空", trigger: "blur" }],
         forceUpdate: [
@@ -99,16 +102,7 @@ export default {
     };
   },
   mounted() {
-    this.$refs.editor.setHtml("");
-
-    let id = this.$route.query.id;
-    if (id) {
-      getVersionDetail(id).then(data => {
-        // console.log('VersionDetail: ', data);
-        this.form = data;
-        this.$refs.editor.setHtml(data.content);
-      });
-    }
+        this.$refs.editor.setHtml(form.content);
   },
   methods: {
     handleSubmit() {

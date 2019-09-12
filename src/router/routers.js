@@ -368,7 +368,7 @@ export default [
           icon: '_Message',
           title: '即时通讯'
         },
-        component: () => import('@/view/applicationManage/systemMessage.vue'),
+        component: MainSub,
         // redirect: '/applicationManage/systemMessage',
         children: [
           {
@@ -387,7 +387,7 @@ export default [
               icon: '_Messagetemplate',
               title: '消息模板'
             },
-            redirect: '/applicationManage/commonExpressions',
+            component: () => import('@/view/applicationManage/messageTemplate/commonExpressions.vue')
           },
         ]
       },
@@ -429,7 +429,7 @@ export default [
           title: '保险建议书',
         },
         component: () => import('@/view/applicationManage/digitalResource/index'),
-        redirect: '/applicationManage/digitalResource/proposalTitle',
+        redirect: '/functionManage/digitalResource/proposalTitle',
         children: [
           {
             path: 'proposalTitle',
@@ -749,19 +749,9 @@ export default [
         name: 'version',
         meta: {
           icon: '_version',
-          title: '版本日志'
+          title: '版本管理'
         },
         component: () => import('@/view/systemSet/version')
-      },
-      {
-        path: 'createVersion',
-        name: 'createVersion',
-        meta: {
-          icon: 'md-funnel',
-          hideInMenu: true,
-          title: '新建版本日志'
-        },
-        component: () => import('@/view/systemSet/version/create.vue')
       },
       {
         path: 'sensitive',
@@ -784,35 +774,12 @@ export default [
       },
       {
         path: 'feedback',
-        name: '_feedback',
+        name: 'feedback',
         meta: {
           icon: '_feedback',
-          title: '问题反馈'
+          title: '反馈管理'
         },
-        component: () => import('@/view/systemSet/feedback/index.vue'),
-        redirect: '/systemSet/feedback/home',
-        children: [
-          {
-            path: 'home',
-            name: 'feedback',
-            meta: {
-              icon: '_feedback',
-              hideInMenu: true,
-              title: '问题反馈'
-            },
-            component: () => import('@/view/systemSet/feedback/home.vue'),
-          },
-          {
-            path: 'detail',
-            name: 'feedbackDetail',
-            meta: {
-              icon: '_feedback',
-              hideInMenu: true,
-              title: '反馈详情'
-            },
-            component: () => import('@/view/systemSet/feedback/detail'),
-          }
-        ]
+        component: () => import('@/view/systemSet/feedback'),
       },
       {
         path: 'service',

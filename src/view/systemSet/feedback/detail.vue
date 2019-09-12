@@ -78,9 +78,12 @@ export default {
       return type[val].label
     }
   },
+  props: {
+    form: () => defaultForm
+  },
   data() {
     return {
-      form: Object.assign({}, defaultForm),
+      // form: Object.assign({}, defaultForm),
       rules: {
         sensitiveWord: [{ required: true, message: "不能为空", trigger: "blur" }],
         isDisable: [

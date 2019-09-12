@@ -232,7 +232,7 @@ export default {
       }
     },
     add() {
-      this.list.unshift({ isEdit: true });
+      this.list.unshift({ isEdit: true, status: 1 });
     },
     edit(type) {
       // 0:编辑，1：上移，2：下移
@@ -263,6 +263,10 @@ export default {
             return;
           }
           move = this.list[index];
+          if (move.isEdit) {
+            this.$Message.warning("上移项正在编辑，请保存后再进行移动");
+            return;
+          }
           let sort = move.sort;
           move.sort = data.sort;
           data.sort = sort;
@@ -275,6 +279,10 @@ export default {
             return;
           }
           move = this.list[index];
+          if (move.isEdit) {
+            this.$Message.warning("下移项正在编辑，请保存后再进行移动");
+            return;
+          }
           let sort = move.sort;
           move.sort = data.sort;
           data.sort = sort;
@@ -297,13 +305,16 @@ export default {
       }
       deleteDataDitionary(selected).then(res => {
         this.$Message.success("操作成功");
+        this.isAll = false
         this.getData();
       });
     },
     save(data) {
+      data.status == null && (data.status = 1)
       saveDataDitionary(data).then(res => {
+        data.id = res
         data.isEdit = false;
-        this.$Message.success("报存成功");
+        this.$Message.success("保存成功");
       });
     },
     choiceAll() {

@@ -160,7 +160,7 @@
           />
         </Col>
         <Col span="6">
-          <Button type="info" @click="add">添加</Button>
+          <Button type="info" @click="add()">添加</Button>
         </Col>
       </Row>
       <Divider />

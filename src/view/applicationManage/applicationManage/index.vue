@@ -92,38 +92,22 @@
         }
       }
     }
-    .noData {
-      width: 100%;
-      height: 100%;
-      font-size: 12px;
-      color: #999;
-      text-align: center;
-      position: relative;
-      .center {
-        position: absolute;
-        width: 100%;
-        left: 0;
-        top: 50%;
-        margin-top: -40px;
-        .btn {
-          display: inline-block;
-          color: #fff;
-          font-size: 12px;
-          cursor: pointer;
-          padding: 0 15px;
-          height: 26px;
-          line-height: 26px;
-          margin-top: 20px;
-          border-radius: 4px;
-          background: #6582ff;
-          box-sizing: border-box;
-        }
-      }
-    }
   }
 }
 /deep/.mask {
   z-index: 10000;
+}
+.logo {
+  width: 89px;
+  height: 83px;
+  cursor: pointer;
+}
+.upload-icon {
+  border: 1px dashed #000;
+  width: 100px;
+  padding: 30px;
+  line-height: 21px;
+  text-align: center;
 }
 </style>
 <style lang="less">
@@ -182,7 +166,12 @@
         <div class="s-title">
           <div class="search-input">
             <i class="iconfont">&#xe623;</i>
-            <input type="text" v-model="keywords" @keyup.enter="search" placeholder="搜你想搜、输入文字并按回车键搜索" />
+            <input
+              type="text"
+              v-model="query.keywords"
+              @keyup.enter="getData()"
+              placeholder="搜你想搜、输入文字并按回车键搜索"
+            />
           </div>
           <div class="top-btn">
             <span class="add-btn" @click="showApplication()">+ 新建</span>
@@ -196,25 +185,25 @@
             <Table
               ref="organUserList"
               :columns="columns"
-              :data="memberData"
-              @selectChange="selectChange"
-              @rowDoubleClick="rowDoubleClick"
-            ></Table>
+              :data="list"
+              @on-selection-change="selectChange"
+              @on-row-dblclick="showApplication"
+            >
+              <template slot-scope="{ row }" slot="type">{{typeList[row.type]}}</template>
+              <template slot-scope="{ row }" slot="companyId">{{row.companyId}}</template>
+              <template slot-scope="{ row }" slot="level">{{levelList[row.level]}}</template>
+            </Table>
             <Page
-              v-if="total"
+              show-elevator
+              show-total
               class-name="a-page"
               :total="total"
-              :page-size="pageSize"
-              @on-change="goPage"
+              @on-change="getData()"
             />
-          </div>
-          <div v-else class="noData">
-            <div class="center">
-              <p>暂无相关数据</p>
-            </div>
           </div>
         </div>
 
+        <!-- 编辑/新建应用 -->
         <Drawer
           :title="applicantForm.id ? '编辑应用' : '新建应用'"
           v-model="isApplicantion"
@@ -225,106 +214,127 @@
             <FormItem label="应用名称">
               <Input v-model="applicantForm.name" placeholder="请输入功能名称" />
             </FormItem>
-            <FormItem label="所属行业" prop="mainClass">
-              <RadioGroup v-model="applicantForm.mainClass">
-                <Radio :label="0">保险</Radio>
-                <Radio :label="0">保险</Radio>
-                <Radio :label="0">基金</Radio>
-                <Radio :label="1">总控</Radio>
+            <FormItem label="所属行业" prop="type">
+              <RadioGroup v-model="applicantForm.type">
+                <Radio v-for="(value, key) in typeList" :label="+key" :key="key">{{value}}</Radio>
               </RadioGroup>
             </FormItem>
-            <FormItem label="所属版本" prop="mainClass">
-              <RadioGroup v-model="applicantForm.mainClass">
-                <Radio :label="0">基础版</Radio>
-                <Radio :label="0">高级版</Radio>
-                <Radio :label="1">旗舰版</Radio>
+            <FormItem label="所属版本" prop="level">
+              <RadioGroup v-model="applicantForm.level">
+                <Radio v-for="(value, key) in levelList" :label="+key" :key="key">{{value}}</Radio>
               </RadioGroup>
             </FormItem>
             <FormItem label="所属租户">
-              <Input v-model="applicantForm.name" placeholder="请输入租户名称" />
+              <Input v-model="applicantForm.companyId" placeholder="请输入租户名称" />
             </FormItem>
-            <FormItem label="适用终端" prop="function">
-              <CheckboxGroup v-model="applicantForm.function">
-                <Checkbox label="0">web端</Checkbox>
-                <Checkbox label="1">手机端</Checkbox>
-                <Checkbox label="2">PAD端</Checkbox>
-                <Checkbox label="3">小程序</Checkbox>
-                <Checkbox label="4">投资理财</Checkbox>
-                <Checkbox label="5">财富传承</Checkbox>
+            <FormItem label="适用终端" prop="terminal">
+              <CheckboxGroup v-model="applicantForm.terminal">
+                <Checkbox v-for="(value, key) in terminalList" :label="key" :key="key">{{value}}</Checkbox>
               </CheckboxGroup>
             </FormItem>
             <FormItem label="Web地址">
-              <Input v-model="applicantForm.desc" placeholder="请输入请求地址" />
+              <Input v-model="applicantForm.menuUrl" placeholder="请输入请求地址" />
             </FormItem>
             <FormItem label="ICON">
-              <Button style="margin-right: 8px" @click="isUpload = true">web</Button>
-              <Button style="margin-right: 8px" @click="isUpload = false">app</Button>
+              <div
+                class="bfc-d"
+                style="margin: 0 20px 20px 0;"
+                @click="showUpload('webImageUrl', 'applicantForm')"
+              >
+                <img class="logo" v-if="applicantForm.webImageUrl" :src="applicantForm.webImageUrl" />
+                <div v-else class="upload-icon cp">web</div>
+              </div>
+
+              <div class="bfc-d" @click="showUpload('appImageUrl', 'applicantForm')">
+                <img class="logo" v-if="applicantForm.appImageUrl" :src="applicantForm.appImageUrl" />
+                <div v-else class="upload-icon cp">app</div>
+              </div>
+            </FormItem>
+            <FormItem label="操作" v-show="applicantForm.id">
+              <Tag
+                v-for="(item, index) in applicantForm.operateStr"
+                type="border"
+                closable
+                color="primary"
+                @dblclick.native="showOperation(item, 2)"
+                @on-close="applicantForm.operateStr.splice(index, 1)"
+                :key="index"
+              >{{item.name}}</Tag>
             </FormItem>
           </Form>
-          <div class="demo-drawer-footer">
+          <div class="demo-drawer-footer ar">
             <Button style="margin-right: 8px" @click="isApplicantion = false">取消</Button>
-            <Button type="primary" @click="editApps()">确定</Button>
+            <Button type="primary" @click="save(3, 'applicantForm')">确定</Button>
           </div>
         </Drawer>
 
+        <!-- 编辑/新建操作 -->
         <Drawer
-          :title="operationForm.id ? '编辑操作' : '新建操作'"
+          :title="applicantForm.id ? '编辑操作' : '新建操作'"
           v-model="isOperation"
           width="500"
           :styles="styles"
         >
-          <Form :model="applicantForm" label-position="left" :label-width="80">
-            <FormItem label="所属应用">
-              <Input v-model="applicantForm.name" placeholder="请输入功能名称" />
-            </FormItem>
+          <Form :model="operationForm" label-position="left" :label-width="80">
+            <FormItem label="所属应用">{{operationForm.pName}}</FormItem>
             <FormItem label="操作名称">
-              <Input v-model="applicantForm.name" placeholder="请输入租户名称" />
+              <Input v-model="operationForm.name" placeholder="请输入功能名称" />
             </FormItem>
-            <FormItem label="适用终端" prop="function">
-              <CheckboxGroup v-model="applicantForm.function">
-                <Checkbox label="0">web端</Checkbox>
-                <Checkbox label="1">手机端</Checkbox>
-                <Checkbox label="2">PAD端</Checkbox>
-                <Checkbox label="3">小程序</Checkbox>
-                <Checkbox label="4">投资理财</Checkbox>
-                <Checkbox label="5">财富传承</Checkbox>
+            <FormItem label="适用终端" prop="terminal">
+              <CheckboxGroup v-model="operationForm.terminal">
+                <Checkbox v-for="(value, key) in terminalList" :label="key" :key="key">{{value}}</Checkbox>
               </CheckboxGroup>
             </FormItem>
             <FormItem label="Web地址">
-              <Input v-model="applicantForm.desc" placeholder="请输入请求地址" />
+              <Input v-model="operationForm.menuUrl" placeholder="请输入请求地址" />
             </FormItem>
             <FormItem label="ICON">
-              <Button style="margin-right: 8px" @click="isUpload = true">web</Button>
-              <Button style="margin-right: 8px" @click="isUpload = false">app</Button>
+              <div
+                class="bfc-d"
+                style="margin: 0 20px 20px 0;"
+                @click="showUpload('webImageUrl', 'operationForm')"
+              >
+                <img class="logo" v-if="operationForm.webImageUrl" :src="operationForm.webImageUrl" />
+                <div v-else class="upload-icon cp">web</div>
+              </div>
+
+              <div class="bfc-d" @click="showUpload('appImageUrl', 'operationForm')">
+                <img class="logo" v-if="operationForm.appImageUrl" :src="operationForm.appImageUrl" />
+                <div v-else class="upload-icon cp">app</div>
+              </div>
             </FormItem>
           </Form>
-          <div class="demo-drawer-footer">
+          <div class="demo-drawer-footer ar">
             <Button style="margin-right: 8px" @click="isOperation = false">取消</Button>
-            <Button type="primary" @click="editOperation()">确定</Button>
+            <Button type="primary" @click="save(1, 'operationForm')">确定</Button>
           </div>
         </Drawer>
 
         <!-- 上传图片弹窗 -->
-        <dialogBox v-model="isUpload">
+        <dialogBox v-model="upload.show">
           <div slot="title">图片上传</div>
-          <Form :model="applicantForm">
+          <Form style="width: 20vw;">
             <FormItem>
-              <Input v-model="applicantForm.name" placeholder="please enter user name" />
+              <Input
+                v-model="iconUrl"
+                placeholder="请输入图片地址"
+                style="width: 70%; margin-right: 10px;"
+              />
               <Upload
                 :action="$config.services.upload"
                 :format="['png','gif','jpg']"
                 :show-upload-list="false"
                 :on-success="uploadSuccess"
                 :on-format-error="formatError"
-                :data="{image: true}"
+                style="display:inline-block;"
               >
                 <Button icon="ios-cloud-upload-outline">上传</Button>
               </Upload>
             </FormItem>
           </Form>
-          <div class="demo-drawer-footer">
-            <Button style="margin-right: 8px" @click="isUpload = false">取消</Button>
-            <Button type="primary" @click="isUpload = false">确定</Button>
+          <div class="demo-drawer-footer ar">
+            <Button style="margin-right: 8px" @click="upload.show = false">取消</Button>
+            <Button type="primary" @click="uploadIcon">确定</Button>
           </div>
         </dialogBox>
       </div>
@@ -332,18 +342,39 @@
   </div>
 </template>
 <script>
+import {
+  getMenuList,
+  getApplicationPage,
+  addMenu,
+  deleteMenu,
+  updateMenu,
+  getOperationList
+} from "@/api/menu";
 // import { getAllIds } from "@/config/util.js";
-const defaultApplicationForm = {};
-const defaultOperationForm = {};
+const defaultApplicationForm = {
+  name: "", // *名称
+  type: "", // 业务类型2:保险,1:Saas,0:信贷,3:基金;4:理财 默认保险
+  level: "", // 所属版本 0:基础版 1:高级版 2:旗舰版 默认基础版
+  companyId: "", // 所属租户名称 ；1,2
+  menuUrl: "", // *web地址
+  webImageUrl: "", // web图标地址
+  appImageUrl: "", // app图标地址
+  classify: "", // *菜单类型,0菜单,1操作,2目录,3应用
+  pid: "", // 父级id
+  terminal: [], // 适用终端 0:web 1:app 2:pad 3:小程序 默认web
+  operateStr: [] // 操作id集合 1,2,3
+};
 export default {
   name: "appManage",
   data() {
     return {
+      query: {
+        page: 1,
+        size: 10,
+        keywords: ""
+      },
       companyId: "",
-      keywords: "",
-      total: 2,
-      pageSize: 9,
-      pageNum: 1,
+      total: 0,
       columns: [
         {
           type: "selection",
@@ -357,84 +388,120 @@ export default {
         },
         {
           title: "所属行业",
-          key: "industry",
+          slot: "type",
           tooltip: true
         },
         {
           title: "所属租户",
-          key: "tenement",
+          slot: "companyId",
           tooltip: true
         },
         {
           title: "所属版本",
-          key: "versions",
+          slot: "level",
           tooltip: true
-        }
-      ],
-      memberData: [
-        {
-          id: "2222",
-          name: "保单托管",
-          industry: "保险",
-          tenement: "全部",
-          versions: "基础版"
-        },
-        {
-          id: "1111",
-          name: "制作建议书",
-          industry: "保险",
-          tenement: "全部",
-          versions: "基础版"
         }
       ],
       selectData: [],
       isApplicantion: false, // 显隐应用抽屉
-      isUpload: false, // 显隐上传icon弹窗
+      // 显隐上传icon弹窗
+      upload: {
+        show: false,
+        terminal: 0, // 适用终端 0:web 1:app 2:pad 3:小程序 默认web
+        type: 0 // 0 应用表单，1 操作表单
+      },
       isOperation: false, // 显隐操作抽屉
       applicantForm: Object.assign({}, defaultApplicationForm),
-      operationForm: Object.assign({}, defaultOperationForm),
+      operationForm: Object.assign({}, defaultApplicationForm),
       // 抽屉样式
       styles: {
         height: "calc(100% - 55px)",
         overflow: "auto",
         paddingBottom: "53px",
         position: "static"
-      }
+      },
+      // 业务类型列表
+      typeList: Object.freeze({
+        0: "信贷",
+        1: "Saas",
+        2: "保险",
+        3: "基金",
+        4: "理财"
+      }),
+      // 版本列表
+      levelList: Object.freeze({
+        0: "基础版",
+        1: "高级版",
+        2: "旗舰版"
+      }),
+      // 终端列表
+      terminalList: Object.freeze({
+        0: "web",
+        1: "app",
+        2: "pad",
+        3: "小程序"
+      }),
+      iconUrl: "",
+      list: [],
+      editOperation: {} // 操作编辑项
     };
   },
   mounted() {
-    let userInfo = localStorage.getItem("UserInfo")
-      ? JSON.parse(localStorage.getItem("UserInfo"))
-      : {};
-    if (userInfo.companyId) {
-      this.companyId = userInfo.companyId;
-    }
-    this.intData();
+    // let userInfo = localStorage.getItem("UserInfo")
+    //   ? JSON.parse(localStorage.getItem("UserInfo"))
+    //   : {};
+    // if (userInfo.companyId) {
+    //   this.companyId = userInfo.companyId;
+    // }
+    this.getData();
   },
   methods: {
-    intData() {},
-    goPage(page) {
-      this.pageNum = page;
-    },
-    search() {
-      console.log(1)
+    getData(page) {
+      page && (this.query.page = page);
+      // 获取所有应用列表
+      getApplicationPage(this.query).then(res => {
+        console.log("ApplicationPage：", res.records);
+        this.list = res.records;
+        this.total = Number(res.total);
+      });
     },
     selectChange(selection) {
       this.selectData = selection;
     },
     // 显隐应用抽屉
     showApplication(data) {
-      this.isApplicantion = true;
+      this.isApplicantion = true
       this.applicantForm = Object.assign({}, defaultApplicationForm);
-      data && (this.applicantForm = data);
+      if (data) {
+        this.applicantForm = Object.assign({}, data);
+        // 适用终端字符串集合转为数组
+        this.applicantForm.terminal = data.terminal.split(",");
+        console.log("applicantForm: ", this.applicantForm);
+        getOperationList(data.id).then(res => {
+          // console.log('OperationList: ', res)
+          this.$set(this.applicantForm, "operateStr", (res || []));
+          // this.isApplicantion = true;
+        });
+      }
     },
     // 显隐操作抽屉
-    showOperation(data) {
+    showOperation(data, type) {
       this.isOperation = true;
-      this.operationForm = Object.assign({}, defaultOperationForm);
-      data &&
-        ((this.operationForm.name = data.name),
-        (this.operationForm.pid = data.id));
+      if (type) {
+        console.log(data);
+        // 编辑操作
+        this.editOperation = data
+        this.operationForm = Object.assign(defaultApplicationForm, data);
+        // 适用终端字符串集合转为数组
+        this.operationForm.terminal = data.terminal.split(",");
+        this.operationForm.pName = this.applicantForm.name;
+        this.operationForm.pid = this.applicantForm.id;
+      } else {
+        // 添加操作
+        this.operationForm = Object.assign({}, defaultApplicationForm);
+        this.operationForm.pName = data.name;
+        this.operationForm.pid = data.id;
+      }
     },
     // 是否选中应用
     getIds(type, isSingle) {
@@ -456,7 +523,7 @@ export default {
       }
       switch (type) {
         case 0:
-          this.showOperation(this.selectData[0])
+          this.showOperation(this.selectData[0]);
           break;
         case 1:
           this.showApplication(this.selectData[0]);
@@ -466,34 +533,83 @@ export default {
           break;
       }
     },
-    // 添加操作
-    addOperate(ids) {
-      console.log(ids);
-    },
-    // 编辑应用
-    editApps() {
-      this.isApplicantion = false;
-      // 调用编辑更新应用接口
-    },
-    editOperation() {
-      this.isOperation = false;
-      // 调用编辑更新操作接口
+    // 编辑应用/操作
+    save(classify, type) {
+      this[type].classify = classify;
+      let form = Object.assign({}, this[type])
+      // let form = JSON.parse(JSON.stringify(this[type]))
+      // 适用终端数组转为字符串集合
+      form.terminal += "";
+      // 如果是编辑应用，则需提取操作id集合
+      if (classify === 3 && this.applicantForm.id) {
+        form.operateStr = []
+        for (const iterator of this.applicantForm.operateStr) {
+          // debugger
+          form.operateStr.push(iterator.id)
+        }
+      }
+      // 操作id数组转为字符串集合
+      form.operateStr += "";
+      // form.operateStr && (form.operateStr += "");
+      Promise.resolve()
+        .then(() => {
+          if (form.id) {
+            return updateMenu(form);
+          } else {
+            return addMenu(form);
+          }
+        })
+        .then(res => {
+          classify === 3
+            ? (this.isApplicantion = false)
+            : (this.isOperation = false);
+          this.selectData = [];
+          this.$Message.success("操作成功");
+          
+          // 更新编辑后的操作名称
+          this.editOperation.name = this.operationForm.name
+          this.getData();
+        });
     },
     // 删除应用
-    delApps(data) {},
-    rowDoubleClick(data) {
-      this.isApplicantion = true;
-      this.applicantForm = Object.assign({}, defaultApplicationForm);
-      this.applicantForm = data;
+    delApps(data) {
+      let form = [];
+      for (const iterator of data) {
+        form.push(iterator.id);
+      }
+      this.$Modal.confirm({
+        title: "提示",
+        content: "确定删除吗？",
+        onOk: () => {
+          deleteMenu(form + "", 3).then(res => {
+            this.$Message.success("操作成功");
+            this.getData();
+          });
+        }
+      });
+    },
+    /**
+     * 显示上传图标弹窗
+     * classify 菜单类型,0菜单,1操作,2目录,3应用
+     * terminal 适用终端 0:web 1:app 2:pad 3:小程序 默认web
+     */
+    showUpload(terminal, type) {
+      this.upload = {
+        show: true,
+        terminal,
+        type
+      };
     },
     uploadSuccess(response, file, fileList) {
-      this.form.policyWording = response.result.fileUrl;
-      this.form.policyWordingName = response.result.newName;
-      this.form.policyWordingImages = response.result.imageUrl;
+      this.iconUrl = response.result.fileUrl;
       // console.log(response, file)
     },
+    uploadIcon() {
+      this.$set(this[this.upload.type], this.upload.terminal, this.iconUrl);
+      this.upload.show = false;
+    },
     formatError() {
-      this.$Message.error("文件格式错误，仅限pdf和ppt格式的文件");
+      this.$Message.error("文件格式错误，仅限[jpg,png,gif]格式的文件");
     }
   }
 };

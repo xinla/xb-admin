@@ -47,15 +47,7 @@
         </header-bar>
       </Header>
       <Content class="main-content-con">
-        <Layout class="main-layout-con">
-          <div class="tag-nav-wrapper">
-            <tags-nav
-              :value="$route"
-              @input="handleClick"
-              :list="tagNavList"
-              @on-close="handleCloseTag"
-            />
-          </div>
+        <Layout class="main-layout-con" style="border-top: 1px solid #ddd;">
           <Content class="content-wrapper">
             <transition name="slide-inside">
             <keep-alive :include="cacheList">
@@ -71,7 +63,6 @@
 <script>
 import SideMenu from "./components/side-menu";
 import HeaderBar from "./components/header-bar";
-import TagsNav from "./components/tags-nav";
 import User from "./components/user";
 import Fullscreen from "./components/fullscreen";
 import Language from "./components/language";
@@ -87,7 +78,6 @@ export default {
     SideMenu,
     HeaderBar,
     Language,
-    TagsNav,
     Fullscreen,
     ErrorStore,
     User

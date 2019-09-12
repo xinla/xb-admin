@@ -2,7 +2,7 @@
   <div class="custom-bread-crumb">
     <Breadcrumb :style="{fontSize: `${fontSize}px`}">
       <BreadcrumbItem v-for="item in list" :to="item.to" :key="`bread-crumb-${item.name}`">
-        <common-icon style="margin-right: 4px;" :type="item.icon || ''"/>
+        <!-- <common-icon style="margin-right: 4px;" :type="item.icon || ''"/> -->
         {{ showTitle(item) }}
       </BreadcrumbItem>
     </Breadcrumb>
@@ -26,10 +26,6 @@ export default {
       type: Number,
       default: 14
     },
-    showIcon: {
-      type: Boolean,
-      default: false
-    }
   },
   methods: {
     showTitle (item) {
