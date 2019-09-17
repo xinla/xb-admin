@@ -161,7 +161,8 @@
           <Option v-for="(value, key) in typeList" :value="+key" :key="key">{{ value }}</Option>
         </Select>
         <Select v-model="meunType2" style="width:45%">
-          <Option v-for="item in typeList" :value="item" :key="item">{{ item }}</Option>
+          <Option :value="0" :key="0">管理面板</Option>
+          <Option :value="1" :key="1">工作台</Option>
         </Select>
         <Button type="primary" long style="margin: 10px 0;" @click="editMenu()">+ 新建菜单</Button>
 
@@ -300,7 +301,8 @@ import {
   deleteMenu,
   moveApp,
   getMenuDetail,
-  updateMenu
+  updateMenu,
+  saveApplicationForMenu
 } from "@/api/menu";
 import menuItem from "./menu-item";
 
@@ -333,7 +335,6 @@ export default {
         size: 10,
         pid: ""
       },
-      companyId: "",
       searchName: "",
       total: 2,
       pageNum: 1,
@@ -385,12 +386,6 @@ export default {
     };
   },
   mounted() {
-    let userInfo = localStorage.getItem("UserInfo")
-      ? JSON.parse(localStorage.getItem("UserInfo"))
-      : {};
-    if (userInfo.companyId) {
-      this.companyId = userInfo.companyId;
-    }
     this.intData();
   },
   methods: {
@@ -399,7 +394,7 @@ export default {
     },
     getAllMenu() {
       getMenuList(this.meunType1).then(res => {
-        console.log("MenuList: ", res);
+        // console.log("MenuList: ", res);
         async function recursiveGetMenu(data) {
           for (const iterator of data) {
             if (iterator.hasChild) {
@@ -501,7 +496,14 @@ export default {
     },
     addApplicantion() {
       this.isApplicantion = false;
-      // 调用编辑更新操作接口
+      let applicatonIds = []
+      for (const iterator of this.addApplicantionsList) {
+        applicatonIds.push(iterator.id)
+      }
+      applicatonIds += ''
+      saveApplicationForMenu(this.query.pid, applicatonIds).then(res => {
+        this.$Message.success("操作成功");
+      })
     },
     getData(data) {
       console.log(data);
@@ -580,15 +582,21 @@ export default {
       // console.log('isSelect: ', this.menuForm.isSelect)
     },
     clickMenu1(data) {
+      console.log(1)
       this.$set(this.menuForm, "isSelect", !this.menuForm.isSelect);
       this.menuForm.pid = data.id;
       this.$set(this.menuForm, "pName", data.name);
       console.log("isSelect: ", data);
     },
     showApplicantion() {
-      getApplicationListByMenuId(this.meunType1).then(res => {
+      if (!this.query.pid) {
+        this.$Message.warning("请点击选择要添加菜单项");
+        return
+      }
+      getApplicationListByMenuId(this.query.pid).then(res => {
         console.log("allApplicationPage：", res.records);
         this.isApplicantion = true;
+        this.addApplicantionsList = [...this.applicantionList]
         this.allApplicantions = res.records;
       });
     }

@@ -86,9 +86,12 @@ export const saveFeedback = (data) => {
  * 查询所有反馈
  * @param {*} param0 
  */
-export const getFeedbackPage = ({page, size}) => {
+export const getFeedbackPage = ({page, size, status, type}) => {
   return axios.request({
     url: service + `/feedBack/findAll/${page}/${size}`,
+    params: {
+      status, type
+    },
     method: 'get'
   })
 }
@@ -101,5 +104,23 @@ export const getFeedbackDetail = (id) => {
   return axios.request({
     url: service + `/feedBack/${id}`,
     method: 'get'
+  })
+}
+
+/**
+ * 批处理
+ * @param {*} status 0 未处理  1已处理 2已关闭
+ * @param {*} isDelete 是否删除  0 未删除.  1已删除
+ */
+export const multSaveFeedback = (data, status, isDelete) => {
+  return axios.request({
+    url: service + `/feedBack/dispose`,
+    method: 'POST',
+    params: {
+      status, isDelete
+    },
+    data: {
+      json: data
+    }
   })
 }

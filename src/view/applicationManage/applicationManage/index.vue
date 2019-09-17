@@ -165,7 +165,7 @@
       <div class="apps-manage-list">
         <div class="s-title">
           <div class="search-input">
-            <i class="iconfont">&#xe623;</i>
+            <i class="iconfont"></i>
             <input
               type="text"
               v-model="query.keywords"
@@ -190,7 +190,12 @@
               @on-row-dblclick="showApplication"
             >
               <template slot-scope="{ row }" slot="type">{{typeList[row.type]}}</template>
-              <template slot-scope="{ row }" slot="companyId">{{row.companyId}}</template>
+              <template slot-scope="{ row }" slot="companyIds">
+                <div
+                  v-for="(item, index) of row.companyRelationMenuList"
+                  :key="index"
+                >{{item.companyName}}</div>
+              </template>
               <template slot-scope="{ row }" slot="level">{{levelList[row.level]}}</template>
             </Table>
             <Page
@@ -225,7 +230,26 @@
               </RadioGroup>
             </FormItem>
             <FormItem label="所属租户">
-              <Input v-model="applicantForm.companyId" placeholder="请输入租户名称" />
+              <Select
+                v-model="applicantForm.companyIds"
+                filterable
+                remote
+                multiple
+                :remote-method="getLesseePage"
+                :loading="searchLoading"
+                placeholder="请输入租户名称"
+              >
+              <Option
+                  v-for="(option, index) in applicantForm.companyRelationMenuList"
+                  :value="option.id"
+                  :key="index + 'a'"
+                >{{option.companyName}}</Option>
+                <Option
+                  v-for="(option, index) in lesseeList"
+                  :value="option.id"
+                  :key="index"
+                >{{option.name}}</Option>
+              </Select>
             </FormItem>
             <FormItem label="适用终端" prop="terminal">
               <CheckboxGroup v-model="applicantForm.terminal">
@@ -350,12 +374,13 @@ import {
   updateMenu,
   getOperationList
 } from "@/api/menu";
+import { getLesseePageByJB, getLesseePage } from "@/api/lessee";
 // import { getAllIds } from "@/config/util.js";
 const defaultApplicationForm = {
   name: "", // *名称
   type: "", // 业务类型2:保险,1:Saas,0:信贷,3:基金;4:理财 默认保险
   level: "", // 所属版本 0:基础版 1:高级版 2:旗舰版 默认基础版
-  companyId: "", // 所属租户名称 ；1,2
+  companyIds: "", // 所属租户名称 ；1,2
   menuUrl: "", // *web地址
   webImageUrl: "", // web图标地址
   appImageUrl: "", // app图标地址
@@ -373,7 +398,6 @@ export default {
         size: 10,
         keywords: ""
       },
-      companyId: "",
       total: 0,
       columns: [
         {
@@ -393,7 +417,7 @@ export default {
         },
         {
           title: "所属租户",
-          slot: "companyId",
+          slot: "companyIds",
           tooltip: true
         },
         {
@@ -443,15 +467,17 @@ export default {
       }),
       iconUrl: "",
       list: [],
-      editOperation: {} // 操作编辑项
+      editOperation: {}, // 操作编辑项
+      searchLoading: false,
+      lesseeList: []
     };
   },
   mounted() {
     // let userInfo = localStorage.getItem("UserInfo")
     //   ? JSON.parse(localStorage.getItem("UserInfo"))
     //   : {};
-    // if (userInfo.companyId) {
-    //   this.companyId = userInfo.companyId;
+    // if (userInfo.companyIds) {
+    //   this.companyIds = userInfo.companyIds;
     // }
     this.getData();
   },
@@ -470,16 +496,23 @@ export default {
     },
     // 显隐应用抽屉
     showApplication(data) {
-      this.isApplicantion = true
+      this.isApplicantion = true;
       this.applicantForm = Object.assign({}, defaultApplicationForm);
       if (data) {
         this.applicantForm = Object.assign({}, data);
         // 适用终端字符串集合转为数组
         this.applicantForm.terminal = data.terminal.split(",");
+
+        // 所属租户提取id数组
+        this.applicantForm.companyIds = []
+        for (const iterator of data.companyRelationMenuList) {
+          this.applicantForm.companyIds.push(iterator.id)
+        }
+
         console.log("applicantForm: ", this.applicantForm);
         getOperationList(data.id).then(res => {
           // console.log('OperationList: ', res)
-          this.$set(this.applicantForm, "operateStr", (res || []));
+          this.$set(this.applicantForm, "operateStr", res || []);
           // this.isApplicantion = true;
         });
       }
@@ -490,10 +523,14 @@ export default {
       if (type) {
         console.log(data);
         // 编辑操作
-        this.editOperation = data
+        this.editOperation = data;
         this.operationForm = Object.assign(defaultApplicationForm, data);
         // 适用终端字符串集合转为数组
         this.operationForm.terminal = data.terminal.split(",");
+
+        // 所属租户字符串集合转为数组
+        this.operationForm.companyIds = data.companyIds && data.companyIds.split(",");
+
         this.operationForm.pName = this.applicantForm.name;
         this.operationForm.pid = this.applicantForm.id;
       } else {
@@ -536,21 +573,25 @@ export default {
     // 编辑应用/操作
     save(classify, type) {
       this[type].classify = classify;
-      let form = Object.assign({}, this[type])
+      let form = Object.assign({}, this[type]);
       // let form = JSON.parse(JSON.stringify(this[type]))
       // 适用终端数组转为字符串集合
       form.terminal += "";
       // 如果是编辑应用，则需提取操作id集合
       if (classify === 3 && this.applicantForm.id) {
-        form.operateStr = []
+        form.operateStr = [];
         for (const iterator of this.applicantForm.operateStr) {
           // debugger
-          form.operateStr.push(iterator.id)
+          form.operateStr.push(iterator.id);
         }
       }
       // 操作id数组转为字符串集合
       form.operateStr += "";
       // form.operateStr && (form.operateStr += "");
+
+      // 所属租户id数组转为字符串集合
+      form.companyIds += "";
+      
       Promise.resolve()
         .then(() => {
           if (form.id) {
@@ -565,9 +606,9 @@ export default {
             : (this.isOperation = false);
           this.selectData = [];
           this.$Message.success("操作成功");
-          
+
           // 更新编辑后的操作名称
-          this.editOperation.name = this.operationForm.name
+          this.editOperation.name = this.operationForm.name;
           this.getData();
         });
     },
@@ -610,6 +651,17 @@ export default {
     },
     formatError() {
       this.$Message.error("文件格式错误，仅限[jpg,png,gif]格式的文件");
+    },
+    getLesseePage(name) {
+      let query = {
+        page: 1,
+        size: 100,
+        name
+      };
+      getLesseePage(query).then(res => {
+        this.searchLoading = false;
+        this.lesseeList = res.list;
+      });
     }
   }
 };

@@ -1,20 +1,20 @@
 <template>
   <Form ref="form" :model="form" :rules="rules" :label-width="100">
     <Row>
-      <Col span="8">
-        <FormItem prop="title" label="标题">
-          <Input type="text" v-model="form.title" placeholder="标题"></Input>
-        </FormItem>
-        <FormItem prop="forceUpdate" label="是否强制更新">
-          <RadioGroup v-model="form.forceUpdate">
-            <Radio :label="0">是</Radio>
-            <Radio :label="1">否</Radio>
-          </RadioGroup>
-        </FormItem>
+      <Col span="12">
         <FormItem prop="versionNum" label="版本号">
           <Input type="text" v-model="form.versionNum" placeholder="版本号"></Input>
         </FormItem>
-        <FormItem prop="download" label="下载地址">
+        <FormItem prop="type" label="发布端">
+          <CheckboxGroup v-model="form.type">
+            <Checkbox
+              v-for="(item, index) in typeList"
+              :label="item.value"
+              :key="index"
+            >{{item.label}}</Checkbox>
+          </CheckboxGroup>
+        </FormItem>
+        <FormItem prop="download" label="安装包">
           <!-- <Input type="text" v-model="form.download" placeholder="格式如: http(https)://www.xbkj.com"></Input> -->
           <span class="cp" v-if="form.download">{{form.download}}</span>
           <Upload
@@ -39,14 +39,24 @@
             >{{ item.name }}</Option>
           </Select>
         </FormItem>-->
+        <FormItem prop="forceUpdate" label="是否强制更新">
+          <RadioGroup v-model="form.forceUpdate">
+            <Radio :label="0">是</Radio>
+            <Radio :label="1">否</Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem prop="title" label="标题">
+          <Input type="text" v-model="form.title" placeholder="请输入日志标题，不超过30字"></Input>
+        </FormItem>
       </Col>
     </Row>
     <Row>
-      <Col span="16">
+      <Col span="24">
         <FormItem prop="content" label="内容">
           <!-- <Input type="textarea" v-model="form.content" placeholder="内容"></Input> -->
           <editor ref="editor" :value="form.content" @on-change="editorChange" />
         </FormItem>
+        <Button class="submit" type="primary" @click="cancel">取消</Button>
         <Button class="submit" type="primary" @click="handleSubmit">确定</Button>
       </Col>
     </Row>
@@ -63,11 +73,15 @@ const defaultForm = {
   versionNum: "",
   content: "",
   download: "",
-  forceUpdate: 1
+  forceUpdate: 1,
+  type: ''
 };
 export default {
   props: {
-    form: () => defaultForm
+    formData: {
+      type: Object,
+      default: () => defaultForm
+    }
   },
   components: {
     Editor
@@ -79,10 +93,35 @@ export default {
       }
       callback();
     };
+    const validateVersionNum = (rule, value, callback) => {
+      if (value && !/^V\d\.\d.\d/.test(value)) {
+        callback(
+          new Error("版本号规则为三位数字，英文小数点。必须以 V 开头。")
+        );
+      }
+      callback();
+    };
     return {
       // form: Object.assign({}, defaultForm),
       rules: {
-        title: [{ required: true, message: "不能为空", trigger: "blur" }],
+        title: [
+          { required: true, message: "不能为空", trigger: "blur" },
+          {
+            type: "string",
+            max: 30,
+            message: "更新日志标题最长不超过30字。",
+            trigger: "blur"
+          }
+        ],
+        type: [
+          {
+            required: true,
+            type: "array",
+            min: 1,
+            message: "不能为空",
+            trigger: "change"
+          }
+        ],
         forceUpdate: [
           {
             type: "number",
@@ -96,13 +135,39 @@ export default {
           { required: true, message: "不能为空", trigger: "blur" },
           { validator: validateUrl, trigger: "blur" }
         ],
-        versionNum: [{ required: true, message: "不能为空", trigger: "blur" }]
+        versionNum: [
+          { required: true, message: "不能为空", trigger: "blur" },
+          { validator: validateVersionNum, trigger: "blur" }
+        ]
       },
-      upLoading: false
+      upLoading: false,
+      // 0 安卓 1 IOS 2 WEB
+      typeList: [
+        {
+          value: "0",
+          label: "Android",
+          color: "default"
+        },
+        {
+          value: "1",
+          label: "iOS",
+          color: "success"
+        },
+        {
+          value: "2",
+          label: "Web",
+          color: "error"
+        }
+      ],
+      form: Object.assign({}, this.formData)
     };
   },
+  created() {
+    this.form.type = this.form.type ? this.form.type.split(",") : this.$set(this.form, 'type', []);
+    console.log(this.form)
+  },
   mounted() {
-        this.$refs.editor.setHtml(form.content);
+    this.$refs.editor.setHtml(this.form.content || "");
   },
   methods: {
     handleSubmit() {
@@ -110,8 +175,14 @@ export default {
       this.$refs.form
         .validate()
         .then(valid => {
+          // 判断是否为安卓端
+          // if (this.form.type.includes("0")) {
+          // }
+          
           if (valid) {
-            return saveVersion(this.form);
+            let form = Object.assign({}, this.form);
+            form.type += "";
+            return saveVersion(form);
           } else {
             return Promise.reject();
           }
@@ -120,10 +191,19 @@ export default {
           // console.log(1);
           // this.$refs.form.resetFields()
           this.$Message.success("保存成功");
-          this.$refs.editor.setHtml("");
-          this.form = Object.assign({}, defaultForm);
-          this.$router.back();
+          // this.$refs.editor.setHtml("");
+          // this.form = Object.assign({}, defaultForm);
+          this.$emit("submit");
         });
+    },
+    cancel() {
+      this.$Modal.confirm({
+        title: "提示",
+        content: "确定取消吗？",
+        onOk: () => {
+          this.$emit("submit");
+        }
+      });
     },
     editorChange(html, text) {
       // console.log(html, text);
@@ -156,8 +236,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .submit {
-  display: block;
-  margin: 0 auto;
+  margin-left: 100px;
 }
 /deep/.ivu-select-dropdown {
   z-index: 99999;

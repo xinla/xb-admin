@@ -1,22 +1,32 @@
 <template>
   <div>
     <div style="margin-bottom: 15px;">
-      <Button type="primary" @click="isModal = true">新建版本</Button>
-      <Select v-model="type" class="right fr" style="width:150px;" placeholder="请选择状态">
+      <Button type="primary" @click="isModal = true, form = {}">新建版本</Button>
+      <Select
+        v-model="query.type"
+        class="right fr"
+        style="width:150px;"
+        placeholder="请选择状态"
+        @on-change="getData()"
+      >
         <Option v-for="(item, index) in typeList" :value="item.value" :key="index">{{ item.label }}</Option>
       </Select>
     </div>
 
     <Table border :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="content">
-        <div v-html="row.content"></div>
+        <div v-html="row.content" class="oe"></div>
       </template>
-      <template slot-scope="{ row }" slot="type">
-        <Tag :color="typeList[row.type].color">{{typeList[row.type].label}}</Tag>
+      <template slot-scope="{ row }" slot="type" v-if="row.type">
+        <Tag
+          v-for="(item, index) of row.type.split(',')"
+          :color="typeList[item].color"
+          :key="index"
+        >{{typeList[item].label}}</Tag>
       </template>
       <template slot-scope="{ row }" slot="forceUpdate">{{row.forceUpdate === 0 ? "是" : "否"}}</template>
       <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row.id)">编辑</Button>
+        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row)">编辑</Button>
         <Button type="error" size="small" @click="remove(row, index)">删除</Button>
       </template>
     </Table>
@@ -29,9 +39,13 @@
       @on-change="getData"
     />
 
-    <Modal v-model="isModal" title="新建版本">
-      <create :form="form" :key="0" />
-    </Modal>
+    <!-- <Modal v-model="isModal" title="新建版本" style="width: 50%;">
+      <create :form="form" :key="0" @submit="getData()"/>
+    </Modal>-->
+    <dialogBox v-model="isModal">
+      <div slot="title">新建版本</div>
+      <create :formData="form" :key="form.id || 0" @submit="getData()" />
+    </dialogBox>
   </div>
 </template>
 
@@ -53,7 +67,8 @@ export default {
     return {
       query: {
         page: 1,
-        size: 10
+        size: 10,
+        type: ""
       },
       loading: false,
       columns: [
@@ -124,8 +139,7 @@ export default {
           label: "Web",
           color: "error"
         }
-      ],
-      type: 0
+      ]
     };
   },
   mounted() {
@@ -140,6 +154,7 @@ export default {
         console.log("VersionPage: ", data);
         this.list = data.list;
         this.total = data.total;
+        this.isModal = false;
       });
     },
     remove(item, index) {
@@ -156,11 +171,20 @@ export default {
         }
       });
     },
-    edit(id) {
-      this.$router.push({ name: "createVersion", query: { id } });
+    edit(data) {
+      this.isModal = true;
+      this.form = data;
     }
   }
 };
 </script>
 <style lang="less" scoped>
+/deep/.oe * {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/deep/.dialog {
+  max-height: none !important;
+}
 </style>

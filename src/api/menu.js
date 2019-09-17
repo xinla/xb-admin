@@ -162,3 +162,16 @@ export const getMenuDetail = (id) => {
     method: 'get'
   })
 }
+
+/**
+ * 
+ * @param {*} menuId * 菜单id
+ * @param {*} applicatonIds * 应用id 数组 1,2,3
+ */
+export const saveApplicationForMenu = (menuId, applicatonIds) => {
+  return axios.request({
+    url: service + `/saveApplicationForMenu`,
+    data: {menuId, applicatonIds},
+    method: 'post'
+  })
+}

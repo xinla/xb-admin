@@ -1,29 +1,63 @@
 <template>
   <div>
     <div style="margin-bottom: 15px;">
-      <Select v-model="type" style="width:150px; margin-right:10px;" placeholder="请选择类型">
+      <Select
+        v-model="query.type"
+        style="width:150px; margin-right:10px;"
+        placeholder="请选择类型"
+        @on-change="getData()"
+      >
+        <Option value>全部</Option>
         <Option v-for="(item, index) in typeList" :value="item.value" :key="index">{{ item.label }}</Option>
       </Select>
-      <Select v-model="status" style="width:150px;" placeholder="请选择状态">
-        <Option v-for="(item, index) in typeList" :value="item.value" :key="index">{{ item.label }}</Option>
+      <Select
+        v-model="query.status"
+        style="width:150px;"
+        placeholder="请选择状态"
+        @on-change="getData()"
+      >
+        <Option value>全部</Option>
+        <Option
+          v-for="(item, index) in statusList"
+          :value="item.value"
+          :key="index"
+        >{{ item.label }}</Option>
       </Select>
       <div class="right fr">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="goDetail(row.id)">处理</Button>
-        <Button type="warning" size="small" style="margin-right: 5px" @click="goDetail(row.id)">关闭</Button>
-        <Button type="error" size="small" style="margin-right: 5px" @click="goDetail(row.id)">删除</Button>
+        <Button type="primary" size="small" style="margin-right: 5px" @click="multEdit(1)">处理</Button>
+        <Button type="warning" size="small" style="margin-right: 5px" @click="multEdit(2)">关闭</Button>
+        <Button type="error" size="small" style="margin-right: 5px" @click="multEdit(0)">删除</Button>
       </div>
     </div>
 
-    <Table border :loading="loading" :columns="columns" :data="list">
+    <Table
+      border
+      :loading="loading"
+      :columns="columns"
+      :data="list"
+      @on-selection-change="selectChange"
+    >
       <template slot-scope="{ row }" slot="type">{{row.type | type}}</template>
       <template slot-scope="{ row }" slot="status">
         <Tag :color="statusList[row.status].color">{{statusList[row.status].label}}</Tag>
       </template>
       <template slot-scope="{ row }" slot="action">
-        <Button type="info" size="small" style="margin-right: 5px" @click="goDetail(row.id)">详情</Button>
-        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row, 1)">处理</Button>
-        <Button type="warning" size="small" style="margin-right: 5px" @click="edit(row, 2)">关闭</Button>
-        <Button type="error" size="small" style="margin-right: 5px" @click="edit(row, type)">删除</Button>
+        <Button type="info" size="small" style="margin-right: 5px" @click="goDetail(row)">详情</Button>
+        <Button
+          type="primary"
+          size="small"
+          :disabled="row.status != 0"
+          style="margin-right: 5px"
+          @click="edit(row, 1)"
+        >处理</Button>
+        <Button
+          type="warning"
+          size="small"
+          :disabled="row.status > 1"
+          style="margin-right: 5px"
+          @click="edit(row, 2)"
+        >关闭</Button>
+        <Button type="error" size="small" style="margin-right: 5px" @click="edit(row, 3)">删除</Button>
       </template>
     </Table>
 
@@ -35,18 +69,64 @@
       @on-change="getData"
     />
 
-    <Modal
-        v-model="isModal"
-        title="反馈详情">
-        <detail :form="form" :key="form.id || 0"/>
-    </Modal>
+    <dialogBox v-model="isModal">
+      <div slot="title">反馈详情</div>
+      <Form ref="form" :label-width="80">
+        <FormItem label="类型：">{{form.type | type}}</FormItem>
+        <FormItem label="当前状态：">
+          <Tag :color="transStatus(form.status).color">{{transStatus(form.status).label}}</Tag>
+        </FormItem>
+        <FormItem label="反馈人：">{{form.companyName}} {{form.userName}}</FormItem>
+        <FormItem label="反馈时间：">{{form.createTime}}</FormItem>
+        <FormItem label="内容：">{{form.content}}</FormItem>
+        <FormItem label="图片：">
+          <img
+            class="img"
+            v-for="(item, index) in (form.imgUrl ? form.imgUrl.split(',') : [])"
+            :src="item"
+            :key="index"
+          />
+        </FormItem>
+        <FormItem label>
+          <Button
+            type="primary"
+            size="small"
+            :disabled="form.status < 1"
+            style="margin-right: 20px"
+            @click="edit(form, 1)"
+          >处理</Button>
+          <Button
+            type="warning"
+            size="small"
+            :disabled="form.status >= 1"
+            style="margin-right: 20px"
+            @click="edit(form, 2)"
+          >关闭</Button>
+          <Button type="error" size="small" style="margin-right: 20px" @click="edit(form, 3)">删除</Button>
+          <Button type="info" size="small" style="margin-right: 20px" @click="isModal = false">取消</Button>
+        </FormItem>
+      </Form>
+    </dialogBox>
   </div>
 </template>
 
 <script>
-import { saveFeedback, getFeedbackPage } from "@/api/systemHelp";
-import detail from "./detail"
+import {
+  saveFeedback,
+  getFeedbackPage,
+  multSaveFeedback
+} from "@/api/systemHelp";
 
+const defaultForm = {
+  type: 0, // 0 建议，1 问题
+  content: "",
+  imgUrl: "",
+  modelData: "",
+  userId: "",
+  companyId: "",
+  createTime: "",
+  status: 0
+};
 const type = [
   {
     label: "建议",
@@ -60,6 +140,7 @@ const type = [
 export default {
   filters: {
     type(val) {
+      val || (val = 0);
       return type[val].label;
     }
   },
@@ -68,7 +149,9 @@ export default {
       loading: false,
       query: {
         page: 1,
-        size: 10
+        size: 10,
+        type: "",
+        status: ""
       },
       columns: [
         {
@@ -105,12 +188,12 @@ export default {
         },
         {
           title: "所属用户",
-          key: "userId",
+          key: "userName",
           align: "center"
         },
         {
           title: "所属租户",
-          key: "companyId",
+          key: "companyName",
           align: "center"
         },
         {
@@ -127,23 +210,23 @@ export default {
       statusList: [
         {
           value: 0,
-          label: '未处理',
-          color: 'default'
+          label: "未处理",
+          color: "default"
         },
         {
           value: 1,
-          label: '已处理',
-          color: 'success'
+          label: "已处理",
+          color: "success"
         },
         {
           value: 2,
-          label: '已关闭',
-          color: 'error'
-        },
+          label: "已关闭",
+          color: "error"
+        }
       ],
-      isModal: true,
-      form: {},
-      type: 0
+      isModal: false,
+      form: Object.assign({}, this.defaultForm),
+      selectData: []
     };
   },
   mounted() {
@@ -160,22 +243,51 @@ export default {
         this.total = res.total;
       });
     },
-    goDetail(id) {
+    goDetail(data) {
+      this.isModal = true;
+      this.form = data;
     },
     edit(data, type) {
-      data.status = type
-        saveFeedback(data).then((res) => {
-          
-        })
-      if (type === 1) {
+      let form = Object.assign({}, data);
+      if (type != 3) {
+        form.status = type;
       } else {
-        
+        form.isDel = 1;
       }
+      saveFeedback(form).then(res => {
+        this.$Message.success("操作成功");
+        this.isModal = false;
+        this.getData();
+      });
+    },
+    multEdit(type) {
+      let status = "";
+      let isDelete = "";
+      if (type) {
+        status = type;
+      } else {
+        isDelete = 1;
+      }
+      multSaveFeedback(this.selectData, status, isDelete).then(res => {
+        this.$Message.success("操作成功");
+        this.getData();
+      });
+    },
+    selectChange(data) {
+      this.selectData = data;
+    },
+    transStatus(val) {
+      // console.log(val)
+      val || (val = 0);
+      return this.statusList[val];
     }
   }
 };
 </script>
 <style lang="less" scoped>
+/deep/.dialog {
+  width: 40vw;
+}
 .img {
   width: 70px;
   height: 70px;

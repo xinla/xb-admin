@@ -7,9 +7,10 @@ const service = config.services.version
  * 获取版本分页列表
  * @param {*} param0 
  */
-export const getVersionPage = ({page, size}) => {
+export const getVersionPage = ({ page, size, type }) => {
   return axios.request({
     url: service + `/findAll/${page}/${size}`,
+    params: { type },
     method: 'get'
   })
 }
