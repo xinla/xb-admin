@@ -115,6 +115,11 @@
   line-height: 21px;
   text-align: center;
 }
+// iview 下拉菜单列表过多支持滚动
+/deep/.ivu-select-dropdown{
+  max-height: 200px;
+  overflow: auto;
+}
 </style>
 <style lang="less">
 .apps-manage {
@@ -157,7 +162,7 @@
   <div class="apps-manage">
     <div class="menu-apps">
       <div class="all-menu-wrap">
-        <Select v-model="meunType1" style="width:45%; margin-right: 8%;">
+        <Select v-model="meunType1" style="width:45%; margin-right: 8%;" @on-change="getAllMenu()">
           <Option v-for="(value, key) in typeList" :value="+key" :key="key">{{ value }}</Option>
         </Select>
         <Select v-model="meunType2" style="width:45%">
@@ -188,6 +193,7 @@
           <div class="apps-table">
             <Table
               ref="organUserList"
+              :loading="loading"
               :columns="columns"
               :data="applicantionList"
               @on-selection-change="selectChange"
@@ -382,7 +388,8 @@ export default {
       menuFormChildren: Object.assign({}, defaultMenuFormChildren),
       allMenu: [],
       addApplicantionsList: [],
-      allApplicantions: []
+      allApplicantions: [],
+      loading: false
     };
   },
   mounted() {
@@ -506,15 +513,17 @@ export default {
       })
     },
     getData(data) {
-      console.log(data);
+      // console.log(data);
       this.query = {
         keyword: "",
         page: 1,
         size: 100,
         pid: data.id
       };
+      this.loading = true
       getApplicationPage(this.query).then(res => {
         // console.log("ApplicationPage：", res)
+        this.loading = false
         this.total = res.total;
         this.applicantionList = res.records;
       });
@@ -539,7 +548,7 @@ export default {
     },
     editMenu(data) {
       this.isMenu = true;
-      console.log("editMenu: ", data);
+      // console.log("editMenu: ", data);
       // this.menuForm = Object.assign({}, defaultMenuForm);
       if (data) {
         getMenuDetail(data.id).then(res => {
@@ -553,7 +562,7 @@ export default {
     },
     addChildMenu(data) {
       this.isMenu = true;
-      console.log("addChildMenu: ", data);
+      // console.log("addChildMenu: ", data);
       this.menuForm = Object.assign({}, defaultMenuForm);
       this.menuForm.pName = data.name;
       this.menuForm.pid = data.id;
@@ -582,11 +591,10 @@ export default {
       // console.log('isSelect: ', this.menuForm.isSelect)
     },
     clickMenu1(data) {
-      console.log(1)
       this.$set(this.menuForm, "isSelect", !this.menuForm.isSelect);
       this.menuForm.pid = data.id;
       this.$set(this.menuForm, "pName", data.name);
-      console.log("isSelect: ", data);
+      // console.log("isSelect: ", data);
     },
     showApplicantion() {
       if (!this.query.pid) {
@@ -594,7 +602,7 @@ export default {
         return
       }
       getApplicationListByMenuId(this.query.pid).then(res => {
-        console.log("allApplicationPage：", res.records);
+        // console.log("allApplicationPage：", res.records);
         this.isApplicantion = true;
         this.addApplicantionsList = [...this.applicantionList]
         this.allApplicantions = res.records;

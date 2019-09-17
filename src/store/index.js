@@ -9,7 +9,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     //
-    moreMenuId: '' // 用于控制当前更多菜单的显示位置
+    moreMenuId: '', // 用于控制当前更多菜单的显示位置
+    currentMenuId: ''
   },
   mutations: {
     //

@@ -24,9 +24,9 @@
         >{{ item.label }}</Option>
       </Select>
       <div class="right fr">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="multEdit(1)">处理</Button>
-        <Button type="warning" size="small" style="margin-right: 5px" @click="multEdit(2)">关闭</Button>
-        <Button type="error" size="small" style="margin-right: 5px" @click="multEdit(0)">删除</Button>
+        <Button type="primary" size="small" :disabled="!this.selectData.length" style="margin-right: 5px" @click="multEdit(1)">处理</Button>
+        <Button type="warning" size="small" :disabled="!this.selectData.length" style="margin-right: 5px" @click="multEdit(2)">关闭</Button>
+        <Button type="error" size="small" :disabled="!this.selectData.length" style="margin-right: 5px" @click="multEdit(0)">删除</Button>
       </div>
     </div>
 
@@ -271,6 +271,7 @@ export default {
       multSaveFeedback(this.selectData, status, isDelete).then(res => {
         this.$Message.success("操作成功");
         this.getData();
+        this.selectData = []
       });
     },
     selectChange(data) {

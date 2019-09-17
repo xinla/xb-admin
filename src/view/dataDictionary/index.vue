@@ -2,7 +2,12 @@
   <div>
     <Row>
       <Col span="12">
-        <Input v-model="query.keyword" placeholder="输入键和值的关键字并按回车键进行搜索" style="width:73%; margin-right: 10px;" @on-enter="getData(1)"/>
+        <Input
+          v-model="query.keyword"
+          placeholder="输入键和值的关键字并按回车键进行搜索"
+          style="width:73%; margin-right: 10px;"
+          @on-enter="getData(1)"
+        />
         <!-- <Button type="info" @click="getData(1)">搜索</Button> -->
       </Col>
       <Col span="12" class="ar">
@@ -232,6 +237,12 @@ export default {
       }
     },
     add() {
+      for (const iterator of this.list) {
+        if (iterator.isEdit) {
+          this.$Message.error("请保存当前编辑项后再添加");
+          return
+        }
+      }
       this.list.unshift({ isEdit: true, status: 1 });
     },
     edit(type) {
@@ -288,7 +299,6 @@ export default {
           data.sort = sort;
           this.list[index] = data;
           this.list.splice(index - 1, 1, move);
-
         }
         // console.log(1, move)
         saveDataDitionary(move);
@@ -305,14 +315,25 @@ export default {
       }
       deleteDataDitionary(selected).then(res => {
         this.$Message.success("操作成功");
-        this.isAll = false
+        this.isAll = false;
         this.getData();
       });
     },
     save(data) {
-      data.status == null && (data.status = 1)
+      data.status == null && (data.status = 1);
+      if (!data.relationTable) {
+        this.$Message.error("关连表不能为空");
+        return;
+      } else if (!data.relationField) {
+        this.$Message.error("关连字段不能为空");
+        return;
+      } else if (!data.keyPair || !data.valuePair) {
+        this.$Message.error("键、值不能为空");
+        return;
+      }
+
       saveDataDitionary(data).then(res => {
-        data.id = res
+        data.id = res;
         data.isEdit = false;
         this.$Message.success("保存成功");
       });
@@ -350,16 +371,16 @@ export default {
       this.type = type;
       switch (type) {
         case 0:
-          this.keyword = item.relationTable || '';
+          this.keyword = item.relationTable || "";
           break;
         case 1:
-          this.keyword = item.relationField || '';
+          this.keyword = item.relationTable || "";
           break;
         case 2:
-          this.keyword = item.supplierName || '';
+          this.keyword = item.supplierName || "";
           break;
         case 3:
-          this.keyword = item.companyName || '';
+          this.keyword = item.companyName || "";
           break;
         default:
           break;
@@ -420,7 +441,7 @@ table {
   }
 }
 
-.select-table table{
+.select-table table {
   border: 1px solid #eee;
   border-collapse: collapse;
   td {
