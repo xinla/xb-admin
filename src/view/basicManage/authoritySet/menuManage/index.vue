@@ -116,7 +116,7 @@
   text-align: center;
 }
 // iview 下拉菜单列表过多支持滚动
-/deep/.ivu-select-dropdown{
+/deep/.ivu-select-dropdown {
   max-height: 200px;
   overflow: auto;
 }
@@ -219,7 +219,8 @@
         </FormItem>
         <FormItem label="匹配位置" v-show="menuForm.pid == 0">
           <Select v-model="menuForm.position" placeholder="请输入匹配位置">
-            <Option v-for="item in typeList" :value="item" :key="item">{{ item }}</Option>
+            <Option :value="0" :key="0">管理面板</Option>
+            <Option :value="1" :key="1">工作台</Option>
           </Select>
         </FormItem>
         <FormItem label="菜单名称">
@@ -250,7 +251,7 @@
           </Dropdown>
         </FormItem>
         <FormItem label="ICON">
-          <Upload
+          <!-- <Upload
             :action="$config.services.upload"
             :format="['png','gif','jpg']"
             :show-upload-list="false"
@@ -272,7 +273,17 @@
           >
             <img class="logo" v-if="menuForm.appImageUrl" :src="menuForm.appImageUrl" />
             <div v-else class="upload-icon cp">APP</div>
-          </Upload>
+          </Upload>-->
+
+          <div class="bfc-d" style="margin: 0 20px 20px 0;" @click="showUpload('webImageUrl')">
+            <img class="logo" v-if="menuForm.webImageUrl" :src="menuForm.webImageUrl" />
+            <div v-else class="upload-icon cp">web</div>
+          </div>
+
+          <div class="bfc-d" @click="showUpload('appImageUrl')">
+            <img class="logo" v-if="menuForm.appImageUrl" :src="menuForm.appImageUrl" />
+            <div v-else class="upload-icon cp">app</div>
+          </div>
         </FormItem>
       </Form>
       <div class="demo-drawer-footer ar">
@@ -295,6 +306,30 @@
         <Button type="primary" @click="addApplicantion()">确定</Button>
       </div>
     </Drawer>
+
+    <!-- 上传图片弹窗 -->
+    <dialogBox v-model="upload.show">
+      <div slot="title">图片上传</div>
+      <Form style="width: 20vw;">
+        <FormItem>
+          <Input v-model="iconUrl" placeholder="请输入图片地址" style="width: 70%; margin-right: 10px;" />
+          <Upload
+            :action="$config.services.upload"
+            :format="['png','gif','jpg']"
+            :show-upload-list="false"
+            :on-success="uploadSuccess"
+            :on-format-error="formatError"
+            style="display:inline-block;"
+          >
+            <Button icon="ios-cloud-upload-outline">上传</Button>
+          </Upload>
+        </FormItem>
+      </Form>
+      <div class="demo-drawer-footer ar">
+        <Button style="margin-right: 8px" @click="upload.show = false">取消</Button>
+        <Button type="primary" @click="uploadIcon">确定</Button>
+      </div>
+    </dialogBox>
   </div>
 </template>
 <script>
@@ -385,11 +420,17 @@ export default {
       isMenu: false,
       isApplicantion: false,
       menuForm: Object.assign({}, defaultMenuForm),
-      menuFormChildren: Object.assign({}, defaultMenuFormChildren),
+      // menuFormChildren: Object.assign({}, defaultMenuFormChildren),
       allMenu: [],
       addApplicantionsList: [],
       allApplicantions: [],
-      loading: false
+      loading: false, // 应用列表加载loading
+      // 显隐上传icon弹窗
+      upload: {
+        show: false,
+        terminal: 0 // 适用终端 0:web 1:app 2:pad 3:小程序 默认web
+      },
+      iconUrl: ""
     };
   },
   mounted() {
@@ -488,29 +529,29 @@ export default {
         this.$Message.success("操作成功");
       });
     },
-    uploadSuccessWeb(response, file, fileList) {
-      this.$set(this.menuForm, "webImageUrl", response.result.fileUrl);
-      // this.menuForm.webImageUrl = response.result.fileUrl;
-      // console.log(response, file)
-    },
-    uploadSuccessApp(response, file, fileList) {
-      this.$set(this.menuForm, "appImageUrl", response.result.fileUrl);
-      // this.menuForm.appImageUrl = response.result.fileUrl;
-      // console.log(response, file)
-    },
+    // uploadSuccessWeb(response, file, fileList) {
+    //   this.$set(this.menuForm, "webImageUrl", response.result.fileUrl);
+    //   // this.menuForm.webImageUrl = response.result.fileUrl;
+    //   // console.log(response, file)
+    // },
+    // uploadSuccessApp(response, file, fileList) {
+    //   this.$set(this.menuForm, "appImageUrl", response.result.fileUrl);
+    //   // this.menuForm.appImageUrl = response.result.fileUrl;
+    //   // console.log(response, file)
+    // },
     formatError() {
       this.$Message.error("文件格式错误，仅限[jpg,png,gif]格式的文件");
     },
     addApplicantion() {
       this.isApplicantion = false;
-      let applicatonIds = []
+      let applicatonIds = [];
       for (const iterator of this.addApplicantionsList) {
-        applicatonIds.push(iterator.id)
+        applicatonIds.push(iterator.id);
       }
-      applicatonIds += ''
+      applicatonIds += "";
       saveApplicationForMenu(this.query.pid, applicatonIds).then(res => {
         this.$Message.success("操作成功");
-      })
+      });
     },
     getData(data) {
       // console.log(data);
@@ -520,10 +561,10 @@ export default {
         size: 100,
         pid: data.id
       };
-      this.loading = true
+      this.loading = true;
       getApplicationPage(this.query).then(res => {
         // console.log("ApplicationPage：", res)
-        this.loading = false
+        this.loading = false;
         this.total = res.total;
         this.applicantionList = res.records;
       });
@@ -599,14 +640,33 @@ export default {
     showApplicantion() {
       if (!this.query.pid) {
         this.$Message.warning("请点击选择要添加菜单项");
-        return
+        return;
       }
       getApplicationListByMenuId(this.query.pid).then(res => {
         // console.log("allApplicationPage：", res.records);
         this.isApplicantion = true;
-        this.addApplicantionsList = [...this.applicantionList]
+        this.addApplicantionsList = [...this.applicantionList];
         this.allApplicantions = res.records;
       });
+    },
+    /**
+     * 显示上传图标弹窗
+     * classify 菜单类型,0菜单,1操作,2目录,3应用
+     * terminal 适用终端 0:web 1:app 2:pad 3:小程序 默认web
+     */
+    showUpload(terminal) {
+      this.upload = {
+        show: true,
+        terminal
+      };
+    },
+    uploadSuccess(response, file, fileList) {
+      this.iconUrl = response.result.fileUrl;
+      // console.log(response, file)
+    },
+    uploadIcon() {
+      this.$set(this.menuForm, this.upload.terminal, this.iconUrl);
+      this.upload.show = false;
     }
   }
 };

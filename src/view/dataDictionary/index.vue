@@ -18,7 +18,7 @@
         <Button type="info" @click="edit(2)">下移</Button>
       </Col>
     </Row>
-    <table class="ac">
+    <table class="al">
       <tr>
         <th>
           <Checkbox v-model="isAll" @on-change="choiceAll"></Checkbox>
@@ -438,6 +438,7 @@ table {
   }
   th {
     // width: 1;
+    padding-left: 8px;
   }
 }
 
