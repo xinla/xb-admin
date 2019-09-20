@@ -23,10 +23,29 @@
           :key="index"
         >{{ item.label }}</Option>
       </Select>
+
       <div class="right fr">
-        <Button type="primary" size="small" :disabled="!this.selectData.length" style="margin-right: 5px" @click="multEdit(1)">处理</Button>
-        <Button type="warning" size="small" :disabled="!this.selectData.length" style="margin-right: 5px" @click="multEdit(2)">关闭</Button>
-        <Button type="error" size="small" :disabled="!this.selectData.length" style="margin-right: 5px" @click="multEdit(0)">删除</Button>
+        <Button
+          type="primary"
+          size="small"
+          :disabled="!this.selectData.length && disabled !== 'disDispose'"
+          style="margin-right: 5px"
+          @click="multEdit(1)"
+        >处理</Button>
+        <Button
+          type="warning"
+          size="small"
+          :disabled="!this.selectData.length && disabled !== 'disClose'"
+          style="margin-right: 5px"
+          @click="multEdit(2)"
+        >关闭</Button>
+        <Button
+          type="error"
+          size="small"
+          :disabled="!this.selectData.length"
+          style="margin-right: 5px"
+          @click="multEdit(0)"
+        >删除</Button>
       </div>
     </div>
 
@@ -229,6 +248,20 @@ export default {
       selectData: []
     };
   },
+  computed: {
+    disabled() {
+      // type 0删除 1处理 2关闭
+      for (const iterator of this.selectData) {
+        if (iterator.status != 0) {
+          // this.$Message.error("所选项存在非未处理项，不可进行处理操作");
+          return "disDispose";
+        } else if (iterator.status == 0) {
+          // this.$Message.error("所选项存在已关闭项，不可进行关闭操作");
+          return "disClose";
+        }
+      }
+    }
+  },
   mounted() {
     this.getData();
   },
@@ -237,7 +270,7 @@ export default {
       page && (this.query.page = page);
       this.loading = true;
       getFeedbackPage(this.query).then(res => {
-        console.log("FeedbackPage: ", res);
+        // console.log("FeedbackPage: ", res);
         this.loading = false;
         this.list = res.list;
         this.total = res.total;
@@ -254,6 +287,20 @@ export default {
       } else {
         form.isDel = 1;
       }
+      if (form.isDel) {
+        this.$Modal.confirm({
+          title: "提示",
+          content: "确定要删除吗",
+          onOk: () => {
+            saveFeedback(form).then(res => {
+              this.$Message.success("操作成功");
+              this.isModal = false;
+              this.getData();
+            });
+          }
+        });
+        return;
+      }
       saveFeedback(form).then(res => {
         this.$Message.success("操作成功");
         this.isModal = false;
@@ -268,10 +315,24 @@ export default {
       } else {
         isDelete = 1;
       }
+      if (isDelete) {
+        this.$Modal.confirm({
+          title: "提示",
+          content: "确定要删除吗",
+          onOk: () => {
+            multSaveFeedback(this.selectData, status, isDelete).then(res => {
+              this.$Message.success("操作成功");
+              this.getData();
+              this.selectData = [];
+            });
+          }
+        });
+        return;
+      }
       multSaveFeedback(this.selectData, status, isDelete).then(res => {
         this.$Message.success("操作成功");
         this.getData();
-        this.selectData = []
+        this.selectData = [];
       });
     },
     selectChange(data) {

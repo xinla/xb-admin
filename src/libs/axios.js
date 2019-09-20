@@ -98,7 +98,7 @@ class HttpRequest {
         addErrorLog(error.response)
       } else {
         Message.error({
-          content: `网络错误或服务器拒绝连接`,
+          content: `服务器未启动或连接超时`,
           duration: 3
         })
       }

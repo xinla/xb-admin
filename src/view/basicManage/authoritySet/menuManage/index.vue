@@ -165,9 +165,9 @@
         <Select v-model="meunType1" style="width:45%; margin-right: 8%;" @on-change="getAllMenu()">
           <Option v-for="(value, key) in typeList" :value="+key" :key="key">{{ value }}</Option>
         </Select>
-        <Select v-model="meunType2" style="width:45%">
-          <Option :value="0" :key="0">管理面板</Option>
-          <Option :value="1" :key="1">工作台</Option>
+        <Select v-model="meunType2" style="width:45%" @on-change="getAllMenu()">
+          <Option value="管理面板" :key="0">管理面板</Option>
+          <Option value="工作台" :key="1">工作台</Option>
         </Select>
         <Button type="primary" long style="margin: 10px 0;" @click="editMenu()">+ 新建菜单</Button>
 
@@ -213,15 +213,17 @@
       <div slot="title">{{menuForm.id ? '编辑' : '新建'}}{{menuForm.pid && '子'}}菜单</div>
       <Form :model="menuForm" label-position="left" :label-width="80" style="width: 20vw;">
         <FormItem label="所属行业" v-show="menuForm.pid == 0">
-          <Select v-model="menuForm.type" placeholder="请输入行业名称">
+          <div>{{typeList[menuForm.type]}}</div>
+          <!-- <Select v-model="menuForm.type" placeholder="请输入行业名称" disabled>
             <Option v-for="(value, key) in typeList" :value="+key" :key="key">{{ value }}</Option>
-          </Select>
+          </Select> -->
         </FormItem>
         <FormItem label="匹配位置" v-show="menuForm.pid == 0">
-          <Select v-model="menuForm.position" placeholder="请输入匹配位置">
+          <div>{{meunType2}}</div>
+          <!-- <Select v-model="meunType2" placeholder="请输入匹配位置" disabled>
             <Option :value="0" :key="0">管理面板</Option>
             <Option :value="1" :key="1">工作台</Option>
-          </Select>
+          </Select> -->
         </FormItem>
         <FormItem label="菜单名称">
           <Input v-model="menuForm.name" placeholder="请输入菜单名称" />
@@ -409,7 +411,7 @@ export default {
       applicantionList: [],
       selectData: [],
       meunType1: 1, // 业务类型   2:保险,1:Saas,0:信贷,3:基金;4:理财
-      meunType2: "",
+      meunType2: '管理面板',
       typeList: {
         0: "信贷",
         1: "Saas",
@@ -456,8 +458,15 @@ export default {
           return data;
         }
         recursiveGetMenu.call(this, res).then(_res => {
-          // console.log("_res:", _res);
-          this.allMenu = _res;
+          console.log("_res:", _res);
+          // this.allMenu = _res;
+
+          for (const iterator of _res) {
+            if (iterator.name == this.meunType2) {
+              this.allMenu = iterator
+              break
+            }
+          }
         });
       });
     },

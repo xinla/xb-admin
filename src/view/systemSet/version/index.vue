@@ -9,6 +9,7 @@
         placeholder="请选择状态"
         @on-change="getData()"
       >
+      <Option value>全部</Option>
         <Option v-for="(item, index) in typeList" :value="item.value" :key="index">{{ item.label }}</Option>
       </Select>
     </div>
