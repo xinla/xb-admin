@@ -463,7 +463,9 @@ export default {
 
           for (const iterator of _res) {
             if (iterator.name == this.meunType2) {
-              this.allMenu = iterator
+              this.allMenu = iterator.children
+              // 设置默认一级菜单id
+              this.menuForm.pid = iterator.id
               break
             }
           }

@@ -28,14 +28,14 @@
         <Button
           type="primary"
           size="small"
-          :disabled="!this.selectData.length && disabled !== 'disDispose'"
+          :disabled="!this.selectData.length || disDispose"
           style="margin-right: 5px"
           @click="multEdit(1)"
         >处理</Button>
         <Button
           type="warning"
           size="small"
-          :disabled="!this.selectData.length && disabled !== 'disClose'"
+          :disabled="!this.selectData.length || disClose"
           style="margin-right: 5px"
           @click="multEdit(2)"
         >关闭</Button>
@@ -110,14 +110,14 @@
           <Button
             type="primary"
             size="small"
-            :disabled="form.status < 1"
+            :disabled="form.status != 0"
             style="margin-right: 20px"
             @click="edit(form, 1)"
           >处理</Button>
           <Button
             type="warning"
             size="small"
-            :disabled="form.status >= 1"
+            :disabled="form.status > 1"
             style="margin-right: 20px"
             @click="edit(form, 2)"
           >关闭</Button>
@@ -159,6 +159,9 @@ const type = [
 export default {
   filters: {
     type(val) {
+      if (val > 1) {
+        return
+      }
       val || (val = 0);
       return type[val].label;
     }
@@ -249,15 +252,20 @@ export default {
     };
   },
   computed: {
-    disabled() {
+    disDispose() {
       // type 0删除 1处理 2关闭
       for (const iterator of this.selectData) {
         if (iterator.status != 0) {
           // this.$Message.error("所选项存在非未处理项，不可进行处理操作");
-          return "disDispose";
-        } else if (iterator.status == 0) {
+          return true;
+        }
+      }
+    },
+    disClose() {
+      for (const iterator of this.selectData) {
+        if (iterator.status > 1) {
           // this.$Message.error("所选项存在已关闭项，不可进行关闭操作");
-          return "disClose";
+          return true;
         }
       }
     }
