@@ -66,4 +66,34 @@ body {
 .ivu-modal-wrap {
   z-index: 10002 !important;
 }
+
+#app {
+  .ivu-table-wrapper{
+    border: 0;
+    .ivu-table {
+      line-height: 20px;
+      &:after {
+        width: 0;
+      }
+      &::before {
+        height: 0;
+      }
+      th{
+        background:#fff;
+        border-bottom: 0;
+        font-weight: normal;
+        color: #999;
+        height: 44px;
+        text-align: center;
+      }
+      td {
+        border-bottom: 0;
+        color:#333;
+        height: 44px;
+        text-align: center;
+      }
+    }
+  }
+
+}
 </style>

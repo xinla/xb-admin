@@ -115,7 +115,7 @@ export default {
     top: 25px;
     white-space: nowrap;
     line-height: 26px;
-    background: #eee;
+    background: #fff;
     color: #444;
     border-radius: 3px;
   }

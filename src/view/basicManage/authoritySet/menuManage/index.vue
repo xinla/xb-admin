@@ -171,12 +171,16 @@
         </Select>
         <Button type="primary" long style="margin: 10px 0;" @click="editMenu()">+ 新建菜单</Button>
 
-        <menu-item
-          :list="allMenu"
-          :is-more-menu="true"
-          @clickMenu="getData"
-          @clickMoreMenu="clickMoreMenu"
-        ></menu-item>
+        <div style="background: #fff;">
+          <menu-item
+            v-if="allMenu.length"
+            :list="allMenu"
+            :is-more-menu="true"
+            @clickMenu="getData"
+            @clickMoreMenu="clickMoreMenu"
+          ></menu-item>
+          <div v-else>暂无数据</div>
+        </div>
       </div>
 
       <div class="apps-manage-list">
@@ -210,20 +214,20 @@
 
     <!-- 新建/编辑菜单 -->
     <dialogBox v-model="isMenu">
-      <div slot="title">{{menuForm.id ? '编辑' : '新建'}}{{menuForm.pid && '子'}}菜单</div>
+      <div slot="title">{{menuForm.id ? '编辑' : '新建'}}{{menuForm.pid !== allMenu.id && '子'}}菜单</div>
       <Form :model="menuForm" label-position="left" :label-width="80" style="width: 20vw;">
-        <FormItem label="所属行业" v-show="menuForm.pid == 0">
+        <FormItem label="所属行业" v-show="menuForm.pid == allMenu.id">
           <div>{{typeList[menuForm.type]}}</div>
           <!-- <Select v-model="menuForm.type" placeholder="请输入行业名称" disabled>
             <Option v-for="(value, key) in typeList" :value="+key" :key="key">{{ value }}</Option>
-          </Select> -->
+          </Select>-->
         </FormItem>
-        <FormItem label="匹配位置" v-show="menuForm.pid == 0">
+        <FormItem label="匹配位置" v-show="menuForm.pid == allMenu.id">
           <div>{{meunType2}}</div>
           <!-- <Select v-model="meunType2" placeholder="请输入匹配位置" disabled>
             <Option :value="0" :key="0">管理面板</Option>
             <Option :value="1" :key="1">工作台</Option>
-          </Select> -->
+          </Select>-->
         </FormItem>
         <FormItem label="菜单名称">
           <Input v-model="menuForm.name" placeholder="请输入菜单名称" />
@@ -411,7 +415,7 @@ export default {
       applicantionList: [],
       selectData: [],
       meunType1: 1, // 业务类型   2:保险,1:Saas,0:信贷,3:基金;4:理财
-      meunType2: '管理面板',
+      meunType2: "管理面板",
       typeList: {
         0: "信贷",
         1: "Saas",
@@ -463,10 +467,10 @@ export default {
 
           for (const iterator of _res) {
             if (iterator.name == this.meunType2) {
-              this.allMenu = iterator.children
+              this.allMenu = iterator.children || [];
               // 设置默认一级菜单id
-              this.menuForm.pid = iterator.id
-              break
+              this.allMenu.id = iterator.id;
+              break;
             }
           }
         });
@@ -608,7 +612,9 @@ export default {
           this.menuForm = Object.assign({}, res);
         });
       } else {
-        this.menuForm = Object.assign({}, defaultMenuForm);
+        this.menuForm = Object.assign(defaultMenuForm, {
+          pid: this.allMenu.id
+        });
       }
       this.menuForm.type = this.meunType1;
     },

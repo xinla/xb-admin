@@ -190,9 +190,3 @@ export default {
 };
 </script>
 
-<style>
-.ivu-layout {
-  background: #fff !important;
-}
-</style>
-

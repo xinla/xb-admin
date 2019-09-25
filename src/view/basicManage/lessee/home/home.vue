@@ -12,7 +12,7 @@
       </Col>
     </Row>
 
-    <Table border :loading="loading" :columns="columns" :data="list">
+    <Table :loading="loading" :columns="columns" :data="list">
 
       <template slot-scope="{ row }" slot="name">
         <div
