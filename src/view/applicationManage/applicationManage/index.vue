@@ -203,7 +203,7 @@
               show-total
               class-name="a-page"
               :total="total"
-              @on-change="getData()"
+              @on-change="getData"
             />
           </div>
         </div>
