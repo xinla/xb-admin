@@ -540,8 +540,15 @@ export default {
       for (const iterator of this.selectData) {
         selectData.push(iterator.id);
       }
-      deleteMenu(selectData + "", 3).then(res => {
-        this.$Message.success("操作成功");
+      this.$Modal.confirm({
+        title: "提示",
+        content: "确定要删除吗",
+        onOk: () => {
+          deleteMenu(selectData + "", 3).then(res => {
+            this.$Message.success("操作成功");
+            this.getData()
+          });
+        }
       });
     },
     // uploadSuccessWeb(response, file, fileList) {
@@ -570,12 +577,14 @@ export default {
     },
     getData(data) {
       // console.log(data);
-      this.query = {
-        keyword: "",
-        page: 1,
-        size: 100,
-        pid: data.id
-      };
+      if (data) {
+        this.query = {
+          keyword: "",
+          page: 1,
+          size: 100,
+          pid: data.id
+        };
+      }
       this.loading = true;
       getApplicationPage(this.query).then(res => {
         // console.log("ApplicationPage：", res)
@@ -597,6 +606,18 @@ export default {
           break;
         case "moveMenuDown":
           this.moveDown(args[1], args[2]);
+          break;
+        case "remove":
+          this.$Modal.confirm({
+            title: "提示",
+            content: "确定要删除吗",
+            onOk: () => {
+              deleteMenu(args[1].id, 0).then(res => {
+                this.$Message.success("操作成功");
+                args[2].splice(args[2].indexOf(args[1]), 1)
+              });
+            }
+          });
           break;
         default:
           break;

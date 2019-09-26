@@ -19,6 +19,9 @@
             <li
               @click="$emit('clickMoreMenu', ['moveMenuDown', item, list]), $store.state.moreMenuId = ''"
             >下移</li>
+            <li
+              @click="$emit('clickMoreMenu', ['remove', item, list]), $store.state.moreMenuId = ''"
+            >删除</li>
           </ul>
         </div>
         <div @click="clickMenu(item)">{{ item.name }}</div>
