@@ -74,34 +74,6 @@
       }
     }
   }
-  .noData {
-    width: 100%;
-    height: 100%;
-    font-size: 12px;
-    color: #999;
-    text-align: center;
-    position: relative;
-    .center {
-      position: absolute;
-      width: 100%;
-      left: 0;
-      top: 50%;
-      margin-top: -40px;
-      .btn {
-        display: inline-block;
-        color: #fff;
-        font-size: 12px;
-        cursor: pointer;
-        padding: 0 15px;
-        height: 26px;
-        line-height: 26px;
-        margin-top: 20px;
-        border-radius: 4px;
-        background: #6582ff;
-        box-sizing: border-box;
-      }
-    }
-  }
 }
 .logo {
   width: 89px;
@@ -119,6 +91,10 @@
 /deep/.ivu-select-dropdown {
   max-height: 200px;
   overflow: auto;
+}
+.no-data{
+  text-align: center;
+  padding: 100px 0;
 }
 </style>
 <style lang="less">
@@ -179,7 +155,7 @@
             @clickMenu="getData"
             @clickMoreMenu="clickMoreMenu"
           ></menu-item>
-          <div v-else>暂无数据</div>
+          <div v-else class="no-data">暂无数据</div>
         </div>
       </div>
 
@@ -203,11 +179,6 @@
               @on-selection-change="selectChange"
             ></Table>
           </div>
-          <!-- <div v-else class="noData">
-                  <div class="center">
-                    <p>暂无相关数据</p>
-                  </div>
-          </div>-->
         </div>
       </div>
     </div>
@@ -414,7 +385,7 @@ export default {
       ],
       applicantionList: [],
       selectData: [],
-      meunType1: 1, // 业务类型   2:保险,1:Saas,0:信贷,3:基金;4:理财
+      meunType1: 2, // 业务类型   2:保险,1:Saas,0:信贷,3:基金;4:理财
       meunType2: "管理面板",
       typeList: {
         0: "信贷",
@@ -462,7 +433,7 @@ export default {
           return data;
         }
         recursiveGetMenu.call(this, res).then(_res => {
-          console.log("_res:", _res);
+          // console.log("_res:", _res);
           // this.allMenu = _res;
 
           for (const iterator of _res) {
@@ -546,7 +517,7 @@ export default {
         onOk: () => {
           deleteMenu(selectData + "", 3).then(res => {
             this.$Message.success("操作成功");
-            this.getData()
+            this.getData();
           });
         }
       });
@@ -566,13 +537,18 @@ export default {
     },
     addApplicantion() {
       this.isApplicantion = false;
-      let applicatonIds = [];
-      for (const iterator of this.addApplicantionsList) {
-        applicatonIds.push(iterator.id);
-      }
-      applicatonIds += "";
-      saveApplicationForMenu(this.query.pid, applicatonIds).then(res => {
+      // let applicatonIds = [];
+      // for (const iterator of this.addApplicantionsList) {
+      //   applicatonIds.push(iterator.id);
+      // }
+      // applicatonIds += "";
+      // console.log(this.addApplicantionsList);
+      saveApplicationForMenu(
+        this.query.pid,
+        this.addApplicantionsList + ""
+      ).then(res => {
         this.$Message.success("操作成功");
+        this.getData()
       });
     },
     getData(data) {
@@ -614,7 +590,7 @@ export default {
             onOk: () => {
               deleteMenu(args[1].id, 0).then(res => {
                 this.$Message.success("操作成功");
-                args[2].splice(args[2].indexOf(args[1]), 1)
+                args[2].splice(args[2].indexOf(args[1]), 1);
               });
             }
           });
@@ -681,10 +657,15 @@ export default {
         return;
       }
       getApplicationListByMenuId(this.query.pid).then(res => {
-        // console.log("allApplicationPage：", res.records);
+        // console.log("allApplicationPage：", res);
         this.isApplicantion = true;
-        this.addApplicantionsList = [...this.applicantionList];
-        this.allApplicantions = res.records;
+        // 已添加应用
+        let applicatonIds = [];
+        for (const iterator of this.applicantionList) {
+          applicatonIds.push(iterator.id);
+        }
+        this.addApplicantionsList = applicatonIds;
+        this.allApplicantions = res;
       });
     },
     /**

@@ -640,6 +640,7 @@ export default {
         terminal,
         type
       };
+      this.iconUrl = this[this.upload.type][this.upload.terminal]
     },
     uploadSuccess(response, file, fileList) {
       this.iconUrl = response.result.fileUrl;
