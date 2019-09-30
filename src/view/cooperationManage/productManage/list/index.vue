@@ -13,7 +13,6 @@
     </Row>
 
     <Table 
-    border
     :loading="loading"
     :columns="columns"
     :data="list">
