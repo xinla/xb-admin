@@ -37,6 +37,7 @@
                 :show-upload-list="false"
                 :before-upload="beforeUpload"
                 :on-success="uploadSuccess"
+                :on-format-error="formatError"
               >
                 <Button icon="ios-cloud-upload-outline" :loading="upLoading">
                   <span v-if="!upLoading">上传表格</span>
@@ -111,7 +112,7 @@
       </li>
     </ul>-->
 
-    <Table border :loading="loading" :columns="columns" :data="list">
+    <Table :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="cmmonCareer">
         <RadioGroup v-model="row.isCommonOccupation">
           <Radio label="0">不常用</Radio>
@@ -282,6 +283,9 @@ export default {
         return false;
       }
       this.upLoading = true;
+    },
+    formatError() {
+      this.$Message.error("文件格式错误，仅限['.xls','.xlsx']格式的文件");
     },
     uploadSuccess(response, file, fileList) {
       // console.log(response, file, fileList);

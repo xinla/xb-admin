@@ -109,6 +109,12 @@
   line-height: 21px;
   text-align: center;
 }
+/deep/.ivu-tag .ivu-icon-ios-close{
+  visibility: hidden;
+}
+/deep/.ivu-tag:hover .ivu-icon-ios-close{
+  visibility: visible;
+}
 </style>
 <style lang="less">
 .apps-manage {
@@ -169,7 +175,7 @@
             <input
               type="text"
               v-model="query.keywords"
-              @keyup.enter="getData()"
+              @keyup.enter="getData(1)"
               placeholder="搜你想搜、输入文字并按回车键搜索"
             />
           </div>
@@ -195,6 +201,7 @@
                   v-for="(item, index) of row.companyRelationMenuList"
                   :key="index"
                 >{{item.companyName}}</div>
+                <div v-if="row.companyRelationMenuList.length === 0">全部</div>
               </template>
               <template slot-scope="{ row }" slot="level">{{levelList[row.level]}}</template>
             </Table>
@@ -215,9 +222,9 @@
           width="500"
           :styles="styles"
         >
-          <Form :model="applicantForm" label-position="left" :label-width="80">
-            <FormItem label="应用名称">
-              <Input v-model="applicantForm.name" placeholder="请输入功能名称" />
+          <Form ref="applicantForm" :model="applicantForm" :rules="rules" label-position="left" :label-width="80">
+            <FormItem label="应用名称" prop="name">
+              <Input v-model.trim="applicantForm.name" placeholder="请输入功能名称" />
             </FormItem>
             <FormItem label="所属行业" prop="type">
               <RadioGroup v-model="applicantForm.type">
@@ -257,7 +264,7 @@
               </CheckboxGroup>
             </FormItem>
             <FormItem label="Web地址">
-              <Input v-model="applicantForm.menuUrl" placeholder="请输入请求地址" />
+              <Input v-model.trim="applicantForm.menuUrl" placeholder="请输入请求地址" />
             </FormItem>
             <FormItem label="ICON">
               <div
@@ -299,10 +306,10 @@
           width="500"
           :styles="styles"
         >
-          <Form :model="operationForm" label-position="left" :label-width="80">
+          <Form ref="operationForm" :model="operationForm" :rules="rules" label-position="left" :label-width="80">
             <FormItem label="所属应用">{{operationForm.pName}}</FormItem>
-            <FormItem label="操作名称">
-              <Input v-model="operationForm.name" placeholder="请输入功能名称" />
+            <FormItem label="操作名称" prop="name">
+              <Input v-model.trim="operationForm.name" placeholder="请输入功能名称" />
             </FormItem>
             <FormItem label="适用终端" prop="terminal">
               <CheckboxGroup v-model="operationForm.terminal">
@@ -310,7 +317,7 @@
               </CheckboxGroup>
             </FormItem>
             <FormItem label="Web地址">
-              <Input v-model="operationForm.menuUrl" placeholder="请输入请求地址" />
+              <Input v-model.trim="operationForm.menuUrl" placeholder="请输入请求地址" />
             </FormItem>
             <FormItem label="ICON">
               <div
@@ -469,7 +476,17 @@ export default {
       list: [],
       editOperation: {}, // 操作编辑项
       searchLoading: false,
-      lesseeList: []
+      lesseeList: [],
+      rules: {
+        name: [
+          { required: true, message: "不能为空", trigger: "blur" },
+          { max: 10, message: "长度不能超过10个字符", trigger: "blur" },
+        ],
+        type: [{ type: "number", required: true, message: "必选项", trigger: "change" }],
+        level: [{ type: "number", required: true, message: "必选项", trigger: "change" }],
+        terminal: [{ type: "array", required: true, message: "至少选择一项", trigger: "change" },
+        ],
+      }
     };
   },
   mounted() {
@@ -496,6 +513,7 @@ export default {
     },
     // 显隐应用抽屉
     showApplication(data) {
+      this.$refs.applicantForm.resetFields()
       this.isApplicantion = true;
       this.applicantForm = Object.assign({}, defaultApplicationForm);
       if (data) {
@@ -519,17 +537,18 @@ export default {
     },
     // 显隐操作抽屉
     showOperation(data, type) {
+      this.$refs.operationForm.resetFields()
       this.isOperation = true;
       if (type) {
         console.log(data);
         // 编辑操作
         this.editOperation = data;
-        this.operationForm = Object.assign(defaultApplicationForm, data);
+        this.operationForm = Object.assign({}, defaultApplicationForm, data);
         // 适用终端字符串集合转为数组
-        this.operationForm.terminal = data.terminal.split(",");
+        typeof (this.operationForm.terminal) === 'string' && (this.operationForm.terminal = data.terminal.split(","));
 
         // 所属租户字符串集合转为数组
-        this.operationForm.companyIds = data.companyIds && data.companyIds.split(",");
+        typeof data.companyIds === 'string' && (this.operationForm.companyIds = data.companyIds.split(","));
 
         this.operationForm.pName = this.applicantForm.name;
         this.operationForm.pid = this.applicantForm.id;
@@ -592,12 +611,13 @@ export default {
       // 所属租户id数组转为字符串集合
       form.companyIds += "";
       
-      Promise.resolve()
-        .then(() => {
-          if (form.id) {
-            return updateMenu(form);
+      this.$refs[type]
+        .validate()
+        .then((data) => {
+          if (data) {
+            return form.id ? updateMenu(form) : addMenu(form)
           } else {
-            return addMenu(form);
+            return new Promise((resolve, reject) => {});
           }
         })
         .then(res => {
@@ -607,8 +627,9 @@ export default {
           this.selectData = [];
           this.$Message.success("操作成功");
 
-          // 更新编辑后的操作名称
-          this.editOperation.name = this.operationForm.name;
+          // 更新编辑后的操作
+          Object.assign(this.editOperation, this.operationForm)
+          // this.editOperation.name = this.operationForm.name;
           this.getData();
         });
     },
@@ -624,6 +645,7 @@ export default {
         onOk: () => {
           deleteMenu(form + "", 3).then(res => {
             this.$Message.success("操作成功");
+            this.selectData = [];
             this.getData();
           });
         }

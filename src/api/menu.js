@@ -1,7 +1,7 @@
 import axios from '@/libs/api.request'
 import config from '@/config/index'
 
-const service = config.baseUrl.dev1 + config.servicesV2.saas
+const service = config.domainCKF + config.servicesV2.saas
 
 /**
  * 查询菜单
