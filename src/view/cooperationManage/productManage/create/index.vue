@@ -1,15 +1,14 @@
 <template>
 <div ref="container" class="container">
-  
-  <Steps :current="current">
-      <Step title="基本信息" content="基本信息">
-      </Step>
-      <Step title="投保规则" content="投保规则"></Step>
-      <Step title="费率计算" content="费率计算"></Step>
-      <Step title="产品说明" content="产品说明"></Step>
-      <Step title="附加险" content="附加险"></Step>
-      <Step title="产品附件" content="产品附件"></Step>
-  </Steps>
+
+  <div class="button-wrap">
+    <button :class="['button', {current: current == 0}]" type="button" @click="current = 0">基本信息</button>
+    <button :class="['button', {current: current == 1}]" type="button" @click="current = 1">投保规则</button>
+    <button :class="['button', {current: current == 2}]" type="button" @click="current = 2">保费计算器</button>
+    <button :class="['button', {current: current == 3}]" type="button" @click="current = 3">费率表</button>
+    <button :class="['button', {current: current == 4}]" type="button" @click="current = 4">产品说明</button>
+    <button :class="['button', {current: current == 5}]" type="button" @click="current = 5">附加和捆绑</button>
+  </div>
 
   <baseInfo ref="baseInfo" v-show="current === 0" :key="key + 1" />
   <insuranceRules ref="insuranceRules" v-show="current === 1" :key="key + 2" />
