@@ -59,15 +59,7 @@
       flex-direction: column;
       background: #fff;
       flex: 1;
-      padding: 0 0 10px;
       overflow: auto;
-      .apps-table {
-        display: flex;
-        flex-direction: column;
-        background: #fff;
-        flex: 1;
-        overflow-y: auto;
-      }
       .a-page {
         padding: 10px 0 20px;
         font-size: 12px;
@@ -95,6 +87,15 @@
 .no-data{
   text-align: center;
   padding: 100px 0;
+}
+/deep/.ivu-checkbox-group-item {
+    vertical-align: top;
+        width: 105px;
+}
+.app-icon{
+  width: 100px;
+  height: 100px;
+  margin: 10px 15px 15px 0;
 }
 </style>
 <style lang="less">
@@ -168,9 +169,7 @@
           <span class="other" @click="edit(1)">下移</span>
           <span class="other" @click="edit(2)">移出</span>
         </div>
-        <div class="s-title"></div>
         <div class="a-content">
-          <div class="apps-table">
             <Table
               ref="organUserList"
               :loading="loading"
@@ -178,7 +177,6 @@
               :data="applicantionList"
               @on-selection-change="selectChange"
             ></Table>
-          </div>
         </div>
       </div>
     </div>
@@ -276,7 +274,9 @@
           v-for="(item, index) of allApplicantions"
           :label="item.id"
           :key="index"
-        >{{item.name}}</Checkbox>
+        >{{item.name}}
+        <img class="app-icon" v-if="item.webImageUrl" :src="item.webImageUrl" />
+        </Checkbox>
       </CheckboxGroup>
       <div class="demo-drawer-footer ar" style="margin-top: 20px">
         <Button style="margin-right: 8px" @click="isApplicantion = false">取消</Button>
@@ -461,7 +461,7 @@ export default {
         });
         return;
       }
-      if (type !== 2 && this.selectData.length) {
+      if (type !== 2 && this.selectData.length > 1) {
         this.$Notice.destroy();
         this.$Notice.warning({
           title: "只支持操作一种应用"
@@ -609,7 +609,7 @@ export default {
           this.menuForm = Object.assign({}, res);
         });
       } else {
-        this.menuForm = Object.assign(defaultMenuForm, {
+        this.menuForm = Object.assign({}, defaultMenuForm, {
           pid: this.allMenu.id
         });
       }

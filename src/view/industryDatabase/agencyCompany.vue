@@ -259,13 +259,15 @@ export default {
       this.getData();
     },
     edit(data) {
+      console.log(data)
       this.isShow = true;
       this.form = Object.assign({}, form);
       data && (this.form = Object.assign({}, data));
       this.form.provinceName.match(/省/g) || (this.form.provinceName += '省')
       this.form._selectDistrict = [this.form.provinceName, this.form.areaName]
-      // let reg = new RegExp(this.form.provinceName + this.form.areaName, g)
-      this.form._address = this.form.companyAddress
+      let reg = new RegExp(this.form.provinceName + this.form.areaName, 'g')
+      this.form._address = this.form.companyAddress.replace(reg, '')
+      // debugger
     },
     remove(data) {
       this.$Modal.confirm({

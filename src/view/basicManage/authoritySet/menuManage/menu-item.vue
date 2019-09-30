@@ -8,6 +8,9 @@
             :class="{curMore: item.id === $store.state.moreMenuId}"
             @click="$store.state.moreMenuId = $store.state.moreMenuId === item.id ? '' : item.id"
           ></i>
+          <!-- 更多菜单透明遮罩层 -->
+          <div class="mask" v-show="item.id === $store.state.moreMenuId" @click="$store.state.moreMenuId = ''">
+          </div>
           <ul class="more-menu" v-show="item.id === $store.state.moreMenuId">
             <li @click="$emit('clickMoreMenu', ['edit', item]), $store.state.moreMenuId = ''">编辑</li>
             <li
@@ -121,6 +124,7 @@ export default {
     background: #fff;
     color: #444;
     border-radius: 3px;
+    z-index: 1000;
   }
   .current {
     background: #6582ff;
@@ -133,5 +137,9 @@ export default {
   .curMore{
     visibility: visible !important;
   }
+}
+.mask{
+  left: 0;
+  background: none;
 }
 </style>
