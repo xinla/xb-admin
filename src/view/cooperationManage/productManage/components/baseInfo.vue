@@ -1,5 +1,5 @@
 <template>
-  <Form ref="form" :model="form" :label-width="120">
+  <Form ref="form" :model="form" :rules='rules' :label-width="120">
     <Row>
       <Col span="8">
         <FormItem label="产品全称" prop="productFullName">
@@ -32,17 +32,17 @@
       </RadioGroup>
     </FormItem>
 
-    <FormItem label="所属细类" prop="subClass">
-      <div class="sub-calss" v-for="(item, index) of subclass" v-if="index < 4" :key="index">
-        <CheckboxGroup v-model="form.subClass" @on-change="changeSubClassA(index)">
-          <Checkbox :label="item.id">{{item.name}}</Checkbox>
-          <span class="cp" @click="showCheck(index)">+</span>
-        </CheckboxGroup>
+    <FormItem label="所属中类" prop="mainClass">
+      <RadioGroup v-model="form.midClass">
+        <Radio v-for="(item, index) of subclass" :label="item.id" :key="index">{{item.name}}</Radio>
+      </RadioGroup>
+    </FormItem>
+
+    <FormItem label="所属小类" prop="subClass">
+      <div v-for="(item, index) of subclass" v-if="index < 4" :key="index">
         <CheckboxGroup
-          v-show="subClassShow[index]"
-          class="child-check"
+          v-show="form.midClass === item.id"
           v-model="form.subClass"
-          @on-change="changeSubClassB(index)"
         >
           <Checkbox
             v-for="(unit, unique) of item.children"
@@ -113,40 +113,39 @@
       </CheckboxGroup>
     </FormItem>
 
-    <!-- <Row>
-      <Col span="5">
-        <FormItem label="在线投保" prop="onlineType">
-          <div class="tip">复选框与输入框请对应填写，否则会提示信息不完整错误</div>
-          <CheckboxGroup v-model="onlineType">
-            <Checkbox :label="0">现保</Checkbox>
-            <br>
-            <Checkbox :label="1">APP：</Checkbox>
-            <br>
-            <Checkbox :label="2">PC端：</Checkbox>
-            <br>
-            <Checkbox :label="3">H5：</Checkbox>
-            <br>
-            <Checkbox :label="4">小程序：</Checkbox>
-          </CheckboxGroup>
-        </FormItem>
-      </Col>
-      <Col span="8">
-      <br>
-        <template v-for="i in 4">
-          <Input
-            class="inline-input"
-            type="text"
-            v-model="onlineLinkAddress[i]"
-            placeholder="小程序"
-            @on-blur="onlineBlur(i)"
-            :key="i"
-          />
-          <br>
-        </template>
-      </Col>
-    </Row>-->
-    <FormItem label="在线投保">
-      <div class="tip">* 复选框与输入框请对应填写，否则会提示信息不完整错误</div>
+    <FormItem label="是否支持在线投保" prop="mainClass">
+      <RadioGroup v-model="form.mainClass">
+        <Radio :label="0">不支持</Radio>
+        <Radio :label="1">支持</Radio>
+      </RadioGroup>
+    </FormItem>
+
+    <FormItem label="保险公司投保渠道">
+    <Row>
+        <Col span="10">
+          <FormItem label="APP名称">
+            <Input type="text" v-model="form.productFullName" placeholder="APP名称"/>
+          </FormItem>
+        </Col>
+        <Col span="10">
+          <FormItem label="PC网址">
+            <Input type="text" v-model="form.productAbbr" placeholder="PC网址"/>
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span="10">
+          <FormItem label="H5网址">
+            <Input type="text" v-model="form.productCode" placeholder="H5网址"/>
+          </FormItem>
+        </Col>
+        <Col span="10">
+          <FormItem label="小程序">
+            <Input type="text" v-model="form.productCode" placeholder="小程序"/>
+          </FormItem>
+        </Col>
+      </Row>
+      <!-- <div class="tip">* 复选框与输入框请对应填写，否则会提示信息不完整错误</div>
       <CheckboxGroup v-model="onlineType">
         <Checkbox :label="0">现保</Checkbox>
         <br>
@@ -193,10 +192,7 @@
             @on-blur="onlineBlur(4)"
           />
         </Checkbox>
-      </CheckboxGroup>
-    </FormItem>
-    <FormItem label="详情页H5链接" prop="h5Url">
-      <Input class="inline-input" type="text" v-model="form.h5Url" placeholder="H5"/>
+      </CheckboxGroup> -->
     </FormItem>
   </Form>
 </template>
@@ -264,83 +260,16 @@ export default {
         productAbbr: [{ required: true, message: "不能为空", trigger: "blur" }],
         supplierId: [{ required: true, message: "不能为空", trigger: "blur" }],
         name: [{ required: true, message: "不能为空", trigger: "change" }],
-        mainClass: [
-          {
-            type: "number",
-            required: true,
-            message: "不能为空",
-            trigger: "change"
-          }
-        ],
-        productCode: [{ required: true, message: "不能为空", trigger: "blur" }],
-        subClass: [
-          {
-            type: "array",
-            required: true,
-            message: "不能为空",
-            trigger: "change"
-          }
-        ],
-        function: [
-          {
-            type: "array",
-            required: true,
-            message: "不能为空",
-            trigger: "change"
-          }
-        ],
-        ageLevel: [
-          {
-            type: "array",
-            required: true,
-            message: "不能为空",
-            trigger: "change"
-          }
-        ],
-        underwritingModel: [
-          {
-            type: "number",
-            required: true,
-            message: "不能为空",
-            trigger: "change"
-          }
-        ],
-        underwritingPeriod: [
-          {
-            type: "number",
-            required: true,
-            message: "不能为空",
-            trigger: "change"
-          }
-        ],
-        isSale: [
-          {
-            type: "number",
-            required: true,
-            message: "不能为空",
-            trigger: "change"
-          }
-        ],
-        productForm: [
-          {
-            type: "number",
-            required: true,
-            message: "不能为空",
-            trigger: "change"
-          }
-        ],
-        distributionChannel: [
-          {
-            type: "array",
-            required: true,
-            message: "不能为空",
-            trigger: "change"
-          }
-        ],
-        onlineAddress: [
-          { required: true, message: "不能为空",}
-        ],
-        // onlineType: [
+        // mainClass: [
+        //   {
+        //     type: "number",
+        //     required: true,
+        //     message: "不能为空",
+        //     trigger: "change"
+        //   }
+        // ],
+        // productCode: [{ required: true, message: "不能为空", trigger: "blur" }],
+        // subClass: [
         //   {
         //     type: "array",
         //     required: true,
@@ -348,10 +277,77 @@ export default {
         //     trigger: "change"
         //   }
         // ],
-        h5Url: [{ required: true, message: "不能为空", trigger: "blur" }]
+        // function: [
+        //   {
+        //     type: "array",
+        //     required: true,
+        //     message: "不能为空",
+        //     trigger: "change"
+        //   }
+        // ],
+        // ageLevel: [
+        //   {
+        //     type: "array",
+        //     required: true,
+        //     message: "不能为空",
+        //     trigger: "change"
+        //   }
+        // ],
+        // underwritingModel: [
+        //   {
+        //     type: "number",
+        //     required: true,
+        //     message: "不能为空",
+        //     trigger: "change"
+        //   }
+        // ],
+        // underwritingPeriod: [
+        //   {
+        //     type: "number",
+        //     required: true,
+        //     message: "不能为空",
+        //     trigger: "change"
+        //   }
+        // ],
+        // isSale: [
+        //   {
+        //     type: "number",
+        //     required: true,
+        //     message: "不能为空",
+        //     trigger: "change"
+        //   }
+        // ],
+        // productForm: [
+        //   {
+        //     type: "number",
+        //     required: true,
+        //     message: "不能为空",
+        //     trigger: "change"
+        //   }
+        // ],
+        // distributionChannel: [
+        //   {
+        //     type: "array",
+        //     required: true,
+        //     message: "不能为空",
+        //     trigger: "change"
+        //   }
+        // ],
+        // onlineAddress: [
+        //   { required: true, message: "不能为空",}
+        // ],
+        // // onlineType: [
+        // //   {
+        // //     type: "array",
+        // //     required: true,
+        // //     message: "不能为空",
+        // //     trigger: "change"
+        // //   }
+        // // ],
+        // h5Url: [{ required: true, message: "不能为空", trigger: "blur" }]
       },
       insuranceType: [],
-      subClassShow: [],
+      // subClassShow: [],
       subclass: [],
       subclassParent: [],
       subclassChild: []
@@ -370,10 +366,10 @@ export default {
       });
       // 获取保险细类
       getAllInsuranceSubclass(1).then(data => {
-        // console.log('InsuranceSubclass', data)
+        console.log('InsuranceSubclass', data)
         this.subclass = data.children;
-        this.subClassShow.length = this.subclass.length;
-        this.subClassShow.fill(true, 0, this.subclass.length);
+        // this.subClassShow.length = this.subclass.length;
+        // this.subClassShow.fill(true, 0, this.subclass.length);
       });
       this.getData();
     },
@@ -476,52 +472,52 @@ export default {
       this.form.name = val.name;
       // console.log(val)
     },
-    changeSubClassA(index) {
-      // 所属细类选择交互
-      let data = this.subclass[index].children || [];
-      if (data.length === 0) {
-        return;
-      }
+    // changeSubClassA(index) {
+    //   // 所属细类选择交互
+    //   let data = this.subclass[index].children || [];
+    //   if (data.length === 0) {
+    //     return;
+    //   }
 
-      let count = 0;
-      // 判断选中当前分类下的条数
-      for (const iterator of data) {
-        if (this.form.subClass.includes(iterator.id)) {
-          count++;
-        }
-      }
+    //   let count = 0;
+    //   // 判断选中当前分类下的条数
+    //   for (const iterator of data) {
+    //     if (this.form.subClass.includes(iterator.id)) {
+    //       count++;
+    //     }
+    //   }
 
-      // 判断执行全选或全取消
-      if (count >= data.length) {
-        // 全取消
-        for (const iterator of data) {
-          this.form.subClass.splice(this.form.subClass.indexOf(iterator.id), 1);
-        }
-        this.form.subClass.splice(
-          this.form.subClass.indexOf(this.subclass[index].id),
-          1
-        );
-      } else {
-        // 全选
-        for (const iterator of data) {
-          this.form.subClass.includes(iterator.id) ||
-            this.form.subClass.push(iterator.id);
-        }
-        this.form.subClass.includes(this.subclass[index].id) ||
-          this.form.subClass.push(this.subclass[index].id);
-      }
+    //   // 判断执行全选或全取消
+    //   if (count >= data.length) {
+    //     // 全取消
+    //     for (const iterator of data) {
+    //       this.form.subClass.splice(this.form.subClass.indexOf(iterator.id), 1);
+    //     }
+    //     this.form.subClass.splice(
+    //       this.form.subClass.indexOf(this.subclass[index].id),
+    //       1
+    //     );
+    //   } else {
+    //     // 全选
+    //     for (const iterator of data) {
+    //       this.form.subClass.includes(iterator.id) ||
+    //         this.form.subClass.push(iterator.id);
+    //     }
+    //     this.form.subClass.includes(this.subclass[index].id) ||
+    //       this.form.subClass.push(this.subclass[index].id);
+    //   }
 
-      // console.log(this.form.subClass)
-    },
-    changeSubClassB(index) {
-      this.form.subClass.includes(this.subclass[index].id) ||
-        this.form.subClass.push(this.subclass[index].id);
-    },
-    showCheck(index) {
-      // console.log(this.subClassShow[index])
-      this.subClassShow[index] = !this.subClassShow[index];
-      this.subClassShow.splice();
-    },
+    //   // console.log(this.form.subClass)
+    // },
+    // changeSubClassB(index) {
+    //   this.form.subClass.includes(this.subclass[index].id) ||
+    //     this.form.subClass.push(this.subclass[index].id);
+    // },
+    // showCheck(index) {
+    //   // console.log(this.subClassShow[index])
+    //   this.subClassShow[index] = !this.subClassShow[index];
+    //   this.subClassShow.splice();
+    // },
     onlineBlur(index) {
       // 在线投保输入交互
       if (this.onlineLinkAddress[index]) {
@@ -541,16 +537,14 @@ export default {
   width: 200px;
   margin: 2px 0;
 }
-.child-check {
-  margin-left: 15px;
-}
-.sub-calss {
-  display: inline-block;
-  width: 10%;
-  max-width: 150px;
-  vertical-align: top;
-}
 .tip {
   color: #f40;
+}
+/deep/.ivu-form-item .ivu-form-item .ivu-form-item-label{
+  width: 80px !important;
+  // text-align: left;
+}
+/deep/.ivu-form-item .ivu-form-item .ivu-form-item-content{
+  margin-left: 80px !important;
 }
 </style>

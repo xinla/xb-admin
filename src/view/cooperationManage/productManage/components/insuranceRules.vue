@@ -1,319 +1,465 @@
+<style lang="less" scoped>
+.title-wrap {
+  padding: 15px 20px;
+  background: #e0effd;
+  line-height: 25px;
+  .title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-right: 30px;
+  }
+  .button {
+    padding: 5px 20px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    line-height: 1;
+  }
+}
+.anchor {
+  display: block;
+      background: #313ac3;
+    padding: 15px 0;
+    color: #fff;
+    margin: 0 30px 10px 0;
+}
+.ivu-select {
+  width: 80%;
+}
+.ivu-input-wrapper,
+.ivu-input-number {
+  width: 100px;
+  margin: 0 10px;
+}
+.ivu-btn {
+  margin: 0 10px;
+}
+.tip {
+  color: #f40;
+}
+/deep/.ivu-form-item .ivu-form-item-label {
+  font-size: 15px;
+  // font-weight: 600;
+}
+/deep/.ivu-form-item .ivu-form-item .ivu-form-item-label {
+  width: 125px !important;
+  text-align: left;
+  color: #aaa;
+  font-size: 14px;
+}
+</style>
 <template>
-  <Form ref="form" :model="form" :label-width="80">
-    <FormItem label="年龄限制">
-      <InputNumber :min="0" :max="120" v-model="form.applicationAgeStart" placeholder="年龄限制启始"></InputNumber>周岁 至
-      <InputNumber
-        :min="0"
-        :max="120"
-        v-model="form.applicationAgeEnd"
-        placeholder="年龄限制结束"
-      ></InputNumber>周岁
-      0岁填写
-      <InputNumber :min="0" :max="366" v-model="form.applicationAgeDay" placeholder="出生多少天"></InputNumber>天
-    </FormItem>
+  <div>
+    <Row>
+      <Col span="4">
+        <div class="anchor-wrap ac">
+          <a href="#a1" :class="['anchor', {current: anchor == ''}]">投保人规则</a>
+          <a href="#a2" :class="['anchor', {current: anchor == ''}]">投保人规则</a>
+          <a href="#a3" :class="['anchor', {current: anchor == ''}]">投保人规则</a>
+          <a href="#a4" :class="['anchor', {current: anchor == ''}]">投保人规则</a>
+        </div>
+      </Col>
 
-    <FormItem label="续保年龄" prop="renewalAge">
-      <InputNumber :min="0" :max="120" v-model="form.renewalAge" placeholder="续保年龄"></InputNumber>周岁
-    </FormItem>
+      <Col span="20" style="background: #fff;">
+        <div class="title-wrap bfc-o">
+          <a id="a1" class="title">投保人规则</a>
+          <div class="button-wrap fr">
+            <button class="button" type="button" @click="submit()">保存</button>
+            <button class="button" type="button" @click="submit()">清空</button>
+          </div>
+        </div>
+        <Form ref="form" :model="form" :label-width="100">
+          <FormItem label="年龄限制">
+            <Checkbox v-model="single">无限制</Checkbox>
+            <div v-if="true">
+              <Row>
+                <Col span="10">
+                  <FormItem label="投保年龄限制">
+                    <InputNumber
+                      :min="0"
+                      :max="120"
+                      v-model="form.applicationAgeStart"
+                      placeholder="年龄限制启始"
+                    ></InputNumber>周岁 至
+                    <InputNumber
+                      :min="0"
+                      :max="120"
+                      v-model="form.applicationAgeEnd"
+                      placeholder="年龄限制结束"
+                    ></InputNumber>周岁
+                  </FormItem>
+                </Col>
+                <Col span="10">
+                  <FormItem label="新生儿限制">
+                    出生天数不低于
+                    <InputNumber
+                      :min="0"
+                      :max="366"
+                      v-model="form.applicationAgeDay"
+                      placeholder="出生多少天"
+                    ></InputNumber>天
+                  </FormItem>
+                </Col>
+              </Row>
+              <br />
+              <Row>
+                <Col span="10">
+                  <FormItem label="续保年龄限制" prop="renewalAge">
+                    最大可续保至
+                    <InputNumber :min="0" :max="120" v-model="form.renewalAge" placeholder="输入年龄"></InputNumber>周岁
+                  </FormItem>
+                </Col>
+                <Col span="10">
+                  <FormItem label="缴费期满年龄限制">
+                    最大年龄至
+                    <InputNumber :min="0" :max="120" v-model="form.renewalAge" placeholder="输入年龄"></InputNumber>周岁
+                  </FormItem>
+                </Col>
+              </Row>
+            </div>
+          </FormItem>
 
-    <FormItem label="性别限制" prop="applicationSex">
-      <RadioGroup v-model="form.applicationSex">
-        <Radio :label="0">不限性别</Radio>
-        <Radio :label="1">仅限男性</Radio>
-        <Radio :label="2">仅限女性</Radio>
-      </RadioGroup>
-    </FormItem>
+          <FormItem label="性别限制" prop="applicationSex">
+            <Checkbox v-model="form.applicationSex" :true-value="0" :false-value="3">无限制</Checkbox>
+            <br />
+            <RadioGroup v-model="form.applicationSex">
+              <Radio :label="1">仅限男性</Radio>
+              <Radio :label="2">仅限女性</Radio>
+            </RadioGroup>
+          </FormItem>
 
-    <FormItem label="职业限制">
-      最高职业风险等级
-      <span class="tip">（请输入0-6之间的数字）</span>
-      <InputNumber :max="6" :min="0" v-model="form.occupationUnderwriting" placeholder="最高风险等级"></InputNumber>
-      <Button @click="codeShow = !codeShow">添加特殊限制职业</Button>
-      <div v-show="codeShow">
-        限制投保职业代码（多个以空格分开）
-        <Input
-          type="text"
-          v-model="form.specialOccupationUnderwriting"
-          placeholder="限制投保职业代码，多个以空格分开"
-          style="width:30%"
-          @on-blur="transCode"
-        />
-        <!-- <div>
+          <FormItem label="职业限制">
+            最高职业风险等级
+            <span class="tip">（请输入0-6之间的数字）</span>
+            <InputNumber
+              :max="6"
+              :min="0"
+              v-model="form.occupationUnderwriting"
+              placeholder="最高风险等级"
+            ></InputNumber>
+            <Button @click="codeShow = !codeShow">添加特殊限制职业</Button>
+            <div v-show="codeShow">
+              限制投保职业代码（多个以空格分开）
+              <Input
+                type="text"
+                v-model="form.specialOccupationUnderwriting"
+                placeholder="限制投保职业代码，多个以空格分开"
+                style="width:30%"
+                @on-blur="transCode"
+              />
+              <!-- <div>
           <Tag color="cyan">cyan</Tag>
-        </div>-->
-      </div>
-      <Select
-        v-show="!codeShow && specialOccupationUnderwriting.length"
-        v-model="specialOccupationUnderwriting"
-        multiple
-        style="width:30%"
-        :max-tag-count="3"
-        @click.native="codeShow = !codeShow"
-        @on-change="selectChange"
-      >
-        <Option
-          v-for="(item, index) in specialOccupationUnderwriting"
-          :value="item"
-          :key="index"
-        >{{item}}</Option>
-      </Select>
-    </FormItem>
+              </div>-->
+            </div>
+            <Select
+              v-show="!codeShow && specialOccupationUnderwriting.length"
+              v-model="specialOccupationUnderwriting"
+              multiple
+              style="width:30%"
+              :max-tag-count="3"
+              @click.native="codeShow = !codeShow"
+              @on-change="selectChange"
+            >
+              <Option
+                v-for="(item, index) in specialOccupationUnderwriting"
+                :value="item"
+                :key="index"
+              >{{item}}</Option>
+            </Select>
+          </FormItem>
 
-    <FormItem label="社保限制" prop="socialInsuranceLimit">
-      <RadioGroup v-model="form.socialInsuranceLimit">
-        <Radio :label="0">不限社保</Radio>
-        <Radio :label="1">有社保</Radio>
-        <Radio :label="2">无社保</Radio>
-      </RadioGroup>
-    </FormItem>
+          <FormItem label="社保限制" prop="socialInsuranceLimit">
+            <RadioGroup v-model="form.socialInsuranceLimit">
+              <Radio :label="0">不限社保</Radio>
+              <Radio :label="1">有社保</Radio>
+              <Radio :label="2">无社保</Radio>
+            </RadioGroup>
+          </FormItem>
 
-    <FormItem label="基本保额" prop="basicSumInsuredOptional">
-      <RadioGroup v-model="form.basicSumInsuredOptional">
-        <Radio :label="0">可自选</Radio>
-        <Radio :label="1">不可自选</Radio>
-      </RadioGroup>
-      <Dropdown
-        v-if="form.basicSumInsuredOptional === 0"
-        style="margin-left: 20px"
-        @on-click="addRow"
-      >
-        <Button type="primary">
-          添加选项
-          <Icon type="ios-arrow-down"></Icon>
-        </Button>
-        <DropdownMenu slot="list">
-          <DropdownItem name="insuranceFullAmount">保险金额</DropdownItem>
-          <DropdownItem name="insurancePlan">保险计划</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
-      <div>
-        <!--保险金额添加项 -->
-        <CheckboxGroup v-model="insuranceFullAmount">
-          <Checkbox v-for="(item, index) of form.insuranceFullAmount" :label="index" :key="index">
-            <Input
-              class="inline-input"
-              type="number"
-              :number="true"
-              v-model.trim="form.insuranceFullAmount[index].ruleIntervalName"
-              placeholder="金额"
-              @on-blur="handleBlur('insuranceFullAmount', index)"
-            />万
-          </Checkbox>
-        </CheckboxGroup>
+          <FormItem label="基本保额" prop="basicSumInsuredOptional">
+            <RadioGroup v-model="form.basicSumInsuredOptional">
+              <Radio :label="0">可自选</Radio>
+              <Radio :label="1">不可自选</Radio>
+            </RadioGroup>
+            <Dropdown
+              v-if="form.basicSumInsuredOptional === 0"
+              style="margin-left: 20px"
+              @on-click="addRow"
+            >
+              <Button type="primary">
+                添加选项
+                <Icon type="ios-arrow-down"></Icon>
+              </Button>
+              <DropdownMenu slot="list">
+                <DropdownItem name="insuranceFullAmount">保险金额</DropdownItem>
+                <DropdownItem name="insurancePlan">保险计划</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+            <div>
+              <!--保险金额添加项 -->
+              <CheckboxGroup v-model="insuranceFullAmount">
+                <Checkbox
+                  v-for="(item, index) of form.insuranceFullAmount"
+                  :label="index"
+                  :key="index"
+                >
+                  <Input
+                    class="inline-input"
+                    type="number"
+                    :number="true"
+                    v-model.trim="form.insuranceFullAmount[index].ruleIntervalName"
+                    placeholder="金额"
+                    @on-blur="handleBlur('insuranceFullAmount', index)"
+                  />万
+                </Checkbox>
+              </CheckboxGroup>
 
-        <!--保险计划额添加项 -->
-        <CheckboxGroup v-model="insurancePlan">
-          <Checkbox :label="index" v-for="(item, index) of form.insurancePlan" :key="index">
-            {{character[index]}}档,
-            <Input
-              class="inline-input"
-              type="number"
-              :number="true"
-              v-model.trim="form.insurancePlan[index].ruleIntervalName"
-              placeholder="计划"
-              @on-blur="handleBlur('insurancePlan', index)"
-            />万
-          </Checkbox>
-        </CheckboxGroup>
-      </div>
-    </FormItem>
+              <!--保险计划额添加项 -->
+              <CheckboxGroup v-model="insurancePlan">
+                <Checkbox :label="index" v-for="(item, index) of form.insurancePlan" :key="index">
+                  {{character[index]}}档,
+                  <Input
+                    class="inline-input"
+                    type="number"
+                    :number="true"
+                    v-model.trim="form.insurancePlan[index].ruleIntervalName"
+                    placeholder="计划"
+                    @on-blur="handleBlur('insurancePlan', index)"
+                  />万
+                </Checkbox>
+              </CheckboxGroup>
+            </div>
+          </FormItem>
 
-    <FormItem label="保额限制">
-      <Row v-for="(item, index) of form.minInsured" :key="index">
-        <Col span="3">
-          <Select v-model="form.minInsured[index].type">
-            <Option v-for="(util, unique) of limitType" :value="+unique" :key="unique">{{ util }}</Option>
-          </Select>
-        </Col>
-        <Col style="display:inline-block;text-align: left;">
-          <div v-if="form.minInsured[index].type === 1">
-            <Input type="text" v-model="form.minInsured[index].clientType" placeholder="请输入"/>类（级）客户
-          </div>
-          <div v-else-if="form.minInsured[index].type === 2">
-            <Input type="text" v-model="form.minInsured[index].startAge" placeholder="请输入"/>周岁至
-            <Input type="text" v-model="form.minInsured[index].endAge" placeholder="请输入"/>周岁
-          </div>
-          <div v-if="form.minInsured[index].type === 3">
-            职业风险等级：
-            <Input
-              type="text"
-              v-model="form.minInsured[index].occupationalLevel"
-              placeholder="请输入"
-            />
-          </div>
-          <div v-if="form.minInsured[index].type === 4">
-            职业代码：
-            <Input type="text" v-model="form.minInsured[index].code" placeholder="请输入"/>
-          </div>
-        </Col>
-        <Col span="4">
-          最低
-          <Input
-            type="text"
-            style="width:50%;"
-            v-model="form.minInsured[index].minInsured"
-            placeholder="请输入"
-          />元
-        </Col>
-        <Col style="display:inline-block;" v-if="index === form.minInsured.length - 1">
-          <Button @click="addRow('minInsured')">新增一行</Button>
-        </Col>
-      </Row>
+          <FormItem label="保额限制">
+            <Row v-for="(item, index) of form.minInsured" :key="index">
+              <Col span="3">
+                <Select v-model="form.minInsured[index].type">
+                  <Option
+                    v-for="(util, unique) of limitType"
+                    :value="+unique"
+                    :key="unique"
+                  >{{ util }}</Option>
+                </Select>
+              </Col>
+              <Col style="display:inline-block;text-align: left;">
+                <div v-if="form.minInsured[index].type === 1">
+                  <Input type="text" v-model="form.minInsured[index].clientType" placeholder="请输入" />类（级）客户
+                </div>
+                <div v-else-if="form.minInsured[index].type === 2">
+                  <Input type="text" v-model="form.minInsured[index].startAge" placeholder="请输入" />周岁至
+                  <Input type="text" v-model="form.minInsured[index].endAge" placeholder="请输入" />周岁
+                </div>
+                <div v-if="form.minInsured[index].type === 3">
+                  职业风险等级：
+                  <Input
+                    type="text"
+                    v-model="form.minInsured[index].occupationalLevel"
+                    placeholder="请输入"
+                  />
+                </div>
+                <div v-if="form.minInsured[index].type === 4">
+                  职业代码：
+                  <Input type="text" v-model="form.minInsured[index].code" placeholder="请输入" />
+                </div>
+              </Col>
+              <Col span="4">
+                最低
+                <Input
+                  type="text"
+                  style="width:50%;"
+                  v-model="form.minInsured[index].minInsured"
+                  placeholder="请输入"
+                />元
+              </Col>
+              <Col style="display:inline-block;" v-if="index === form.minInsured.length - 1">
+                <Button @click="addRow('minInsured')">新增一行</Button>
+              </Col>
+            </Row>
 
-      <Row v-for="(item, index) of form.maxInsured" :key="index + 'x'">
-        <Col span="3">
-          <Select v-model="form.maxInsured[index].type">
-            <Option v-for="(util, unique) of limitType" :value="+unique" :key="unique">{{ util }}</Option>
-          </Select>
-        </Col>
-        <Col style="display:inline-block; text-align: left;">
-          <div v-if="form.maxInsured[index].type === 1">
-            <Input type="text" v-model="form.maxInsured[index].clientType" placeholder="请输入"/>类（级）客户
-          </div>
-          <div v-else-if="form.maxInsured[index].type === 2">
-            <Input type="text" v-model="form.maxInsured[index].startAge" placeholder="请输入"/>周岁至
-            <Input type="text" v-model="form.maxInsured[index].endAge" placeholder="请输入"/>周岁
-          </div>
-          <div v-if="form.maxInsured[index].type === 3">
-            职业风险等级：
-            <Input
-              type="text"
-              v-model="form.maxInsured[index].occupationalLevel"
-              placeholder="请输入"
-            />
-          </div>
-          <div v-if="form.maxInsured[index].type === 4">
-            职业代码：
-            <Input type="text" v-model="form.maxInsured[index].code" placeholder="请输入"/>
-          </div>
-        </Col>
-        <Col span="4">
-          最高
-          <Input
-            type="text"
-            style="width:50%;"
-            v-model="form.maxInsured[index].maxInsured"
-            placeholder="请输入"
-          />元
-        </Col>
-        <Col style="display:inline-block;" v-if="index === form.maxInsured.length - 1">
-          <Button @click="addRow('maxInsured')">新增一行</Button>
-        </Col>
-      </Row>递增单位
-      <Input type="text" v-model="form.incrementalUnit" placeholder="递增单位"/>元
-    </FormItem>
+            <Row v-for="(item, index) of form.maxInsured" :key="index + 'x'">
+              <Col span="3">
+                <Select v-model="form.maxInsured[index].type">
+                  <Option
+                    v-for="(util, unique) of limitType"
+                    :value="+unique"
+                    :key="unique"
+                  >{{ util }}</Option>
+                </Select>
+              </Col>
+              <Col style="display:inline-block; text-align: left;">
+                <div v-if="form.maxInsured[index].type === 1">
+                  <Input type="text" v-model="form.maxInsured[index].clientType" placeholder="请输入" />类（级）客户
+                </div>
+                <div v-else-if="form.maxInsured[index].type === 2">
+                  <Input type="text" v-model="form.maxInsured[index].startAge" placeholder="请输入" />周岁至
+                  <Input type="text" v-model="form.maxInsured[index].endAge" placeholder="请输入" />周岁
+                </div>
+                <div v-if="form.maxInsured[index].type === 3">
+                  职业风险等级：
+                  <Input
+                    type="text"
+                    v-model="form.maxInsured[index].occupationalLevel"
+                    placeholder="请输入"
+                  />
+                </div>
+                <div v-if="form.maxInsured[index].type === 4">
+                  职业代码：
+                  <Input type="text" v-model="form.maxInsured[index].code" placeholder="请输入" />
+                </div>
+              </Col>
+              <Col span="4">
+                最高
+                <Input
+                  type="text"
+                  style="width:50%;"
+                  v-model="form.maxInsured[index].maxInsured"
+                  placeholder="请输入"
+                />元
+              </Col>
+              <Col style="display:inline-block;" v-if="index === form.maxInsured.length - 1">
+                <Button @click="addRow('maxInsured')">新增一行</Button>
+              </Col>
+            </Row>递增单位
+            <Input type="text" v-model="form.incrementalUnit" placeholder="递增单位" />元
+          </FormItem>
 
-    <FormItem label="保险期间">
-      <!-- <CheckboxGroup v-model="policyPeriodYear">
+          <FormItem label="保险期间">
+            <!-- <CheckboxGroup v-model="policyPeriodYear">
         <Checkbox v-for="(item, index) of form.policyPeriodYear" v-if="index === 0" :label="index" :key="index">{{item.ruleIntervalName}}</Checkbox>
       </CheckboxGroup>
       <CheckboxGroup v-model="policyPeriodAge">
         <Checkbox v-for="(item, index) of form.policyPeriodAge" v-if="index === 0" :label="index" :key="index + 'x'">{{item.ruleIntervalName}}</Checkbox>
-      </CheckboxGroup>-->
-      <Dropdown style="margin-left: 20px" @on-click="addRow">
-        <Button type="primary">
-          添加选项
-          <Icon type="ios-arrow-down"></Icon>
-        </Button>
-        <DropdownMenu slot="list">
-          <DropdownItem name="policyPeriodYear">年满型</DropdownItem>
-          <DropdownItem name="policyPeriodAge">岁满型</DropdownItem>
-          <!-- <DropdownItem name="allLife">终身</DropdownItem> -->
-        </DropdownMenu>
-      </Dropdown>
-      <div>
-        <!--保险年数添加项 -->
-        <CheckboxGroup v-model="policyPeriodYear">
-          <Checkbox v-for="(item, index) of form.policyPeriodYear" :label="index" :key="index">
-            <Input
-              class="inline-input"
-              v-model.trim="form.policyPeriodYear[index].ruleIntervalValue"
-              placeholder="年数"
-              @on-blur="handleBlur('policyPeriodYear', index)"
-            />年
-          </Checkbox>
-        </CheckboxGroup>
+            </CheckboxGroup>-->
+            <Dropdown style="margin-left: 20px" @on-click="addRow">
+              <Button type="primary">
+                添加选项
+                <Icon type="ios-arrow-down"></Icon>
+              </Button>
+              <DropdownMenu slot="list">
+                <DropdownItem name="policyPeriodYear">年满型</DropdownItem>
+                <DropdownItem name="policyPeriodAge">岁满型</DropdownItem>
+                <!-- <DropdownItem name="allLife">终身</DropdownItem> -->
+              </DropdownMenu>
+            </Dropdown>
+            <div>
+              <!--保险年数添加项 -->
+              <CheckboxGroup v-model="policyPeriodYear">
+                <Checkbox
+                  v-for="(item, index) of form.policyPeriodYear"
+                  :label="index"
+                  :key="index"
+                >
+                  <Input
+                    class="inline-input"
+                    v-model.trim="form.policyPeriodYear[index].ruleIntervalValue"
+                    placeholder="年数"
+                    @on-blur="handleBlur('policyPeriodYear', index)"
+                  />年
+                </Checkbox>
+              </CheckboxGroup>
 
-        <!--保险年龄添加项 -->
-        <CheckboxGroup v-model="policyPeriodAge">
-          <Checkbox v-for="(item, index) of form.policyPeriodAge" :label="index" :key="index + 'x'">
-            <template v-if="form.policyPeriodAge[index].ruleIntervalValue != -1">
-              至
-              <Input
-                class="inline-input"
-                v-model.trim="form.policyPeriodAge[index].ruleIntervalValue"
-                placeholder="年龄"
-                @on-blur="handleBlur('policyPeriodAge', index)"
-              />周岁
-            </template>
-            <template v-else>
-              终身
-            </template>
-          </Checkbox>
-        </CheckboxGroup>
-      </div>
-    </FormItem>
+              <!--保险年龄添加项 -->
+              <CheckboxGroup v-model="policyPeriodAge">
+                <Checkbox
+                  v-for="(item, index) of form.policyPeriodAge"
+                  :label="index"
+                  :key="index + 'x'"
+                >
+                  <template v-if="form.policyPeriodAge[index].ruleIntervalValue != -1">
+                    至
+                    <Input
+                      class="inline-input"
+                      v-model.trim="form.policyPeriodAge[index].ruleIntervalValue"
+                      placeholder="年龄"
+                      @on-blur="handleBlur('policyPeriodAge', index)"
+                    />周岁
+                  </template>
+                  <template v-else>终身</template>
+                </Checkbox>
+              </CheckboxGroup>
+            </div>
+          </FormItem>
 
-    <FormItem label="交费期间">
-      <!-- <CheckboxGroup v-model="paymentPeriodYear">
+          <FormItem label="交费期间">
+            <!-- <CheckboxGroup v-model="paymentPeriodYear">
         <Checkbox v-for="(item, index) of form.paymentPeriodYear" :label="item.ruleIntervalValue" :key="index">{{item.ruleIntervalName}}</Checkbox>
       </CheckboxGroup>
       <CheckboxGroup v-model="paymentPeriodAge">
         <Checkbox v-for="(item, index) of form.paymentPeriodAge" :label="item.ruleIntervalValue" :key="index">{{item.ruleIntervalName}}</Checkbox>
-      </CheckboxGroup>-->
-      <Dropdown style="margin-left: 20px" @on-click="addRow">
-        <Button type="primary">
-          添加选项
-          <Icon type="ios-arrow-down"></Icon>
-        </Button>
-        <DropdownMenu slot="list">
-          <DropdownItem name="paymentPeriodYear">年满型</DropdownItem>
-          <DropdownItem name="paymentPeriodAge">岁满型</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
-      <div>
-        <!--交费年数添加项 -->
-        <CheckboxGroup v-model="paymentPeriodYear">
-          <Checkbox v-for="(item, index) of form.paymentPeriodYear" :label="index" :key="index">
-            <Input
-              class="inline-input"
-              v-model.trim="form.paymentPeriodYear[index].ruleIntervalValue"
-              placeholder="年数"
-              @on-blur="handleBlur('paymentPeriodYear', index)"
-            />年
-          </Checkbox>
-        </CheckboxGroup>
+            </CheckboxGroup>-->
+            <Dropdown style="margin-left: 20px" @on-click="addRow">
+              <Button type="primary">
+                添加选项
+                <Icon type="ios-arrow-down"></Icon>
+              </Button>
+              <DropdownMenu slot="list">
+                <DropdownItem name="paymentPeriodYear">年满型</DropdownItem>
+                <DropdownItem name="paymentPeriodAge">岁满型</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+            <div>
+              <!--交费年数添加项 -->
+              <CheckboxGroup v-model="paymentPeriodYear">
+                <Checkbox
+                  v-for="(item, index) of form.paymentPeriodYear"
+                  :label="index"
+                  :key="index"
+                >
+                  <Input
+                    class="inline-input"
+                    v-model.trim="form.paymentPeriodYear[index].ruleIntervalValue"
+                    placeholder="年数"
+                    @on-blur="handleBlur('paymentPeriodYear', index)"
+                  />年
+                </Checkbox>
+              </CheckboxGroup>
 
-        <!--交费年龄添加项 -->
-        <CheckboxGroup v-model="paymentPeriodAge">
-          <Checkbox v-for="(item, index) of form.paymentPeriodAge" :label="index" :key="index">
-            至
-            <Input
-              class="inline-input"
-              v-model.trim="form.paymentPeriodAge[index].ruleIntervalValue"
-              placeholder="年龄"
-              @on-blur="handleBlur('paymentPeriodAge', index)"
-            />周岁
-          </Checkbox>
-        </CheckboxGroup>
-      </div>
-    </FormItem>
+              <!--交费年龄添加项 -->
+              <CheckboxGroup v-model="paymentPeriodAge">
+                <Checkbox
+                  v-for="(item, index) of form.paymentPeriodAge"
+                  :label="index"
+                  :key="index"
+                >
+                  至
+                  <Input
+                    class="inline-input"
+                    v-model.trim="form.paymentPeriodAge[index].ruleIntervalValue"
+                    placeholder="年龄"
+                    @on-blur="handleBlur('paymentPeriodAge', index)"
+                  />周岁
+                </Checkbox>
+              </CheckboxGroup>
+            </div>
+          </FormItem>
 
-    <FormItem label="交费方式" prop="paymentMethod">
-      <CheckboxGroup v-model="form.paymentMethod">
-        <Checkbox v-for="(item, index) in paymentMethod" :label="String(index)" :key="index">{{item}}</Checkbox>
-      </CheckboxGroup>
-    </FormItem>
+          <FormItem label="交费方式" prop="paymentMethod">
+            <CheckboxGroup v-model="form.paymentMethod">
+              <Checkbox
+                v-for="(item, index) in paymentMethod"
+                :label="String(index)"
+                :key="index"
+              >{{item}}</Checkbox>
+            </CheckboxGroup>
+          </FormItem>
 
-    <Tabs value="name1">
-      <TabPane label="风险保额" name="name1">
-        <!-- <div>投保规则文本</div> -->
-        <editor ref="editor" v-show="0" :value="form.underwritingRulesText" @on-change="editorChange"/>
-      </TabPane>
-      <TabPane label="体检规则" name="name2">体检规则的内容</TabPane>
-      <TabPane label="财务核保" name="name3">财务核保的内容</TabPane>
-    </Tabs>
-  </Form>
+          <Tabs value="name1">
+            <TabPane label="风险保额" name="name1">
+              <!-- <div>投保规则文本</div> -->
+              <editor
+                ref="editor"
+                v-show="0"
+                :value="form.underwritingRulesText"
+                @on-change="editorChange"
+              />
+            </TabPane>
+            <TabPane label="体检规则" name="name2">体检规则的内容</TabPane>
+            <TabPane label="财务核保" name="name3">财务核保的内容</TabPane>
+          </Tabs>
+        </Form>
+      </Col>
+    </Row>
+  </div>
 </template>
 
 <script>
@@ -571,7 +717,7 @@ export default {
         8: "九",
         9: "十"
       },
-      paymentMethod: ['年交', '半年交', '季交', '月交']
+      paymentMethod: ["年交", "半年交", "季交", "月交"]
     };
   },
   mounted() {
@@ -587,7 +733,7 @@ export default {
         getProductRuleByProductId(this.form.productId).then(data => {
           // console.log(data);
           if (!data) {
-           return 
+            return;
           }
           this.form = data;
 
@@ -769,32 +915,15 @@ export default {
         " "
       );
       // console.log(this.form.specialOccupationUnderwriting)
-    },
+    }
     // ageBlur(val) {
     //   console.log(val)
     //   if (this.form.applicationAgeEnd > this.form.applicationAgeStart) {
     //     this.form.applicationAgeEnd = val
     //   } else {
-        
+
     //   }
     // }
   }
 };
 </script>
-<style lang="less" scoped>
-.ivu-select {
-  width: 80%;
-}
-.ivu-input-wrapper,
-.ivu-input-number {
-  width: 100px;
-  margin: 0 10px;
-}
-.ivu-btn {
-  margin: 0 10px;
-}
-.tip {
-  color: #f40;
-}
-</style>
-
