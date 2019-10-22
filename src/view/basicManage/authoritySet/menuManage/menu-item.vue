@@ -58,10 +58,9 @@ export default {
   data() {
     return {};
   },
-  computed: {},
-  watch: {},
-  created() {},
-  mounted() {},
+  mounted() {
+    this.$store.state.currentMenuId = ''
+  },
   methods: {
     goPage(name) {
       this.$router.push({ name });
@@ -76,9 +75,6 @@ export default {
         }
       }
       return false;
-    },
-    showQuick() {
-      console.log(1);
     },
     clickMenu(data) {
       this.$emit("clickMenu", data);

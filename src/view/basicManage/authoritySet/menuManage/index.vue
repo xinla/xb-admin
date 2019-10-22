@@ -178,6 +178,7 @@
               @on-selection-change="selectChange"
             ></Table>
         </div>
+        <Page :total="total" show-elevator show-total style="text-align:center;margin-top:20px;" @on-change="getDataPage"/>
       </div>
     </div>
 
@@ -557,7 +558,7 @@ export default {
         this.query = {
           keyword: "",
           page: 1,
-          size: 100,
+          size: 10,
           pid: data.id
         };
       }
@@ -568,6 +569,10 @@ export default {
         this.total = res.total;
         this.applicantionList = res.records;
       });
+    },
+    getDataPage(page) {
+      this.query.page = page
+      this.getData()
     },
     clickMoreMenu(args) {
       switch (args[0]) {

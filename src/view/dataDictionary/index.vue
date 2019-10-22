@@ -191,7 +191,7 @@ export default {
     getData(page) {
       page && (this.query.page = page);
       getDataDitionary(this.query).then(data => {
-        console.log(data);
+        // console.log(data);
         // this.loading = false
         this.list = data.list;
         // 数组排序 sort降序排列
@@ -206,31 +206,31 @@ export default {
         // 0: 关联表， 1：关联字段，关联字段名称，2：关连租户，3：关联保险品牌
         case 0:
           getDataDitionaryTableAndComment(this.keyword).then(res => {
-            console.log(res);
+            // console.log(res);
             this.list1 = res;
           });
           break;
         case 1:
           getDataDitionaryFiledAndComment(this.keyword).then(res => {
-            console.log(res);
+            // console.log(res);
             this.list1 = res;
           });
           break;
         case 2:
           getDataDitionarySupplier(this.keyword).then(res => {
-            console.log(res);
+            // console.log(res);
             this.list1 = res;
           });
           break;
         case 3:
           getDataDitionaryCompany(this.keyword).then(res => {
-            console.log(res);
+            // console.log(res);
             this.list1 = res;
           });
           break;
         case 4:
           getDataDitionarySupplier(this.keyword).then(res => {
-            console.log(res);
+            // console.log(res);
             this.list1 = res;
           });
           break;
@@ -354,7 +354,7 @@ export default {
       for (const iterator of this.list) {
         if (iterator.choice) {
           this.isAll = true;
-          console.log(iterator.choice);
+          // console.log(iterator.choice);
         } else {
           this.isAll = false;
           return;
@@ -392,6 +392,9 @@ export default {
       switch (this.type) {
         case 0:
           this.editItem.relationTable = data.valuePair;
+          // 关连字段,字段名称重置
+          this.editItem.relationField = ''
+          this.editItem.fieldName = ''
           break;
         case 1:
           this.editItem.relationField = data.field;

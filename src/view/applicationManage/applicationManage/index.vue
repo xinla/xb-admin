@@ -503,7 +503,7 @@ export default {
       page && (this.query.page = page);
       // 获取所有应用列表
       getApplicationPage(this.query).then(res => {
-        console.log("ApplicationPage：", res.records);
+        // console.log("ApplicationPage：", res.records);
         this.list = res.records;
         this.total = Number(res.total);
       });
@@ -527,7 +527,7 @@ export default {
           this.applicantForm.companyIds.push(iterator.id)
         }
 
-        console.log("applicantForm: ", this.applicantForm);
+        // console.log("applicantForm: ", this.applicantForm);
         getOperationList(data.id).then(res => {
           // console.log('OperationList: ', res)
           this.$set(this.applicantForm, "operateStr", res || []);
@@ -540,7 +540,7 @@ export default {
       this.$refs.operationForm.resetFields()
       this.isOperation = true;
       if (type) {
-        console.log(data);
+        // console.log(data);
         // 编辑操作
         this.editOperation = data;
         this.operationForm = Object.assign({}, defaultApplicationForm, data);
