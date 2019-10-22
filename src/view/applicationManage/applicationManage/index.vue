@@ -210,6 +210,7 @@
               show-total
               class-name="a-page"
               :total="total"
+              :current="query.page"
               @on-change="getData"
             />
           </div>

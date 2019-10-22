@@ -178,7 +178,7 @@
               @on-selection-change="selectChange"
             ></Table>
         </div>
-        <Page :total="total" show-elevator show-total style="text-align:center;margin-top:20px;" @on-change="getDataPage"/>
+        <Page :total="total" :current="query.page" show-elevator show-total style="text-align:center;margin-top:20px;" @on-change="getDataPage"/>
       </div>
     </div>
 
@@ -483,9 +483,15 @@ export default {
     },
     // 上移动
     moveUp(data, currentTxt) {
-      let index = currentTxt.indexOf(data) - 1;
+      let index;
+      for (const iterator of currentTxt) {
+        if (data.id === iterator.id) {
+          index = currentTxt.indexOf(iterator);
+          break;
+        }
+      }
       let move = currentTxt[index];
-      if (index < 0) {
+      if (index === 0) {
         this.$Message.warning("已经移在改页最顶部");
         return;
       }
@@ -496,9 +502,15 @@ export default {
     },
     // 下移动
     moveDown(data, currentTxt) {
-      let index = currentTxt.indexOf(data) + 1;
+      let index;
+      for (const iterator of currentTxt) {
+        if (data.id === iterator.id) {
+          index = currentTxt.indexOf(iterator) + 1;
+          break;
+        }
+      }
       let move = currentTxt[index];
-      if (index < 0) {
+      if (index === currentTxt.length) {
         this.$Message.warning("已经移在改页最底部");
         return;
       }
