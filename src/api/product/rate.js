@@ -1,15 +1,18 @@
 import axios from '@/libs/api.request'
 import config from '@/config'
 
-const service = config.services.product + '/rate'
+const service = config.servicesV2.rate
 
 /**
  * 根据id查询产品费率
- * @param {*} id 产品id
+ * @param {*} productId 产品id
  */
-export const getProductRateByProductId = (id) => {
+export const getProductRateByProductId = (productId, {page, size}) => {
   return axios.request({
-    url: service + `/info/${id}`,
+    url: service + `/findAll/${page}/${size}`,
+    params: {
+      productId,
+    },
     method: 'get'
   })
 }

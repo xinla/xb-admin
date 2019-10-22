@@ -1,71 +1,41 @@
 <template>
   <div>
-    <div style="margin: 0 0 0 auto">
-      <Button type="info" @click="goPage('createProduct', {create: true})">新建</Button>
-      <Button
-        type="primary"
-        style="margin-right: 5px"
-        @click="goPage('createProduct', {id: '', edit: true})"
-      >编辑</Button>
-      <Button
-        type="info"
-        style="margin-right: 5px"
-        @click="publish()"
-      >发布</Button>
-      <Button
-        type="warning"
-        style="margin-right: 5px"
-        target="_blank"
-      >撤回</Button>
-      <Button
-        type="success"
-        style="margin-right: 5px"
-        @click="sale()"
-      >停售</Button>
-      <Button type="error" style="margin-right: 5px" @click="remove()">删除</Button>
-    </div>
-    <!-- <Row style="padding-bottom: 10px;">
-        <Col span="18">
-          <Button type="info" @click="goPage('createProduct', {create: true})">新建产品</Button>
-        </Col>
-        <Col span="6">
-          <Input v-model="query.searchValue" placeholder="搜索品牌/产品名称/代码" style="width:73%; margin-right: 10px;" />
-          <Button type="info" @click="search()">搜索</Button>
-        </Col>
-    </Row>-->
+    <Row style="padding-bottom: 10px;">
+      <Col span="6">
+        <Input
+          v-model="query.searchValue"
+          placeholder="搜索品牌/产品名称/代码"
+          style="width:73%; margin-right: 10px;"
+        />
+        <Button type="info" @click="search()">搜索</Button>
+      </Col>
+      <Col span="18">
+        <div class="fr">
+          <button type="button" class="button" @click="goPage('createProduct', {create: true})">新建</button>
+          <button type="button" class="button" @click="goPage('createProduct', {create: true})">快速创建</button>
+          <button type="button" class="button" @click="handle('edit')">编辑</button>
+          <button type="button" class="button" @click="handle('publish', 1)">发布</button>
+          <button type="button" class="button" @click="handle('publish', 0)">撤回</button>
+          <button type="button" class="button" @click="handle('sale', 0)">停售</button>
+          <button type="button" class="button" @click="handle('sale', 1)">恢复销售</button>
+          <button type="button" class="button" @click="handle('remove')">删除</button>
+        </div>
+      </Col>
+    </Row>
 
-    <Table :loading="loading" :columns="columns" :data="list">
-      <template slot-scope="{ row }" slot="productType">{{row.productType | productType}}</template>
-
+    <Table :loading="loading" :columns="columns" :data="list" @on-selection-change="selectChange">
       <!-- <template slot-scope="{ row }" slot="age">
           {{row.applicationAgeStart + '-' + row.applicationAgeEnd + '周岁'}}
       </template>-->
 
-      <template slot-scope="{ row }" slot="isSale">{{row.isSale === 1 ? '在售' : '停售'}}</template>
+      <template slot-scope="{ row }" slot="sale">{{row.sale === 1 ? '在售' : '停售'}}</template>
 
-      <template slot-scope="{ row }" slot="publishStatus">{{row.isPublish | publishStatus}}</template>
+      <template slot-scope="{ row }" slot="publishStatus">{{row.publish | publishStatus}}</template>
 
-      <template slot-scope="{ row }" slot="distributionChannel">
-        <span
-          v-for="(item, index) in row.distributionChannel.split(',')"
-          :key="index"
-        >{{Number(item) && index ? ',' : ''}} {{ item | channel}}</span>
-      </template>
-
-      <template slot-scope="{ row }" slot="onlineAddress">
-        <div v-for="(item, index) in JSON.parse(row.onlineAddress)" :key="index">
-          {{item.code === 0 ? '现保' : ''}}
-          {{item.linkAddress}}
-        </div>
-      </template>
-
-      <!-- <template slot-scope="{ row }" slot="action">
-          <Button type="primary" size="small" style="margin-right: 5px" @click="goPage('createProduct', {id: row.productId, edit: true})">编辑</Button>
-          <Button type="warning" size="small" style="margin-right: 5px" :to="'http://' + row.h5Url" target="_blank">H5</Button>
-          <Button type="success" size="small" style="margin-right: 5px" @click="sale(row)">{{row.isSale === 1 ? '停售' : '在售'}}</Button>
-          <Button v-if="row.isPublish === 0" type="info" size="small" style="margin-right: 5px" @click="publish(row)">发布</Button>
-          <Button type="error" size="small" style="margin-right: 5px" @click="remove(row)">删除</Button>
-      </template>-->
+      <template
+        slot-scope="{ row }"
+        slot="onlineInsurance"
+      >{{row.onlineInsurance === 1 ? '支持' : '不支持'}}</template>
     </Table>
 
     <Page
@@ -75,6 +45,129 @@
       style="text-align:center;margin-top:20px;"
       @on-change="getData"
     />
+
+    <!-- <Modal v-model="modal11" fullscreen title="Fullscreen Modal">
+      <Form ref="form" :model="form" :rules="rules" :label-width="120">
+        <div class="form-title">基本资料</div>
+        <Row>
+          <Col span="8">
+            <FormItem label="产品全称" prop="productFullName">
+              <Input type="text" v-model="form.productFullName" placeholder="产品全称" />
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem label="产品简称" prop="productAbbr">
+              <Input type="text" v-model="form.productAbbr" placeholder="产品简称" />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="8">
+            <FormItem label="产品代码" prop="productCode">
+              <Input type="text" v-model="form.productCode" placeholder="产品代码" />
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem label="所属品牌" prop="name">
+              <selectSupplier :val="form.name" type="brand" @change="change" />
+            </FormItem>
+          </Col>
+        </Row>
+
+        <FormItem label="所属大类" prop="mainClass">
+          <RadioGroup v-model="form.mainClass">
+            <Radio v-for="(item, index) of allClass" :label="item.id" :key="index">{{item.name}}</Radio>
+          </RadioGroup>
+        </FormItem>
+
+        <FormItem label="所属中类" prop="mediumClass">
+          <RadioGroup v-model="form.mediumClass">
+            <Radio
+              v-for="(item, index) of allClass[0].children"
+              :label="item.id"
+              :key="index"
+            >{{item.name}}</Radio>
+          </RadioGroup>
+        </FormItem>
+
+        <FormItem label="所属小类" prop="smallClass">
+          <div v-for="(item, index) of allClass[0].children" :key="index">
+            <CheckboxGroup v-model="form.smallClass" v-show="form.mediumClass === item.id">
+              <Checkbox
+                v-for="(unit, unique) of item.children"
+                :key="unique"
+                :label="unit.id"
+              >{{unit.name}}</Checkbox>
+            </CheckboxGroup>
+          </div>
+        </FormItem>
+
+        <FormItem label="在售状态" prop="sale">
+          <RadioGroup v-model="form.sale">
+            <Radio :label="0">停售</Radio>
+            <Radio :label="1">在售</Radio>
+          </RadioGroup>
+        </FormItem>
+
+        <FormItem label="保险期间" v-show="periodForm.type === 0">
+          <Checkbox v-model="periodForm.insurancePeriodYear" :true-value="1" :false-value="0">年满型</Checkbox>
+          <Checkbox v-model="periodForm.insurancePeriodAge" :true-value="1" :false-value="0">岁满型</Checkbox>
+          <FormItem label="年满型" v-if="periodForm.insurancePeriodYear">
+            <div class="bfc-d" v-for="(item, index) in periodForm.ruleIntevalDtoList" :key="index">
+              <template v-if="item.ruleIntervalType === 1">
+                <InputNumber :min="0" :max="120" v-model="periodForm.renewalAge" placeholder="输入年数"></InputNumber>年
+                <span class="button-circle">-</span>
+              </template>
+            </div>
+            <span class="button-circle">+</span>
+          </FormItem>
+
+          <FormItem label="岁满型" v-if="periodForm.insurancePeriodAge">
+            <div class="bfc-d" v-for="(item, index) in periodForm.ruleIntevalDtoList" :key="index">
+              <template v-if="item.ruleIntervalType === 0">
+                <InputNumber :min="0" :max="120" v-model="periodForm.renewalAge" placeholder="输入岁数"></InputNumber>岁
+                <span class="button-circle">-</span>
+              </template>
+            </div>
+            <span class="button-circle">+</span>
+          </FormItem>
+        </FormItem>
+
+        <FormItem label="交费期间">
+          <Checkbox v-model="paymentForm.payPeriodAge" :true-value="1" :false-value="0">岁满型</Checkbox>
+          <Checkbox v-model="paymentForm.payPeriodYear" :true-value="1" :false-value="0">年满型</Checkbox>
+          <FormItem label="年满型" v-if="paymentForm.payPeriodYear">
+            <div class="bfc-d" v-for="(item, index) in paymentForm.ruleIntevalDtoList" :key="index">
+              <template v-if="item.ruleIntervalType === 2">
+                <InputNumber
+                  :min="0"
+                  :max="120"
+                  v-model="paymentForm.renewalAge"
+                  placeholder="输入年数"
+                ></InputNumber>年
+                <span class="button-circle">-</span>
+              </template>
+            </div>
+            <span class="button-circle">+</span>
+          </FormItem>
+
+          <FormItem label="岁满型" v-if="paymentForm.payPeriodAge">
+            <div class="bfc-d" v-for="(item, index) in paymentForm.ruleIntevalDtoList" :key="index">
+              <template v-if="item.ruleIntervalType === 3">
+                <InputNumber
+                  :min="0"
+                  :max="120"
+                  v-model="paymentForm.renewalAge"
+                  placeholder="输入岁数"
+                ></InputNumber>岁
+                <span class="button-circle">-</span>
+              </template>
+            </div>
+            <span class="button-circle">+</span>
+          </FormItem>
+        </FormItem>
+      </Form>
+    </Modal> -->
   </div>
 </template>
 
@@ -85,27 +178,39 @@ import {
   publishProduct,
   deleteProduct
 } from "@/api/product";
-import { getTypeRulePage } from "@/api/rulesSet/type";
+import { getAllInsuranceSubclass } from "@/api/rulesSet/type";
 
-const channel = [
+// const channel = [
+//   {
+//     label: "经代",
+//     value: 0
+//   },
+//   {
+//     label: "互联网",
+//     value: 1
+//   },
+//   {
+//     label: "个险",
+//     value: 2
+//   },
+//   {
+//     label: "银保",
+//     value: 3
+//   }
+// ];
+const supplierName = [];
+const mediumClass = [];
+const smallClass = [];
+const saleStatus = [
   {
-    label: "经代",
+    label: "停售",
     value: 0
   },
   {
-    label: "互联网",
+    label: "在售",
     value: 1
-  },
-  {
-    label: "个险",
-    value: 2
-  },
-  {
-    label: "银保",
-    value: 3
   }
 ];
-const productType = [];
 const publishStatus = [
   {
     label: "未发布",
@@ -116,25 +221,22 @@ const publishStatus = [
     value: 1
   }
 ];
+const onlineInsurance = [
+  {
+    label: "不支持",
+    value: 0
+  },
+  {
+    label: "支持",
+    value: 1
+  }
+];
 export default {
   filters: {
-    channel(val) {
+    supplierName(val) {
       if (val != "" && val != "null") {
-        return channel[val].label;
+        return supplierName[val].label;
       }
-    },
-    productType(val) {
-      let arr = val.split(",");
-      let res = "";
-      for (const _val of arr) {
-        for (const iterator of productType) {
-          if (iterator.value === _val) {
-            res += iterator.label + ",";
-            break;
-          }
-        }
-      }
-      return res;
     },
     publishStatus(val) {
       return publishStatus[val].label;
@@ -144,24 +246,21 @@ export default {
     return {
       loading: true,
       query: {
-        pageNum: 1,
-        pageSize: 10,
-        searchValue: "",
-        typeRuleId: "",
-        distributionChannel: ""
+        pageNum: 1, // 每一页大小
+        pageSize: 10, // 页码
+        searchValue: "", // 模糊查询值
+        mediumClassId: "", // 产品中类id
+        smallClassId: "", // 产品小类id
+        supplierId: "", // 品牌id
+        sale: "", // 在售状态  0 停售 1 在售
+        publish: "", // 0 未发布  1 已发布
+        onlineInsurance: "" // 是否支持在线投保   0  不支持  1 支持
       },
       columns: [
         {
-          title: "序号",
-          type: "index",
+          type: "selection",
           align: "center",
           maxWidth: 60
-        },
-        {
-          title: "品牌名称",
-          key: "supplierName",
-          align: "center",
-          minWidth: 80
         },
         {
           title: "产品代码",
@@ -172,28 +271,39 @@ export default {
           title: "产品名称",
           key: "productFullName",
           align: "center",
-          minWidth: 40
+          minWidth: 80
         },
         {
-          title: "产品类型",
-          slot: "productType",
+          title: "所属中类",
+          key: "mediumClassName",
           align: "center",
-          minWidth: 80,
-          filters: productType,
+          minWidth: 40,
+          filters: mediumClass,
           filterMultiple: true,
           filterMethod(value, row) {
-            return row.productType.includes(value);
+            return row.mediumClass.includes(value);
           }
         },
         {
-          title: "分销渠道",
-          slot: "distributionChannel",
+          title: "所属小类",
+          key: "smallClassName",
           align: "center",
           minWidth: 80,
-          filters: channel,
+          filters: smallClass,
+          filterMultiple: true,
+          filterMethod(value, row) {
+            return row.smallClass.includes(value);
+          }
+        },
+        {
+          title: "所属品牌",
+          key: "supplierName",
+          align: "center",
+          minWidth: 80,
+          filters: supplierName,
           filterMultiple: false,
           filterMethod(value, row) {
-            return row.distributionChannel === "value";
+            return row.supplierName === value;
           }
         },
         // {
@@ -208,35 +318,41 @@ export default {
         // },
         {
           title: "在售状态",
-          slot: "isSale",
-          width: 100,
-          align: "center"
-        },
-        {
-          title: "在线投保",
-          slot: "onlineAddress",
-          minWidth: 60,
-          align: "center"
+          slot: "sale",
+          minWidth: 20,
+          align: "center",
+          filters: saleStatus,
+          filterMultiple: false,
+          filterMethod(value, row) {
+            return row.sale === value;
+          }
         },
         {
           title: "发布状态",
           slot: "publishStatus",
+          minWidth: 20,
           align: "center",
           filters: publishStatus,
           filterMultiple: false,
           filterMethod(value, row) {
-            return row.isPublish === "value";
+            return row.publish === value;
+          }
+        },
+        {
+          title: "在线投保",
+          slot: "onlineInsurance",
+          minWidth: 20,
+          align: "center",
+          filters: onlineInsurance,
+          filterMultiple: false,
+          filterMethod(value, row) {
+            return row.onlineInsurance === value;
           }
         }
-        // {
-        //     title: '操作',
-        //     slot: 'action',
-        //     minWidth: 150,
-        //     align: 'center',
-        // }
       ],
       list: [],
-      total: 0
+      total: 0,
+      selectData: []
     };
   },
   mounted() {
@@ -250,11 +366,19 @@ export default {
     init() {
       this.getData();
       // 获取产品分类数据
-      getTypeRulePage(1).then(data => {
-        // console.log('TypeRule', data)
-        let temp = data.list;
+      getAllInsuranceSubclass(1).then(data => {
+        console.log("TypeRule", data);
+        let temp = data.children[0].children;
         for (const iterator of temp) {
-          productType.push({
+          if (iterator.hasChildren) {
+            for (const _iterator of iterator.children) {
+              smallClass.push({
+                label: _iterator.name,
+                value: _iterator.id
+              });
+            }
+          }
+          mediumClass.push({
             label: iterator.name,
             value: iterator.id
           });
@@ -268,7 +392,7 @@ export default {
         console.log(data);
         this.loading = false;
         this.list = data.list;
-        this.total = data.total;
+        this.total = ~~data.total;
       });
     },
     search() {
@@ -278,39 +402,76 @@ export default {
     goPage(name, query) {
       this.$router.push({ name, query });
     },
-    sale(data) {
-      let status = data.isSale === 1 ? 0 : 1;
-      saleProduct(data.productId, status).then(res => {
+    sale(data, status) {
+      saleProduct(data, status).then(res => {
         this.$Message.info("执行成功");
         this.getData();
       });
     },
-    publish(data) {
-      // let status = data.isPublish === 1 ? 0 : 1
-      publishProduct(data.productId, 1, this.$store.state.user.userId).then(
-        res => {
-          this.$Message.info("执行成功");
-          this.getData();
-        }
-      );
+    publish(data, status) {
+      publishProduct(data, status, this.$store.state.user.userId).then(res => {
+        this.$Message.info("执行成功");
+        this.getData();
+      });
     },
     remove(data) {
-      if (data.isSale) {
-        this.$Message.error("在售产品，不可删除，请知悉");
-      } else {
-        this.$Modal.confirm({
-          title: "提示",
-          content: "确定要删除吗",
-          onOk: () => {
-            deleteProduct(data.productId, this.$store.state.user.userId).then(
-              res => {
-                this.getData();
-                this.$Message.success("操作成功");
-              }
-            );
-          }
+      this.$Modal.confirm({
+        title: "提示",
+        content: "确定要删除吗",
+        onOk: () => {
+          deleteProduct(data, this.$store.state.user.userId).then(res => {
+            this.getData();
+            this.$Message.success("操作成功");
+          });
+        }
+      });
+    },
+    selectChange(selection) {
+      this.selectData = selection;
+    },
+    handle(type, status) {
+      // type: 0:上移 1:下移 2:删除应用
+      // isSingle: 是否单选
+      if (!this.selectData.length) {
+        this.$Notice.destroy();
+        this.$Notice.warning({
+          title: "请选择应用"
         });
+        return;
       }
+      if (type == "edit" && this.selectData.length > 1) {
+        this.$Notice.destroy();
+        this.$Notice.warning({
+          title: "只支持操作一种应用"
+        });
+        return;
+      }
+      let data = [];
+      for (const iterator of this.selectData) {
+        data.push(iterator.id);
+        if (type === "remove" && iterator.sale) {
+          this.$Message.error("选项存在在售产品，不可删除，请知悉");
+          return;
+        }
+      }
+      switch (type) {
+        case "edit":
+          this.goPage("createProduct", {
+            id: this.selectData[0].id,
+            edit: true
+          });
+          break;
+        case "publish":
+          this.publish(data, status);
+          break;
+        case "sale":
+          this.sale(data, status);
+          break;
+        case "remove":
+          this.remove(data);
+          break;
+      }
+      this.selectData = [];
     }
   }
 };
@@ -320,5 +481,11 @@ export default {
 .title {
   padding: 0px 0px 20px 10px;
   font-size: 20px;
+}
+.button {
+  padding: 10px 30px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  cursor: pointer;
 }
 </style>

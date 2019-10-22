@@ -15,9 +15,11 @@ const config = {
   baseUrl: {
     // 测试服
     // dev: 'http://192.168.1.64', // 虚拟机 liusiyuan
-    dev: 'http://192.168.1.32', // 本地
+    dev: 'http://192.168.1.32:8118', // 本地
     dev2: 'http://192.168.1.150:8888', // v2.0本地 liusiyuan
     dev1: 'http://192.168.1.150:8888', // caikefu
+
+    domainV2A: 'http://192.168.1.35:8118', // wangdong
     
     // pro: 'http://112.31.212.46:8118', // line
     pro: 'http://192.168.1.26:8118', // ali line
@@ -51,6 +53,7 @@ const config = {
   
 }
 config.domain = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
+
 config.domainV2 = process.env.NODE_ENV === 'development' ? config.baseUrl.dev2 : config.baseUrl.pro1
 
 config.services = {
@@ -85,6 +88,9 @@ config.services = {
 }
 config.servicesV2 = {
   saas: '/api/permission/saas',
+  product: '/v2/product',
+  calculator: '/v2/calculator',
+  rate: '/v2/rate',
 }
 
 export default config

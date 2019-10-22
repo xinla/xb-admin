@@ -1,22 +1,16 @@
 import axios from '@/libs/api.request'
 import config from '@/config'
 
-const service = config.services.product
+const service = config.baseUrl.domainV2A + config.servicesV2.product
 
 /**
  * 查询产品列表
  * @param {*} query 
  */
-export const getProductPage = ({pageNum, pageSize, searchValue, typeRuleId, distributionChannel}) => {
+export const getProductPage = (params) => {
   return axios.request({
     url: service + `/page/list`,
-    params: {
-      pageNum,
-      pageSize,
-      searchValue,
-      typeRuleId,
-      distributionChannel
-    },
+    params,
     method: 'get'
   })
 }
@@ -51,7 +45,7 @@ export const updateProductInfo = (data) => {
  */
 export const getProductInfo = (id) => {
   return axios.request({
-    url: service + `/${id}`,
+    url: service + `/queryProductById/${id}`,
     method: 'get'
   })
 }
@@ -73,9 +67,10 @@ export const getProductPageByType = (productForm, params) => {
  * @param { } id 产品id
  * @param { } status 0 停售  1 在售
  */
-export const saleProduct = (id, status) => {
+export const saleProduct = (ids, status) => {
   return axios.request({
-    url: service + `/sale/${id}/${status}`,
+    url: service + `/sale/${status}`,
+    data: ids,
     method: 'post'
   })
 }
@@ -86,9 +81,10 @@ export const saleProduct = (id, status) => {
  * @param {*} status 0 撤回 1  发布
  * @param {*} userId 0 用户id
  */
-export const publishProduct = (id, status, userId) => {
+export const publishProduct = (ids, status, userId) => {
   return axios.request({
-    url: service + `/publish/${id}/${status}/${userId}`,
+    url: service + `/publish/${status}/${userId}`,
+    data: ids,
     method: 'post'
   })
 }
@@ -97,9 +93,10 @@ export const publishProduct = (id, status, userId) => {
  * 根据id删除产品
  * @param {*} id 
  */
-export const deleteProduct = (id, userId) => {
+export const deleteProduct = (ids, userId) => {
   return axios.request({
-    url: service + `/delete/${id}`,
+    url: service + `/deleteProduct`,
+    data: ids,
     method: 'post',
     headers: {
       userId

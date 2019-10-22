@@ -12,16 +12,16 @@
 
   <baseInfo ref="baseInfo" v-show="current === 0" :key="key + 1" />
   <insuranceRules ref="insuranceRules" v-show="current === 1" :key="key + 2" />
-  <rateCalculation ref="rateCalculation" v-show="current === 2" :key="key + 3" />
-  <productExplain ref="productExplain" v-show="current === 3" :key="key + 4" />
-  <additionRisk ref="additionRisk" v-show="current === 4" :key="key + 5" />
-  <productAccessory ref="productAccessory" v-show="current === 5" :key="key + 6" />
+  <premiumCalculator ref="premiumCalculator" v-show="current === 2" :key="key + 3" />
+  <rateSheet ref="rateSheet" v-show="current === 3" :key="key + 4" />
+  <productExplain ref="productExplain" v-show="current === 4" :key="key + 5" />
+  <additionRisk ref="additionRisk" v-show="current === 5" :key="key + 6" />
 
-  <div class="ac">
+  <!-- <div class="ac">
     <Button v-show="current > 0" type="primary" ghost @click="current--">上一步</Button>
     <Button v-show="current !== 5" type="primary" @click="submit(current)">保存并下一步</Button>
     <Button v-show="current === 5" type="primary" @click="submit(current)">保存</Button>
-  </div>
+  </div> -->
 </div>
 </template>
 
@@ -32,14 +32,15 @@ export default {
   components:{
     baseInfo,
     insuranceRules: () => import('../components/insuranceRules'),
-    rateCalculation: () => import('../components/rateCalculation'),
+    rateSheet: () => import('../components/rateSheet'),
     productExplain: () => import('../components/productExplain'),
     additionRisk: () => import('../components/additionRisk'),
-    productAccessory: () => import('../components/productAccessory'),
+
+    premiumCalculator: () => import('../components/premiumCalculator'),
   },
   data() {
     return {
-      current: 0,
+      current: 5,
       firstArray: []
     }
   },

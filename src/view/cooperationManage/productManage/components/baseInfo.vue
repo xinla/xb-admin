@@ -1,49 +1,53 @@
 <template>
-  <Form ref="form" :model="form" :rules='rules' :label-width="120">
+  <Form ref="form" :model="form" :rules="rules" :label-width="120">
+    <div class="button-wrap ar">
+      <button class="button" type="button" @click="submit()">保存</button>
+      <button class="button" type="button" @click="clear()">清空</button>
+    </div>
     <Row>
       <Col span="8">
         <FormItem label="产品全称" prop="productFullName">
-          <Input type="text" v-model="form.productFullName" placeholder="产品全称"/>
+          <Input type="text" v-model="form.productFullName" placeholder="产品全称" />
         </FormItem>
       </Col>
       <Col span="8">
         <FormItem label="产品简称" prop="productAbbr">
-          <Input type="text" v-model="form.productAbbr" placeholder="产品简称"/>
+          <Input type="text" v-model="form.productAbbr" placeholder="产品简称" />
         </FormItem>
       </Col>
     </Row>
     <Row>
       <Col span="8">
         <FormItem label="产品代码" prop="productCode">
-          <Input type="text" v-model="form.productCode" placeholder="产品代码"/>
+          <Input type="text" v-model="form.productCode" placeholder="产品代码" />
         </FormItem>
       </Col>
       <Col span="8">
         <FormItem label="所属品牌" prop="name">
-          <selectSupplier :val="form.name" type="brand" @change="change"/>
+          <selectSupplier :val="form.name" type="brand" @change="change" />
         </FormItem>
       </Col>
     </Row>
 
     <FormItem label="所属大类" prop="mainClass">
       <RadioGroup v-model="form.mainClass">
-        <Radio :label="0">人身保险</Radio>
-        <Radio :label="1">财产保险</Radio>
+        <Radio v-for="(item, index) of allClass" :label="item.id" :key="index">{{item.name}}</Radio>
       </RadioGroup>
     </FormItem>
 
-    <FormItem label="所属中类" prop="mainClass">
-      <RadioGroup v-model="form.midClass">
-        <Radio v-for="(item, index) of subclass" :label="item.id" :key="index">{{item.name}}</Radio>
+    <FormItem label="所属中类" prop="mediumClass">
+      <RadioGroup v-model="form.mediumClass">
+        <Radio
+          v-for="(item, index) of allClass[0].children"
+          :label="item.id"
+          :key="index"
+        >{{item.name}}</Radio>
       </RadioGroup>
     </FormItem>
 
-    <FormItem label="所属小类" prop="subClass">
-      <div v-for="(item, index) of subclass" v-if="index < 4" :key="index">
-        <CheckboxGroup
-          v-show="form.midClass === item.id"
-          v-model="form.subClass"
-        >
+    <FormItem label="所属小类" prop="smallClass">
+      <div v-for="(item, index) of allClass[0].children" :key="index">
+        <CheckboxGroup v-model="form.smallClass" v-show="form.mediumClass === item.id">
           <Checkbox
             v-for="(unit, unique) of item.children"
             :key="unique"
@@ -53,14 +57,13 @@
       </div>
     </FormItem>
 
-    <FormItem label="保障功能" prop="function">
-      <CheckboxGroup v-model="form.function">
+    <FormItem label="保障功能" prop="protectFunction">
+      <CheckboxGroup v-model="form.protectFunction">
         <Checkbox label="0">家庭保障</Checkbox>
         <Checkbox label="1">健康医疗</Checkbox>
         <Checkbox label="2">子女教育</Checkbox>
         <Checkbox label="3">退休养老</Checkbox>
-        <Checkbox label="4">投资理财</Checkbox>
-        <Checkbox label="5">财富传承</Checkbox>
+        <Checkbox label="4">财富传承</Checkbox>
       </CheckboxGroup>
     </FormItem>
 
@@ -89,8 +92,8 @@
       </RadioGroup>
     </FormItem>
 
-    <FormItem label="在售状态" prop="isSale">
-      <RadioGroup v-model="form.isSale">
+    <FormItem label="在售状态" prop="sale">
+      <RadioGroup v-model="form.sale">
         <Radio :label="0">停售</Radio>
         <Radio :label="1">在售</Radio>
       </RadioGroup>
@@ -100,99 +103,62 @@
       <RadioGroup v-model="form.productForm">
         <Radio :label="0">主险</Radio>
         <Radio :label="1">附加险</Radio>
-        <Radio :label="2">保险计划</Radio>
       </RadioGroup>
     </FormItem>
 
     <FormItem label="分销渠道" prop="distributionChannel">
-      <CheckboxGroup v-model="form.distributionChannel">
-        <Checkbox label="0">经代</Checkbox>
-        <Checkbox label="1">互联网</Checkbox>
-        <Checkbox label="2">个险</Checkbox>
-        <Checkbox label="3">银保</Checkbox>
-      </CheckboxGroup>
+      <RadioGroup v-model="form.distributionChannel">
+        <Radio :label="0">传统经代</Radio>
+      </RadioGroup>
+      <FormItem label="是否支持现保投保" prop>
+        <RadioGroup v-model="form.vitSupport">
+          <Radio :label="0">不支持</Radio>
+          <Radio :label="1">支持</Radio>
+        </RadioGroup>
+      </FormItem>
+      <RadioGroup v-model="form.distributionChannel">
+        <Radio :label="1">互联网</Radio>
+      </RadioGroup>
+      <FormItem label="互联网投保方式" prop>
+        <RadioGroup v-model="form.internetInsurance">
+          <Radio :label="0">H5</Radio>
+          <Radio :label="1">API</Radio>
+        </RadioGroup>
+      </FormItem>
     </FormItem>
 
-    <FormItem label="是否支持在线投保" prop="mainClass">
-      <RadioGroup v-model="form.mainClass">
+    <!-- <FormItem label="是否支持在线投保" prop="onlineInsurance">
+      <RadioGroup v-model="form.onlineInsurance">
         <Radio :label="0">不支持</Radio>
         <Radio :label="1">支持</Radio>
       </RadioGroup>
-    </FormItem>
+    </FormItem>-->
 
     <FormItem label="保险公司投保渠道">
-    <Row>
+      <Row>
         <Col span="10">
-          <FormItem label="APP名称">
-            <Input type="text" v-model="form.productFullName" placeholder="APP名称"/>
+          <FormItem label="APP名称" prop="insuranceApp">
+            <Input type="text" v-model="form.insuranceApp" placeholder="APP名称" />
           </FormItem>
         </Col>
         <Col span="10">
-          <FormItem label="PC网址">
-            <Input type="text" v-model="form.productAbbr" placeholder="PC网址"/>
+          <FormItem label="PC网址" prop="insurancePc">
+            <Input type="text" v-model="form.insurancePc" placeholder="PC网址" />
           </FormItem>
         </Col>
       </Row>
       <Row>
         <Col span="10">
-          <FormItem label="H5网址">
-            <Input type="text" v-model="form.productCode" placeholder="H5网址"/>
+          <FormItem label="H5网址" prop="insuranceH5">
+            <Input type="text" v-model="form.insuranceH5" placeholder="H5网址" />
           </FormItem>
         </Col>
         <Col span="10">
-          <FormItem label="小程序">
-            <Input type="text" v-model="form.productCode" placeholder="小程序"/>
+          <FormItem label="小程序" prop="insuranceSmallProgram">
+            <Input type="text" v-model="form.insuranceSmallProgram" placeholder="小程序" />
           </FormItem>
         </Col>
       </Row>
-      <!-- <div class="tip">* 复选框与输入框请对应填写，否则会提示信息不完整错误</div>
-      <CheckboxGroup v-model="onlineType">
-        <Checkbox :label="0">现保</Checkbox>
-        <br>
-        <Checkbox :label="1">
-          APP：
-          <Input
-            class="inline-input"
-            type="text"
-            v-model="onlineLinkAddress[1]"
-            placeholder="APP"
-            @on-blur="onlineBlur(1)"
-          />
-        </Checkbox>
-        <br>
-        <Checkbox :label="2">
-          PC端：
-          <Input
-            class="inline-input"
-            type="text"
-            v-model="onlineLinkAddress[2]"
-            placeholder="PC端"
-            @on-blur="onlineBlur(2)"
-          />
-        </Checkbox>
-        <br>
-        <Checkbox :label="3">
-          H5：
-          <Input
-            class="inline-input"
-            type="text"
-            v-model="onlineLinkAddress[3]"
-            placeholder="H5"
-            @on-blur="onlineBlur(3)"
-          />
-        </Checkbox>
-        <br>
-        <Checkbox :label="4">
-          小程序：
-          <Input
-            class="inline-input"
-            type="text"
-            v-model="onlineLinkAddress[4]"
-            placeholder="小程序"
-            @on-blur="onlineBlur(4)"
-          />
-        </Checkbox>
-      </CheckboxGroup> -->
     </FormItem>
   </Form>
 </template>
@@ -213,25 +179,25 @@ const defaultForm = {
   productFullName: "",
   productAbbr: "",
   supplierId: "",
+  name: "", // 所属品牌名称
   productCode: "",
-  mainClass: 0,
-  subClass: [],
-  name: "",
-  function: [],
+  mainClass: "",
+  mediumClass: "",
+  smallClass: [],
+  protectFunction: [],
   ageLevel: [],
   underwritingModel: 0,
   underwritingPeriod: 0,
   productForm: 0,
-  distributionChannel: [],
-  isSale: 0,
-  onlineAddress: [
-    // {
-    //   code: '',
-    //   linkAddress: '',
-    //   qrCode: '',
-    // }
-  ],
-  h5Url: ""
+  distributionChannel: 0,
+  sale: 0,
+  onlineInsurance: 0,
+  insuranceApp: "",
+  insurancePc: "",
+  insuranceH5: "",
+  insuranceSmallProgram: "",
+  internetInsurance: 0,
+  vitSupport: 0
 };
 let oldData = "";
 
@@ -259,7 +225,7 @@ export default {
         ],
         productAbbr: [{ required: true, message: "不能为空", trigger: "blur" }],
         supplierId: [{ required: true, message: "不能为空", trigger: "blur" }],
-        name: [{ required: true, message: "不能为空", trigger: "change" }],
+        name: [{ required: true, message: "不能为空", trigger: "change" }]
         // mainClass: [
         //   {
         //     type: "number",
@@ -277,7 +243,7 @@ export default {
         //     trigger: "change"
         //   }
         // ],
-        // function: [
+        // protectFunction: [
         //   {
         //     type: "array",
         //     required: true,
@@ -309,7 +275,7 @@ export default {
         //     trigger: "change"
         //   }
         // ],
-        // isSale: [
+        // sale: [
         //   {
         //     type: "number",
         //     required: true,
@@ -333,9 +299,6 @@ export default {
         //     trigger: "change"
         //   }
         // ],
-        // onlineAddress: [
-        //   { required: true, message: "不能为空",}
-        // ],
         // // onlineType: [
         // //   {
         // //     type: "array",
@@ -346,87 +309,64 @@ export default {
         // // ],
         // h5Url: [{ required: true, message: "不能为空", trigger: "blur" }]
       },
-      insuranceType: [],
-      // subClassShow: [],
-      subclass: [],
-      subclassParent: [],
-      subclassChild: []
+      allClass: [
+        {
+          children: []
+        }
+      ]
     };
   },
   mounted() {
-    // this.form.id || (this.form.id = this.$route.query.id)
     this.init();
   },
   methods: {
     init() {
-      // 获取险种类型
-      getTypeRulePage(1).then(data => {
-        this.insuranceType = data.list;
-        // console.log('insuranceType', data.list)
-      });
-      // 获取保险细类
+      // 获取产品分类数据
       getAllInsuranceSubclass(1).then(data => {
-        console.log('InsuranceSubclass', data)
-        this.subclass = data.children;
-        // this.subClassShow.length = this.subclass.length;
-        // this.subClassShow.fill(true, 0, this.subclass.length);
+        console.log("TypeRule", data);
+        this.allClass = data.children;
+        // for (const iterator of temp) {
+        //   if (iterator.hasChildren) {
+        //     for (const _iterator of iterator.children) {
+        //       smallClass.push({
+        //         label: _iterator.name,
+        //         value: _iterator.id
+        //       });
+        //     }
+        //   }
+        //   mediumClass.push({
+        //     label: iterator.name,
+        //     value: iterator.id
+        //   });
+        // }
       });
       this.getData();
     },
     getData() {
-      this.form.id = this.$route.query.id;
-      this.form.id &&
-        getProductInfo(this.form.id).then(data => {
+      let id = this.$route.query.id;
+      id &&
+        getProductInfo(id).then(data => {
           if (!data) {
-           return 
+            return;
           }
-          // 保险细类,分销渠道,保障功能 转为数组
-          let trans = ["subClass", "function", "ageLevel", "distributionChannel"];
+          // 所属小类,分销渠道,保障功能 转为数组
+          let trans = ["smallClass", "protectFunction", "ageLevel"];
           for (const iterator of trans) {
             data[iterator] = data[iterator].split(",");
-          }
-          // 在线投保 显示转换
-          data.onlineAddress = JSON.parse(data.onlineAddress);
-          for (const iterator of data.onlineAddress) {
-            // this.onlineType[iterator.code] = iterator.code
-            this.onlineType.includes(iterator.code) || this.onlineType.splice(iterator.code, 0, iterator.code);
-            this.onlineLinkAddress[iterator.code] = iterator.linkAddress;
           }
           // this.form = data 在此赋值，会导致下面的name  无法响应，带后续研究
           // 获取品牌名称
           getSupplierDetail(data.supplierId).then(_data => {
             this.form = data;
             this.form.name = _data.xbSupplier.name;
-            // console.log('form:', this.form)
+            console.log("form:", this.form);
           });
         });
     },
     submit() {
-      // console.log(this.onlineLinkAddress)
       // console.log(this.form)
 
-      // 在线投保 提交转换和校验
-      this.form.onlineAddress = [];
-      for (const iterator of this.onlineType) {
-        if (iterator === 0 || this.onlineLinkAddress[iterator]) {
-          this.form.onlineAddress.push({
-            code: iterator,
-            linkAddress: this.onlineLinkAddress[iterator]
-          });
-        } else {
-          this.$Message.error("在线投保填写不完整，请确认无误后提交");
-          return new Promise((resolve, reject) => {});
-        }
-      }
-
-      // if (Object.keys(this.onlineType).length) {
-      //   this.form.onlineAddress = JSON.stringify(this.form.onlineAddress);
-      // } else {
-      //   this.$Message.error("请填写在线投保信息");
-      //   return new Promise((resolve, reject) => {});
-      // }
-
-      return this.$refs.form
+      this.$refs.form
         .validate()
         .then(data => {
           if (data) {
@@ -436,17 +376,23 @@ export default {
             // 过滤重复提交(暂废弃)
             if (true) {
               // 数组字段转字符串
-              let trans = ["subClass", "function", "ageLevel", "distributionChannel"];
-              for (const key in formData) {
-                if (formData.hasOwnProperty(key)) {
-                  const element = formData[key];
-                  if (trans.includes(key)) {
-                    formData[key] += "";
-                  }
-                }
+              let trans = ["smallClass", "protectFunction", "ageLevel"];
+              // for (const key in formData) {
+              //   if (formData.hasOwnProperty(key)) {
+              //     const element = formData[key];
+              //     if (trans.includes(key)) {
+              //       formData[key] += "";
+              //     }
+              //   }
+              // }
+              for (const iterator of trans) {
+                formData[iterator] += "";
               }
               // console.log(formData)
+              // 产品形态，主附险传值
               this.$route.query.productForm = formData.productForm;
+              // 供应商id传值
+              this.$route.query.supplierId = formData.supplierId;
               // console.log(this.$route)
               if (formData.id) {
                 // console.log(1)
@@ -454,79 +400,24 @@ export default {
               } else {
                 return addProductInfo(formData);
               }
-            } else {
-              return Promise.resolve();
             }
           } else {
-            return new Promise((resolve, reject) => {});
+            return Promise.reject();
           }
         })
-        .then((data) => {
-          data && (this.$route.query.id = data)
+        .then(data => {
+          // data && (this.$route.query.id = data)
           this.getData();
-          return Promise.resolve();
+          this.$Message.success("操作成功");
         });
+    },
+    clear() {
+      this.$refs.form.resetFields();
     },
     change(val) {
       this.form.supplierId = val.id;
       this.form.name = val.name;
       // console.log(val)
-    },
-    // changeSubClassA(index) {
-    //   // 所属细类选择交互
-    //   let data = this.subclass[index].children || [];
-    //   if (data.length === 0) {
-    //     return;
-    //   }
-
-    //   let count = 0;
-    //   // 判断选中当前分类下的条数
-    //   for (const iterator of data) {
-    //     if (this.form.subClass.includes(iterator.id)) {
-    //       count++;
-    //     }
-    //   }
-
-    //   // 判断执行全选或全取消
-    //   if (count >= data.length) {
-    //     // 全取消
-    //     for (const iterator of data) {
-    //       this.form.subClass.splice(this.form.subClass.indexOf(iterator.id), 1);
-    //     }
-    //     this.form.subClass.splice(
-    //       this.form.subClass.indexOf(this.subclass[index].id),
-    //       1
-    //     );
-    //   } else {
-    //     // 全选
-    //     for (const iterator of data) {
-    //       this.form.subClass.includes(iterator.id) ||
-    //         this.form.subClass.push(iterator.id);
-    //     }
-    //     this.form.subClass.includes(this.subclass[index].id) ||
-    //       this.form.subClass.push(this.subclass[index].id);
-    //   }
-
-    //   // console.log(this.form.subClass)
-    // },
-    // changeSubClassB(index) {
-    //   this.form.subClass.includes(this.subclass[index].id) ||
-    //     this.form.subClass.push(this.subclass[index].id);
-    // },
-    // showCheck(index) {
-    //   // console.log(this.subClassShow[index])
-    //   this.subClassShow[index] = !this.subClassShow[index];
-    //   this.subClassShow.splice();
-    // },
-    onlineBlur(index) {
-      // 在线投保输入交互
-      if (this.onlineLinkAddress[index]) {
-        if (!this.onlineType.includes(index)) {
-          this.onlineType.push(index);
-        }
-      } else if (this.onlineType.includes(index)) {
-        this.onlineType.splice(this.onlineType.indexOf(index), 1);
-      }
     }
   }
 };
@@ -540,11 +431,18 @@ export default {
 .tip {
   color: #f40;
 }
-/deep/.ivu-form-item .ivu-form-item .ivu-form-item-label{
-  width: 80px !important;
+/deep/.ivu-form-item .ivu-form-item .ivu-form-item-label {
+  min-width: 80px !important;
+  width: auto !important;
   // text-align: left;
 }
-/deep/.ivu-form-item .ivu-form-item .ivu-form-item-content{
+/deep/.ivu-form-item .ivu-form-item .ivu-form-item-content {
   margin-left: 80px !important;
+}
+.button {
+  padding: 5px 20px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  line-height: 1;
 }
 </style>
