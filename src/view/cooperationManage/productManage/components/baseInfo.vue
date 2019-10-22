@@ -127,13 +127,6 @@
       </FormItem>
     </FormItem>
 
-    <!-- <FormItem label="是否支持在线投保" prop="onlineInsurance">
-      <RadioGroup v-model="form.onlineInsurance">
-        <Radio :label="0">不支持</Radio>
-        <Radio :label="1">支持</Radio>
-      </RadioGroup>
-    </FormItem>-->
-
     <FormItem label="保险公司投保渠道">
       <Row>
         <Col span="10">
@@ -167,9 +160,9 @@
 import { getSupplierDetail } from "@/api/supplier";
 import { getTypeRulePage, getAllInsuranceSubclass } from "@/api/rulesSet/type";
 import {
-  getProductPage,
   getProductInfo,
-  addProductInfo,
+  fastCreateProductInfo,
+  createProductInfo,
   updateProductInfo
 } from "@/api/product";
 
@@ -199,7 +192,6 @@ const defaultForm = {
   internetInsurance: 0,
   vitSupport: 0
 };
-let oldData = "";
 
 export default {
   components: {
@@ -216,9 +208,6 @@ export default {
         name: ""
       },
       form: Object.assign({}, defaultForm),
-      onlineType: [],
-      onlineLinkAddress: [],
-      // distributionChannelAgency: [],
       rules: {
         productFullName: [
           { required: true, message: "不能为空", trigger: "blur" }
@@ -299,14 +288,6 @@ export default {
         //     trigger: "change"
         //   }
         // ],
-        // // onlineType: [
-        // //   {
-        // //     type: "array",
-        // //     required: true,
-        // //     message: "不能为空",
-        // //     trigger: "change"
-        // //   }
-        // // ],
         // h5Url: [{ required: true, message: "不能为空", trigger: "blur" }]
       },
       allClass: [
@@ -323,22 +304,8 @@ export default {
     init() {
       // 获取产品分类数据
       getAllInsuranceSubclass(1).then(data => {
-        console.log("TypeRule", data);
+        // console.log("TypeRule", data);
         this.allClass = data.children;
-        // for (const iterator of temp) {
-        //   if (iterator.hasChildren) {
-        //     for (const _iterator of iterator.children) {
-        //       smallClass.push({
-        //         label: _iterator.name,
-        //         value: _iterator.id
-        //       });
-        //     }
-        //   }
-        //   mediumClass.push({
-        //     label: iterator.name,
-        //     value: iterator.id
-        //   });
-        // }
       });
       this.getData();
     },
@@ -365,14 +332,11 @@ export default {
     },
     submit() {
       // console.log(this.form)
-
       this.$refs.form
         .validate()
         .then(data => {
           if (data) {
             let formData = Object.assign({}, this.form);
-            let isNew = oldData !== JSON.stringify(formData);
-            oldData = JSON.stringify(formData);
             // 过滤重复提交(暂废弃)
             if (true) {
               // 数组字段转字符串
@@ -398,7 +362,7 @@ export default {
                 // console.log(1)
                 return updateProductInfo(formData);
               } else {
-                return addProductInfo(formData);
+                return createProductInfo(formData);
               }
             }
           } else {
@@ -406,13 +370,13 @@ export default {
           }
         })
         .then(data => {
-          // data && (this.$route.query.id = data)
+          data && (this.$route.query.id = data)
           this.getData();
           this.$Message.success("操作成功");
         });
     },
     clear() {
-      this.$refs.form.resetFields();
+      
     },
     change(val) {
       this.form.supplierId = val.id;

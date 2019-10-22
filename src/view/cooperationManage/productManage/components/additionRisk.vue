@@ -36,18 +36,35 @@
   padding: 10px;
   background: #eee;
 }
+.anchor-wrap{
+  background: #fff;
+  margin: 10px 10px 0 0;
+  padding: 10px;
+  line-height: 30px;
+  li {
+    padding-left: 10px;
+    margin-top: 5px;
+    border-radius: 4px;
+  }
+.current {
+  background: #ddd;
+}
+}
 </style>
 <template>
   <div style="height: calc(100% - 62px);">
     <Row style="height: 100%;">
       <Col span="4">
-        <ul class="anchor-wrap ac">
+        <ul class="anchor-wrap">
           <li
             v-for="(item, index) in additionRiskList"
-            :class="['anchor', {current: anchor === index}]"
-            @click="goPosition(index)"
+            :class="['anchor', {current: anchor.includes(item.id)}]"
             :key="index"
-          >{{item.productFullName}}</li>
+          >
+          <CheckboxGroup v-model="anchor">
+        <Checkbox :label="item.id" style="width: 100%;" @click.self.native="addRisk(item)">{{item.productFullName}}</Checkbox>
+    </CheckboxGroup>
+          </li>
         </ul>
       </Col>
 
@@ -190,11 +207,11 @@
                   </RadioGroup>
                 </div>
 
-                <RadioGroup v-model="item.insurancePeriodOption">
+                <RadioGroup v-model="item.insurancePeriodOption" @on-change="constraintChange(item)">
                   <Radio :label="1">可选</Radio>
                 </RadioGroup>
 
-                <Checkbox v-model="item.insurancePeriodRate" :true-value="1" :false-value="0">作为费率查询条件</Checkbox>
+                <Checkbox v-model="item.insurancePeriodRate" :true-value="1" :false-value="0" @on-change="constraintChange(item)">作为费率查询条件</Checkbox>
 
                 <table class="table ac" border>
                   <tr>
@@ -263,29 +280,29 @@ import { getProductPageByType } from "@/api/product";
 const defaultForm = {
   id: "",
   productId: "",
-  additionRiskId: "",
+  additionRiskId: "2363658474862149632",
   additionRiskName: "吉康人生两全",
-  priorityProductLimit: 1,
-  priorityProductId: "2363658474862149632",
-  coverageLimit: 1,
-  coverageDefine: 1,
-  coverageDefineItem: 1,
+  priorityProductLimit: 0,
+  priorityProductId: "2363658474862049632",
+  coverageLimit: 0,
+  coverageDefine: 0,
+  coverageDefineItem: 0,
   coveragePremiumItem: 0,
-  coverageLimitCoverage: 1,
-  coverageLimitCoverageMain: "1",
-  coverageLimitCoverageAdd: "5",
-  premiumLimitCoverage: 1,
+  coverageLimitCoverage: 0,
+  coverageLimitCoverageMain: "0",
+  coverageLimitCoverageAdd: "0",
+  premiumLimitCoverage: 0,
   premiumLimitCoverageContent: [
-    { coverage: 5, symbol: 0, unit: 0, premium: 20 }
+    { coverage: 0, symbol: 0, unit: 0, premium: 0 }
   ],
-  insurancePeriodLimit: 1,
-  insurancePeriodOption: 1,
+  insurancePeriodLimit: 0,
+  insurancePeriodOption: 0,
   insurancePeriodForce: 0,
   insurancePeriodRate: null,
-  insurancePeriodContent: [{ main: "10@", rider: [{rider: '20@', checked: 1}] }],
-  insurancePeriodContentRate: [{ main: "10@", rider: [{rider: '10@', checked: 1}] }],
-  payPeriodLimit: 1,
-  payOption: 1,
+  insurancePeriodContent: [{ main: "", rider: [{rider: '', checked: 0}] }],
+  insurancePeriodContentRate: [{ main: "", rider: [{rider: '', checked: 0}] }],
+  payPeriodLimit: 0,
+  payOption: 0,
   payForceContent: 0,
   bindOtherProduct: 0
 };
@@ -293,7 +310,7 @@ const defaultForm = {
 export default {
   data() {
     return {
-      form: [defaultForm],
+      form: [],
       selectRisk: {},
       riskList: [],
       child: {
@@ -303,16 +320,18 @@ export default {
       addShow: false,
 
       additionRiskList: [],
-      anchor: undefined
+      anchor: []
     };
   },
   mounted() {
+    // 获取附加险列表
     Agency.getAdditionRiskList(
       this.$route.query.supplierId || "2252792750044872711"
     ).then(res => {
       console.log("additionRiskList ", res);
       this.additionRiskList = res;
     });
+
     // this.getData();
   },
   methods: {
@@ -375,6 +394,39 @@ export default {
           });
         }
       });
+    },
+    constraintChange(data) {
+      if (data.insurancePeriodOption === 1 && !data.insurancePeriodContent) {
+        Agency.getInsurancePeriodConstraint(this.$route.query.id, data.additionRiskId, 1).then(res => {
+          // console.log(res)
+          data.insurancePeriodContent = res
+        })
+      } else if (data.insurancePeriodRate === 1 && !data.insurancePeriodContentRate) {
+        Agency.getInsurancePeriodConstraint(this.$route.query.id, data.additionRiskId, 2).then(res => {
+          data.insurancePeriodContentRate = res
+        })
+      }
+    },
+    addRisk(data) {
+      if (this.anchor.includes(data.id)) {
+        // 取消选中
+        for (const iterator of this.form) {
+          if (iterator.additionRiskId === data.id) {
+            this.form.splice(this.form.indexOf(iterator), 1)
+            return
+          }
+        }
+        } else {
+          // 选中
+          let obj = Object.assign({}, defaultForm, {
+            productId: this.$route.query.id,
+            additionRiskId: data.id,
+            additionRiskName: data.productFullName
+          })
+          this.form.push(obj)
+          console.log(1)
+      }
+      // this.
     }
   }
 };

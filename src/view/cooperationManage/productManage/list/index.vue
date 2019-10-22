@@ -12,7 +12,7 @@
       <Col span="18">
         <div class="fr">
           <button type="button" class="button" @click="goPage('createProduct', {create: true})">新建</button>
-          <button type="button" class="button" @click="goPage('createProduct', {create: true})">快速创建</button>
+          <button type="button" class="button" @click="fastShow = true">快速创建</button>
           <button type="button" class="button" @click="handle('edit')">编辑</button>
           <button type="button" class="button" @click="handle('publish', 1)">发布</button>
           <button type="button" class="button" @click="handle('publish', 0)">撤回</button>
@@ -46,28 +46,28 @@
       @on-change="getData"
     />
 
-    <!-- <Modal v-model="modal11" fullscreen title="Fullscreen Modal">
+    <Modal v-model="fastShow" title="快速创建">
       <Form ref="form" :model="form" :rules="rules" :label-width="120">
         <div class="form-title">基本资料</div>
         <Row>
-          <Col span="8">
+          <Col span="12">
             <FormItem label="产品全称" prop="productFullName">
               <Input type="text" v-model="form.productFullName" placeholder="产品全称" />
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="12">
             <FormItem label="产品简称" prop="productAbbr">
               <Input type="text" v-model="form.productAbbr" placeholder="产品简称" />
             </FormItem>
           </Col>
         </Row>
         <Row>
-          <Col span="8">
+          <Col span="12">
             <FormItem label="产品代码" prop="productCode">
               <Input type="text" v-model="form.productCode" placeholder="产品代码" />
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="12">
             <FormItem label="所属品牌" prop="name">
               <selectSupplier :val="form.name" type="brand" @change="change" />
             </FormItem>
@@ -109,23 +109,39 @@
           </RadioGroup>
         </FormItem>
 
-        <FormItem label="保险期间" v-show="periodForm.type === 0">
-          <Checkbox v-model="periodForm.insurancePeriodYear" :true-value="1" :false-value="0">年满型</Checkbox>
-          <Checkbox v-model="periodForm.insurancePeriodAge" :true-value="1" :false-value="0">岁满型</Checkbox>
-          <FormItem label="年满型" v-if="periodForm.insurancePeriodYear">
-            <div class="bfc-d" v-for="(item, index) in periodForm.ruleIntevalDtoList" :key="index">
+        <FormItem label="保险期间">
+          <Checkbox
+            v-model="form.vitProductInPeriodDto.insurancePeriodYear"
+            :true-value="1"
+            :false-value="0"
+          >年满型</Checkbox>
+          <Checkbox
+            v-model="form.vitProductInPeriodDto.insurancePeriodAge"
+            :true-value="1"
+            :false-value="0"
+          >岁满型</Checkbox>
+          <FormItem label="年满型" v-if="form.vitProductInPeriodDto.insurancePeriodYear">
+            <div
+              class="bfc-d"
+              v-for="(item, index) in form.vitProductInPeriodDto.ruleIntevalDtoList"
+              :key="index"
+            >
               <template v-if="item.ruleIntervalType === 1">
-                <InputNumber :min="0" :max="120" v-model="periodForm.renewalAge" placeholder="输入年数"></InputNumber>年
+                <Input type="text" v-model="item.ruleIntervalValue" placeholder="输入年数" />年
                 <span class="button-circle">-</span>
               </template>
             </div>
             <span class="button-circle">+</span>
           </FormItem>
 
-          <FormItem label="岁满型" v-if="periodForm.insurancePeriodAge">
-            <div class="bfc-d" v-for="(item, index) in periodForm.ruleIntevalDtoList" :key="index">
+          <FormItem label="岁满型" v-if="form.vitProductInPeriodDto.insurancePeriodAge">
+            <div
+              class="bfc-d"
+              v-for="(item, index) in form.vitProductInPeriodDto.ruleIntevalDtoList"
+              :key="index"
+            >
               <template v-if="item.ruleIntervalType === 0">
-                <InputNumber :min="0" :max="120" v-model="periodForm.renewalAge" placeholder="输入岁数"></InputNumber>岁
+                <Input type="text" v-model="item.ruleIntervalValue" placeholder="输入岁数" />岁
                 <span class="button-circle">-</span>
               </template>
             </div>
@@ -134,32 +150,38 @@
         </FormItem>
 
         <FormItem label="交费期间">
-          <Checkbox v-model="paymentForm.payPeriodAge" :true-value="1" :false-value="0">岁满型</Checkbox>
-          <Checkbox v-model="paymentForm.payPeriodYear" :true-value="1" :false-value="0">年满型</Checkbox>
-          <FormItem label="年满型" v-if="paymentForm.payPeriodYear">
-            <div class="bfc-d" v-for="(item, index) in paymentForm.ruleIntevalDtoList" :key="index">
+          <Checkbox
+            v-model="form.vitProductPayRuleDto.payPeriodAge"
+            :true-value="1"
+            :false-value="0"
+          >岁满型</Checkbox>
+          <Checkbox
+            v-model="form.vitProductPayRuleDto.payPeriodYear"
+            :true-value="1"
+            :false-value="0"
+          >年满型</Checkbox>
+          <FormItem label="年满型" v-if="form.vitProductPayRuleDto.payPeriodYear">
+            <div
+              class="bfc-d"
+              v-for="(item, index) in form.vitProductPayRuleDto.ruleIntevalDtoList"
+              :key="index"
+            >
               <template v-if="item.ruleIntervalType === 2">
-                <InputNumber
-                  :min="0"
-                  :max="120"
-                  v-model="paymentForm.renewalAge"
-                  placeholder="输入年数"
-                ></InputNumber>年
+                <Input type="text" v-model="item.ruleIntervalValue" placeholder="输入年数" />年
                 <span class="button-circle">-</span>
               </template>
             </div>
             <span class="button-circle">+</span>
           </FormItem>
 
-          <FormItem label="岁满型" v-if="paymentForm.payPeriodAge">
-            <div class="bfc-d" v-for="(item, index) in paymentForm.ruleIntevalDtoList" :key="index">
+          <FormItem label="岁满型" v-if="form.vitProductPayRuleDto.payPeriodAge">
+            <div
+              class="bfc-d"
+              v-for="(item, index) in form.vitProductPayRuleDto.ruleIntevalDtoList"
+              :key="index"
+            >
               <template v-if="item.ruleIntervalType === 3">
-                <InputNumber
-                  :min="0"
-                  :max="120"
-                  v-model="paymentForm.renewalAge"
-                  placeholder="输入岁数"
-                ></InputNumber>岁
+                <Input type="text" v-model="item.ruleIntervalValue" placeholder="输入岁数" />岁
                 <span class="button-circle">-</span>
               </template>
             </div>
@@ -167,7 +189,7 @@
           </FormItem>
         </FormItem>
       </Form>
-    </Modal> -->
+    </Modal>
   </div>
 </template>
 
@@ -179,25 +201,8 @@ import {
   deleteProduct
 } from "@/api/product";
 import { getAllInsuranceSubclass } from "@/api/rulesSet/type";
+import selectSupplier from "@/components/selectSupplier";
 
-// const channel = [
-//   {
-//     label: "经代",
-//     value: 0
-//   },
-//   {
-//     label: "互联网",
-//     value: 1
-//   },
-//   {
-//     label: "个险",
-//     value: 2
-//   },
-//   {
-//     label: "银保",
-//     value: 3
-//   }
-// ];
 const supplierName = [];
 const mediumClass = [];
 const smallClass = [];
@@ -231,7 +236,55 @@ const onlineInsurance = [
     value: 1
   }
 ];
+
+const defaultForm = {
+  productFullName: "", //	string 产品名称
+  productAbbr: "", //	string 产品简称
+  productCode: "", //	string 产品代码
+  supplierId: "", //	string 品牌id
+  mainClass: "", //	string 产品大类
+  mediumClass: "", //	string 产品中类
+  smallClass: "", //	string 产品小类
+  sale: 0, //	number 在售状态  0 停售 1 在售  默认为0
+  vitProductInPeriodDto: {
+    insurancePeriodYear: 0, //	number 保险期间类型   年满型   存1代表年满型存在
+    insurancePeriodAge: 0, //	number 保险期间类型   岁满型   存1代表岁满型存在
+    type: 0, //	number 保险期间分类   0  按年  1 按天
+    ruleIntevalDtoList: [
+      {
+        ruleIntervalName: "", //	string 投保规则区间名称
+        ruleIntervalValue: "", //	string 投保规则区间值
+        ruleIntervalType: 0 //	number  0 (保险期间岁满型)      1 (保险期间年满型)
+      },
+      {
+        ruleIntervalName: "", //	string 投保规则区间名称
+        ruleIntervalValue: "", //	string 投保规则区间值
+        ruleIntervalType: 1 //	number  0 (保险期间岁满型)      1 (保险期间年满型)
+      }
+    ]
+  },
+  vitProductPayRuleDto: {
+    payPeriodAge: 0, // number  交费期间    岁满型   存1表示年满型有值
+    payPeriodYear: 0, // number  交费期间    年满型   存1表示年满型有值
+    ruleIntevalDtoList: [
+      {
+        ruleIntervalName: "", //	string 投保规则区间名称
+        ruleIntervalValue: "", //	string 投保规则区间值
+        ruleIntervalType: 2 //	number 2  (交费期间年满型)   3(交费期间岁满型)
+      },
+      {
+        ruleIntervalName: "", //	string 投保规则区间名称
+        ruleIntervalValue: "", //	string 投保规则区间值
+        ruleIntervalType: 3 //	number 2  (交费期间年满型)   3(交费期间岁满型)
+      }
+    ]
+  }
+};
+
 export default {
+  components: {
+    selectSupplier
+  },
   filters: {
     supplierName(val) {
       if (val != "" && val != "null") {
@@ -352,7 +405,22 @@ export default {
       ],
       list: [],
       total: 0,
-      selectData: []
+      selectData: [],
+      form: Object.assign({}, defaultForm),
+      fastShow: false,
+      rules: {
+        productFullName: [
+          { required: true, message: "不能为空", trigger: "blur" }
+        ],
+        productAbbr: [{ required: true, message: "不能为空", trigger: "blur" }],
+        supplierId: [{ required: true, message: "不能为空", trigger: "blur" }],
+        name: [{ required: true, message: "不能为空", trigger: "change" }]
+      },
+      allClass: [
+        {
+          children: []
+        }
+      ]
     };
   },
   mounted() {
@@ -368,6 +436,7 @@ export default {
       // 获取产品分类数据
       getAllInsuranceSubclass(1).then(data => {
         console.log("TypeRule", data);
+        this.allClass = data.children;
         let temp = data.children[0].children;
         for (const iterator of temp) {
           if (iterator.hasChildren) {
@@ -472,6 +541,11 @@ export default {
           break;
       }
       this.selectData = [];
+    },
+    change(val) {
+      this.form.supplierId = val.id;
+      this.form.name = val.name;
+      // console.log(val)
     }
   }
 };
@@ -487,5 +561,22 @@ export default {
   margin-right: 10px;
   border: 1px solid #ddd;
   cursor: pointer;
+}
+.button-circle {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  color: #ddd;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 14px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+/deep/.ivu-form-item .ivu-form-item .ivu-form-item-label {
+  min-width: 80px !important;
+  width: auto !important;
+  // text-align: left;
 }
 </style>
