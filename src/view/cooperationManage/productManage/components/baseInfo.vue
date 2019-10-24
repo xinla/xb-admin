@@ -163,7 +163,8 @@ import {
   getProductInfo,
   fastCreateProductInfo,
   createProductInfo,
-  updateProductInfo
+  updateProductInfo,
+  deleteProduct
 } from "@/api/product";
 
 import selectSupplier from "@/components/selectSupplier";
@@ -207,7 +208,7 @@ export default {
         type: 1,
         name: ""
       },
-      form: Object.assign({}, defaultForm),
+      form: JSON.parse(JSON.stringify(defaultForm)),
       rules: {
         productFullName: [
           { required: true, message: "不能为空", trigger: "blur" }
@@ -337,18 +338,8 @@ export default {
         .then(data => {
           if (data) {
             let formData = Object.assign({}, this.form);
-            // 过滤重复提交(暂废弃)
-            if (true) {
               // 数组字段转字符串
               let trans = ["smallClass", "protectFunction", "ageLevel"];
-              // for (const key in formData) {
-              //   if (formData.hasOwnProperty(key)) {
-              //     const element = formData[key];
-              //     if (trans.includes(key)) {
-              //       formData[key] += "";
-              //     }
-              //   }
-              // }
               for (const iterator of trans) {
                 formData[iterator] += "";
               }
@@ -359,24 +350,31 @@ export default {
               this.$route.query.supplierId = formData.supplierId;
               // console.log(this.$route)
               if (formData.id) {
-                // console.log(1)
                 return updateProductInfo(formData);
               } else {
                 return createProductInfo(formData);
               }
-            }
           } else {
             return Promise.reject();
           }
         })
         .then(data => {
-          data && (this.$route.query.id = data)
+          data && (this.$route.query.id = data);
           this.getData();
           this.$Message.success("操作成功");
         });
     },
     clear() {
-      
+      this.$Modal.confirm({
+        title: "提示",
+        content: "确定要删除吗",
+        onOk: () => {
+          deleteProduct([this.form.id], this.$store.state.user.userId).then(res => {
+        this.form = JSON.parse(JSON.stringify(defaultForm));
+        this.$Message.success("操作成功");
+      });
+        }
+      });
     },
     change(val) {
       this.form.supplierId = val.id;

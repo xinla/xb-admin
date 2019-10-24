@@ -46,7 +46,8 @@
       @on-change="getData"
     />
 
-    <Modal v-model="fastShow" title="快速创建">
+    <dialogBox v-model="fastShow">
+      <div slot="title">图片上传</div>
       <Form ref="form" :model="form" :rules="rules" :label-width="120">
         <div class="form-title">基本资料</div>
         <Row>
@@ -127,11 +128,16 @@
               :key="index"
             >
               <template v-if="item.ruleIntervalType === 1">
-                <Input type="text" v-model="item.ruleIntervalValue" placeholder="输入年数" />年
-                <span class="button-circle">-</span>
+                <Input
+                  type="text"
+                  class="input-width"
+                  v-model="item.ruleIntervalValue"
+                  placeholder="输入年数"
+                />年
+                <span class="button-circle" @click="reduce('vitProductInPeriodDto', index)">-</span>
               </template>
             </div>
-            <span class="button-circle">+</span>
+            <span class="button-circle" @click="add('vitProductInPeriodDto', 1)">+</span>
           </FormItem>
 
           <FormItem label="岁满型" v-if="form.vitProductInPeriodDto.insurancePeriodAge">
@@ -141,11 +147,16 @@
               :key="index"
             >
               <template v-if="item.ruleIntervalType === 0">
-                <Input type="text" v-model="item.ruleIntervalValue" placeholder="输入岁数" />岁
-                <span class="button-circle">-</span>
+                <Input
+                  type="text"
+                  class="input-width"
+                  v-model="item.ruleIntervalValue"
+                  placeholder="输入岁数"
+                />岁
+                <span class="button-circle" @click="reduce('vitProductInPeriodDto', index)">-</span>
               </template>
             </div>
-            <span class="button-circle">+</span>
+            <span class="button-circle" @click="add('vitProductInPeriodDto', 0)">+</span>
           </FormItem>
         </FormItem>
 
@@ -167,11 +178,16 @@
               :key="index"
             >
               <template v-if="item.ruleIntervalType === 2">
-                <Input type="text" v-model="item.ruleIntervalValue" placeholder="输入年数" />年
-                <span class="button-circle">-</span>
+                <Input
+                  type="text"
+                  class="input-width"
+                  v-model="item.ruleIntervalValue"
+                  placeholder="输入年数"
+                />年
+                <span class="button-circle" @click="reduce('vitProductPayRuleDto', index)">-</span>
               </template>
             </div>
-            <span class="button-circle">+</span>
+            <span class="button-circle" @click="add('vitProductPayRuleDto', 2)">+</span>
           </FormItem>
 
           <FormItem label="岁满型" v-if="form.vitProductPayRuleDto.payPeriodAge">
@@ -181,15 +197,24 @@
               :key="index"
             >
               <template v-if="item.ruleIntervalType === 3">
-                <Input type="text" v-model="item.ruleIntervalValue" placeholder="输入岁数" />岁
-                <span class="button-circle">-</span>
+                <Input
+                  type="text"
+                  class="input-width"
+                  v-model="item.ruleIntervalValue"
+                  placeholder="输入岁数"
+                />岁
+                <span class="button-circle" @click="reduce('vitProductPayRuleDto', index)">-</span>
               </template>
             </div>
-            <span class="button-circle">+</span>
+            <span class="button-circle" @click="add('vitProductPayRuleDto', 3)">+</span>
           </FormItem>
         </FormItem>
       </Form>
-    </Modal>
+      <div class="ar">
+        <Button style="margin-right: 8px" @click="fastShow = false">取消</Button>
+        <Button type="primary" @click="creat">保存</Button>
+      </div>
+    </dialogBox>
   </div>
 </template>
 
@@ -198,7 +223,8 @@ import {
   getProductPage,
   saleProduct,
   publishProduct,
-  deleteProduct
+  deleteProduct,
+  fastCreateProductInfo
 } from "@/api/product";
 import { getAllInsuranceSubclass } from "@/api/rulesSet/type";
 import selectSupplier from "@/components/selectSupplier";
@@ -244,7 +270,7 @@ const defaultForm = {
   supplierId: "", //	string 品牌id
   mainClass: "", //	string 产品大类
   mediumClass: "", //	string 产品中类
-  smallClass: "", //	string 产品小类
+  smallClass: [], //	string 产品小类
   sale: 0, //	number 在售状态  0 停售 1 在售  默认为0
   vitProductInPeriodDto: {
     insurancePeriodYear: 0, //	number 保险期间类型   年满型   存1代表年满型存在
@@ -406,7 +432,7 @@ export default {
       list: [],
       total: 0,
       selectData: [],
-      form: Object.assign({}, defaultForm),
+      form: JSON.parse(JSON.stringify(defaultForm)),
       fastShow: false,
       rules: {
         productFullName: [
@@ -499,8 +525,6 @@ export default {
       this.selectData = selection;
     },
     handle(type, status) {
-      // type: 0:上移 1:下移 2:删除应用
-      // isSingle: 是否单选
       if (!this.selectData.length) {
         this.$Notice.destroy();
         this.$Notice.warning({
@@ -546,6 +570,35 @@ export default {
       this.form.supplierId = val.id;
       this.form.name = val.name;
       // console.log(val)
+    },
+    creat() {
+      this.$refs.form
+        .validate()
+        .then(data => {
+          if (data) {
+            let formData = Object.assign({}, this.form);
+            formData.smallClass += "";
+            return fastCreateProductInfo(formData);
+          } else {
+            this.fastShow = true;
+            return Promise.reject();
+          }
+        })
+        .then(res => {
+          this.$Message.success("操作成功");
+          this.form = JSON.parse(JSON.stringify(defaultForm))
+          this.getData();
+        });
+    },
+    add(field, type) {
+      this.form[field].ruleIntevalDtoList.push({ ruleIntervalType: type });
+    },
+    reduce(filed, index) {
+      if (index === 0) {
+        this.$Message.error("最后一项不可删除！");
+        return;
+      }
+      this.form[array].ruleIntevalDtoList.splice(index, 1);
     }
   }
 };
@@ -575,8 +628,10 @@ export default {
   margin-right: 5px;
 }
 /deep/.ivu-form-item .ivu-form-item .ivu-form-item-label {
-  min-width: 80px !important;
+  min-width: 50px !important;
   width: auto !important;
-  // text-align: left;
+}
+.input-width {
+  width: 70px;
 }
 </style>

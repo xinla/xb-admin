@@ -808,7 +808,6 @@
                   >-</span>
                 </div>
                 <span
-                  v-if="index == 0"
                   class="button-circle"
                   @click="add('periodFormDay', 'elasticDay')"
                 >+</span>
@@ -837,8 +836,8 @@
             </FormItem>
 
             <FormItem label="交费期间">
-              <Checkbox v-model="paymentForm.payPeriodAge" :true-value="1" :false-value="0">岁满型</Checkbox>
               <Checkbox v-model="paymentForm.payPeriodYear" :true-value="1" :false-value="0">年满型</Checkbox>
+              <Checkbox v-model="paymentForm.payPeriodAge" :true-value="1" :false-value="0">岁满型</Checkbox>
               <FormItem label="年满型" v-if="paymentForm.payPeriodYear">
                 <div
                   class="bfc-d"
@@ -846,12 +845,10 @@
                   :key="index"
                 >
                   <template v-if="item.ruleIntervalType === 2">
-                    <InputNumber
-                      :min="0"
-                      :max="120"
+                    <Input type="text"
                       v-model="item.ruleIntervalValue"
                       placeholder="输入年数"
-                    ></InputNumber>年
+                    />年
                     <span
                       class="button-circle"
                       @click="reduce('paymentForm', 'ruleIntevalDtoList', index)"
@@ -1082,134 +1079,116 @@
 </template>
 
 <script>
-// import {
-//   getProductRule,
-//   getAppntInsuredRule,
-//   saveAppntInsuredRule,
-//   clearAppntInsuredRule,
-//   getCoverageRule,
-//   saveCoverageRule,
-//   clearCoverageRule,
-//   getInPeriodRule,
-//   saveInPeriodRule,
-//   clearInPeriodRule,
-//   getPayRule,
-//   savePayRule,
-//   clearPayRule,
-//   getReceiveRule,
-//   saveReceiveRule,
-//   clearReceiveRule
-// } from "@/api/product/rule";
 import * as Agency from "@/api/product/rule";
 
+const defaultPeopleForm = {
+  productId: "",
+  applicationAgeStart: 0,
+  applicationAgeEnd: 0,
+  applicationAgeDay: 0,
+  renewalAge: 0,
+  payAgeMax: 0,
+  sexLimit: 0,
+  professionalLimit: 0,
+  professionalGradeLimit: 0,
+  specialProfessionalLimit: "",
+  socialInsuranceLimit: 0,
+  multipleInsurer: 0,
+  insurerNum: 0,
+  relationLimit: [],
+  confine: 0,
+  type: 0
+};
+const defaultCoverageForm = {
+  productId: "", //	number产品基本信息表主键
+  generalLimit: 0, //	number一般限制        0  无限制   1  有限制
+  minAmount: 0, //	number最低保额(单位:元)
+  maxAmount: 0, //	number最高保额(单位:元)
+  increaseUnit: 0, //	number递增单位(单位:元)
+  ageLimit: 0, //	number年龄保额限制    0 无限制  1 有限制
+  ageContent: [{ ageBegin: 0, ageEnd: 0, maxAmount: 0 }], //	object []年龄保额限制内容
+  professionaltLimit: 0, //	number职业保额限制    0无限制  1 有限制
+  professionalLimitContent: [{ grade: 0, maxAmount: 0 }], //,	object []职业保额限制内容
+  specialProfessionalLimit: 0, //	number特殊职业限制   0无限制  1 有限制
+  specialProfessionalLimitContent: [{ jobCode: 0, maxAmount: 0 }], //,	object []特殊职业限制内容
+  areaLimit: 0, //	number地区保额限制   0无限制  1 有限制
+  areaLimitContent: [{ areaType: "", maxAmount: 0, unit: 0 }], //,	object []地区保额限制内容  unit  单位  0  万元  1 元  2  元/天
+  insurancePlan: 0, //	number保险计划   0 无  1 有
+  insurancePlanContent: [{ code: 1, name: "", amount: 0, unit: 0 }] //,	object []保险计划内容
+};
+const defaultPeriodFormYear = {
+  productId: "", //	number	产品基本信息表主键id
+  insurancePeriodYear: 0, //	number	保险期间类型   年满型   存1代表年满型存在
+  insurancePeriodAge: 0, //	number	保险期间类型   岁满型   存1代表岁满型存在
+  renewal: 0, //	number	保证续保   0  不支持  1  支持
+  renewalCycle: 0, //	number	续保周期    多少年
+  ruleIntevalDtoList: [
+    {
+      productId: "", //	number 产品基本信息表主键id
+      ruleIntervalName: "", //	string 投保规则区间名称
+      ruleIntervalValue: "", //	string 投保规则区间值
+      ruleIntervalType: 0 //	number 2  (交费期间年满型)   3(交费期间岁满型)
+    },
+    {
+      productId: "", //	number 产品基本信息表主键id
+      ruleIntervalName: "", //	string 投保规则区间名称
+      ruleIntervalValue: "", //	string 投保规则区间值
+      ruleIntervalType: 1 //	number  0 (保险期间岁满型)      1 (保险期间年满型)
+    }
+  ], //	object []item 类型: object
+  type: 0, //	number	保险期间分类   0  按年  1 按天
+  fixedDay: "", //	string	固定天数   多个用逗号隔开
+  elasticDay: [{ begin: 0, end: 0 }] //	object []弹性天数
+};
+const defaultPeriodFormDay = {
+  type: 0, //	number	保险期间分类   0  按年  1 按天
+  fixedDay: [""], //	string	固定天数   多个用逗号隔开
+  elasticDay: [{ begin: 0, end: 0 }] //	object []弹性天数
+};
+const defaultPaymentForm = {
+  productId: 0, //	number	产品基本信息表主键id
+  payType: [], //	number	交费方式   0  年   1 半年  2  季   3  月
+  payPeriodAge: 0, //	number	交费期间    岁满型   存1表示年满型有值
+  payPeriodYear: 0, //	number	交费期间    年满型   存1表示年满型有值
+  premiumLimitAmount: 0, //	number	保费限制    按金额限制  0  不按金额限制     1  按金额限制
+  premiumLimitAmountContent: [{ payType: 0, min: 0, max: 0, increaseUnit: 0 }], //	object []
+  premiumLimitCopy: 0, //	number	保费限制   按份数限制    0  不按份数限制     1  按份数限制
+  premiumLimitCopyAmount: [{ payType: 0, min: 0, max: 0, increaseUnit: 0 }], //	object []
+  ruleIntevalDtoList: [
+    {
+      productId: "", //	number 产品基本信息表主键id
+      ruleIntervalName: "", //	string 投保规则区间名称
+      ruleIntervalValue: "", //	string 投保规则区间值
+      ruleIntervalType: 2 //	number 2  (交费期间年满型)   3(交费期间岁满型)
+    },
+    {
+      productId: "", //	number 产品基本信息表主键id
+      ruleIntervalName: "", //	string 投保规则区间名称
+      ruleIntervalValue: "", //	string 投保规则区间值
+      ruleIntervalType: 3 //	number 2  (交费期间年满型)   3(交费期间岁满型)
+    }
+  ] //	object []
+};
+const defaultReceiveForm = {
+  productId: "", //	string
+  receiveAge: 0, //	number	年金领取年龄  0  不支持   1  支持
+  receiveAgeContent: [{ sex: 0, age: 0 }], //	object []年金领取年龄内容        sex  0  不限制  1 男 2 女
+  startReceiveAge: 0, //	number	起领时间  0   不支持   1  支持
+  receiveAgeNum: [""], //	string	起领时间多少年    多个逗号分隔
+  receivePeriod: 0, //	number	领取期间   0  不支持   1  支持
+  receiveType: [] //	number	领取方式   0  年领取   1  月领取
+};
 export default {
   data() {
-    const defaultPeopleForm = {
-      productId: "",
-      applicationAgeStart: 0,
-      applicationAgeEnd: 0,
-      applicationAgeDay: 0,
-      renewalAge: 0,
-      payAgeMax: 0,
-      sexLimit: 0,
-      professionalLimit: 0,
-      professionalGradeLimit: 0,
-      specialProfessionalLimit: "",
-      socialInsuranceLimit: 0,
-      multipleInsurer: 0,
-      insurerNum: 0,
-      relationLimit: [],
-      confine: 0,
-      type: 0
-    };
-
     return {
       anchor: "applicant",
-      applicationForm: Object.assign({}, defaultPeopleForm),
-      insuranceForm: Object.assign({}, defaultPeopleForm),
-      coverageForm: {
-        productId: "", //	number产品基本信息表主键
-        generalLimit: 0, //	number一般限制        0  无限制   1  有限制
-        minAmount: 0, //	number最低保额(单位:元)
-        maxAmount: 0, //	number最高保额(单位:元)
-        increaseUnit: 0, //	number递增单位(单位:元)
-        ageLimit: 0, //	number年龄保额限制    0 无限制  1 有限制
-        ageContent: [{ ageBegin: 0, ageEnd: 0, maxAmount: 0 }], //	object []年龄保额限制内容
-        professionaltLimit: 0, //	number职业保额限制    0无限制  1 有限制
-        professionalLimitContent: [{ grade: 0, maxAmount: 0 }], //,	object []职业保额限制内容
-        specialProfessionalLimit: 0, //	number特殊职业限制   0无限制  1 有限制
-        specialProfessionalLimitContent: [{ jobCode: 0, maxAmount: 0 }], //,	object []特殊职业限制内容
-        areaLimit: 0, //	number地区保额限制   0无限制  1 有限制
-        areaLimitContent: [{ areaType: "", maxAmount: 0, unit: 0 }], //,	object []地区保额限制内容  unit  单位  0  万元  1 元  2  元/天
-        insurancePlan: 0, //	number保险计划   0 无  1 有
-        insurancePlanContent: [{ code: 1, name: "", amount: 0, unit: 0 }] //,	object []保险计划内容
-      },
-      periodFormYear: {
-        productId: "", //	number	产品基本信息表主键id
-        insurancePeriodYear: 0, //	number	保险期间类型   年满型   存1代表年满型存在
-        insurancePeriodAge: 0, //	number	保险期间类型   岁满型   存1代表岁满型存在
-        renewal: 0, //	number	保证续保   0  不支持  1  支持
-        renewalCycle: 0, //	number	续保周期    多少年
-        ruleIntevalDtoList: [
-          {
-            productId: "", //	number 产品基本信息表主键id
-            ruleIntervalName: "", //	string 投保规则区间名称
-            ruleIntervalValue: "", //	string 投保规则区间值
-            ruleIntervalType: 0 //	number 2  (交费期间年满型)   3(交费期间岁满型)
-          },
-          {
-            productId: "", //	number 产品基本信息表主键id
-            ruleIntervalName: "", //	string 投保规则区间名称
-            ruleIntervalValue: "", //	string 投保规则区间值
-            ruleIntervalType: 1 //	number  0 (保险期间岁满型)      1 (保险期间年满型)
-          }
-        ], //	object []item 类型: object
-        type: 0, //	number	保险期间分类   0  按年  1 按天
-        fixedDay: "", //	string	固定天数   多个用逗号隔开
-        elasticDay: [{ begin: 0, end: 0 }] //	object []弹性天数
-      },
-      periodFormDay: {
-        type: 0, //	number	保险期间分类   0  按年  1 按天
-        fixedDay: [""], //	string	固定天数   多个用逗号隔开
-        elasticDay: [{ begin: 0, end: 0 }] //	object []弹性天数
-      },
-      paymentForm: {
-        productId: 0, //	number	产品基本信息表主键id
-        payType: [], //	number	交费方式   0  年   1 半年  2  季   3  月
-        payPeriodAge: 0, //	number	交费期间    岁满型   存1表示年满型有值
-        payPeriodYear: 0, //	number	交费期间    年满型   存1表示年满型有值
-        premiumLimitAmount: 0, //	number	保费限制    按金额限制  0  不按金额限制     1  按金额限制
-        premiumLimitAmountContent: [
-          { payType: 0, min: 0, max: 0, increaseUnit: 0 }
-        ], //	object []
-        premiumLimitCopy: 0, //	number	保费限制   按份数限制    0  不按份数限制     1  按份数限制
-        premiumLimitCopyAmount: [
-          { payType: 0, min: 0, max: 0, increaseUnit: 0 }
-        ], //	object []
-        ruleIntevalDtoList: [
-          {
-            productId: "", //	number 产品基本信息表主键id
-            ruleIntervalName: "", //	string 投保规则区间名称
-            ruleIntervalValue: "", //	string 投保规则区间值
-            ruleIntervalType: 2 //	number 2  (交费期间年满型)   3(交费期间岁满型)
-          },
-          {
-            productId: "", //	number 产品基本信息表主键id
-            ruleIntervalName: "", //	string 投保规则区间名称
-            ruleIntervalValue: "", //	string 投保规则区间值
-            ruleIntervalType: 3 //	number 2  (交费期间年满型)   3(交费期间岁满型)
-          }
-        ] //	object []
-      },
-      receiveForm: {
-        productId: "", //	string
-        receiveAge: 0, //	number	年金领取年龄  0  不支持   1  支持
-        receiveAgeContent: [{ sex: 0, age: 0 }], //	object []年金领取年龄内容        sex  0  不限制  1 男 2 女
-        startReceiveAge: 0, //	number	起领时间  0   不支持   1  支持
-        receiveAgeNum: [""], //	string	起领时间多少年    多个逗号分隔
-        receivePeriod: 0, //	number	领取期间   0  不支持   1  支持
-        receiveType: [] //	number	领取方式   0  年领取   1  月领取
-      },
+      applicationForm: JSON.parse(JSON.stringify(defaultPeopleForm)),
+      insuranceForm: JSON.parse(JSON.stringify(defaultPeopleForm)),
+      coverageForm: JSON.parse(JSON.stringify(defaultCoverageForm)),
+      periodFormYear: JSON.parse(JSON.stringify(defaultPeriodFormYear)),
+      periodFormDay: JSON.parse(JSON.stringify(defaultPeriodFormDay)),
+      paymentForm: JSON.parse(JSON.stringify(defaultPaymentForm)),
+      receiveForm: JSON.parse(JSON.stringify(defaultReceiveForm)),
       relationClass: Object.freeze({
         0: "配偶",
         1: "父亲",
@@ -1371,7 +1350,8 @@ export default {
   methods: {
     getData() {
       let id = this.$route.query.id;
-        id && Agency.getProductRule(id).then(data => {
+      id &&
+        Agency.getProductRule(id).then(data => {
           if (data) {
             if (data.applicantRule) {
               this.applicationForm = data.applicantRule;
@@ -1479,24 +1459,24 @@ export default {
           }
         });
 
-        // 查询投保人或者被保人规则
-        // getAppntInsuredRule(id).then(data => {
-        //   // console.log(data);
-        //   data && (this.applicationForm = data);
-        // });
+      // 查询投保人或者被保人规则
+      // getAppntInsuredRule(id).then(data => {
+      //   // console.log(data);
+      //   data && (this.applicationForm = data);
+      // });
 
-        // // 查询投保人或者被保人规则
-        // getCoverageRule(id).then(data => {
-        //   // console.log(data);
-        //   data && (this.coverageForm = data);
-        // });
+      // // 查询投保人或者被保人规则
+      // getCoverageRule(id).then(data => {
+      //   // console.log(data);
+      //   data && (this.coverageForm = data);
+      // });
     },
-    addRow(type) {
-      let len = this.form[type].length;
-      if (!len || Object.keys(this.form[type][len - 1]).length) {
-        this.form[type].push({});
-      }
-    },
+    // addRow(type) {
+    //   let len = this.form[type].length;
+    //   if (!len || Object.keys(this.form[type][len - 1]).length) {
+    //     this.form[type].push({});
+    //   }
+    // },
     submit(type) {
       // debugger
       this[type].productId = this.$route.query.id;
@@ -1563,30 +1543,62 @@ export default {
           this.$Message.success("操作成功");
         });
     },
-    clear(type) {
-      Promise.resolve()
+    clear(form) {
+      this.$Modal.confirm({
+        title: "提示",
+        content: "确定要清空吗",
+        onOk: () => {
+          Promise.resolve()
         .then(() => {
-          switch (type) {
+          switch (form) {
             case "applicationForm":
-              return Agency.clearAppntInsuredRule(this[type].id);
+              return Agency.clearAppntInsuredRule(this[form].id).then(res => {
+                this.applicationForm = JSON.parse(
+                  JSON.stringify(defaultPeopleForm)
+                );
+              });
               break;
             case "insuranceForm":
-              return Agency.clearAppntInsuredRule(this[type].id);
+              return Agency.clearAppntInsuredRule(this[form].id).then(res => {
+                this.insuranceForm = JSON.parse(
+                  JSON.stringify(defaultPeopleForm)
+                );
+              });
               break;
             case "coverageForm":
-              return Agency.clearCoverageRule(this[type].id);
+              return Agency.clearCoverageRule(this[form].id).then(res => {
+                this.coverageForm = JSON.parse(
+                  JSON.stringify(defaultCoverageForm)
+                );
+              });
               break;
             case "periodFormYear":
-              return Agency.clearInPeriodRule([this[type].id]);
+              return Agency.clearInPeriodRule([this[form].id]).then(res => {
+                this.periodFormYear = JSON.parse(
+                  JSON.stringify(defaultPeriodFormYear)
+                );
+              });
               break;
             case "periodFormDay":
-              return Agency.clearInPeriodRule([this[type].id]);
+              return Agency.clearInPeriodRule([this[form].id]).then(res => {
+                this.periodFormDay = JSON.parse(
+                  JSON.stringify(defaultPeriodFormDay)
+                );
+              });
               break;
             case "paymentForm":
-              return Agency.clearPayRule(this[type].id);
+              return Agency.clearPayRule(this[form].id).then(res => {
+                this.paymentForm = JSON.parse(
+                  JSON.stringify(defaultPaymentForm)
+                );
+              });
               break;
             case "receiveForm":
-              return Agency.clearReceiveRule(this[type].id);
+              return Agency.clearReceiveRule(this[form].id).then(res => {
+                this.receiveForm = JSON.parse(
+                  JSON.stringify(defaultReceiveForm)
+                );
+              });
               break;
             default:
               break;
@@ -1596,6 +1608,9 @@ export default {
           this.getData();
           this.$Message.success("操作成功");
         });
+        }
+      })
+      
     },
     transCode(type) {
       if (this[type].specialProfessionalLimit) {

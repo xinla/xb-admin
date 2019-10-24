@@ -67,7 +67,7 @@ export const publishProduct = (ids, status, userId) => {
 }
 
 /**
- * 根据id删除产品
+ * 删除产品
  * @param {*} id 
  */
 export const deleteProduct = (ids, userId) => {

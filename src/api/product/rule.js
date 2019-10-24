@@ -56,7 +56,7 @@ export const updateAppntInsuredRule = (data) => {
 export const clearAppntInsuredRule = (id) => {
   return axios.request({
     url: service + `/appntInsuredRule/deleteRule/${id}`,
-    method: 'get'
+    method: 'post'
   })
 }
 
@@ -102,7 +102,7 @@ export const updateCoverageRule = (data) => {
 export const clearCoverageRule = (id) => {
   return axios.request({
     url: service + `/coverageRule/deleteRule/${id}`,
-    method: 'get'
+    method: 'post'
   })
 }
 
@@ -198,7 +198,7 @@ export const updatePayRule = (data) => {
 export const clearPayRule = (id) => {
   return axios.request({
     url: service + `/payRule/deleteById/${id}`,
-    method: 'get'
+    method: 'post'
   })
 }
 
@@ -245,6 +245,6 @@ export const updateReceiveRule = (data) => {
 export const clearReceiveRule = (id) => {
   return axios.request({
     url: service + `/receiveRule/deleteRuleById/${id}`,
-    method: 'get'
+    method: 'post'
   })
 }

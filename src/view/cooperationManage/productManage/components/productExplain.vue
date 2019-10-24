@@ -30,6 +30,9 @@
 }
 .box {
   border-bottom: 20px solid #f5f7f9;
+  .box-content {
+    margin: 20px;
+  }
 }
 .button-circle {
   display: inline-block;
@@ -42,6 +45,43 @@
   line-height: 14px;
   cursor: pointer;
   margin-right: 5px;
+}
+.button-tap {
+  position: relative;
+  border: 1px solid #999;
+  padding: 5px 10px;
+  z-index: 1;
+  &:nth-of-type(n + 2) {
+    margin-left: 10px;
+  }
+}
+/deep/.up-wrap .ivu-form-item-content {
+  margin-left: 0 !important;
+}
+.up-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ddd;
+  height: 200px;
+  margin: 0 20px;
+  max-width: 300px;
+}
+.atlas {
+  width: 200px;
+  height: 200px;
+  margin: 0 20px 20px 0;
+}
+/deep/.box .ivu-row {
+  margin-bottom: 10px;
+}
+/deep/.ivu-btn{
+  margin-bottom: 10px;
+}
+// 设置富文本最低高度
+/deep/.ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable,
+.ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
+  min-height: 300px;
 }
 </style>
 
@@ -76,7 +116,7 @@
         span="20"
         style="background: #fff; position: absolute; right: 0; height: 100%; overflow: auto; transition: all 1s;"
       >
-        <Form ref="form" :model="form" :label-width="100">
+        <Form ref="form" :model="form" :rules="rules" :label-width="100">
           <!-- 产品导航 -->
           <div class="box">
             <div ref="nav" class="title-wrap bfc-o">
@@ -87,10 +127,10 @@
               </div>
             </div>
 
-            <div>
+            <div class="box-content">
               <Row>
                 <Col span="6">
-                  <FormItem>
+                  <FormItem class="up-wrap">
                     <Upload
                       :action="uploadUrl"
                       :show-upload-list="false"
@@ -105,7 +145,7 @@
                 </Col>
 
                 <Col span="8">
-                  <FormItem label prop="pcCoverPicture">
+                  <FormItem class="up-wrap" prop>
                     <Upload
                       :action="uploadUrl"
                       :show-upload-list="false"
@@ -120,10 +160,10 @@
                 </Col>
 
                 <Col span="10">
-                  <FormItem label="核心亮点" prop="pcCoverPicture">
+                  <FormItem label="核心亮点" prop="d">
                     <Input v-model="form.coreBuy" placeholder="请输入产品主要特色，不超过200字" />
                   </FormItem>
-                  <FormItem label="典型费率" prop="pcCoverPicture">
+                  <FormItem label="典型费率" prop>
                     <Input v-model="form.typicalPremium" placeholder="请输入产品典型费率，不超过200字" />
                   </FormItem>
                 </Col>
@@ -136,10 +176,10 @@
               <span class="title">产品封面</span>
             </div>
 
-            <div>
+            <div class="box-content">
               <Row>
                 <Col span="6">
-                  <FormItem label prop="pcCoverPicture">
+                  <FormItem class="up-wrap">
                     <Upload
                       :action="uploadUrl"
                       :show-upload-list="false"
@@ -154,7 +194,7 @@
                 </Col>
 
                 <Col span="8">
-                  <FormItem>
+                  <FormItem class="up-wrap">
                     <Upload
                       :action="uploadUrl"
                       :show-upload-list="false"
@@ -176,39 +216,36 @@
               <span class="title">保险利益说明</span>
             </div>
 
-            <div>
+            <div class="box-content">
               <Row>
                 <Col span="8">标题</Col>
                 <Col span="8">描述（算法）</Col>
               </Row>
-              <Row v-for="(item, index) of form.insurableInterest" :Key="index">
+              <Row
+                v-for="(item, index) of form.insurableInterest"
+                :Key="index"
+                style="margin-bottom: 10px;"
+              >
                 <Col span="8">
-                  <FormItem label="Web" prop="pcCoverPicture">
-                    <Input
-                      v-model="item.title"
-                      placeholder="请输入标题"
-                      style="width:60%; margin-right: 10px;"
-                    />
-                  </FormItem>
+                  <Input
+                    v-model="item.title"
+                    placeholder="请输入标题"
+                    style="width:60%; margin-right: 10px;"
+                  />
                 </Col>
 
                 <Col span="8">
-                  <FormItem label="Web" prop="pcCoverPicture">
-                    <Input
-                      v-model="item.algorithm"
-                      placeholder="请输入内容"
-                      style="width:73%; margin-right: 10px;"
-                    />
-                  </FormItem>
+                  <Input
+                    v-model="item.algorithm"
+                    placeholder="请输入内容"
+                    style="width:73%; margin-right: 10px;"
+                  />
                 </Col>
                 <Col span="8">
-                  <span
-                      class="button-circle"
-                      @click="reduce('insurableInterest', index)"
-                    >-</span>
+                  <span class="button-circle" @click="reduce('insurableInterest', index)">-</span>
                 </Col>
               </Row>
-              <button class="button" type="button" @click="addItem('insurableInterest')">添加</button>
+              <Button @click="addItem('insurableInterest')">添加</Button>
             </div>
           </div>
 
@@ -228,24 +265,28 @@
               >图集</button>
             </div>
 
-            <div>
-              <editor
-                ref="editor"
-                v-show="featureType === 0"
-                :value="form.imageText"
-                @on-change="editorChange"
-              />
+            <div class="box-content">
+              <div v-show="featureType === 0">
+                <ckeditor :editor="editor" v-model="form.imageText" :config="editorConfig"></ckeditor>
+              </div>
 
               <div v-show="featureType === 1">
-                <img v-for="(item, index) of form.atlas.split(',')" :Key="index" :src="item" alt />
+                <img
+                  class="atlas fl"
+                  v-for="(item, index) of form.atlas.split(',')"
+                  :Key="index"
+                  :src="item"
+                  alt
+                />
                 <Upload
+                  class="up-wrap"
                   :action="uploadUrl"
                   :show-upload-list="false"
                   :format="['jpg','jpeg','png']"
                   accept="image/*"
                   :on-success="uploadAtlas"
                 >
-                  <div class="upload-icon cp">+</div>
+                  <div class="upload-icon cp">+上传图片</div>
                 </Upload>
               </div>
             </div>
@@ -256,7 +297,7 @@
               <span class="title">投保须知</span>
             </div>
 
-            <div>
+            <div class="box-content">
               <Upload
                 :action="uploadUrl"
                 :show-upload-list="false"
@@ -266,11 +307,7 @@
                 <Button icon="ios-cloud-upload-outline">上传投保规则</Button>
                 <span>{{form.insuranceRulePdf}}</span>
               </Upload>
-              <editor
-                ref="editorRule"
-                :value="form.insuranceRuleText"
-                @on-change="editorChangeRule"
-              />
+              <ckeditor :editor="editor" v-model="form.insuranceRuleText" :config="editorConfig"></ckeditor>
             </div>
           </div>
 
@@ -279,7 +316,7 @@
               <span class="title">保险责任</span>
             </div>
 
-            <div>
+            <div class="box-content">
               <Upload
                 :action="uploadUrl"
                 :show-upload-list="false"
@@ -289,42 +326,38 @@
                 <Button icon="ios-cloud-upload-outline">上传条款</Button>
               </Upload>
 
-              <button class="button" type="button" @click="addItem()">保险责任</button>
-              <button class="button" type="button" @click="addItem()">免除责任</button>
+              <button class="button-tap" type="button" @click="form.exemptLiability = 0" style="border-bottom: 1px solid #fff;">保险责任</button>
+              <button class="button-tap" type="button" @click="form.exemptLiability = 1">免除责任</button>
 
-              <Row>
-                <Col span="8">标题</Col>
-                <Col span="8">描述（算法）</Col>
-              </Row>
-              <Row v-for="(item, index) of form.insuranceLiability" :Key="index">
-                <Col span="8">
-                  <FormItem prop="pcCoverPicture">
+              <div v-show="!form.exemptLiability" style="border-top: 1px solid #999;padding-top: 10px; margin-top: -1px;">
+                <Row>
+                  <Col span="8">标题</Col>
+                  <Col span="8">描述（算法）</Col>
+                </Row>
+                <Row
+                  v-for="(item, index) of form.insuranceLiability"
+                  :Key="index"
+                >
+                  <Col span="8">
                     <Input
                       v-model="item.title"
                       placeholder="请输入标题"
                       style="width:60%; margin-right: 10px;"
                     />
-                  </FormItem>
-                </Col>
-
-                <Col span="8">
-                  <FormItem prop="pcCoverPicture">
+                  </Col>
+                  <Col span="8">
                     <Input
                       v-model="item.desc"
                       placeholder="请输入内容"
                       style="width:73%; margin-right: 10px;"
                     />
-                  </FormItem>
-                </Col>
-
-                <Col span="8">
-                  <span
-                      class="button-circle"
-                      @click="reduce('insuranceLiability', index)"
-                    >-</span>
-                </Col>
-              </Row>
-              <button class="button" type="button" @click="addItem('insuranceLiability')">添加</button>
+                  </Col>
+                  <Col span="8">
+                    <span class="button-circle" @click="reduce('insuranceLiability', index)">-</span>
+                  </Col>
+                </Row>
+                <Button class="button" @click="addItem('insuranceLiability')">添加</Button>
+              </div>
             </div>
           </div>
         </Form>
@@ -341,14 +374,11 @@ import {
   clearProductDesc
 } from "@/api/product/desc";
 
-import Editor from "_c/editor";
+import CKEditor from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import "@ckeditor/ckeditor5-build-classic/build/translations/zh-cn";
 
-export default {
-  components: {
-    Editor
-  },
-  data() {
-    const defaultForm = {
+const defaultForm = {
       productId: "",
       navigationUrl: "", // 导航图链接地址
       bannerUrl: "", // banner图链接地址
@@ -371,21 +401,31 @@ export default {
       insuranceLiability: [{ title: "", desc: "" }], // 保险责任内容 [{"title":"标题","desc":"描述"}]
       exemptLiability: "" // 责任免除
     };
+
+export default {
+  components: {
+    ckeditor: CKEditor.component
+  },
+  data() {
     return {
+      editor: ClassicEditor,
       uploadUrl: this.$config.services.upload,
-      form: Object.assign({}, defaultForm),
+      editorConfig: {
+        // The configuration of the editor.
+        language: "zh-cn"
+      },
+      form: JSON.parse(JSON.stringify(defaultForm)),
       rules: {
-        coreBuy: [{ required: true, message: "不能为空", trigger: "blur" }],
-        typicalPremium: [
-          { required: true, message: "不能为空", trigger: "blur" }
-        ],
-        insurableInterest: [
+        coreBuy: [
           {
             required: true,
-            type: "array",
+            type: "string",
             message: "不能为空",
             trigger: "blur"
           }
+        ],
+        typicalPremium: [
+          { required: true, message: "不能为空", trigger: "blur" }
         ],
         coverage: [
           {
@@ -396,21 +436,6 @@ export default {
           }
         ],
         exclusion: [{ required: true, message: "不能为空", trigger: "blur" }],
-        appBannerPicture: [
-          { required: true, message: "不能为空", trigger: "change" }
-        ],
-        webBannerPicture: [
-          { required: true, message: "不能为空", trigger: "change" }
-        ],
-        appNavigationPicture: [
-          { required: true, message: "不能为空", trigger: "change" }
-        ],
-        pcNavigationPicture: [
-          { required: true, message: "不能为空", trigger: "change" }
-        ],
-        appCoverPicture: [
-          { required: true, message: "不能为空", trigger: "change" }
-        ],
         pcCoverPicture: [
           { required: true, message: "不能为空", trigger: "change" }
         ],
@@ -443,7 +468,7 @@ export default {
             return;
           }
           // 图集空值判断设置
-          data.atlas = data.atlas || '';
+          data.atlas = data.atlas || "";
           // 保险利益
           data.insurableInterest = JSON.parse(data.insurableInterest);
           // 保险责任内容
@@ -454,25 +479,6 @@ export default {
           this.$refs.editor.setHtml(this.form.imageText);
           this.$refs.editorRule.setHtml(this.form.insuranceRuleText);
         });
-    },
-    addRow(type) {
-      // console.log(1)
-
-      if (
-        type === "insurableInterest" &&
-        this.form[type][this.form[type].length - 1].scheduleName
-      ) {
-        this.form[type].push({
-          content: [{}]
-        });
-      } else if (
-        type === "coverage" &&
-        this.form[type][this.form[type].length - 1].title
-      ) {
-        this.form[type].push({});
-      } else {
-        this.$Message.error("上一条信息请填写完整，再添加下一条");
-      }
     },
     uploadNavigation(response, file, fileList) {
       this.form.navigationUrl = response.result.fileUrl;
@@ -505,8 +511,6 @@ export default {
         .then(data => {
           if (data) {
             let formData = Object.assign({}, this.form);
-
-            // console.log(this.form);
             // 数组字段转字符串
             formData.describePicture += "";
 
@@ -515,6 +519,8 @@ export default {
             } else {
               return saveProductDesc(formData);
             }
+          } else {
+            return Promise.reject();
           }
         })
         .then(() => {
@@ -528,25 +534,16 @@ export default {
         content: "确定要清空吗",
         onOk: () => {
           clearProductDesc(this.form.id).then(res => {
-            this.getData();
+            this.form = JSON.parse(JSON.stringify(defaultForm))
             this.$Message.success("操作成功");
             // this.form.resetFields()
             // console.log(1)
-          })
-        }
-      });
-    },
-    remove(type, index) {
-      this.$Modal.confirm({
-        title: "提示",
-        content: "确定删除吗?",
-        onOk: () => {
-          this.form[type].splice(index, 1);
+          });
         }
       });
     },
     addItem(type) {
-      let data =  this.form[type]
+      let data = this.form[type];
       if (data[data.length - 1].title) data.push({});
       else this.$Message.error("上一条信息请填写完整，再添加下一条");
     },
@@ -557,18 +554,8 @@ export default {
       }
       this.form[field].splice(index, 1);
     },
-    remove2(data, index) {
-      this.$Modal.confirm({
-        title: "提示",
-        content: "确定删除吗?",
-        onOk: () => {
-          data.splice(index, 1);
-        }
-      });
-    },
-
     goPosition(data) {
-      console.log(this.$refs.scroll.$el.scrollTop);
+      // console.log(this.$refs.scroll.$el.scrollTop);
       this.$refs.scroll.$el.scrollTop = this.$refs[data].offsetTop;
       this.anchor = data;
     },
@@ -582,7 +569,7 @@ export default {
     editorChangeRule(html, text) {
       console.log(html, text);
       this.form.insuranceRuleText = html;
-      console.log(this.form.insuranceRuleText)
+      console.log(this.form.insuranceRuleText);
     }
   }
 };
