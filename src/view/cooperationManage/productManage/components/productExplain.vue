@@ -301,7 +301,7 @@
               <Upload
                 :action="uploadUrl"
                 :show-upload-list="false"
-                :data="{productId: $route.query.id}"
+                :data='{image: true}'
                 :on-success="uploadRulePdf"
               >
                 <Button icon="ios-cloud-upload-outline">上传投保规则</Button>
@@ -320,7 +320,7 @@
               <Upload
                 :action="uploadUrl"
                 :show-upload-list="false"
-                :data="{productId: $route.query.id}"
+                :data='{image: true}'
                 :on-success="uploadLiabilityPdf"
               >
                 <Button icon="ios-cloud-upload-outline">上传条款</Button>
@@ -476,8 +476,8 @@ export default {
           this.form = data;
 
           // 设置富文本内容
-          this.$refs.editor.setHtml(this.form.imageText);
-          this.$refs.editorRule.setHtml(this.form.insuranceRuleText);
+          this.form.imageText || (this.form.imageText = '')
+          this.form.insuranceRuleText || (this.form.insuranceRuleText = '')
         });
     },
     uploadNavigation(response, file, fileList) {
@@ -559,18 +559,6 @@ export default {
       this.$refs.scroll.$el.scrollTop = this.$refs[data].offsetTop;
       this.anchor = data;
     },
-    // 产品特色富文本
-    editorChange(html, text) {
-      // console.log(html, text);
-      this.form.imageText = html;
-      // console.log(this.form.underwritingRulesText)
-    },
-    // 投保须知富文本
-    editorChangeRule(html, text) {
-      console.log(html, text);
-      this.form.insuranceRuleText = html;
-      console.log(this.form.insuranceRuleText);
-    }
   }
 };
 </script>

@@ -83,6 +83,11 @@ class HttpRequest {
           content: `该产品信息未创建或未完成`,
           duration: 2
         })
+      } else if (data.code === 140001) {
+        Message.warning({
+          content: `费率表不存在`,
+          duration: 2
+        })
       } else {
         addErrorLog(res)
       }

@@ -54,6 +54,8 @@ const config = {
 }
 config.domain = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 
+config.domainCKF = process.env.NODE_ENV === 'development' ? config.baseUrl.dev1 : config.baseUrl.pro1
+
 config.domainV2 = process.env.NODE_ENV === 'development' ? config.baseUrl.dev2 : config.baseUrl.pro1
 
 config.services = {

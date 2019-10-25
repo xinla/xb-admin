@@ -59,15 +59,7 @@
       flex-direction: column;
       background: #fff;
       flex: 1;
-      padding: 0 0 10px;
       overflow: auto;
-      .apps-table {
-        display: flex;
-        flex-direction: column;
-        background: #fff;
-        flex: 1;
-        overflow-y: auto;
-      }
       .a-page {
         padding: 10px 0 20px;
         font-size: 12px;
@@ -95,6 +87,15 @@
 .no-data{
   text-align: center;
   padding: 100px 0;
+}
+/deep/.ivu-checkbox-group-item {
+    vertical-align: top;
+        width: 105px;
+}
+.app-icon{
+  width: 100px;
+  height: 100px;
+  margin: 10px 15px 15px 0;
 }
 </style>
 <style lang="less">
@@ -168,9 +169,7 @@
           <span class="other" @click="edit(1)">下移</span>
           <span class="other" @click="edit(2)">移出</span>
         </div>
-        <div class="s-title"></div>
         <div class="a-content">
-          <div class="apps-table">
             <Table
               ref="organUserList"
               :loading="loading"
@@ -178,8 +177,8 @@
               :data="applicantionList"
               @on-selection-change="selectChange"
             ></Table>
-          </div>
         </div>
+        <Page :total="total" :current="query.page" show-elevator show-total style="text-align:center;margin-top:20px;" @on-change="getDataPage"/>
       </div>
     </div>
 
@@ -276,7 +275,9 @@
           v-for="(item, index) of allApplicantions"
           :label="item.id"
           :key="index"
-        >{{item.name}}</Checkbox>
+        >{{item.name}}
+        <img class="app-icon" v-if="item.webImageUrl" :src="item.webImageUrl" />
+        </Checkbox>
       </CheckboxGroup>
       <div class="demo-drawer-footer ar" style="margin-top: 20px">
         <Button style="margin-right: 8px" @click="isApplicantion = false">取消</Button>
@@ -461,7 +462,7 @@ export default {
         });
         return;
       }
-      if (type !== 2 && this.selectData.length) {
+      if (type !== 2 && this.selectData.length > 1) {
         this.$Notice.destroy();
         this.$Notice.warning({
           title: "只支持操作一种应用"
@@ -482,9 +483,15 @@ export default {
     },
     // 上移动
     moveUp(data, currentTxt) {
-      let index = currentTxt.indexOf(data) - 1;
+      let index;
+      for (const iterator of currentTxt) {
+        if (data.id === iterator.id) {
+          index = currentTxt.indexOf(iterator);
+          break;
+        }
+      }
       let move = currentTxt[index];
-      if (index < 0) {
+      if (index === 0) {
         this.$Message.warning("已经移在改页最顶部");
         return;
       }
@@ -495,9 +502,15 @@ export default {
     },
     // 下移动
     moveDown(data, currentTxt) {
-      let index = currentTxt.indexOf(data) + 1;
+      let index;
+      for (const iterator of currentTxt) {
+        if (data.id === iterator.id) {
+          index = currentTxt.indexOf(iterator) + 1;
+          break;
+        }
+      }
       let move = currentTxt[index];
-      if (index < 0) {
+      if (index === currentTxt.length) {
         this.$Message.warning("已经移在改页最底部");
         return;
       }
@@ -557,7 +570,7 @@ export default {
         this.query = {
           keyword: "",
           page: 1,
-          size: 100,
+          size: 10,
           pid: data.id
         };
       }
@@ -568,6 +581,10 @@ export default {
         this.total = res.total;
         this.applicantionList = res.records;
       });
+    },
+    getDataPage(page) {
+      this.query.page = page
+      this.getData()
     },
     clickMoreMenu(args) {
       switch (args[0]) {
@@ -609,7 +626,7 @@ export default {
           this.menuForm = Object.assign({}, res);
         });
       } else {
-        this.menuForm = Object.assign(defaultMenuForm, {
+        this.menuForm = Object.assign({}, defaultMenuForm, {
           pid: this.allMenu.id
         });
       }

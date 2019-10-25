@@ -36,25 +36,29 @@
     </FormItem>
 
     <FormItem label="所属中类" prop="mediumClass">
-      <RadioGroup v-model="form.mediumClass">
-        <Radio
-          v-for="(item, index) of allClass[0].children"
-          :label="item.id"
-          :key="index"
-        >{{item.name}}</Radio>
-      </RadioGroup>
+      <template v-for="item of allClass">
+        <RadioGroup v-model="form.mediumClass" v-show="form.mainClass === item.id">
+          <Radio
+            v-for="(unit, index) of item.children"
+            :label="unit.id"
+            :key="index"
+          >{{unit.name}}</Radio>
+        </RadioGroup>
+      </template>
     </FormItem>
 
     <FormItem label="所属小类" prop="smallClass">
-      <div v-for="(item, index) of allClass[0].children" :key="index">
-        <CheckboxGroup v-model="form.smallClass" v-show="form.mediumClass === item.id">
+      <template v-for="item of allClass">
+      <div v-for="_item of item.children" :key="_item.id">
+        <CheckboxGroup v-model="form.smallClass" v-show="form.mediumClass === _item.id">
           <Checkbox
-            v-for="(unit, unique) of item.children"
-            :key="unique"
+            v-for="unit of _item.children"
+            :key="unit.id"
             :label="unit.id"
           >{{unit.name}}</Checkbox>
         </CheckboxGroup>
       </div>
+       </template>
     </FormItem>
 
     <FormItem label="保障功能" prop="protectFunction">
@@ -317,17 +321,17 @@ export default {
           if (!data) {
             return;
           }
+          console.log(data)
           // 所属小类,分销渠道,保障功能 转为数组
           let trans = ["smallClass", "protectFunction", "ageLevel"];
           for (const iterator of trans) {
-            data[iterator] = data[iterator].split(",");
+            data[iterator] ? (data[iterator] = data[iterator].split(",")) : [];
           }
-          // this.form = data 在此赋值，会导致下面的name  无法响应，带后续研究
+          this.form = data
           // 获取品牌名称
           getSupplierDetail(data.supplierId).then(_data => {
-            this.form = data;
-            this.form.name = _data.xbSupplier.name;
-            console.log("form:", this.form);
+            this.$set(this.form, 'name', _data.xbSupplier.name)
+            console.log("ProductInfo:", this.form);
           });
         });
     },
@@ -343,7 +347,7 @@ export default {
               for (const iterator of trans) {
                 formData[iterator] += "";
               }
-              // console.log(formData)
+              console.log(formData)
               // 产品形态，主附险传值
               this.$route.query.productForm = formData.productForm;
               // 供应商id传值

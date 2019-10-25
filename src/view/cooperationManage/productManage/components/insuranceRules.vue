@@ -1456,6 +1456,8 @@ export default {
                   data.vitProductReceiveRule.receiveAgeContent
                 ));
             }
+
+            console.log()
           }
         });
 
