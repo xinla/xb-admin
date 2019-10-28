@@ -82,25 +82,29 @@
         </FormItem>
 
         <FormItem label="所属中类" prop="mediumClass">
-          <RadioGroup v-model="form.mediumClass">
-            <Radio
-              v-for="(item, index) of allClass[0].children"
-              :label="item.id"
-              :key="index"
-            >{{item.name}}</Radio>
-          </RadioGroup>
+           <template v-for="item of allClass">
+        <RadioGroup v-model="form.mediumClass" v-show="form.mainClass === item.id">
+          <Radio
+            v-for="(unit, index) of item.children"
+            :label="unit.id"
+            :key="index"
+          >{{unit.name}}</Radio>
+        </RadioGroup>
+      </template>
         </FormItem>
 
         <FormItem label="所属小类" prop="smallClass">
-          <div v-for="(item, index) of allClass[0].children" :key="index">
-            <CheckboxGroup v-model="form.smallClass" v-show="form.mediumClass === item.id">
-              <Checkbox
-                v-for="(unit, unique) of item.children"
-                :key="unique"
-                :label="unit.id"
-              >{{unit.name}}</Checkbox>
-            </CheckboxGroup>
-          </div>
+          <template v-for="item of allClass">
+      <div v-for="_item of item.children" :key="_item.id">
+        <CheckboxGroup v-model="form.smallClass" v-show="form.mediumClass === _item.id">
+          <Checkbox
+            v-for="unit of _item.children"
+            :key="unit.id"
+            :label="unit.id"
+          >{{unit.name}}</Checkbox>
+        </CheckboxGroup>
+      </div>
+       </template>
         </FormItem>
 
         <FormItem label="在售状态" prop="sale">
@@ -264,6 +268,7 @@ const onlineInsurance = [
 ];
 
 const defaultForm = {
+  name: '',
   productFullName: "", //	string 产品名称
   productAbbr: "", //	string 产品简称
   productCode: "", //	string 产品代码
@@ -463,20 +468,23 @@ export default {
       getAllInsuranceSubclass(1).then(data => {
         console.log("TypeRule", data);
         this.allClass = data.children;
-        let temp = data.children[0].children;
-        for (const iterator of temp) {
-          if (iterator.hasChildren) {
-            for (const _iterator of iterator.children) {
-              smallClass.push({
-                label: _iterator.name,
-                value: _iterator.id
+        for (const Aiterator of data.children) {
+          if (Aiterator.hasChildren) {
+            for (const iterator of Aiterator.children) {
+              if (iterator.hasChildren) {
+                for (const _iterator of iterator.children) {
+                  smallClass.push({
+                    label: _iterator.name,
+                    value: _iterator.id
+                  });
+                }
+              }
+              mediumClass.push({
+                label: iterator.name,
+                value: iterator.id
               });
             }
           }
-          mediumClass.push({
-            label: iterator.name,
-            value: iterator.id
-          });
         }
       });
     },
@@ -568,7 +576,8 @@ export default {
     },
     change(val) {
       this.form.supplierId = val.id;
-      this.form.name = val.name;
+      // this.form.name = val.name;
+      this.$set(this.form, 'name', val.name)
       // console.log(val)
     },
     creat() {
@@ -585,6 +594,7 @@ export default {
           }
         })
         .then(res => {
+          this.fastShow = true;
           this.$Message.success("操作成功");
           this.form = JSON.parse(JSON.stringify(defaultForm))
           this.getData();

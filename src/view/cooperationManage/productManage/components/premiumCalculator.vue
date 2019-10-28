@@ -144,8 +144,18 @@
                       <Option :value="2">女性</Option>
                     </Select>
                   </template>
+
                   <!-- 交费方式 -->
                   <template v-if="currentConfigInfo.calItemTag === 15">{{item.unit}}</template>
+                  <!-- 出生日期 -->
+                  <template v-if="currentConfigInfo.calItemTag === 2">
+                    <DatePicker
+                      type="date"
+                      v-model="item.option"
+                      placeholder="选择日期"
+                      style="width: 150px"
+                    ></DatePicker>
+                  </template>
 
                   <template v-if="show(currentConfigInfo.calItemTag)">
                     <Input
@@ -158,7 +168,9 @@
                   <!-- 投保份数 -->
                   <template v-if="currentConfigInfo.calItemTag === 1">份</template>
                   <!-- 性别/领取方式-->
-                  <template v-if="currentConfigInfo.calItemTag === 4 || currentConfigInfo.calItemTag === 11">{{item.option}}</template>
+                  <template
+                    v-if="currentConfigInfo.calItemTag === 4 || currentConfigInfo.calItemTag === 11"
+                  >{{item.option}}</template>
                   <!-- 保费/保险金额 -->
                   <template
                     v-if="currentConfigInfo.calItemTag === 12 || currentConfigInfo.calItemTag === 10"
@@ -231,12 +243,9 @@ const defaultConfigInfo = {
   checked: 0,
   isShow: 0,
   rateFactor: 0,
-  define: 0,
-  configItems: []
+  define: 0
 };
 export default {
-  components: {},
-  props: {},
   data() {
     return {
       form: {
@@ -249,7 +258,7 @@ export default {
       configTagList: [],
       current: "",
       currentConfigInfo: Object.assign(
-        { productId: this.$route.query.id },
+        { productId: this.$route.query.id, configItems: [] },
         defaultConfigInfo
       ),
       selected: []
@@ -263,11 +272,11 @@ export default {
       let id = this.$route.query.id;
       if (id) {
         Agency.getCalculatorBase(id).then(res => {
-          console.log("calculatorBase: ", res);
-          this.form = res;
+          // console.log("calculatorBase: ", res);
+          res && (this.form = res);
         });
         Agency.getAllCalculatorItem(id).then(res => {
-          console.log("AllCalculatorItem: ", res);
+          // console.log("AllCalculatorItem: ", res);
           this.configTagList = res;
         });
       }
@@ -307,11 +316,13 @@ export default {
               productId: this.$route.query.id,
               calItemId: data.id,
               calItemName: data.name,
-              calItemTag: data.tag
+              calItemTag: data.tag,
+              configItems: []
             },
             defaultConfigInfo
           );
-          this.$Message.success("暂无该项相关规则信息");
+          console.log(this.currentConfigInfo)
+          this.$Message.info("暂无该项相关规则信息");
         }
       });
     },
@@ -337,7 +348,7 @@ export default {
       if (!form) {
         this.currentConfigInfo.configItems = form = [];
       }
-      form.push({});
+      form.push({ option: "", unit: 0, optionOther: '', isDefault: 0, isShow: 0 });
     },
     // 删除配置项选项
     remove() {

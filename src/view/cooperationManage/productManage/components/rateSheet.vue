@@ -9,11 +9,9 @@
     >
       <Button icon="ios-cloud-upload-outline">上传费率表</Button>
     </Upload>
-  {{fileName}}
+    {{fileName}}
     <Table :loading="loading" :columns="columns" :data="list">
-      <template slot="sex" slot-scope="{row}">
-        {{row.sex === 0 ? '男' : '女'}}
-      </template>
+      <template slot="sex" slot-scope="{row}">{{row.sex === 0 ? '男' : '女'}}</template>
     </Table>
 
     <Page
@@ -52,22 +50,22 @@ export default {
         {
           title: "性别",
           slot: "sex",
-          align: "center",
+          align: "center"
         },
         {
           title: "社保标记",
           key: "socialInsuranceFlag",
-          align: "center",
+          align: "center"
         },
         {
           title: "职业风险等级",
           key: "occupationalRiskGrade",
-          align: "center",
+          align: "center"
         },
         {
           title: "首续保标记",
           key: "renewalFlag",
-          align: "center",
+          align: "center"
         },
         {
           title: "投保档次",
@@ -106,7 +104,7 @@ export default {
         }
       ],
       total: 0,
-      fileName: ''
+      fileName: ""
     };
   },
   mounted() {
@@ -119,9 +117,8 @@ export default {
       let id = this.$route.query.id;
       id &&
         getProductRateByProductId(id, this.query).then(data => {
-          // console.log(data);
+          this.loading = false;
           if (data) {
-            this.loading = false;
             this.list = data.list;
             this.total = ~~data.total;
           }

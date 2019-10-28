@@ -84,10 +84,11 @@ class HttpRequest {
           duration: 2
         })
       } else if (data.code === 140001) {
-        Message.warning({
-          content: `费率表不存在`,
-          duration: 2
-        })
+        // Message.warning({
+        //   content: `费率表不存在`,
+        //   duration: 2
+        // })
+        return
       } else {
         addErrorLog(res)
       }

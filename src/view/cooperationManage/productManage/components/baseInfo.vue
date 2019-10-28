@@ -321,11 +321,10 @@ export default {
           if (!data) {
             return;
           }
-          console.log(data)
           // 所属小类,分销渠道,保障功能 转为数组
           let trans = ["smallClass", "protectFunction", "ageLevel"];
           for (const iterator of trans) {
-            data[iterator] ? (data[iterator] = data[iterator].split(",")) : [];
+            data[iterator] = data[iterator] ? data[iterator].split(",") : [];
           }
           this.form = data
           // 获取品牌名称
