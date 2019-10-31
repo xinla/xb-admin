@@ -12,10 +12,10 @@
 
   <baseInfo ref="baseInfo" v-show="current === 0" :key="key + 1" />
   <insuranceRules ref="insuranceRules" v-show="current === 1" :key="key + 2" />
-  <premiumCalculator ref="premiumCalculator" v-show="current === 2" :key="key + 3" />
-  <rateSheet ref="rateSheet" v-show="current === 3" :key="key + 4" />
-  <productExplain ref="productExplain" v-show="current === 4" :key="key + 5" />
-  <additionRisk ref="additionRisk" v-show="current === 5" :key="key + 6" />
+  <premiumCalculator ref="premiumCalculator" v-if="current === 2" :key="key + 3" />
+  <rateSheet ref="rateSheet" v-if="current === 3" :key="key + 4" />
+  <productExplain ref="productExplain" v-if="current === 4" :key="key + 5" />
+  <additionRisk ref="additionRisk" v-if="current === 5" :key="key + 6" />
 </div>
 </template>
 

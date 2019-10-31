@@ -107,8 +107,8 @@
               v-model="currentConfigInfo.checked"
               :true-value="1"
               :false-value="0"
-              @on-change="change()"
             ></Checkbox>
+              <!-- @on-change="change" -->
             <span id="a1" class="title">{{currentConfigInfo.calItemName}}</span>
             <div class="button-wrap fr">
               <button class="button" type="button" @click="add()">添加选项</button>
@@ -151,9 +151,9 @@
                   <template v-if="currentConfigInfo.calItemTag === 2">
                     <DatePicker
                       type="date"
-                      v-model="item.option"
                       placeholder="选择日期"
                       style="width: 150px"
+                      @on-change="changeDate($event, item)"
                     ></DatePicker>
                   </template>
 
@@ -243,7 +243,8 @@ const defaultConfigInfo = {
   checked: 0,
   isShow: 0,
   rateFactor: 0,
-  define: 0
+  define: 0,
+  checked: 0
 };
 export default {
   data() {
@@ -276,7 +277,7 @@ export default {
           res && (this.form = res);
         });
         Agency.getAllCalculatorItem(id).then(res => {
-          // console.log("AllCalculatorItem: ", res);
+          console.log("AllCalculatorItem: ", res);
           this.configTagList = res;
         });
       }
@@ -300,6 +301,15 @@ export default {
         })
         .then(() => {
           this.getData();
+          if (form === "currentConfigInfo") {
+            Agency.getCalculatorItemInfo(
+              this.$route.query.id,
+              formData.calItemId
+            ).then(res => {
+              console.log("currentConfigInfo: ", res);
+                res && (this.currentConfigInfo = res);
+            });
+          }
           this.$Message.success("操作成功");
         });
     },
@@ -310,6 +320,7 @@ export default {
         console.log("currentConfigInfo: ", res);
         if (res) {
           this.currentConfigInfo = res;
+          data.checked = 1
         } else {
           this.currentConfigInfo = Object.assign(
             {
@@ -321,18 +332,22 @@ export default {
             },
             defaultConfigInfo
           );
-          console.log(this.currentConfigInfo)
+          console.log(this.currentConfigInfo);
           this.$Message.info("暂无该项相关规则信息");
         }
       });
     },
-    // 配置项勾选
-    change() {
-      Agency.getCalculatorItemInfo(this.currentConfigInfo).then(res => {
-        this.currentConfigInfo.checked = 0;
-        this.$Message.success("ok");
-      });
-    },
+    // 配置项取消勾选
+    // change(data) {
+    //   if (!this.currentConfigInfo.id) {
+    //     this.$Message.warning("请先保存该选项卡数据");
+    //     return;
+    //   }
+    //   !data &&
+    //     Agency.uncheckCalculatorItem(this.currentConfigInfo).then(res => {
+    //       this.$Message.success("取消成功");
+    //     });
+    // },
     // 设置默认选项交互
     changeSwitch(data) {
       let array = this.currentConfigInfo.configItems;
@@ -342,13 +357,23 @@ export default {
         }
       }
     },
+    changeDate($event, data) {
+      data.option = $event;
+      console.log(data);
+    },
     // 添加配置项选项
     add() {
       let form = this.currentConfigInfo.configItems;
       if (!form) {
         this.currentConfigInfo.configItems = form = [];
       }
-      form.push({ option: "", unit: 0, optionOther: '', isDefault: 0, isShow: 0 });
+      form.push({
+        option: "",
+        unit: 0,
+        optionOther: "",
+        isDefault: 0,
+        isShow: 0
+      });
     },
     // 删除配置项选项
     remove() {

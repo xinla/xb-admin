@@ -321,6 +321,9 @@ export default {
           if (!data) {
             return;
           }
+          // 供应商id传值
+              this.$route.query.supplierId = data.supplierId
+
           // 所属小类,分销渠道,保障功能 转为数组
           let trans = ["smallClass", "protectFunction", "ageLevel"];
           for (const iterator of trans) {

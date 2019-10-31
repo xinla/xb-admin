@@ -39,7 +39,7 @@ export default {
         page: 1,
         size: 10
       },
-      loading: false,
+      loading: true,
       list: [],
       columns: [
         {

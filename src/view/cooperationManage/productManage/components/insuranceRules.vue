@@ -128,7 +128,7 @@
               </div>
             </div>
 
-            <div class="form-wrap" v-if="applicationForm.confine">
+            <div class="form-wrap" v-show="applicationForm.confine">
               <FormItem label="年龄限制">
                 <div v-if="true">
                   <Row>
@@ -304,7 +304,7 @@
               </div>
             </div>
 
-            <div class="form-wrap" v-if="insuranceForm.confine">
+            <div class="form-wrap" v-show="insuranceForm.confine">
               <FormItem label="年龄限制">
                 <div v-if="true">
                   <Row>
@@ -1241,27 +1241,28 @@ export default {
     this.getData();
   },
   methods: {
-    getData() {
+    getData(form) {
       let id = this.$route.query.id;
+      console.log(id)
       id &&
         Agency.getProductRule(id).then(data => {
           if (data) {
             // 投保人规则
-            if (data.applicantRule) {
+            if (data.applicantRule && (form === 'applicationForm' || !form)) {
               let temp = (this.applicationForm = data.applicantRule);
               temp.relationLimit = temp.relationLimit
                 ? temp.relationLimit.split(",")
                 : [];
             }
             // 被保人规则
-            if (data.insuredRule) {
+            if (data.insuredRule && (form === 'insuranceForm' || !form)) {
               let temp = (this.insuranceForm = data.insuredRule);
               temp.relationLimit = temp.relationLimit
                 ? temp.relationLimit.split(",")
                 : [];
             }
             // 保额规则
-            if (data.coverageRule) {
+            if (data.coverageRule && (form === 'coverageForm' || !form)) {
               let temp = (this.coverageForm = data.coverageRule);
 
               temp.ageContent = temp.ageContent
@@ -1289,10 +1290,11 @@ export default {
             if (data.insurancePeriodRule) {
               for (const iterator of data.insurancePeriodRule) {
                 // 0  按年  1 按天
-                if (iterator.type === 0) {
+                if (iterator.type === 0 && (form === 'periodFormYear' || !form)) {
                   this.periodFormYear = iterator;
+                  iterator.ruleIntevalDtoList || (iterator.ruleIntevalDtoList = [])
                 
-                } else {
+                } else if (form === 'periodFormDay' || !form) {
                   this.periodFormDay = iterator;
 
                   this.periodFormDay.fixedDay = iterator.fixedDay
@@ -1306,7 +1308,7 @@ export default {
               }
             }
             // 交费规则
-            if (data.payRule) {
+            if (data.payRule && (form === 'paymentForm' || !form)) {
               let temp = (this.paymentForm = data.payRule);
 
               temp.premiumLimitAmountContent = temp.premiumLimitAmountContent
@@ -1316,9 +1318,11 @@ export default {
               temp.premiumLimitCopyAmount = temp.premiumLimitCopyAmount
                 ? JSON.parse(temp.premiumLimitCopyAmount)
                 : [];
+
+                temp.ruleIntevalDtoList || (temp.ruleIntevalDtoList = [])
             }
             // 领取规则
-            if (data.vitProductReceiveRule) {
+            if (data.vitProductReceiveRule && (form === 'receiveForm' || !form)) {
               let temp = (this.receiveForm = data.vitProductReceiveRule);
 
               temp.receiveAgeNum = temp.receiveAgeNum
@@ -1364,7 +1368,7 @@ export default {
       this[type].productId = this.$route.query.id;
 
       let formData = JSON.parse(JSON.stringify(this[type]));
-      console.log('formData: ', formData);
+      // console.log('formData: ', formData);
       this.$refs[type]
         .validate()
         .then(data => {
@@ -1391,7 +1395,13 @@ export default {
                   : Agency.saveCoverageRule(formData);
                 break;
               case "periodFormYear":
-                // formData.ruleIntevalDtoList = JSON.stringify( formData.ruleIntevalDtoList)
+                for (const iterator of formData.ruleIntevalDtoList) {
+                  if (iterator.ruleIntervalType === 1 || iterator.ruleIntervalType === 2) {
+                    iterator.ruleIntervalName = iterator.ruleIntervalValue + '年'
+                  } else if (iterator.ruleIntervalType === 0 || iterator.ruleIntervalType === 3) {
+                    iterator.ruleIntervalName = iterator.ruleIntervalValue + '岁'
+                  }
+                }
                 return formData.id
                   ? Agency.updateInPeriodRule([formData])
                   : Agency.saveInPeriodRule([formData]);
@@ -1402,6 +1412,15 @@ export default {
                   : Agency.saveInPeriodRule([formData]);
                 break;
               case "paymentForm":
+                for (const iterator of formData.ruleIntevalDtoList) {
+                  // 年满型
+                  if (iterator.ruleIntervalType === 1 || iterator.ruleIntervalType === 2) {
+                    iterator.ruleIntervalName = iterator.ruleIntervalValue + '年'
+                  } else if (iterator.ruleIntervalType === 0 || iterator.ruleIntervalType === 3) { 
+                    // 岁满型
+                    iterator.ruleIntervalName = iterator.ruleIntervalValue + '岁'
+                  }
+                }
                 return formData.id
                   ? Agency.updatePayRule(formData)
                   : Agency.savePayRule(formData);
@@ -1420,7 +1439,7 @@ export default {
           }
         })
         .then(() => {
-          this.getData();
+          this.getData(type);
           this.$Message.success("操作成功");
         });
     },

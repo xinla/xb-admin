@@ -74,9 +74,9 @@ export const getCalculatorItemInfo = (productId, id) => {
  * 右侧选项项目取消勾选
  * @param {*} param0 
  */
-export const uncheckCalculatorItem = ({productId, id}) => {
+export const uncheckCalculatorItem = ({productId, calItemId}) => {
   return axios.request({
-    url: service + `/cal/updateItemConfigStatus/${productId}/${id}`,
+    url: service + `/cal/updateItemConfigStatus/${productId}/${calItemId}`,
     method: 'POST'
   })
 }

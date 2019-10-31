@@ -36,7 +36,7 @@
   padding: 10px;
   background: #eee;
 }
-.anchor-wrap{
+.anchor-wrap {
   background: #fff;
   margin: 10px 10px 0 0;
   padding: 10px;
@@ -46,9 +46,9 @@
     margin-top: 5px;
     border-radius: 4px;
   }
-.current {
-  background: #ddd;
-}
+  .current {
+    background: #ddd;
+  }
 }
 </style>
 <template>
@@ -61,9 +61,13 @@
             :class="['anchor', {current: anchor.includes(item.id)}]"
             :key="index"
           >
-          <CheckboxGroup v-model="anchor">
-        <Checkbox :label="item.id" style="width: 100%;" @click.self.native="addRisk(item)">{{item.productFullName}}</Checkbox>
-    </CheckboxGroup>
+            <CheckboxGroup v-model="anchor">
+              <Checkbox
+                :label="item.id"
+                style="width: 100%;"
+                @click.self.native="addRisk(item)"
+              >{{item.productFullName}}</Checkbox>
+            </CheckboxGroup>
           </li>
         </ul>
       </Col>
@@ -88,11 +92,13 @@
               <Checkbox v-model="item.priorityProductLimit" :true-value="0" :false-value="1">无约束</Checkbox>
               <div v-if="item.priorityProductLimit === 1">
                 <Select v-model="item.priorityProductId" style="width:30%">
-                  <Option
-                    v-for="(item, index) in additionRiskList"
-                    :value="item.id"
-                    :key="index"
-                  >{{item.productFullName}}</Option>
+                  <template v-for="(unit, index) in additionRiskList">
+                    <Option
+                      v-if="unit.id !== item.additionRiskId"
+                      :value="unit.id"
+                      :key="index"
+                    >{{unit.productFullName}}</Option>
+                  </template>
                 </Select>
               </div>
             </FormItem>
@@ -207,11 +213,19 @@
                   </RadioGroup>
                 </div>
 
-                <RadioGroup v-model="item.insurancePeriodOption" @on-change="constraintChange(item)">
+                <RadioGroup
+                  v-model="item.insurancePeriodOption"
+                  @on-change="constraintChange(item)"
+                >
                   <Radio :label="1">可选</Radio>
                 </RadioGroup>
 
-                <Checkbox v-model="item.insurancePeriodRate" :true-value="1" :false-value="0" @on-change="constraintChange(item)">作为费率查询条件</Checkbox>
+                <Checkbox
+                  v-model="item.insurancePeriodRate"
+                  :true-value="1"
+                  :false-value="0"
+                  @on-change="constraintChange(item)"
+                >作为费率查询条件</Checkbox>
 
                 <table class="table ac" border>
                   <tr>
@@ -219,26 +233,26 @@
                     <th>附加险保险期间</th>
                   </tr>
                   <template v-if="item.insurancePeriodRate === 1">
-                  <tr v-for="(unit, unique) in item.insurancePeriodContentRate" :key="unique">
-                    <td>{{unit.main}}</td>
-                    <td>
-                      <span v-for="(_item, _index) in unit.rider" :key="_index">
-                        <Checkbox v-model="_item.checked" :true-value="1" :false-value="0"> </Checkbox>
-                        {{_item.rider}}
-                      </span>
-                    </td>
-                  </tr>
+                    <tr v-for="(unit, unique) in item.insurancePeriodContentRate" :key="unique">
+                      <td>{{unit.main}}</td>
+                      <td>
+                        <span v-for="(_item, _index) in unit.rider" :key="_index">
+                          <Checkbox v-model="_item.checked" :true-value="1" :false-value="0"></Checkbox>
+                          {{_item.rider}}
+                        </span>
+                      </td>
+                    </tr>
                   </template>
                   <template v-else-if="item.insurancePeriodOption === 1">
-                  <tr v-for="(unit, unique) in item.insurancePeriodContent" :key="unique">
-                    <td>{{unit.main}}</td>
-                    <td>
-                      <span v-for="(_item, _index) in unit.rider" :key="_index">
-                        <Checkbox v-model="_item.checked" :true-value="1" :false-value="0"> </Checkbox>
-                        {{_item.rider}}
-                      </span>
-                    </td>
-                  </tr>
+                    <tr v-for="(unit, unique) in item.insurancePeriodContent" :key="unique">
+                      <td>{{unit.main}}</td>
+                      <td>
+                        <span v-for="(_item, _index) in unit.rider" :key="_index">
+                          <Checkbox v-model="_item.checked" :true-value="1" :false-value="0"></Checkbox>
+                          {{_item.rider}}
+                        </span>
+                      </td>
+                    </tr>
                   </template>
                 </table>
               </div>
@@ -247,20 +261,23 @@
             <FormItem label="交费期间约束">
               <Checkbox v-model="item.payPeriodLimit" :true-value="0" :false-value="1">无约束</Checkbox>
               <div v-if="item.payPeriodLimit === 1">
-              <div>
-                <RadioGroup v-model="item.payOption">
-                  <Radio :label="0">强制</Radio>
-                </RadioGroup>
+                <div>
+                  <RadioGroup v-model="item.payOption">
+                    <Radio :label="0">强制</Radio>
+                  </RadioGroup>
 
-                <RadioGroup v-model="item.payForceContent" style="border: 1px solid #ddd; padding: 0 10px;">
-                  <Radio :label="0">= 主险保险期间</Radio>
-                  <Radio :label="1">= 主险保险期间 - 1</Radio>
+                  <RadioGroup
+                    v-model="item.payForceContent"
+                    style="border: 1px solid #ddd; padding: 0 10px;"
+                  >
+                    <Radio :label="0">= 主险保险期间</Radio>
+                    <Radio :label="1">= 主险保险期间 - 1</Radio>
+                  </RadioGroup>
+                </div>
+                <RadioGroup v-model="item.payOption">
+                  <Radio :label="1">可选</Radio>
                 </RadioGroup>
               </div>
-              <RadioGroup v-model="item.payOption">
-                <Radio :label="1">可选</Radio>
-              </RadioGroup>
-</div>
             </FormItem>
 
             <FormItem label="捆绑其他产品">
@@ -280,10 +297,10 @@ import { getProductPageByType } from "@/api/product";
 const defaultForm = {
   id: "",
   productId: "",
-  additionRiskId: "2363658474862149632",
-  additionRiskName: "吉康人生两全",
+  additionRiskId: "",
+  additionRiskName: "",
   priorityProductLimit: 0,
-  priorityProductId: "2363658474862049632",
+  priorityProductId: "",
   coverageLimit: 0,
   coverageDefine: 0,
   coverageDefineItem: 0,
@@ -298,9 +315,11 @@ const defaultForm = {
   insurancePeriodLimit: 0,
   insurancePeriodOption: 0,
   insurancePeriodForce: 0,
-  insurancePeriodRate: null,
-  insurancePeriodContent: [{ main: "", rider: [{rider: '', checked: 0}] }],
-  insurancePeriodContentRate: [{ main: "", rider: [{rider: '', checked: 0}] }],
+  insurancePeriodRate: 0,
+  insurancePeriodContent: [{ main: "", rider: [{ rider: "", checked: 0 }] }],
+  insurancePeriodContentRate: [
+    { main: "", rider: [{ rider: "", checked: 0 }] }
+  ],
   payPeriodLimit: 0,
   payOption: 0,
   payForceContent: 0,
@@ -325,23 +344,25 @@ export default {
   },
   mounted() {
     // 获取附加险列表
-    Agency.getAdditionRiskList(
-      this.$route.query.supplierId || "2252792750044872711"
-    ).then(res => {
-      console.log("additionRiskList ", res);
+    //  || "2252792750044872711"
+    Agency.getAdditionRiskList(this.$route.query.supplierId).then(res => {
+      // console.log("additionRiskList ", res);
       this.additionRiskList = res;
     });
 
-    // this.getData();
+    this.getData();
   },
   methods: {
     getData() {
       this.$route.query.id &&
         Agency.getAdditionRisk(this.$route.query.id).then(data => {
           console.log("additionRisk", data);
+          this.form = [];
+          this.anchor = []
           if (data) {
             this.form = data;
             for (const iterator of data) {
+              this.anchor.push(iterator.additionRiskId);
               // 保费限保额内容
               iterator.premiumLimitCoverageContent = JSON.parse(
                 iterator.premiumLimitCoverageContent
@@ -374,7 +395,8 @@ export default {
       Promise.resolve()
         .then(() => {
           let formData = JSON.parse(JSON.stringify(data));
-          if (formData[0] && formData[0].additionRiskId) {
+          console.log("formData: ", formData);
+          if (formData.id) {
             return Agency.updateAdditionRisk(formData);
           } else {
             return Agency.saveAdditionRisk(formData);
@@ -382,6 +404,7 @@ export default {
         })
         .then(() => {
           this.getData();
+          this.$Message.success("操作成功");
         });
     },
     clear(item) {
@@ -389,22 +412,31 @@ export default {
         title: "提示",
         content: "确定要清空么",
         onOk: () => {
-          Agency.deleteAdditionRisk(item.additionRiskId).then(() => {
+          Agency.deleteAdditionRisk(item.id).then(() => {
+            this.getData();
             this.$Message.info("清空成功");
           });
         }
       });
     },
     constraintChange(data) {
-      if (data.insurancePeriodOption === 1 && !data.insurancePeriodContent) {
-        Agency.getInsurancePeriodConstraint(this.$route.query.id, data.additionRiskId, 1).then(res => {
+      if (data.insurancePeriodOption === 1 && !data.id) {
+        Agency.getInsurancePeriodConstraint(
+          this.$route.query.id,
+          data.additionRiskId,
+          1
+        ).then(res => {
           // console.log(res)
-          data.insurancePeriodContent = res
-        })
-      } else if (data.insurancePeriodRate === 1 && !data.insurancePeriodContentRate) {
-        Agency.getInsurancePeriodConstraint(this.$route.query.id, data.additionRiskId, 2).then(res => {
-          data.insurancePeriodContentRate = res
-        })
+          data.insurancePeriodContent = res;
+        });
+      } else if (data.insurancePeriodRate === 1 && !data.id) {
+        Agency.getInsurancePeriodConstraint(
+          this.$route.query.id,
+          data.additionRiskId,
+          2
+        ).then(res => {
+          data.insurancePeriodContentRate = res;
+        });
       }
     },
     addRisk(data) {
@@ -412,19 +444,18 @@ export default {
         // 取消选中
         for (const iterator of this.form) {
           if (iterator.additionRiskId === data.id) {
-            this.form.splice(this.form.indexOf(iterator), 1)
-            return
+            this.form.splice(this.form.indexOf(iterator), 1);
+            return;
           }
         }
-        } else {
-          // 选中
-          let obj = Object.assign({}, defaultForm, {
-            productId: this.$route.query.id,
-            additionRiskId: data.id,
-            additionRiskName: data.productFullName
-          })
-          this.form.push(obj)
-          console.log(1)
+      } else {
+        // 选中
+        let obj = Object.assign({}, defaultForm, {
+          productId: this.$route.query.id,
+          additionRiskId: data.id,
+          additionRiskName: data.productFullName
+        });
+        this.form.push(obj);
       }
       // this.
     }

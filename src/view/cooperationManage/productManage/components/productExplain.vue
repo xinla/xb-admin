@@ -303,6 +303,7 @@
                 :show-upload-list="false"
                 :data='{image: true}'
                 :on-success="uploadRulePdf"
+                :before-upload="beforeUpload"
               >
                 <Button icon="ios-cloud-upload-outline">上传投保规则</Button>
                 <span>{{form.insuranceRulePdf}}</span>
@@ -322,8 +323,10 @@
                 :show-upload-list="false"
                 :data='{image: true}'
                 :on-success="uploadLiabilityPdf"
+                :before-upload="beforeUpload"
               >
                 <Button icon="ios-cloud-upload-outline">上传条款</Button>
+                <span>{{form.insuranceLiabilityPdf}}</span>
               </Upload>
 
               <button class="button-tap" type="button" @click="form.exemptLiability = 0" style="border-bottom: 1px solid #fff;">保险责任</button>
@@ -480,6 +483,22 @@ export default {
           this.form.insuranceRuleText || (this.form.insuranceRuleText = '')
         });
     },
+    beforeUpload() {
+      this.$Spin.show({
+        render: (h) => {
+                        return h('div', [
+                            h('Icon', {
+                                'class': 'demo-spin-icon-load',
+                                props: {
+                                    type: 'ios-loading',
+                                    size: 18
+                                }
+                            }),
+                            h('div', 'Loading')
+                        ])
+                    }
+      })
+    },
     uploadNavigation(response, file, fileList) {
       this.form.navigationUrl = response.result.fileUrl;
       // console.log(response, file);
@@ -499,9 +518,11 @@ export default {
     },
     uploadRulePdf(response, file, fileList) {
       this.form.insuranceRulePdf = response.result.fileUrl;
+      this.$Spin.hide()
     },
     uploadLiabilityPdf(response, file, fileList) {
       this.form.insuranceLiabilityPdf = response.result.fileUrl;
+      this.$Spin.hide()
     },
     submit() {
       this.form.productId = this.$route.query.id;

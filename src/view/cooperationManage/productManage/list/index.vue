@@ -39,6 +39,7 @@
     </Table>
 
     <Page
+      :current="query.pageNum"
       :total="total"
       show-elevator
       show-total
@@ -554,7 +555,14 @@ export default {
           this.$Message.error("选项存在在售产品，不可删除，请知悉");
           return;
         }
+        if (type === "publish" && !iterator.sale) {
+          this.$Message.error("选项存在停售产品，不可发布，请知悉");
+          return;
+        }
       }
+      // Promise.resolve().then(() => {
+
+      // })
       switch (type) {
         case "edit":
           this.goPage("createProduct", {
