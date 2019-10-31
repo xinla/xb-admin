@@ -197,11 +197,12 @@
             >
               <template slot-scope="{ row }" slot="type">{{typeList[row.type]}}</template>
               <template slot-scope="{ row }" slot="companyIds">
-                <div
+                <!-- <span
                   v-for="(item, index) of row.companyRelationMenuList"
                   :key="index"
-                >{{item.companyName}}</div>
+                >{{item.companyName}}</span> -->
                 <div v-if="row.companyRelationMenuList.length === 0">全部</div>
+                <div v-else>{{row.companyRelationMenuList[0].companyName}}...</div>
               </template>
               <template slot-scope="{ row }" slot="level">{{levelList[row.level]}}</template>
             </Table>
@@ -421,12 +422,12 @@ export default {
         {
           title: "所属行业",
           slot: "type",
-          tooltip: true
+          tooltip: true,
         },
         {
           title: "所属租户",
           slot: "companyIds",
-          tooltip: true
+          ellipsis: true
         },
         {
           title: "所属版本",
