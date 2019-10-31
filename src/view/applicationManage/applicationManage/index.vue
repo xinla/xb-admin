@@ -109,10 +109,10 @@
   line-height: 21px;
   text-align: center;
 }
-/deep/.ivu-tag .ivu-icon-ios-close{
+/deep/.ivu-tag .ivu-icon-ios-close {
   visibility: hidden;
 }
-/deep/.ivu-tag:hover .ivu-icon-ios-close{
+/deep/.ivu-tag:hover .ivu-icon-ios-close {
   visibility: visible;
 }
 </style>
@@ -200,7 +200,7 @@
                 <!-- <span
                   v-for="(item, index) of row.companyRelationMenuList"
                   :key="index"
-                >{{item.companyName}}</span> -->
+                >{{item.companyName}}</span>-->
                 <div v-if="row.companyRelationMenuList.length === 0">全部</div>
                 <div v-else>{{row.companyRelationMenuList[0].companyName}}...</div>
               </template>
@@ -224,7 +224,13 @@
           width="500"
           :styles="styles"
         >
-          <Form ref="applicantForm" :model="applicantForm" :rules="rules" label-position="left" :label-width="80">
+          <Form
+            ref="applicantForm"
+            :model="applicantForm"
+            :rules="rules"
+            label-position="left"
+            :label-width="80"
+          >
             <FormItem label="应用名称" prop="name">
               <Input v-model.trim="applicantForm.name" placeholder="请输入功能名称" />
             </FormItem>
@@ -248,13 +254,22 @@
                 :loading="searchLoading"
                 placeholder="请输入租户名称"
               >
-              <Option
+                <!-- 过去配置的选项 -->
+                <Option
                   v-for="(option, index) in applicantForm.companyRelationMenuList"
                   :value="option.id"
                   :key="index + 'a'"
                 >{{option.companyName}}</Option>
+                <!-- 查询列表 -->
                 <Option
                   v-for="(option, index) in lesseeList"
+                  :value="option.id"
+                  :key="index"
+                  @click.native="choiceOption(option)"
+                >{{option.name}}</Option>
+                <!-- 新增选项的列表 -->
+                <Option
+                  v-for="(option, index) in newSelectedList"
                   :value="option.id"
                   :key="index"
                 >{{option.name}}</Option>
@@ -308,7 +323,13 @@
           width="500"
           :styles="styles"
         >
-          <Form ref="operationForm" :model="operationForm" :rules="rules" label-position="left" :label-width="80">
+          <Form
+            ref="operationForm"
+            :model="operationForm"
+            :rules="rules"
+            label-position="left"
+            :label-width="80"
+          >
             <FormItem label="所属应用">{{operationForm.pName}}</FormItem>
             <FormItem label="操作名称" prop="name">
               <Input v-model.trim="operationForm.name" placeholder="请输入功能名称" />
@@ -422,7 +443,7 @@ export default {
         {
           title: "所属行业",
           slot: "type",
-          tooltip: true,
+          tooltip: true
         },
         {
           title: "所属租户",
@@ -479,15 +500,37 @@ export default {
       editOperation: {}, // 操作编辑项
       searchLoading: false,
       lesseeList: [],
+      // 新选择的所选租户列表
+      newSelectedList: [],
       rules: {
         name: [
           { required: true, message: "不能为空", trigger: "blur" },
-          { max: 10, message: "长度不能超过10个字符", trigger: "blur" },
+          { max: 10, message: "长度不能超过10个字符", trigger: "blur" }
         ],
-        type: [{ type: "number", required: true, message: "必选项", trigger: "change" }],
-        level: [{ type: "number", required: true, message: "必选项", trigger: "change" }],
-        terminal: [{ type: "array", required: true, message: "至少选择一项", trigger: "change" },
+        type: [
+          {
+            type: "number",
+            required: true,
+            message: "必选项",
+            trigger: "change"
+          }
         ],
+        level: [
+          {
+            type: "number",
+            required: true,
+            message: "必选项",
+            trigger: "change"
+          }
+        ],
+        terminal: [
+          {
+            type: "array",
+            required: true,
+            message: "至少选择一项",
+            trigger: "change"
+          }
+        ]
       }
     };
   },
@@ -515,7 +558,7 @@ export default {
     },
     // 显隐应用抽屉
     showApplication(data) {
-      this.$refs.applicantForm.resetFields()
+      this.$refs.applicantForm.resetFields();
       this.isApplicantion = true;
       this.applicantForm = Object.assign({}, defaultApplicationForm);
       if (data) {
@@ -524,9 +567,9 @@ export default {
         this.applicantForm.terminal = data.terminal.split(",");
 
         // 所属租户提取id数组
-        this.applicantForm.companyIds = []
+        this.applicantForm.companyIds = [];
         for (const iterator of data.companyRelationMenuList) {
-          this.applicantForm.companyIds.push(iterator.id)
+          this.applicantForm.companyIds.push(iterator.id);
         }
 
         // console.log("applicantForm: ", this.applicantForm);
@@ -539,7 +582,7 @@ export default {
     },
     // 显隐操作抽屉
     showOperation(data, type) {
-      this.$refs.operationForm.resetFields()
+      this.$refs.operationForm.resetFields();
       this.isOperation = true;
       if (type) {
         // console.log(data);
@@ -547,10 +590,12 @@ export default {
         this.editOperation = data;
         this.operationForm = Object.assign({}, defaultApplicationForm, data);
         // 适用终端字符串集合转为数组
-        typeof (this.operationForm.terminal) === 'string' && (this.operationForm.terminal = data.terminal.split(","));
+        typeof this.operationForm.terminal === "string" &&
+          (this.operationForm.terminal = data.terminal.split(","));
 
         // 所属租户字符串集合转为数组
-        typeof data.companyIds === 'string' && (this.operationForm.companyIds = data.companyIds.split(","));
+        typeof data.companyIds === "string" &&
+          (this.operationForm.companyIds = data.companyIds.split(","));
 
         this.operationForm.pName = this.applicantForm.name;
         this.operationForm.pid = this.applicantForm.id;
@@ -612,12 +657,12 @@ export default {
 
       // 所属租户id数组转为字符串集合
       form.companyIds += "";
-      
+
       this.$refs[type]
         .validate()
-        .then((data) => {
+        .then(data => {
           if (data) {
-            return form.id ? updateMenu(form) : addMenu(form)
+            return form.id ? updateMenu(form) : addMenu(form);
           } else {
             return new Promise((resolve, reject) => {});
           }
@@ -630,7 +675,7 @@ export default {
           this.$Message.success("操作成功");
 
           // 更新编辑后的操作
-          Object.assign(this.editOperation, this.operationForm)
+          Object.assign(this.editOperation, this.operationForm);
           // this.editOperation.name = this.operationForm.name;
           this.getData();
         });
@@ -664,7 +709,7 @@ export default {
         terminal,
         type
       };
-      this.iconUrl = this[this.upload.type][this.upload.terminal]
+      this.iconUrl = this[this.upload.type][this.upload.terminal];
     },
     uploadSuccess(response, file, fileList) {
       this.iconUrl = response.result.fileUrl;
@@ -687,6 +732,14 @@ export default {
         this.searchLoading = false;
         this.lesseeList = res.list;
       });
+    },
+    choiceOption(data) {
+      for (const iterator of this.newSelectedList) {
+        if (iterator.id === data.id) {
+          return;
+        }
+      }
+      this.newSelectedList.push(data);
     }
   }
 };
