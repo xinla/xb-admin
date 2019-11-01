@@ -257,7 +257,7 @@
                 <!-- 过去配置的选项 -->
                 <Option
                   v-for="(option, index) in applicantForm.companyRelationMenuList"
-                  :value="option.id"
+                  :value="option.companyId"
                   :key="index + 'a'"
                 >{{option.companyName}}</Option>
                 <!-- 查询列表 -->
@@ -266,12 +266,14 @@
                   :value="option.id"
                   :key="index"
                   @click.native="choiceOption(option)"
-                >{{option.name}}</Option>
+                >
+                {{option.name}}
+                </Option>
                 <!-- 新增选项的列表 -->
-                <Option
+                <Option v-show="false"
                   v-for="(option, index) in newSelectedList"
                   :value="option.id"
-                  :key="index"
+                  :key="index + 'b'"
                 >{{option.name}}</Option>
               </Select>
             </FormItem>
@@ -561,6 +563,7 @@ export default {
       this.$refs.applicantForm.resetFields();
       this.isApplicantion = true;
       this.applicantForm = Object.assign({}, defaultApplicationForm);
+      this.newSelectedList = []
       if (data) {
         this.applicantForm = Object.assign({}, data);
         // 适用终端字符串集合转为数组
@@ -569,10 +572,10 @@ export default {
         // 所属租户提取id数组
         this.applicantForm.companyIds = [];
         for (const iterator of data.companyRelationMenuList) {
-          this.applicantForm.companyIds.push(iterator.id);
+          this.applicantForm.companyIds.push(iterator.companyId);
         }
 
-        // console.log("applicantForm: ", this.applicantForm);
+        console.log("applicantForm: ", this.applicantForm);
         getOperationList(data.id).then(res => {
           // console.log('OperationList: ', res)
           this.$set(this.applicantForm, "operateStr", res || []);
@@ -736,10 +739,12 @@ export default {
     choiceOption(data) {
       for (const iterator of this.newSelectedList) {
         if (iterator.id === data.id) {
-          return;
+          return
         }
       }
-      this.newSelectedList.push(data);
+      this.$nextTick(() => {
+        this.newSelectedList.push(data);
+      })
     }
   }
 };
