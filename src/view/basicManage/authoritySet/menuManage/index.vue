@@ -317,6 +317,7 @@ import {
   getApplicationPage,
   getApplicationListByMenuId,
   addMenu,
+  deleteApp,
   deleteMenu,
   moveApp,
   getMenuDetail,
@@ -490,14 +491,16 @@ export default {
           break;
         }
       }
-      let move = currentTxt[index];
       if (index === 0) {
         this.$Message.warning("已经移在改页最顶部");
         return;
       }
+      // 被移动项
+      let move = currentTxt[index - 1];
       moveApp(data.id, move.id).then(res => {
-        currentTxt[index] = data;
-        currentTxt.splice(index + 1, 1, move);
+        // 移动项互换位置
+        currentTxt[index - 1] = data;
+        currentTxt.splice(index, 1, move);
       });
     },
     // 下移动
@@ -505,20 +508,23 @@ export default {
       let index;
       for (const iterator of currentTxt) {
         if (data.id === iterator.id) {
-          index = currentTxt.indexOf(iterator) + 1;
+          index = currentTxt.indexOf(iterator);
           break;
         }
       }
-      let move = currentTxt[index];
-      if (index === currentTxt.length) {
+      if (index === currentTxt.length - 1) {
         this.$Message.warning("已经移在改页最底部");
         return;
       }
+      // 被移动项
+      let move = currentTxt[index + 1];
       moveApp(data.id, move.id).then(res => {
-        currentTxt[index] = data;
-        currentTxt.splice(index - 1, 1, move);
+        // 移动项互换位置
+        currentTxt[index + 1] = data;
+        currentTxt.splice(index, 1, move);
       });
     },
+    // 移出应用
     remove() {
       let selectData = [];
       for (const iterator of this.selectData) {
@@ -526,9 +532,9 @@ export default {
       }
       this.$Modal.confirm({
         title: "提示",
-        content: "确定要删除吗",
+        content: "确定要移出吗",
         onOk: () => {
-          deleteMenu(selectData + "", 3).then(res => {
+          deleteApp(selectData + "").then(res => {
             this.$Message.success("操作成功");
             this.getData();
           });
@@ -576,7 +582,7 @@ export default {
       }
       this.loading = true;
       getApplicationPage(this.query).then(res => {
-        // console.log("ApplicationPage：", res)
+        console.log("ApplicationPage：", res)
         this.loading = false;
         this.total = res.total;
         this.applicantionList = res.records;

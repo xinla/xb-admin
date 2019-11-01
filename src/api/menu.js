@@ -113,7 +113,16 @@ export const deleteApp = (ids) => {
   return axios.request({
     url: service + `/removeMenu`,
     data: {ids},
-    method: 'post'
+    method: 'post',
+    transformRequest: [function (data) {
+      let _data = ''
+      for (let it in data) {
+        if (data[it] != undefined) {
+          _data += it + '=' + data[it] + '&'
+        }
+      }
+      return _data
+    }],
   })
 }
 
@@ -147,7 +156,16 @@ export const moveApp = (beginId, endId) => {
   return axios.request({
     url: service + `/moveMenu`,
     data: {beginId, endId},
-    method: 'post'
+    method: 'post',
+    transformRequest: [function (data) {
+      let _data = ''
+      for (let it in data) {
+        if (data[it] != undefined) {
+          _data += it + '=' + data[it] + '&'
+        }
+      }
+      return _data
+    }],
   })
 }
 
