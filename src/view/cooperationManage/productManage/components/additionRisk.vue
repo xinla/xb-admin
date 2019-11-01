@@ -316,10 +316,12 @@ const defaultForm = {
   insurancePeriodOption: 0,
   insurancePeriodForce: 0,
   insurancePeriodRate: 0,
-  insurancePeriodContent: [{ main: "", rider: [{ rider: "", checked: 0 }] }],
-  insurancePeriodContentRate: [
-    { main: "", rider: [{ rider: "", checked: 0 }] }
-  ],
+  insurancePeriodContent: [],
+  insurancePeriodContentRate: [],
+  // insurancePeriodContent: [{ main: "", rider: [{ id: '', rider: "", checked: 0 }] }],
+  // insurancePeriodContentRate: [
+  //   { main: "", rider: [{ id: '', rider: "", checked: 0 }] }
+  // ],
   payPeriodLimit: 0,
   payOption: 0,
   payForceContent: 0,
