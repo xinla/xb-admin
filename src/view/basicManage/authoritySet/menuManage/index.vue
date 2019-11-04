@@ -176,7 +176,18 @@
               :columns="columns"
               :data="applicantionList"
               @on-selection-change="selectChange"
-            ></Table>
+            >
+            <template slot-scope="{ row }" slot="type">{{typeList[row.type]}}</template>
+            <template slot-scope="{ row }" slot="companyIds">
+                <!-- <span
+                  v-for="(item, index) of row.companyRelationMenuList"
+                  :key="index"
+                >{{item.companyName}}</span>-->
+                <div v-if="row.companyRelationMenuList.length === 0">全部</div>
+                <div v-else>{{row.companyRelationMenuList[0].companyName}} {{row.companyRelationMenuList.length > 2 ? '...' : ''}}</div>
+              </template>
+              <template slot-scope="{ row }" slot="level">{{levelList[row.level]}}</template>
+            </Table>
         </div>
         <Page :total="total" :current="query.page" show-elevator show-total style="text-align:center;margin-top:20px;" @on-change="getDataPage"/>
       </div>
@@ -356,7 +367,7 @@ export default {
         pid: ""
       },
       searchName: "",
-      total: 2,
+      total: 0,
       pageNum: 1,
       columns: [
         {
@@ -371,31 +382,43 @@ export default {
         },
         {
           title: "所属行业",
-          key: "industry",
+          slot: "type",
           tooltip: true
         },
         {
           title: "所属租户",
-          key: "tenement",
+          slot: "companyIds",
           tooltip: true
         },
         {
           title: "所属版本",
-          key: "versions",
+          slot: "level",
           tooltip: true
-        }
+        },
+        // {
+        //   key: "serialNum",
+        //   sortable: true,
+        //   width: 0,
+        // }
       ],
       applicantionList: [],
       selectData: [],
       meunType1: 2, // 业务类型   2:保险,1:Saas,0:信贷,3:基金;4:理财
       meunType2: "管理面板",
-      typeList: {
+      // 业务类型列表
+      typeList: Object.freeze({
         0: "信贷",
         1: "Saas",
         2: "保险",
         3: "基金",
         4: "理财"
-      },
+      }),
+      // 版本列表
+      levelList: Object.freeze({
+        0: "基础版",
+        1: "高级版",
+        2: "旗舰版"
+      }),
       isMenu: false,
       isApplicantion: false,
       menuForm: Object.assign({}, defaultMenuForm),
@@ -499,8 +522,10 @@ export default {
       let move = currentTxt[index - 1];
       moveApp(data.id, move.id).then(res => {
         // 移动项互换位置
+        data._checked = true // 设置移动后该项选中效果
         currentTxt[index - 1] = data;
         currentTxt.splice(index, 1, move);
+        
       });
     },
     // 下移动
@@ -520,6 +545,7 @@ export default {
       let move = currentTxt[index + 1];
       moveApp(data.id, move.id).then(res => {
         // 移动项互换位置
+        data._checked = true // 设置移动后该项选中效果
         currentTxt[index + 1] = data;
         currentTxt.splice(index, 1, move);
       });

@@ -202,7 +202,7 @@
                   :key="index"
                 >{{item.companyName}}</span>-->
                 <div v-if="row.companyRelationMenuList.length === 0">全部</div>
-                <div v-else>{{row.companyRelationMenuList[0].companyName}}...</div>
+                <div v-else>{{row.companyRelationMenuList[0].companyName}} {{row.companyRelationMenuList.length > 2 ? '...' : ''}}</div>
               </template>
               <template slot-scope="{ row }" slot="level">{{levelList[row.level]}}</template>
             </Table>

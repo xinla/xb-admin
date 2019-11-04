@@ -270,8 +270,8 @@
                     v-model="item.payForceContent"
                     style="border: 1px solid #ddd; padding: 0 10px;"
                   >
-                    <Radio :label="0">= 主险保险期间</Radio>
-                    <Radio :label="1">= 主险保险期间 - 1</Radio>
+                    <Radio :label="0">= 主险交费期间</Radio>
+                    <Radio :label="1">= 主险交费期间 - 1</Radio>
                   </RadioGroup>
                 </div>
                 <RadioGroup v-model="item.payOption">
