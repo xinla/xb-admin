@@ -195,7 +195,7 @@
 
     <!-- 新建/编辑菜单 -->
     <dialogBox v-model="isMenu">
-      <div slot="title">{{menuForm.id ? '编辑' : '新建'}}{{menuForm.pid !== allMenu.id && '子'}}菜单</div>
+      <div slot="title">{{menuForm.id ? '编辑' : '新建'}}{{menuForm.pid !== allMenu.id ? '子' : ''}}菜单</div>
       <Form :model="menuForm" label-position="left" :label-width="80" style="width: 20vw;">
         <FormItem label="所属行业" v-show="menuForm.pid == allMenu.id">
           <div>{{typeList[menuForm.type]}}</div>
@@ -727,6 +727,7 @@ export default {
         show: true,
         terminal
       };
+      this.iconUrl = this.menuForm[terminal];
     },
     uploadSuccess(response, file, fileList) {
       this.iconUrl = response.result.fileUrl;

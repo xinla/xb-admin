@@ -106,93 +106,100 @@
             <FormItem label="保险金额约束">
               <Checkbox v-model="item.coverageLimit" :true-value="0" :false-value="1">无约束</Checkbox>
               <div v-if="item.coverageLimit === 1">
-                <div class="title1">不允许自定义，由系统生成</div>
-                <RadioGroup v-model="item.coverageDefineItem">
-                  <Radio :label="0">= 主险保额</Radio>
-                </RadioGroup>
-                <div>
+              <Checkbox v-model="item.coverageDefine" :true-value="0" :false-value="1">不允许自定义</Checkbox>
+
+                <template v-if="item.coverageDefine === 0">
+                  <div class="title1">不允许自定义，由系统生成</div>
                   <RadioGroup v-model="item.coverageDefineItem">
-                    <Radio :label="1">主险保费推算</Radio>
+                    <Radio :label="0">= 主险保额</Radio>
                   </RadioGroup>
+                  <div>
+                    <RadioGroup v-model="item.coverageDefineItem">
+                      <Radio :label="1">主险保费推算</Radio>
+                    </RadioGroup>
 
-                  <RadioGroup
-                    v-if="item.coverageDefineItem === 1"
-                    v-model="item.coveragePremiumItem"
-                    style="border: 1px solid #ddd; padding: 0 10px;"
-                  >
-                    <Radio :label="0">= 主险期交保费</Radio>
-                    <Radio :label="1">= 主险及其他附加险期交保费</Radio>
-                    <Radio :label="2">= （主险缴费期间-1）* 期交保费</Radio>
-                  </RadioGroup>
-                </div>
-                <!-- <div>
-                  <RadioGroup v-model="item.rateCountMethod">
-                    <Radio :label="1">使用公式</Radio>
-                  </RadioGroup>
+                    <RadioGroup
+                      v-if="item.coverageDefineItem === 1"
+                      v-model="item.coveragePremiumItem"
+                      style="border: 1px solid #ddd; padding: 0 10px;"
+                    >
+                      <Radio :label="0">= 主险期交保费</Radio>
+                      <Radio :label="1">= 主险及其他附加险期交保费</Radio>
+                      <Radio :label="2">= （主险缴费期间-1）* 期交保费</Radio>
+                    </RadioGroup>
+                  </div>
+                  <!-- <div>
+                    <RadioGroup v-model="item.rateCountMethod">
+                      <Radio :label="1">使用公式</Radio>
+                    </RadioGroup>
 
-                  <Input type="text" v-model="item.paymentMethodRatioYear" />
-                </div>-->
+                    <Input type="text" v-model="item.paymentMethodRatioYear" />
+                  </div>-->
+                </template>
 
-                <div class="title1">允许自定义，用保费计算器设定</div>
-                <Checkbox
-                  v-model="item.coverageLimitCoverage"
-                  :true-value="1"
-                  :false-value="0"
-                >保额限保额</Checkbox>
-                <div v-if="item.coverageLimitCoverage === 1">
-                  主险保额 ：附加险保额 <=
-                  <Input type="text" v-model="item.coverageLimitCoverageMain" style="width:10%;" />：
-                  <Input type="text" v-model="item.coverageLimitCoverageAdd" style="width:10%;" />
-                </div>
+                <template v-if="item.coverageDefine === 1">
+                  <div class="title1">允许自定义，用保费计算器设定</div>
+                  <Checkbox
+                    v-model="item.coverageLimitCoverage"
+                    :true-value="1"
+                    :false-value="0"
+                  >保额限保额</Checkbox>
+                  <div v-if="item.coverageLimitCoverage === 1">
+                    主险保额 ：附加险保额 <=
+                    <Input type="text" v-model="item.coverageLimitCoverageMain" style="width:10%;" />：
+                    <Input type="text" v-model="item.coverageLimitCoverageAdd" style="width:10%;" />
+                  </div>
 
-                <Checkbox v-model="item.premiumLimitCoverage" :true-value="1" :false-value="0">保费限保额</Checkbox>
-                <div v-if="item.premiumLimitCoverage === 1">
-                  <Row>
-                    <Col span="10">保费标准</Col>
-                    <Col span="10">搭配保额</Col>
-                  </Row>
-                  <Row v-for="(unit, unique) of item.premiumLimitCoverageContent" :Key="unique">
-                    <Col span="10">
-                      <FormItem label="主险保费" prop="pcCoverPicture">
-                        <Select v-model="unit.symbol" style="width:20%; margin-right: 10px;">
-                          <Option :value="0">>=</Option>
-                          <Option :value="1">></Option>
-                          <Option :value="2"><=</Option>
-                          <Option :value="3"><</Option>
-                        </Select>
-                        <Input
-                          v-model="unit.premium"
-                          placeholder="请输入内容"
-                          style="width:40%; margin-right: 10px;"
-                        />
-                      </FormItem>
-                    </Col>
+                  <Checkbox v-model="item.premiumLimitCoverage" :true-value="1" :false-value="0">保费限保额</Checkbox>
+                  <div v-if="item.premiumLimitCoverage === 1">
+                    <Row>
+                      <Col span="10">保费标准</Col>
+                      <Col span="10">搭配保额</Col>
+                    </Row>
+                    <Row v-for="(unit, unique) of item.premiumLimitCoverageContent" :Key="unique">
+                      <Col span="10">
+                        <FormItem label="主险保费" prop="pcCoverPicture">
+                          <Select v-model="unit.symbol" style="width:20%; margin-right: 10px;">
+                            <Option :value="0">>=</Option>
+                            <Option :value="1">></Option>
+                            <Option :value="2"><=</Option>
+                            <Option :value="3"><</Option>
+                          </Select>
+                          <Input
+                            v-model="unit.premium"
+                            placeholder="请输入内容"
+                            style="width:40%; margin-right: 10px;"
+                          />
+                        </FormItem>
+                      </Col>
 
-                    <Col span="8">
-                      <FormItem prop="pcCoverPicture">
-                        <Input
-                          v-model="unit.coverage"
-                          placeholder="请输入内容"
-                          style="width:70%; margin-right: 10px;"
-                        />
-                        <Select v-model="unit.unit" style="width:20%; margin-right: 10px;">
-                          <Option :value="0">元</Option>
-                          <Option :value="1">份</Option>
-                        </Select>
-                      </FormItem>
-                    </Col>
-                    <Col span="2">
-                      <span
-                        class="button-circle"
-                        @click="reduce(item, 'premiumLimitCoverageContent', unique)"
-                      >-</span>
-                      <span
-                        class="button-circle"
-                        @click="addItem(item, 'premiumLimitCoverageContent')"
-                      >+</span>
-                    </Col>
-                  </Row>
-                </div>
+                      <Col span="8">
+                        <FormItem prop="pcCoverPicture">
+                          <Input
+                            v-model="unit.coverage"
+                            placeholder="请输入内容"
+                            style="width:70%; margin-right: 10px;"
+                          />
+                          <Select v-model="unit.unit" style="width:20%; margin-right: 10px;">
+                            <Option :value="0">元</Option>
+                            <Option :value="1">份</Option>
+                          </Select>
+                        </FormItem>
+                      </Col>
+                      <Col span="2">
+                        <span
+                          class="button-circle"
+                          @click="reduce(item, 'premiumLimitCoverageContent', unique)"
+                        >-</span>
+                        <span
+                          class="button-circle"
+                          @click="addItem(item, 'premiumLimitCoverageContent')"
+                        >+</span>
+                      </Col>
+                    </Row>
+                  </div>
+                </template>
+
               </div>
             </FormItem>
 
