@@ -1,7 +1,7 @@
 import axios from '@/libs/api.request'
 import config from '@/config'
 
-const service = config.baseUrl.domainV2A + config.servicesV2.product + '/desc'
+const service = config.servicesV2.product + '/desc'
 
 /**
  * 根据id查询产品说明

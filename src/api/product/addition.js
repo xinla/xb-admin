@@ -1,8 +1,8 @@
 import axios from '@/libs/api.request'
 import config from '@/config'
 
-const service = config.baseUrl.domainV2A + config.servicesV2.product + '/addition'
-const service1 = config.baseUrl.domainV2A + config.servicesV2.product
+const service = config.servicesV2.product + '/addition'
+const service1 = config.servicesV2.product
 /**
  * 保存附加险规则
  * @param {*} data 产品附加险对象

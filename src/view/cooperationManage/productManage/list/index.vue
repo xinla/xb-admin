@@ -48,7 +48,7 @@
     />
 
     <dialogBox v-model="fastShow">
-      <div slot="title">图片上传</div>
+      <div slot="title">快速创建</div>
       <Form ref="form" :model="form" :rules="rules" :label-width="120">
         <div class="form-title">基本资料</div>
         <Row>
@@ -116,16 +116,19 @@
         </FormItem>
 
         <FormItem label="保险期间">
+          
           <Checkbox
             v-model="form.vitProductInPeriodDto.insurancePeriodYear"
             :true-value="1"
             :false-value="0"
           >年满型</Checkbox>
+
           <Checkbox
             v-model="form.vitProductInPeriodDto.insurancePeriodAge"
             :true-value="1"
             :false-value="0"
           >岁满型</Checkbox>
+
           <FormItem label="年满型" v-if="form.vitProductInPeriodDto.insurancePeriodYear">
             <div
               class="bfc-d"
@@ -167,15 +170,17 @@
 
         <FormItem label="交费期间">
           <Checkbox
-            v-model="form.vitProductPayRuleDto.payPeriodAge"
-            :true-value="1"
-            :false-value="0"
-          >岁满型</Checkbox>
-          <Checkbox
             v-model="form.vitProductPayRuleDto.payPeriodYear"
             :true-value="1"
             :false-value="0"
           >年满型</Checkbox>
+          
+          <Checkbox
+            v-model="form.vitProductPayRuleDto.payPeriodAge"
+            :true-value="1"
+            :false-value="0"
+          >岁满型</Checkbox>
+          
           <FormItem label="年满型" v-if="form.vitProductPayRuleDto.payPeriodYear">
             <div
               class="bfc-d"

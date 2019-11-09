@@ -19,7 +19,7 @@ const config = {
     dev2: 'http://192.168.1.150:8888', // v2.0本地 liusiyuan
     dev1: 'http://192.168.1.150:8888', // caikefu
 
-    domainV2A: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8118' : '', // wangdong
+    domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8888' : '', // wangdong
 
     // pro: 'http://112.31.212.46:8118', // line
     pro: 'http://192.168.1.26:8118', // ali line
@@ -31,9 +31,9 @@ const config = {
   //   // dev: 'http://192.168.1.64', // 虚拟机 liusiyuan
   //   dev: 'http://47.98.153.101:8118', // 本地
   //   dev1: 'https://gateway.visualinsur.cn:8888', // caikefu
-  
-  //   domainV2A: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8118' : '', // wangdong
-  
+
+  //   domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8118' : '', // wangdong
+
   //   // pro: 'http://112.31.212.46:8118', // line
   //   pro: 'http://47.98.153.101:8118', // ali line
   //   // pro1: 'http://112.31.212.46:8888' // caikefu
@@ -52,13 +52,13 @@ const config = {
     //   developmentOff: false // 设为true后在开发环境不会收集错误信息，方便开发中排查错误
     // }
   },
-
+  get domain() {
+    return process.env.NODE_ENV === 'development' ? this.baseUrl.dev : this.baseUrl.pro
+  },
+  get domainCKF() {
+    return process.env.NODE_ENV === 'development' ? this.baseUrl.dev1 : this.baseUrl.pro1
+  }
 }
-config.domain = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
-
-config.domainCKF = process.env.NODE_ENV === 'development' ? config.baseUrl.dev1 : config.baseUrl.pro1
-
-config.domainV2 = process.env.NODE_ENV === 'development' ? config.baseUrl.dev2 : config.baseUrl.pro1
 
 config.services = {
   company: '/xbcompany',

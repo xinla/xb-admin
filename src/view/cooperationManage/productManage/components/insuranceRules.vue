@@ -515,7 +515,7 @@
                     <Input type="text" v-model="item.ageEnd" placeholder="请输入" />周岁
                   </Col>
                   <Col span="6">
-                    <InputNumber :min="0" :max="120" v-model="item.maxAmount" placeholder="请输入金额"></InputNumber>元
+                    <InputNumber v-model="item.maxAmount" placeholder="请输入金额"></InputNumber>元
                   </Col>
                   <Col span="8">
                     <span
@@ -592,7 +592,7 @@
                     <Input type="text" v-model="item.jobCode" placeholder="请输入职业代码" />
                   </Col>
                   <Col span="6">
-                    <InputNumber :min="0" :max="120" v-model="item.maxAmount" placeholder="请输入金额"></InputNumber>元
+                    <InputNumber v-model="item.maxAmount" placeholder="请输入金额"></InputNumber>元
                   </Col>
                   <Col span="8">
                     <span
@@ -652,10 +652,13 @@
               <Checkbox v-model="coverageForm.insurancePlan" :true-value="0" :false-value="1">无</Checkbox>
               <div v-show="coverageForm.insurancePlan">
                 <Row>
-                  <Col span="6" offset="1">
+                  <Col span="4" offset="1">
                     <FormItem label="计划编码"></FormItem>
                   </Col>
-                  <Col span="6">
+                  <Col span="4">
+                    <FormItem label="关连"></FormItem>
+                  </Col>
+                  <Col span="5">
                     <FormItem label="计划名称"></FormItem>
                   </Col>
                   <Col span="8">
@@ -663,13 +666,22 @@
                   </Col>
                 </Row>
                 <Row v-for="(item, index) in coverageForm.insurancePlanContent" :key="index">
-                  <Col span="6">
+                  <Col span="4">
                     <Input type="text" v-model="item.code" placeholder="请输入计划编码" />
                   </Col>
-                  <Col span="6">
+                  <Col span="4">
+                    <Select v-model="item.option" style="width: 100px;">
+                        <Option :value="0">无关连</Option>
+                        <Option :value="1">有社保</Option>
+                        <Option :value="2">无社保</Option>
+                        <Option :value="3">男性</Option>
+                        <Option :value="4">女性</Option>
+                      </Select>
+                  </Col>
+                  <Col span="5">
                     <Input type="text" v-model="item.name" placeholder="请输入名称" />
                   </Col>
-                  <Col span="8">
+                  <Col span="7">
                     <Input v-model="item.amount" style="width: 170px;" placeholder="请输入金额">
                       <Select v-model="item.unit" slot="append" style="width: 70px">
                         <Option :value="0">万元</Option>
@@ -824,12 +836,12 @@
 
           <Form ref="paymentForm" :model="paymentForm" :label-width="100">
             <FormItem label="交费方式" prop="payType">
-              <RadioGroup v-model="paymentForm.payType">
-                  <Radio :label="0">年</Radio>
-                  <Radio :label="1">半年</Radio>
-                  <Radio :label="2">季</Radio>
-                  <Radio :label="3">月</Radio>
-                </RadioGroup>
+              <CheckboxGroup v-model="paymentForm.payType">
+                <Checkbox :label="0">年</Checkbox>
+                <Checkbox :label="1">半年</Checkbox>
+                <Checkbox :label="2">季</Checkbox>
+                <Checkbox :label="3">月</Checkbox>
+              </CheckboxGroup>
             </FormItem>
 
             <FormItem label="交费期间">
@@ -1072,10 +1084,10 @@
             </FormItem>
 
             <FormItem label="领取方式">
-              <RadioGroup v-model="receiveForm.receiveType">
-                  <Radio :label="0">年领</Radio>
-                  <Radio :label="1">月领</Radio>
-                </RadioGroup>
+              <CheckboxGroup v-model="receiveForm.receiveType">
+                <Checkbox :label="0">年领</Checkbox>
+                <Checkbox :label="1">月领</Checkbox>
+              </CheckboxGroup>
             </FormItem>
           </Form>
         </div>
@@ -1142,7 +1154,7 @@ const defaultPeriodFormYear = {
       ruleIntervalType: 1 //	number  0 (保险期间岁满型)      1 (保险期间年满型)
     }
   ], //	object []item 类型: object
-  type: 0, //	number	保险期间分类   0  按年  1 按天
+  type: 0 //	number	保险期间分类   0  按年  1 按天
 };
 const defaultPeriodFormDay = {
   type: 1, //	number	保险期间分类   0  按年  1 按天
@@ -1151,7 +1163,7 @@ const defaultPeriodFormDay = {
 };
 const defaultPaymentForm = {
   productId: 0, //	number	产品基本信息表主键id
-  payType: 0, //	number	交费方式   0  年   1 半年  2  季   3  月
+  payType: [], //	 1,2,3	交费方式   0  年   1 半年  2  季   3  月
   payPeriodAge: 0, //	number	交费期间    岁满型   存1表示年满型有值
   payPeriodYear: 0, //	number	交费期间    年满型   存1表示年满型有值
   premiumLimitAmount: 0, //	number	保费限制    按金额限制  0  不按金额限制     1  按金额限制
@@ -1180,7 +1192,7 @@ const defaultReceiveForm = {
   startReceiveAge: 0, //	number	起领时间  0   不支持   1  支持
   receiveAgeNum: [""], //	string	起领时间多少年    多个逗号分隔
   receivePeriod: 0, //	number	领取期间   0  不支持   1  支持
-  receiveType: 0 //	number	领取方式   0  年领取   1  月领取
+  receiveType: [] //		领取方式   0  年领取   1  月领取
 };
 export default {
   data() {
@@ -1243,26 +1255,26 @@ export default {
   methods: {
     getData(form) {
       let id = this.$route.query.id;
-      console.log(id)
+      console.log(id);
       id &&
         Agency.getProductRule(id).then(data => {
           if (data) {
             // 投保人规则
-            if (data.applicantRule && (form === 'applicationForm' || !form)) {
+            if (data.applicantRule && (form === "applicationForm" || !form)) {
               let temp = (this.applicationForm = data.applicantRule);
               temp.relationLimit = temp.relationLimit
                 ? temp.relationLimit.split(",")
                 : [];
             }
             // 被保人规则
-            if (data.insuredRule && (form === 'insuranceForm' || !form)) {
+            if (data.insuredRule && (form === "insuranceForm" || !form)) {
               let temp = (this.insuranceForm = data.insuredRule);
               temp.relationLimit = temp.relationLimit
                 ? temp.relationLimit.split(",")
                 : [];
             }
             // 保额规则
-            if (data.coverageRule && (form === 'coverageForm' || !form)) {
+            if (data.coverageRule && (form === "coverageForm" || !form)) {
               let temp = (this.coverageForm = data.coverageRule);
 
               temp.ageContent = temp.ageContent
@@ -1290,11 +1302,14 @@ export default {
             if (data.insurancePeriodRule) {
               for (const iterator of data.insurancePeriodRule) {
                 // 0  按年  1 按天
-                if (iterator.type === 0 && (form === 'periodFormYear' || !form)) {
+                if (
+                  iterator.type === 0 &&
+                  (form === "periodFormYear" || !form)
+                ) {
                   this.periodFormYear = iterator;
-                  iterator.ruleIntevalDtoList || (iterator.ruleIntevalDtoList = [])
-                
-                } else if (form === 'periodFormDay' || !form) {
+                  iterator.ruleIntevalDtoList ||
+                    (iterator.ruleIntevalDtoList = []);
+                } else if (form === "periodFormDay" || !form) {
                   this.periodFormDay = iterator;
 
                   this.periodFormDay.fixedDay = iterator.fixedDay
@@ -1308,8 +1323,12 @@ export default {
               }
             }
             // 交费规则
-            if (data.payRule && (form === 'paymentForm' || !form)) {
+            if (data.payRule && (form === "paymentForm" || !form)) {
               let temp = (this.paymentForm = data.payRule);
+
+              temp.payType = temp.payType
+                    ? temp.payType.split(",")
+                    : [];
 
               temp.premiumLimitAmountContent = temp.premiumLimitAmountContent
                 ? JSON.parse(temp.premiumLimitAmountContent)
@@ -1319,14 +1338,21 @@ export default {
                 ? JSON.parse(temp.premiumLimitCopyAmount)
                 : [];
 
-                temp.ruleIntevalDtoList || (temp.ruleIntevalDtoList = [])
+              temp.ruleIntevalDtoList || (temp.ruleIntevalDtoList = []);
             }
             // 领取规则
-            if (data.vitProductReceiveRule && (form === 'receiveForm' || !form)) {
+            if (
+              data.vitProductReceiveRule &&
+              (form === "receiveForm" || !form)
+            ) {
               let temp = (this.receiveForm = data.vitProductReceiveRule);
 
               temp.receiveAgeNum = temp.receiveAgeNum
                 ? String(temp.receiveAgeNum).split(",")
+                : [];
+
+                temp.receiveType = temp.receiveType
+                ? String(temp.receiveType).split(",")
                 : [];
 
               temp.receiveAgeContent = temp.receiveAgeContent
@@ -1396,10 +1422,18 @@ export default {
                 break;
               case "periodFormYear":
                 for (const iterator of formData.ruleIntevalDtoList) {
-                  if (iterator.ruleIntervalType === 1 || iterator.ruleIntervalType === 2) {
-                    iterator.ruleIntervalName = iterator.ruleIntervalValue + '年'
-                  } else if (iterator.ruleIntervalType === 0 || iterator.ruleIntervalType === 3) {
-                    iterator.ruleIntervalName = iterator.ruleIntervalValue + '岁'
+                  if (
+                    iterator.ruleIntervalType === 1 ||
+                    iterator.ruleIntervalType === 2
+                  ) {
+                    iterator.ruleIntervalName =
+                      iterator.ruleIntervalValue + "年";
+                  } else if (
+                    iterator.ruleIntervalType === 0 ||
+                    iterator.ruleIntervalType === 3
+                  ) {
+                    iterator.ruleIntervalName =
+                      iterator.ruleIntervalValue + "岁";
                   }
                 }
                 return formData.id
@@ -1412,13 +1446,22 @@ export default {
                   : Agency.saveInPeriodRule([formData]);
                 break;
               case "paymentForm":
+                formData.payType += ''
                 for (const iterator of formData.ruleIntevalDtoList) {
                   // 年满型
-                  if (iterator.ruleIntervalType === 1 || iterator.ruleIntervalType === 2) {
-                    iterator.ruleIntervalName = iterator.ruleIntervalValue + '年'
-                  } else if (iterator.ruleIntervalType === 0 || iterator.ruleIntervalType === 3) { 
+                  if (
+                    iterator.ruleIntervalType === 1 ||
+                    iterator.ruleIntervalType === 2
+                  ) {
+                    iterator.ruleIntervalName =
+                      iterator.ruleIntervalValue + "年";
+                  } else if (
+                    iterator.ruleIntervalType === 0 ||
+                    iterator.ruleIntervalType === 3
+                  ) {
                     // 岁满型
-                    iterator.ruleIntervalName = iterator.ruleIntervalValue + '岁'
+                    iterator.ruleIntervalName =
+                      iterator.ruleIntervalValue + "岁";
                   }
                 }
                 return formData.id
@@ -1427,6 +1470,7 @@ export default {
                 break;
               case "receiveForm":
                 formData.receiveAgeNum += "";
+                formData.receiveType += "";
                 return formData.id
                   ? Agency.updateReceiveRule(formData)
                   : Agency.saveReceiveRule(formData);

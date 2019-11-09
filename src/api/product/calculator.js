@@ -1,8 +1,8 @@
 import axios from '@/libs/api.request'
 import config from '@/config'
 
-const service = config.baseUrl.domainV2A + config.servicesV2.product
-const service1 = config.baseUrl.domainV2A + config.servicesV2.calculator
+const service = config.servicesV2.product
+const service1 = config.servicesV2.calculator
 
 export const getCalculator = (data) => {
   return axios.request({

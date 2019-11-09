@@ -3,7 +3,7 @@
     <Row>
       <Col span="12">
         <Input
-          v-model.trim="query.keyword"
+          v-model="query.keyword"
           placeholder="输入键和值的关键字并按回车键进行搜索"
           style="width:73%; margin-right: 10px;"
           @on-enter="getData(1)"
@@ -11,21 +11,98 @@
         <!-- <Button type="info" @click="getData(1)">搜索</Button> -->
       </Col>
       <Col span="12" class="ar">
-        <Button type="info" @click="showDialog('from')">添加</Button>
+        <Button type="info" @click="add">添加</Button>
         <!-- <Button type="info" @click="edit(0)">编辑</Button>
         <Button type="info" @click="remove">删除</Button>
         <Button type="info" @click="edit(1)">上移</Button>
-        <Button type="info" @click="edit(2)">下移</Button>-->
+        <Button type="info" @click="edit(2)">下移</Button> -->
       </Col>
     </Row>
 
-    <Table :loading="loading" :columns="column" :data="list" style="margin-top: 15px;">
-      <template slot-scope="{ row }" slot="action">
-        <Button type="primary" size="small" @click="showDialog('from', row)">编辑</Button>
-        <Button type="error" size="small" @click="remove('dict', row)">删除</Button>
-        <Button type="info" size="small" @click="showDialog('item', row)">字典项</Button>
+<Table :loading="loading" :columns="column" :data="list" style="margin-top: 15px;">
+  <template slot-scope="{ row }" slot="action">
+        <Button type="primary" size="small" @click="goPage('createSupplier', {id: row.id})">编辑</Button>
+        <Button type="error" size="small" @click="remove(row)">删除</Button>
+        <Button
+          type="info"
+          size="small"
+          @click="goPage('businessInfo', {id: row.id, readOnly: true})"
+        >字典项</Button>
       </template>
-    </Table>
+</Table>
+    
+    <!-- <table class="al">
+      <tr>
+        <th>
+          <Checkbox v-model="isAll" @on-change="choiceAll"></Checkbox>
+        </th>
+        <th>关连表</th>
+        <th>关连字段</th>
+        <th>字段名称</th>
+        <th>关连租户</th>
+        <th>关连品牌</th>
+        <th>键</th>
+        <th>值</th>
+        <th>描述</th>
+        <th>是否启用</th>
+        <th></th>
+      </tr>
+      <tr v-for="(item, index) of list" :key="index">
+        <td>
+          <Checkbox v-model="item.choice" @on-change="choice"></Checkbox>
+        </td>
+        <td @click="showDrawer(item, 0)">
+          <Input
+            v-model="item.relationTable"
+            :disabled="!item.isEdit"
+            readonly
+            placeholder="请输入关连表"
+          />
+        </td>
+        <td @click="showDrawer(item, 1)">
+          <Input
+            v-model="item.relationField"
+            :disabled="!item.isEdit"
+            readonly
+            placeholder="请输入关连字段"
+          />
+        </td>
+        <td @click="showDrawer(item, 1)">
+          <Input v-model="item.fieldName" :disabled="!item.isEdit" readonly placeholder="请输入字段名称" />
+        </td>
+        <td @click="showDrawer(item, 3)">
+          <Input
+            v-model="item.companyName"
+            :disabled="!item.isEdit"
+            readonly
+            placeholder="请输入关连租户"
+          />
+        </td>
+        <td @click="showDrawer(item, 2)">
+          <Input v-model="item.supplierName" :disabled="!item.isEdit" placeholder="请输入关连品牌" />
+        </td>
+        <td>
+          <Input v-model="item.keyPair" :disabled="!item.isEdit" placeholder="请输入键" clearable />
+        </td>
+        <td>
+          <Input v-model="item.valuePair" :disabled="!item.isEdit" placeholder="请输入值" clearable />
+        </td>
+        <td>
+          <Input v-model="item.description" :disabled="!item.isEdit" placeholder="请输入描述" clearable />
+        </td>
+        <td>
+          <i-switch
+            v-model="item.status"
+            :true-value="0"
+            :false-value="1"
+            :disabled="!item.isEdit"
+          />
+        </td>
+        <td>
+          <Button v-if="item.isEdit" type="success" size="small" @click="save(item)">保存</Button>
+        </td>
+      </tr>
+    </table> -->
 
     <Page
       :total="total"
@@ -35,7 +112,7 @@
       @on-change="getData"
     />
 
-    <!-- <Drawer
+    <Drawer
       :title="'选择' + ((type === 0 && '关连表') || (type === 1 && '关连字段') || (type === 2 && '关连品牌') || (type === 3 && '关连租户'))"
       v-model="isDrawer"
       width="500"
@@ -77,133 +154,23 @@
           </tr>
         </table>
       </div>
-    </Drawer>-->
-
-    <!-- 新建/编辑字典 -->
-    <Modal
-      v-model="isDrawer"
-      :title="form.id ? '编辑' : '新建' + '字典' + ''"
-      @on-ok="save('form', form)"
-    >
-      <Form ref="form" :model="form" :rules="rules">
-        <Row :gutter="16">
-          <Col span="8">
-            <FormItem label="关连表">
-              <Input v-model="form.relationTable" placeholder="请输入关连表" />
-            </FormItem>
-
-            <FormItem label="字典名称">
-              <Input v-model="form.dictName" placeholder="请输入字典名称" />
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem label="关连字段">
-              <Input v-model="form.relationField" placeholder="请输入字段" />
-            </FormItem>
-
-            <FormItem label="关连租户">
-              <selectSupplier :val="form.companyName" type="agency" @change="changeCompany" />
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem label="字段名称">
-              <Input v-model="form.fieldName" placeholder="请输入字段名称" />
-            </FormItem>
-
-            <FormItem label="关连供应商品牌">
-              <selectSupplier :val="form.supplierName" type="brand" @change="changeSupplier" />
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
-    </Modal>
-
-    <Modal v-model="itemShow" :title="'编辑字典:' + editDictionary.relationTable">
-      <div style="height: 60vh; overflow: auto;">
-        <table class="ac">
-          <tr>
-            <th>
-              <!-- <Checkbox v-model="isAll" @on-change="choiceAll"></Checkbox> -->
-            </th>
-            <th>数据代码</th>
-            <th>标签名称</th>
-            <th>备注</th>
-          </tr>
-          <tr>
-            <td>
-              <!-- <Checkbox v-model="item.choice" @on-change="choice"></Checkbox> -->
-            </td>
-            <td>
-              <Input v-model="formItem.dataCode" placeholder="请输入数据代码" />
-            </td>
-            <td>
-              <Input v-model="formItem.dataName" placeholder="请输入标签名称" />
-            </td>
-            <td>
-              <Input v-model="formItem.remark" placeholder="请输入字段描述" />
-            </td>
-            <td>
-              <Button @click="save('item', formItem)">添加</Button>
-            </td>
-          </tr>
-          <tr v-for="(item, index) of itemList" :key="index" class="dict-item">
-            <td>
-              <!-- <Checkbox v-model="item.choice" @on-change="choice"></Checkbox> -->
-            </td>
-            <td>
-              <Input v-model="item.dataCode" :disabled="!item.isEdit" placeholder="请输入数据代码" />
-            </td>
-            <td>
-              <Input v-model="item.dataName" :disabled="!item.isEdit" placeholder="请输入标签名称" />
-            </td>
-            <td>
-              <Input v-model="item.remark" :disabled="!item.isEdit" placeholder="请输入字段描述" />
-            </td>
-            <td style="width: 25%;">
-              <div class="button-wrap">
-                <Button size="small">
-                  <Icon type="ios-create" v-if="!item.isEdit" @click="$set(item, 'isEdit', true)" />
-                  <Icon type="md-done-all" v-else @click="save('item', item)" />
-                </Button>
-                <Button size="small" @click="sort(item, index - 1)">
-                  <Icon type="md-arrow-up" />
-                </Button>
-                <Button size="small" @click="sort(item, index + 1)">
-                  <Icon type="md-arrow-down" />
-                </Button>
-                <Button size="small" @click="remove('item', item.id)">
-                  <Icon type="ios-trash" />
-                </Button>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </Modal>
+    </Drawer>
   </div>
 </template>
 
 <script>
-import * as Agency from "@/api/dataDictionary";
+import {
+  saveDataDitionary,
+  deleteDataDitionary,
+  getDataDitionary,
+  getDataDitionaryTableAndComment,
+  getDataDitionaryFiledAndComment,
+  getDataDitionarySupplier,
+  getDataDitionaryCompany
+} from "@/api/dataDictionary";
 
-import selectSupplier from "@/components/selectSupplier";
-import store from "@/store";
-
-const defaultForm = {
-  id: "", //	string 有id修改,无id增加
-  relationTable: "", //	string 关联表
-  relationField: "", //	string 关联字段
-  fieldName: "", //	string 字段名称
-  relationCompanyId: "", //	string 关联租户id
-  relationSupplierId: "", //	string 关联品牌id
-  companyName: "", //	string
-  supplierName: "", //	string
-  createBy: store.state.user.userName //	string 创建人
-};
 export default {
-  components: {
-    selectSupplier
-  },
+  components: {},
   props: {},
   data() {
     return {
@@ -222,7 +189,6 @@ export default {
       keyword: "", // 左侧抽屉的搜索关键字
       list1: [], // 右侧抽屉搜索结果列表
       type: 0, // 抽屉搜索类型 0: 关联表， 1：关联字段，2：关联字段名称，3：关连租户，4：关联保险品牌
-      editDictionary: {},
       editItem: {},
 
       column: [
@@ -233,56 +199,46 @@ export default {
         },
         {
           title: "关连表",
-          key: "relationTable",
+          key: "productCode",
           align: "center"
         },
         {
           title: "关连字段",
-          key: "relationField",
-          align: "center"
+          key: "productFullName",
+          align: "center",
         },
         {
           title: "字段名称",
-          key: "fieldName",
-          align: "center"
-        },
-        {
-          title: "字典名称",
-          key: "dictName",
-          align: "center"
+          key: "productFullName",
+          align: "center",
         },
         {
           title: "关连租户",
-          key: "companyName",
-          align: "center"
+          key: "productFullName",
+          align: "center",
         },
         {
           title: "关连品牌",
-          key: "supplierName",
-          align: "center"
+          key: "productFullName",
+          align: "center",
         },
         {
           title: "创建人",
-          key: "createBy",
-          align: "center"
+          key: "productFullName",
+          align: "center",
         },
         {
           title: "创建时间",
-          key: "createTime",
-          align: "center"
+          key: "productFullName",
+          align: "center",
         },
         {
           title: "操作",
           slot: "action",
           align: "center",
-          width: 200
-        }
-      ],
-      form: Object.assign({}, defaultForm),
-      formItem: {},
-      rules: {},
-      itemShow: false,
-      itemList: []
+          minWidth: 80
+        },
+      ]
     };
   },
   computed: {},
@@ -298,16 +254,15 @@ export default {
   methods: {
     getData(page) {
       page && (this.query.page = page);
-      Agency.getDataDitionary(this.query).then(data => {
+      getDataDitionary(this.query).then(data => {
         // console.log(data);
-        this.loading = false;
+        this.loading = false
         this.list = data.list;
-        this.total = ~~data.total;
-      });
-    },
-    getDictItemList() {
-      Agency.getAllDitionaryItem(this.editDictionary.id).then(res => {
-        this.itemList = res.list;
+        // 数组排序 sort降序排列
+        this.list.sort((a, b) => {
+          return b.sort - a.sort;
+        });
+        this.total = Number(data.total);
       });
     },
     search() {
@@ -345,15 +300,14 @@ export default {
           break;
       }
     },
-    showDialog(type, data) {
-      if (type === "from") {
-        this.isDrawer = true;
-        this.form = Object.assign({}, data || defaultForm);
-      } else {
-        this.itemShow = true;
-        this.editDictionary = data;
-        this.getDictItemList();
+    add() {
+      for (const iterator of this.list) {
+        if (iterator.isEdit) {
+          this.$Message.error("请保存当前编辑项后再添加");
+          return
+        }
       }
+      this.list.unshift({ isEdit: true, status: 1 });
     },
     edit(type) {
       // 0:编辑，1：上移，2：下移
@@ -415,58 +369,37 @@ export default {
         saveDataDitionary(data);
       }
     },
-    remove(type, data) {
-      if (type === "dict") {
-        let selected = [];
-        if (data) {
-          selected.push(data);
-        } else {
-          if (!this._judge()) {
-            return;
-          }
-          for (const iterator of this.list) {
-            iterator.choice && selected.push(iterator);
-          }
-        }
-        this.$Modal.confirm({
-          title: "提示",
-          content: "确定要删除吗",
-          onOk: () => {
-            Agency.deleteDataDitionary(selected).then(res => {
-              this.$Message.success("操作成功");
-              // this.isAll = false;
-              this.getData();
-            });
-          }
-        });
-      } else {
-        this.$Modal.confirm({
-          title: "提示",
-          content: "确定要删除吗",
-          onOk: () => {
-            Agency.deleteDitionaryItem(data).then(res => {
-              this.$Message.success("操作成功");
-              this.getDictItemList();
-            });
-          }
-        });
+    remove() {
+      if (!this._judge()) {
+        return;
       }
+      let selected = [];
+      for (const iterator of this.list) {
+        iterator.choice && selected.push(iterator);
+      }
+      deleteDataDitionary(selected).then(res => {
+        this.$Message.success("操作成功");
+        this.isAll = false;
+        this.getData();
+      });
     },
-    save(type, data) {
-      Promise.resolve().then(() => {
-        if (type === "form") {
-          return Agency.saveDataDitionary(data).then(res => {
-            this.$Message.success("操作成功");
-            this.getData();
-          });
-        } else {
-          data.dictId || (data.dictId = this.editDictionary.id);
-          return Agency.saveDitionaryItem(data).then(res => {
-            this.$Message.success("操作成功");
-            this.formItem = {};
-            this.getDictItemList();
-          });
-        }
+    save(data) {
+      data.status == null && (data.status = 1);
+      if (!data.relationTable) {
+        this.$Message.error("关连表不能为空");
+        return;
+      } else if (!data.relationField) {
+        this.$Message.error("关连字段不能为空");
+        return;
+      } else if (!data.keyPair || !data.valuePair) {
+        this.$Message.error("键、值不能为空");
+        return;
+      }
+
+      saveDataDitionary(data).then(res => {
+        data.id = res;
+        data.isEdit = false;
+        this.$Message.success("保存成功");
       });
     },
     choiceAll() {
@@ -524,8 +457,8 @@ export default {
         case 0:
           this.editItem.relationTable = data.valuePair;
           // 关连字段,字段名称重置
-          this.editItem.relationField = "";
-          this.editItem.fieldName = "";
+          this.editItem.relationField = ''
+          this.editItem.fieldName = ''
           break;
         case 1:
           this.editItem.relationField = data.field;
@@ -555,36 +488,6 @@ export default {
       } else {
         return len;
       }
-    },
-    changeCompany(val) {
-      this.form.relationCompanyId = val.id;
-      this.form.companyName = val.name;
-      // console.log(val)
-    },
-    changeSupplier(val) {
-      this.form.relationSupplierId = val.id;
-      this.form.supplierName = val.name;
-      // console.log(val)
-    },
-    sort(data, index) {
-      if (data.isEdit) {
-        this.$Message.warning("该项正在编辑，请保存后再进行移动");
-        return;
-      }
-      if (index < 0) {
-        this.$Message.warning("已经移在当前列最顶部");
-        return;
-      }
-      if (index === this.itemList.length) {
-        this.$Message.warning("已经移在当前列最底部");
-        return;
-      }
-      let sort = data.sort;
-      data.sort = this.itemList[index].sort;
-      this.itemList[index].sort = sort;
-      Agency.sortDitionaryItem([data, this.itemList[index]]).then(res => {
-        this.getDictItemList();
-      });
     }
   }
 };
@@ -627,19 +530,5 @@ table {
 }
 /deep/.ivu-input {
   height: 30px;
-}
-/deep/.ivu-modal {
-  min-width: 600px;
-  width: 60% !important;
-}
-.dict-item {
-  &:hover {
-    .button-wrap {
-      display: block;
-    }
-  }
-}
-.button-wrap {
-  display: none;
 }
 </style>

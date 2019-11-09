@@ -120,7 +120,8 @@
           <div style="padding: 0 20px; line-height: 40px;">
             <Row>
               <Col span="11">
-                <div>选项配置</div>
+                <div class="bfc-d">选项配置</div>
+                <div v-if="currentConfigInfo.calItemTag === 15" class="bfc-d" style="margin-left: 10px;">计算系数</div>
               </Col>
               <Col span="9">
                 <div>设为默认</div>
@@ -135,10 +136,10 @@
                     <Checkbox :label="index">{{null}}</Checkbox>
                   </CheckboxGroup>
                 </Col>
-                <Col span="10">
+                <Col span="10" style="min-height: 1px;">
                   <!-- 领取年龄 -->
                   <template v-if="currentConfigInfo.calItemTag === 9">
-                    <Select v-model="item.unit">
+                    <Select v-model="item.unit" style="width: 80px;">
                       <Option :value="0">不限性别</Option>
                       <Option :value="1">男性</Option>
                       <Option :value="2">女性</Option>
@@ -146,7 +147,7 @@
                   </template>
 
                   <!-- 交费方式 -->
-                  <template v-if="currentConfigInfo.calItemTag === 15">{{item.unit}}</template>
+                  <template v-if="currentConfigInfo.calItemTag === 15">{{['年交', '半年交', '季交', '月交'][item.optionOther]}}</template>
                   <!-- 出生日期 -->
                   <template v-if="currentConfigInfo.calItemTag === 2">
                     <DatePicker
@@ -160,22 +161,27 @@
                   <template v-if="show(currentConfigInfo.calItemTag)">
                     <Input
                       type="text"
-                      style="width: 150px;"
+                      style="width: 100px; margin: 0 10px;"
                       v-model="item.option"
                       placeholder="请输入"
                     />
                   </template>
+
                   <!-- 投保份数 -->
                   <template v-if="currentConfigInfo.calItemTag === 1">份</template>
-                  <!-- 性别/领取方式-->
+                  <!-- 性别-->
                   <template
-                    v-if="currentConfigInfo.calItemTag === 4 || currentConfigInfo.calItemTag === 11"
-                  >{{item.option}}</template>
+                    v-if="currentConfigInfo.calItemTag === 4"
+                  >{{{1: '男', 2: '女'}[item.option]}}</template>
+                  <!-- 领取方式-->
+                  <template
+                    v-if="currentConfigInfo.calItemTag === 11"
+                  >{{['年领', '月领'][item.option]}}</template>
                   <!-- 保费/保险金额 -->
                   <template
                     v-if="currentConfigInfo.calItemTag === 12 || currentConfigInfo.calItemTag === 10"
                   >
-                    <Select v-model="item.unit">
+                    <Select v-model="item.unit" style="width: 80px;">
                       <Option :value="0">万元</Option>
                       <Option :value="1">元</Option>
                       <Option :value="2">元/每天</Option>
@@ -238,6 +244,7 @@
 
 <script>
 import * as Agency from "@/api/product/calculator";
+import {getProductRule} from "@/api/product/rule";
 
 const defaultConfigInfo = {
   checked: 0,
@@ -262,11 +269,18 @@ export default {
         { productId: this.$route.query.id, configItems: [] },
         defaultConfigInfo
       ),
-      selected: []
+      selected: [],
+      insuranceRules: {}
     };
   },
   mounted() {
     this.getData();
+    let id = this.$route.query.id;
+    id && getProductRule(id).then(res => {
+      console.log(res)
+      this.insuranceRules = res
+    })
+
   },
   methods: {
     getData() {
@@ -293,9 +307,14 @@ export default {
                 : Agency.saveCalculator(formData);
               break;
             case "currentConfigInfo":
-              return formData.id
-                ? Agency.updateCalculatorItemInfo(formData)
-                : Agency.saveCalculatorItemInfo(formData);
+              if (formData.calItemId) {
+                return formData.id
+                  ? Agency.updateCalculatorItemInfo(formData)
+                  : Agency.saveCalculatorItemInfo(formData);
+              } else {
+                this.$Message.warning("请选择保费计算器项目");
+                return Promise.reject()
+              }
               break;
           }
         })
@@ -322,13 +341,78 @@ export default {
           this.currentConfigInfo = res;
           data.checked = 1
         } else {
+          console.log("insuranceRules: ", this.insuranceRules);
+          // 加载核保规则默认配置项
+          // 0 可投保地区   1 投保份数  2  出生日期  3  投保档次  4 性别  5 保险期间  6 有无社保  7  交费期间  8  职业（风险）类别  9  领取年龄  10  保险金额  11  起领时间/领取方式  12  保费  13  领取期间  14 保险计划  15 交费方式
+          let configItems = []
+          switch (data.tag) {
+            // 5 保险期间
+            case 5:
+              for (const iterator of this.insuranceRules.insurancePeriodRule) {
+                if (iterator.type === 0) {
+                  let temp5 = iterator.ruleIntevalDtoList ? iterator.ruleIntevalDtoList : []
+                  for (const iterator of temp5) {
+                    configItems.push({option: iterator.ruleIntervalName})
+                  }
+                }
+              }
+              break;
+              // 7  交费期间
+            case 7:
+              let temp7 = this.insuranceRules.payRule ?this.insuranceRules.payRule.ruleIntevalDtoList : []
+              for (const iterator of temp7) {
+                configItems.push({option: iterator.ruleIntervalName})
+              }
+              break;
+              // 13  领取期间
+            case 13:
+              this.insuranceRules.receiveForm && (configItems = this.insuranceRules.receiveForm.receiveAgeNum.split(","))
+              break;
+              // 14 保险计划
+            case 14:
+              let temp14 = this.insuranceRules.coverageForm? JSON.parse(this.insuranceRules.coverageForm.insurancePlanContent) : []
+              for (const iterator of temp14) {
+                configItems.push({option: iterator.name})
+              }
+              break;
+              // 9  领取年龄
+            case 9:
+              let temp9 = this.insuranceRules.receiveForm ? SON.parse(this.insuranceRules.receiveForm.receiveAgeContent) : []
+              for (const iterator of temp9) {
+                configItems.push({option: iterator.age, unit: iterator.sex})
+              }
+              break;
+              // 4 性别
+            case 4:
+              configItems = [
+                {option: 1},
+                {option: 2},
+              ]
+              break;
+              // 11  领取方式
+            case 11:
+              configItems = [
+                {option: 0},
+                {option: 1},
+              ]
+              break;
+              // 15  交费方式
+            case 15:
+              configItems = [
+                {optionOther: 0},
+                {optionOther: 1},
+                {optionOther: 2},
+                {optionOther: 3},
+              ]
+              break;
+          }
           this.currentConfigInfo = Object.assign(
             {
               productId: this.$route.query.id,
               calItemId: data.id,
               calItemName: data.name,
               calItemTag: data.tag,
-              configItems: []
+              configItems,
             },
             defaultConfigInfo
           );
@@ -377,6 +461,10 @@ export default {
     },
     // 删除配置项选项
     remove() {
+      if (this.selected.length === 0) {
+        this.$Message.warning("请选择需要删除的选择");
+        return
+      }
       this.$Modal.confirm({
         title: "提示",
         content: "确定要删除吗",

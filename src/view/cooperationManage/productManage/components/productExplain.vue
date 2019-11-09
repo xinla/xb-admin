@@ -1,3 +1,8 @@
+<style>
+.demo-spin-icon-load {
+  animation: ani-demo-spin 1s linear infinite;
+}
+</style>
 <style lang="less" scoped>
 .title-wrap {
   padding: 15px 20px;
@@ -46,15 +51,6 @@
   cursor: pointer;
   margin-right: 5px;
 }
-.button-tap {
-  position: relative;
-  border: 1px solid #999;
-  padding: 5px 10px;
-  z-index: 1;
-  &:nth-of-type(n + 2) {
-    margin-left: 10px;
-  }
-}
 /deep/.up-wrap .ivu-form-item-content {
   margin-left: 0 !important;
 }
@@ -75,7 +71,7 @@
 /deep/.box .ivu-row {
   margin-bottom: 10px;
 }
-/deep/.ivu-btn{
+/deep/.ivu-btn {
   margin-bottom: 10px;
 }
 // 设置富文本最低高度
@@ -166,6 +162,31 @@
                   <FormItem label="典型费率" prop>
                     <Input v-model="form.typicalPremium" placeholder="请输入产品典型费率，不超过200字" />
                   </FormItem>
+                  <FormItem label="产品特色">
+                    <Input
+                      type="text"
+                      v-show="productFeatureShow || !productFeature.length"
+                      v-model="form.productFeature"
+                      placeholder="产品特色，多个以英文逗号','分开"
+                      @on-enter="transLabel()"
+                      @on-blur="transLabel()"
+                    />
+
+                    <Select
+                      v-show="!productFeatureShow && productFeature.length"
+                      v-model="productFeature"
+                      multiple
+                      :max-tag-count="3"
+                      @click.native="productFeatureShow = !productFeatureShow"
+                      @on-change="selectChange()"
+                    >
+                      <Option
+                        v-for="(item, index) in productFeature"
+                        :value="item"
+                        :key="index"
+                      >{{item}}</Option>
+                    </Select>
+                  </FormItem>
                 </Col>
               </Row>
             </div>
@@ -252,44 +273,40 @@
           <div class="box">
             <div ref="feature" class="title-wrap bfc-o">
               <span class="title">产品特色</span>
-
-              <button
-                :class="['button', {current: featureType === 0}]"
-                type="button"
-                @click="featureType = 0"
-              >图文</button>
-              <button
-                :class="['button', {current: featureType === 1}]"
-                type="button"
-                @click="featureType = 1"
-              >图集</button>
             </div>
-
-            <div class="box-content">
-              <div v-show="featureType === 0">
-                <ckeditor :editor="editor" v-model="form.imageText" :config="editorConfig"></ckeditor>
-              </div>
-
-              <div v-show="featureType === 1">
-                <img
-                  class="atlas fl"
-                  v-for="(item, index) of form.atlas.split(',')"
-                  :Key="index"
-                  :src="item"
-                  alt
-                />
-                <Upload
-                  class="up-wrap"
-                  :action="uploadUrl"
-                  :show-upload-list="false"
-                  :format="['jpg','jpeg','png']"
-                  accept="image/*"
-                  :on-success="uploadAtlas"
-                >
-                  <div class="upload-icon cp">+上传图片</div>
-                </Upload>
-              </div>
-            </div>
+            <Tabs>
+              <TabPane label="图文">
+                <div class="box-content">
+                  <ckeditor
+                    :editor="editor"
+                    v-model="form.imageText"
+                    :config="editorConfig"
+                    @ready="onReady"
+                  ></ckeditor>
+                </div>
+              </TabPane>
+              <TabPane label="图集">
+                <div class="box-content">
+                  <img
+                    class="atlas fl"
+                    v-for="(item, index) of form.atlas.split(',')"
+                    :Key="index"
+                    :src="item"
+                    alt
+                  />
+                  <Upload
+                    class="up-wrap"
+                    :action="uploadUrl"
+                    :show-upload-list="false"
+                    :format="['jpg','jpeg','png']"
+                    accept="image/*"
+                    :on-success="uploadAtlas"
+                  >
+                    <div class="upload-icon cp">+上传图片</div>
+                  </Upload>
+                </div>
+              </TabPane>
+            </Tabs>
           </div>
 
           <div class="box">
@@ -301,14 +318,19 @@
               <Upload
                 :action="uploadUrl"
                 :show-upload-list="false"
-                :data='{image: true}'
+                :data="{image: true}"
                 :on-success="uploadRulePdf"
                 :before-upload="beforeUpload"
               >
                 <Button icon="ios-cloud-upload-outline">上传投保规则</Button>
                 <span>{{form.insuranceRulePdf}}</span>
               </Upload>
-              <ckeditor :editor="editor" v-model="form.insuranceRuleText" :config="editorConfig"></ckeditor>
+              <ckeditor
+                :editor="editor"
+                v-model="form.insuranceRuleText"
+                :config="editorConfig"
+                @ready="onReady"
+              ></ckeditor>
             </div>
           </div>
 
@@ -321,7 +343,7 @@
               <Upload
                 :action="uploadUrl"
                 :show-upload-list="false"
-                :data='{image: true}'
+                :data="{image: true}"
                 :on-success="uploadLiabilityPdf"
                 :before-upload="beforeUpload"
               >
@@ -329,38 +351,68 @@
                 <span>{{form.insuranceLiabilityPdf}}</span>
               </Upload>
 
-              <button class="button-tap" type="button" @click="form.exemptLiability = 0" style="border-bottom: 1px solid #fff;">保险责任</button>
-              <button class="button-tap" type="button" @click="form.exemptLiability = 1">免除责任</button>
+              <Tabs>
+                <TabPane label="保险责任">
+                  <div style="border-top: 1px solid #999;padding-top: 10px; margin-top: -1px;">
+                    <Row v-for="(item, index) of form.insuranceLiability" :Key="index">
+                      <Col span="11">
+                        <div>责任类型</div>
+                        <Select v-model="item.mainClass" placeholder="请选择大类" style="width: 38%; margin-right: 4%;">
+                          <Option
+                            v-for="(item, index) in productFeature"
+                            :value="item"
+                            :key="index"
+                          >{{item}}</Option>
+                        </Select>
+                        <Select v-model="item.smallClass" placeholder="请选择小类" style="width: 38%;">
+                          <Option
+                            v-for="(item, index) in productFeature"
+                            :value="item"
+                            :key="index"
+                          >{{item}}</Option>
+                        </Select>
 
-              <div v-show="!form.exemptLiability" style="border-top: 1px solid #999;padding-top: 10px; margin-top: -1px;">
-                <Row>
-                  <Col span="8">标题</Col>
-                  <Col span="8">描述（算法）</Col>
-                </Row>
-                <Row
-                  v-for="(item, index) of form.insuranceLiability"
-                  :Key="index"
-                >
-                  <Col span="8">
-                    <Input
-                      v-model="item.title"
-                      placeholder="请输入标题"
-                      style="width:60%; margin-right: 10px;"
-                    />
-                  </Col>
-                  <Col span="8">
-                    <Input
-                      v-model="item.desc"
-                      placeholder="请输入内容"
-                      style="width:73%; margin-right: 10px;"
-                    />
-                  </Col>
-                  <Col span="8">
-                    <span class="button-circle" @click="reduce('insuranceLiability', index)">-</span>
-                  </Col>
-                </Row>
-                <Button class="button" @click="addItem('insuranceLiability')">添加</Button>
-              </div>
+                        <div>算法</div>
+                        <Input
+                        type="textarea"
+                          v-model="item.algorithm"
+                          placeholder="请输入内容"
+                          style="width:80%;"
+                        />
+                      </Col>
+
+                      <Col span="11">
+                        <div>标题</div>
+                        <Input
+                          v-model="item.title"
+                          placeholder="请输入标题"
+                          style="width:80%;"
+                        />
+
+                        <div>对应条款</div>
+                        <Input
+                        type="textarea"
+                          v-model="item.provision"
+                          placeholder="请输入条款"
+                          style="width:80%;"
+                        />
+                      </Col>
+                      <Col span="2">
+                        <span class="button-circle" @click="reduce('insuranceLiability', index)">-</span>
+                      </Col>
+                    </Row>
+
+                    <Button
+                      class="button"
+                      type="primary"
+                      @click="addItem('insuranceLiability')"
+                    >+ 添加</Button>
+                  </div>
+                </TabPane>
+                <TabPane label="免除责任">
+                  <Input type="textarea" v-model="form.exemptLiability" style="width: 60%;" />
+                </TabPane>
+              </Tabs>
             </div>
           </div>
         </Form>
@@ -377,33 +429,65 @@ import {
   clearProductDesc
 } from "@/api/product/desc";
 
+import axios from "axios";
+import config from "@/config";
+
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import "@ckeditor/ckeditor5-build-classic/build/translations/zh-cn";
 
+class MyUploadAdapter {
+  constructor(loader) {
+    // Save Loader instance to update upload progress.
+    this.loader = loader;
+  }
+
+  async upload() {
+    const data = new FormData();
+    data.append("typeOption", "upload_image");
+    data.append("file", await this.loader.file);
+
+    return new Promise((resolve, reject) => {
+      axios({
+        url: config.services.upload,
+        data,
+        method: "post",
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+        .then(res => {
+          // console.log(res);
+          resolve({ default: res.data.result.fileUrl });
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+}
+
 const defaultForm = {
-      productId: "",
-      navigationUrl: "", // 导航图链接地址
-      bannerUrl: "", // banner图链接地址
-      coreBuy: "", // 核心买点
-      typicalPremium: "", // 典型费率
-      coverUrl: "", // 封面图片链接地址
-      coverVideoUrl: "", // 封面视频链接地址
-      // 保险利益
-      insurableInterest: [
-        {
-          title: "",
-          algorithm: ""
-        }
-      ],
-      imageText: "", // 图文  富文本编辑内容
-      atlas: "", // 图集  多个图片上传逗号分隔
-      insuranceRulePdf: "", // 投保规则pdf链接地址
-      insuranceRuleText: "", // 投保须知富文本编辑内容
-      insuranceLiabilityPdf: "", // 保险责任PDF
-      insuranceLiability: [{ title: "", desc: "" }], // 保险责任内容 [{"title":"标题","desc":"描述"}]
-      exemptLiability: "" // 责任免除
-    };
+  productId: "",
+  navigationUrl: "", // 导航图链接地址
+  bannerUrl: "", // banner图链接地址
+  coreBuy: "", // 核心买点
+  typicalPremium: "", // 典型费率
+  coverUrl: "", // 封面图片链接地址
+  coverVideoUrl: "", // 封面视频链接地址
+  // 保险利益
+  insurableInterest: [
+    {
+      title: "",
+      algorithm: ""
+    }
+  ],
+  imageText: "", // 图文  富文本编辑内容
+  atlas: "", // 图集  多个图片上传逗号分隔
+  insuranceRulePdf: "", // 投保规则pdf链接地址
+  insuranceRuleText: "", // 投保须知富文本编辑内容
+  insuranceLiabilityPdf: "", // 保险责任PDF
+  insuranceLiability: [{ title: "", desc: "" }], // 保险责任内容 [{"title":"标题","desc":"描述"}]
+  exemptLiability: "" // 责任免除
+};
 
 export default {
   components: {
@@ -453,7 +537,8 @@ export default {
       },
 
       anchor: "nav",
-      featureType: 0
+      productFeature: [],
+      productFeatureShow: false
     };
   },
   mounted() {
@@ -479,25 +564,25 @@ export default {
           this.form = data;
 
           // 设置富文本内容
-          this.form.imageText || (this.form.imageText = '')
-          this.form.insuranceRuleText || (this.form.insuranceRuleText = '')
+          this.form.imageText || (this.form.imageText = "");
+          this.form.insuranceRuleText || (this.form.insuranceRuleText = "");
         });
     },
     beforeUpload() {
       this.$Spin.show({
-        render: (h) => {
-                        return h('div', [
-                            h('Icon', {
-                                'class': 'demo-spin-icon-load',
-                                props: {
-                                    type: 'ios-loading',
-                                    size: 18
-                                }
-                            }),
-                            h('div', 'Loading')
-                        ])
-                    }
-      })
+        render: h => {
+          return h("div", [
+            h("Icon", {
+              class: "demo-spin-icon-load",
+              props: {
+                type: "ios-loading",
+                size: 18
+              }
+            }),
+            h("div", "Loading")
+          ]);
+        }
+      });
     },
     uploadNavigation(response, file, fileList) {
       this.form.navigationUrl = response.result.fileUrl;
@@ -518,11 +603,11 @@ export default {
     },
     uploadRulePdf(response, file, fileList) {
       this.form.insuranceRulePdf = response.result.fileUrl;
-      this.$Spin.hide()
+      this.$Spin.hide();
     },
     uploadLiabilityPdf(response, file, fileList) {
       this.form.insuranceLiabilityPdf = response.result.fileUrl;
-      this.$Spin.hide()
+      this.$Spin.hide();
     },
     submit() {
       this.form.productId = this.$route.query.id;
@@ -555,7 +640,7 @@ export default {
         content: "确定要清空吗",
         onOk: () => {
           clearProductDesc(this.form.id).then(res => {
-            this.form = JSON.parse(JSON.stringify(defaultForm))
+            this.form = JSON.parse(JSON.stringify(defaultForm));
             this.$Message.success("操作成功");
             // this.form.resetFields()
             // console.log(1)
@@ -580,6 +665,28 @@ export default {
       this.$refs.scroll.$el.scrollTop = this.$refs[data].offsetTop;
       this.anchor = data;
     },
+    // 富文本自定义图片删除插件
+    onReady(editor) {
+      // DecoupledEditor.create(document.querySelector("#editor"), {
+      //   extraPlugins: [MyCustomUploadAdapterPlugin]
+      // }).catch(error => {
+      //   console.log(error);
+      // });
+      // function MyCustomUploadAdapterPlugin() {}
+      editor.plugins.get("FileRepository").createUploadAdapter = loader => {
+        return new MyUploadAdapter(loader);
+      };
+    },
+    transLabel() {
+      if (this.form.productFeature) {
+        this.productFeature = this.form.productFeature.split(",");
+      }
+      this.productFeatureShow = false;
+    },
+    selectChange() {
+      this.form.productFeature = this.productFeature.join(",");
+      // console.log(this.form.specialProfessionalLimit)
+    }
   }
 };
 </script>

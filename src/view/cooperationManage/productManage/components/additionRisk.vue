@@ -58,16 +58,12 @@
         <ul class="anchor-wrap">
           <li
             v-for="(item, index) in additionRiskList"
-            :class="['anchor', {current: anchor.includes(item.id)}]"
+            :class="['anchor', 'cp', {'current': current == item.id}]"
             :key="index"
+            @click="switchRisk(item)"
           >
-            <CheckboxGroup v-model="anchor">
-              <Checkbox
-                :label="item.id"
-                style="width: 100%;"
-                @click.self.native="addRisk(item)"
-              >{{item.productFullName}}</Checkbox>
-            </CheckboxGroup>
+            <span v-if="anchor.includes(item.id)">√</span>
+              {{item.productFullName}}
           </li>
         </ul>
       </Col>
@@ -78,23 +74,23 @@
         style="background: #fff; position: absolute; right: 0; height: 100%; overflow: auto; transition: all 1s;"
       >
         <!-- 产品导航 -->
-        <div class="box" v-for="(item, index) of form" :Key="index">
+        <div class="box" v-if="form.additionRiskId">
           <div ref="nav" class="title-wrap bfc-o">
-            <span class="title">{{item.additionRiskName}}</span>
+            <span class="title">{{form.additionRiskName}}</span>
             <div class="button-wrap fr">
-              <button class="button" type="button" @click="submit(item)">保存</button>
-              <button class="button" type="button" @click="clear(item)">清空</button>
+              <button class="button" type="button" @click="submit(form)">保存</button>
+              <button class="button" type="button" @click="clear(form)">清空</button>
             </div>
           </div>
 
           <Form ref="form" :label-width="100">
             <FormItem label="优先投保产品">
-              <Checkbox v-model="item.priorityProductLimit" :true-value="0" :false-value="1">无约束</Checkbox>
-              <div v-if="item.priorityProductLimit === 1">
-                <Select v-model="item.priorityProductId" style="width:30%">
+              <Checkbox v-model="form.priorityProductLimit" :true-value="0" :false-value="1">无约束</Checkbox>
+              <div v-if="form.priorityProductLimit === 1">
+                <Select v-model="form.priorityProductId" style="width:30%">
                   <template v-for="(unit, index) in additionRiskList">
                     <Option
-                      v-if="unit.id !== item.additionRiskId"
+                      v-if="unit.id !== form.additionRiskId"
                       :value="unit.id"
                       :key="index"
                     >{{unit.productFullName}}</Option>
@@ -104,23 +100,23 @@
             </FormItem>
 
             <FormItem label="保险金额约束">
-              <Checkbox v-model="item.coverageLimit" :true-value="0" :false-value="1">无约束</Checkbox>
-              <div v-if="item.coverageLimit === 1">
-              <Checkbox v-model="item.coverageDefine" :true-value="0" :false-value="1">不允许自定义</Checkbox>
+              <Checkbox v-model="form.coverageLimit" :true-value="0" :false-value="1">无约束</Checkbox>
+              <div v-if="form.coverageLimit === 1">
+              <Checkbox v-model="form.coverageDefine" :true-value="0" :false-value="1">不允许自定义</Checkbox>
 
-                <template v-if="item.coverageDefine === 0">
+                <template v-if="form.coverageDefine === 0">
                   <div class="title1">不允许自定义，由系统生成</div>
-                  <RadioGroup v-model="item.coverageDefineItem">
+                  <RadioGroup v-model="form.coverageDefineItem">
                     <Radio :label="0">= 主险保额</Radio>
                   </RadioGroup>
                   <div>
-                    <RadioGroup v-model="item.coverageDefineItem">
+                    <RadioGroup v-model="form.coverageDefineItem">
                       <Radio :label="1">主险保费推算</Radio>
                     </RadioGroup>
 
                     <RadioGroup
-                      v-if="item.coverageDefineItem === 1"
-                      v-model="item.coveragePremiumItem"
+                      v-if="form.coverageDefineItem === 1"
+                      v-model="form.coveragePremiumItem"
                       style="border: 1px solid #ddd; padding: 0 10px;"
                     >
                       <Radio :label="0">= 主险期交保费</Radio>
@@ -128,35 +124,42 @@
                       <Radio :label="2">= （主险缴费期间-1）* 期交保费</Radio>
                     </RadioGroup>
                   </div>
-                  <!-- <div>
-                    <RadioGroup v-model="item.rateCountMethod">
-                      <Radio :label="1">使用公式</Radio>
+                  <div>
+                    <RadioGroup v-model="form.coverageDefineItem">
+                      <Radio :label="2">使用公式</Radio>
                     </RadioGroup>
 
-                    <Input type="text" v-model="item.paymentMethodRatioYear" />
-                  </div>-->
+                    <Input type="text" style="width: 40%; margin-right: 10px;"/>
+                    <Button>创建公式</Button>
+                  </div>
                 </template>
 
-                <template v-if="item.coverageDefine === 1">
+                <template v-if="form.coverageDefine === 1">
                   <div class="title1">允许自定义，用保费计算器设定</div>
                   <Checkbox
-                    v-model="item.coverageLimitCoverage"
+                    v-model="form.coverageLimitCoverage"
                     :true-value="1"
                     :false-value="0"
                   >保额限保额</Checkbox>
-                  <div v-if="item.coverageLimitCoverage === 1">
-                    主险保额 ：附加险保额 <=
-                    <Input type="text" v-model="item.coverageLimitCoverageMain" style="width:10%;" />：
-                    <Input type="text" v-model="item.coverageLimitCoverageAdd" style="width:10%;" />
+                  <div v-if="form.coverageLimitCoverage === 1">
+                    主险保额 ：附加险保额 
+                    <Select v-model="form.coverageLimitCoverageSymbol" style="width:60px; margin-right: 10px;">
+                            <Option :value="0">>=</Option>
+                            <Option :value="1">></Option>
+                            <Option :value="2"><=</Option>
+                            <Option :value="3"><</Option>
+                          </Select>
+                    <Input type="text" v-model="form.coverageLimitCoverageMain" style="width:10%;" />：
+                    <Input type="text" v-model="form.coverageLimitCoverageAdd" style="width:10%;" />
                   </div>
 
-                  <Checkbox v-model="item.premiumLimitCoverage" :true-value="1" :false-value="0">保费限保额</Checkbox>
-                  <div v-if="item.premiumLimitCoverage === 1">
+                  <Checkbox v-model="form.premiumLimitCoverage" :true-value="1" :false-value="0">保费限保额</Checkbox>
+                  <div v-if="form.premiumLimitCoverage === 1">
                     <Row>
                       <Col span="10">保费标准</Col>
                       <Col span="10">搭配保额</Col>
                     </Row>
-                    <Row v-for="(unit, unique) of item.premiumLimitCoverageContent" :Key="unique">
+                    <Row v-for="(unit, unique) of form.premiumLimitCoverageContent" :Key="unique">
                       <Col span="10">
                         <FormItem label="主险保费" prop="pcCoverPicture">
                           <Select v-model="unit.symbol" style="width:20%; margin-right: 10px;">
@@ -189,11 +192,11 @@
                       <Col span="2">
                         <span
                           class="button-circle"
-                          @click="reduce(item, 'premiumLimitCoverageContent', unique)"
+                          @click="reduce(form, 'premiumLimitCoverageContent', unique)"
                         >-</span>
                         <span
                           class="button-circle"
-                          @click="addItem(item, 'premiumLimitCoverageContent')"
+                          @click="addItem(form, 'premiumLimitCoverageContent')"
                         >+</span>
                       </Col>
                     </Row>
@@ -204,15 +207,15 @@
             </FormItem>
 
             <FormItem label="保险期间约束">
-              <Checkbox v-model="item.insurancePeriodLimit" :true-value="0" :false-value="1">无约束</Checkbox>
-              <div v-if="item.insurancePeriodLimit === 1">
+              <Checkbox v-model="form.insurancePeriodLimit" :true-value="0" :false-value="1">无约束</Checkbox>
+              <div v-if="form.insurancePeriodLimit === 1">
                 <div>
-                  <RadioGroup v-model="item.insurancePeriodOption">
+                  <RadioGroup v-model="form.insurancePeriodOption">
                     <Radio :label="0">强制</Radio>
                   </RadioGroup>
 
                   <RadioGroup
-                    v-model="item.insurancePeriodForce"
+                    v-model="form.insurancePeriodForce"
                     style="border: 1px solid #ddd; padding: 0 10px;"
                   >
                     <Radio :label="0">= 主险保险期间</Radio>
@@ -221,17 +224,17 @@
                 </div>
 
                 <RadioGroup
-                  v-model="item.insurancePeriodOption"
-                  @on-change="constraintChange(item)"
+                  v-model="form.insurancePeriodOption"
+                  @on-change="constraintChange(form)"
                 >
                   <Radio :label="1">可选</Radio>
                 </RadioGroup>
 
                 <Checkbox
-                  v-model="item.insurancePeriodRate"
+                  v-model="form.insurancePeriodRate"
                   :true-value="1"
                   :false-value="0"
-                  @on-change="constraintChange(item)"
+                  @on-change="constraintChange(form)"
                 >作为费率查询条件</Checkbox>
 
                 <table class="table ac" border>
@@ -239,8 +242,8 @@
                     <th>主险保险期间</th>
                     <th>附加险保险期间</th>
                   </tr>
-                  <template v-if="item.insurancePeriodRate === 1">
-                    <tr v-for="(unit, unique) in item.insurancePeriodContentRate" :key="unique">
+                  <template v-if="form.insurancePeriodRate === 1">
+                    <tr v-for="(unit, unique) in form.insurancePeriodContentRate" :key="unique">
                       <td>{{unit.main}}</td>
                       <td>
                         <span v-for="(_item, _index) in unit.rider" :key="_index">
@@ -250,8 +253,8 @@
                       </td>
                     </tr>
                   </template>
-                  <template v-else-if="item.insurancePeriodOption === 1">
-                    <tr v-for="(unit, unique) in item.insurancePeriodContent" :key="unique">
+                  <template v-else-if="form.insurancePeriodOption === 1">
+                    <tr v-for="(unit, unique) in form.insurancePeriodContent" :key="unique">
                       <td>{{unit.main}}</td>
                       <td>
                         <span v-for="(_item, _index) in unit.rider" :key="_index">
@@ -266,29 +269,29 @@
             </FormItem>
 
             <FormItem label="交费期间约束">
-              <Checkbox v-model="item.payPeriodLimit" :true-value="0" :false-value="1">无约束</Checkbox>
-              <div v-if="item.payPeriodLimit === 1">
+              <Checkbox v-model="form.payPeriodLimit" :true-value="0" :false-value="1">无约束</Checkbox>
+              <div v-if="form.payPeriodLimit === 1">
                 <div>
-                  <RadioGroup v-model="item.payOption">
+                  <RadioGroup v-model="form.payOption">
                     <Radio :label="0">强制</Radio>
                   </RadioGroup>
 
                   <RadioGroup
-                    v-model="item.payForceContent"
+                    v-model="form.payForceContent"
                     style="border: 1px solid #ddd; padding: 0 10px;"
                   >
                     <Radio :label="0">= 主险交费期间</Radio>
                     <Radio :label="1">= 主险交费期间 - 1</Radio>
                   </RadioGroup>
                 </div>
-                <RadioGroup v-model="item.payOption">
+                <RadioGroup v-model="form.payOption">
                   <Radio :label="1">可选</Radio>
                 </RadioGroup>
               </div>
             </FormItem>
 
             <FormItem label="捆绑其他产品">
-              <Checkbox v-model="item.bindOtherProduct" :true-value="0" :false-value="1">无约束</Checkbox>
+              <Checkbox v-model="form.bindOtherProduct" :true-value="0" :false-value="1">无约束</Checkbox>
             </FormItem>
           </Form>
         </div>
@@ -311,6 +314,7 @@ const defaultForm = {
   coverageLimit: 0,
   coverageDefine: 0,
   coverageDefineItem: 0,
+  coverageLimitCoverageSymbol: 0,
   coveragePremiumItem: 0,
   coverageLimitCoverage: 0,
   coverageLimitCoverageMain: "0",
@@ -338,7 +342,7 @@ const defaultForm = {
 export default {
   data() {
     return {
-      form: [],
+      form: JSON.parse(JSON.stringify(defaultForm)),
       selectRisk: {},
       riskList: [],
       child: {
@@ -348,14 +352,16 @@ export default {
       addShow: false,
 
       additionRiskList: [],
-      anchor: []
+      anchor: [],
+      infolist: [],
+      current: ''
     };
   },
   mounted() {
     // 获取附加险列表
     //  || "2252792750044872711"
     Agency.getAdditionRiskList(this.$route.query.supplierId).then(res => {
-      // console.log("additionRiskList ", res);
+      console.log("additionRiskList ", res);
       this.additionRiskList = res;
     });
 
@@ -366,10 +372,10 @@ export default {
       this.$route.query.id &&
         Agency.getAdditionRisk(this.$route.query.id).then(data => {
           console.log("additionRisk", data);
-          this.form = [];
+          this.infolist = [];
           this.anchor = []
           if (data) {
-            this.form = data;
+            this.infolist = data;
             for (const iterator of data) {
               this.anchor.push(iterator.additionRiskId);
               // 保费限保额内容
@@ -385,6 +391,7 @@ export default {
                 iterator.insurancePeriodContentRate
               );
             }
+            // this.form = data[0]
           }
         });
     },
@@ -448,25 +455,20 @@ export default {
         });
       }
     },
-    addRisk(data) {
-      if (this.anchor.includes(data.id)) {
-        // 取消选中
-        for (const iterator of this.form) {
-          if (iterator.additionRiskId === data.id) {
-            this.form.splice(this.form.indexOf(iterator), 1);
-            return;
-          }
+    switchRisk(data) {
+      this.current = data.id
+      for (const iterator of this.infolist) {
+        if (data.id === iterator.additionRiskId) {
+          this.form = iterator
+          return
         }
-      } else {
-        // 选中
-        let obj = Object.assign({}, defaultForm, {
+      }
+      this.form = JSON.parse(JSON.stringify(defaultForm))
+        Object.assign(this.form, {
           productId: this.$route.query.id,
           additionRiskId: data.id,
           additionRiskName: data.productFullName
         });
-        this.form.push(obj);
-      }
-      // this.
     }
   }
 };

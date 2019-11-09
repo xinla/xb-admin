@@ -11,7 +11,7 @@
     </Upload>
     {{fileName}}
     <Table :loading="loading" :columns="columns" :data="list">
-      <template slot="sex" slot-scope="{row}">{{row.sex === 0 ? '男' : '女'}}</template>
+      <template slot="sex" slot-scope="{row}">{{row.sex | sex}}</template>
     </Table>
 
     <Page
@@ -32,6 +32,19 @@ import {
 } from "@/api/product/rate";
 
 export default {
+  filters: {
+    sex(val) {
+      if (val === null ) {
+        return
+      }
+      
+      let data = {
+      0: '男',
+      1: '女',
+    }
+    return data[val]
+  }
+  },
   data() {
     return {
       uploadUrl: this.$config.domain + "/insurance/import",
@@ -85,6 +98,11 @@ export default {
         {
           title: "保险期间",
           key: "policyPeriod",
+          align: "center"
+        },
+        {
+          title: "交费期间",
+          key: "paymentPeriod",
           align: "center"
         },
         {

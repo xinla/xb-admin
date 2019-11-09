@@ -1,8 +1,7 @@
-import HttpRequest from '@/libs/axios'
+import axios from '@/libs/api.request'
 import config from '@/config'
 
-const axios = new HttpRequest(config.domainV2)
-const service = config.services.dataDitionary
+const service = config.baseUrl.domainV2 + config.services.dataDitionary
 
 /**
  * 保存
@@ -97,3 +96,52 @@ export const getDataDitionaryCompany = (params) => {
   })
 }
 
+/**
+ * 查询所有数据字典项目
+ * @param {*} dictId 
+ */
+export const getAllDitionaryItem = (dictId) => {
+  return axios.request({
+    url: service + `Item/list`,
+    params: {
+      pageSize: 1000,
+      pageNum: 1,
+      dictId
+    }
+  })
+}
+
+/**
+ * 新增或者修改数据字典项目
+ * @param {*} data 
+ */
+export const saveDitionaryItem = (data) => {
+  return axios.request({
+    url: service + `Item/saveOrUpdate`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 修改数据字典项目上移下移
+ * @param {*} data 
+ */
+export const sortDitionaryItem = (data) => {
+  return axios.request({
+    url: service + `Item/sortItem`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 删除数据字典项目
+ * @param {*} id 
+ */
+export const deleteDitionaryItem = (id) => {
+  return axios.request({
+    url: service + `Item/delete/${id}`,
+    method: 'post',
+  })
+}
