@@ -124,12 +124,12 @@ export const saveDitionaryItem = (data) => {
 }
 
 /**
- * 修改数据字典项目上移下移
+ * 数据字典项目上移下移
  * @param {*} data 
  */
-export const sortDitionaryItem = (data) => {
+export const sortDitionaryItem = (flag, data) => {
   return axios.request({
-    url: service + `Item/sortItem`,
+    url: service + `Item/sortItem/${flag}`,
     method: 'post',
     data
   })

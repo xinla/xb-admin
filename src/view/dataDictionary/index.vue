@@ -119,45 +119,47 @@
     </Modal>
 
     <Modal v-model="itemShow" :title="'编辑字典:' + editDictionary.relationTable">
-      <div style="height: 60vh; overflow: auto;">
-        <table class="ac">
-          <tr>
-            <th>
-              <!-- <Checkbox v-model="isAll" @on-change="choiceAll"></Checkbox> -->
-            </th>
-            <th>数据代码</th>
-            <th>标签名称</th>
-            <th>备注</th>
-          </tr>
-          <tr>
-            <td>
-              <!-- <Checkbox v-model="item.choice" @on-change="choice"></Checkbox> -->
-            </td>
-            <td>
-              <Input v-model="formItem.dataCode" placeholder="请输入数据代码" />
-            </td>
-            <td>
-              <Input v-model="formItem.dataName" placeholder="请输入标签名称" />
-            </td>
-            <td>
-              <Input v-model="formItem.remark" placeholder="请输入字段描述" />
-            </td>
-            <td>
-              <Button @click="save('item', formItem)">添加</Button>
-            </td>
-          </tr>
+      <table class="ac">
+        <!-- <tr>
+          <th>
+              <Checkbox v-model="isAll" @on-change="choiceAll"></Checkbox>
+          </th>
+          <th>数据代码</th>
+          <th>标签名称</th>
+          <th>备注</th>
+        </tr> -->
+        <tr>
+          <!-- <td>
+              <Checkbox v-model="item.choice" @on-change="choice"></Checkbox>
+          </td>-->
+          <td>
+            <Input v-model="formItem.dataCode" placeholder="请输入数据代码" />
+          </td>
+          <td>
+            <Input v-model="formItem.dataName" placeholder="请输入标签名称" />
+          </td>
+          <td>
+            <Input v-model="formItem.remark" placeholder="请输入字段描述" />
+          </td>
+          <td style="width: 25%;">
+            <Button @click="save('item', formItem)">添加</Button>
+          </td>
+        </tr>
+      </table>
+      <!-- <div style="height: 50vh; overflow: auto;"> -->
+      <!-- <table class="ac">
           <tr v-for="(item, index) of itemList" :key="index" class="dict-item">
             <td>
-              <!-- <Checkbox v-model="item.choice" @on-change="choice"></Checkbox> -->
+              <Checkbox v-model="item.choice" @on-change="choice"></Checkbox>
             </td>
             <td>
-              <Input v-model="item.dataCode" :disabled="!item.isEdit" placeholder="请输入数据代码" />
+              <Input v-model="item.dataCode" :disabled="!item.isEdit" />
             </td>
             <td>
-              <Input v-model="item.dataName" :disabled="!item.isEdit" placeholder="请输入标签名称" />
+              <Input v-model="item.dataName" :disabled="!item.isEdit" />
             </td>
             <td>
-              <Input v-model="item.remark" :disabled="!item.isEdit" placeholder="请输入字段描述" />
+              <Input v-model="item.remark" :disabled="!item.isEdit" />
             </td>
             <td style="width: 25%;">
               <div class="button-wrap">
@@ -177,8 +179,37 @@
               </div>
             </td>
           </tr>
-        </table>
-      </div>
+      </table>-->
+
+      <!-- </div> -->
+        <!-- :show-header="false" -->
+      <Table
+        height="500"
+        :columns="columnItem"
+        :data="itemList"
+        :draggable="true"
+        @on-drag-drop="onDragDrop"
+      >
+        <template slot-scope="{ row }" slot="dataCode">
+          <Input v-model="row.dataCode" :disabled="!row.isEdit" />
+        </template>
+        <template slot-scope="{ row }" slot="dataName">
+          <Input v-model="row.dataName" :disabled="!row.isEdit" />
+        </template>
+        <template slot-scope="{ row }" slot="remark">
+          <Input v-model="row.remark" :disabled="!row.isEdit" />
+        </template>
+
+        <template slot-scope="{ row }" slot="action">
+          <Button style="color: #2d8cf0; font-size: 18px;" size="small" type="text">
+            <Icon type="ios-create" v-if="!row.isEdit" @click="$set(row, 'isEdit', true)" />
+            <Icon type="md-done-all" v-else @click="save('item', row)" />
+          </Button>
+          <Button style="color: #ed4014; font-size: 18px;" size="small" type="text" @click="remove('item', row.id)">
+            <Icon type="ios-trash" />
+          </Button>
+        </template>
+      </Table>
     </Modal>
   </div>
 </template>
@@ -282,7 +313,30 @@ export default {
       formItem: {},
       rules: {},
       itemShow: false,
-      itemList: []
+      itemList: [],
+      columnItem: [
+        {
+          title: '数据代码',
+          slot: "dataCode",
+          align: "center"
+        },
+        {
+          title: '标签名称',
+          slot: "dataName",
+          align: "center"
+        },
+        {
+          title: '备注',
+          slot: "remark",
+          align: "center"
+        },
+        {
+          title: '操作',
+          slot: "action",
+          align: "center",
+          width: 200
+        }
+      ]
     };
   },
   computed: {},
@@ -566,32 +620,48 @@ export default {
       this.form.supplierName = val.name;
       // console.log(val)
     },
-    sort(data, index) {
-      if (data.isEdit) {
-        this.$Message.warning("该项正在编辑，请保存后再进行移动");
-        return;
-      }
-      if (index < 0) {
-        this.$Message.warning("已经移在当前列最顶部");
-        return;
-      }
-      if (index === this.itemList.length) {
-        this.$Message.warning("已经移在当前列最底部");
-        return;
-      }
-      let sort = data.sort;
-      data.sort = this.itemList[index].sort;
-      this.itemList[index].sort = sort;
-      Agency.sortDitionaryItem([data, this.itemList[index]]).then(res => {
+    // sort(data, index) {
+    //   if (data.isEdit) {
+    //     this.$Message.warning("该项正在编辑，请保存后再进行移动");
+    //     return;
+    //   }
+    //   if (index < 0) {
+    //     this.$Message.warning("已经移在当前列最顶部");
+    //     return;
+    //   }
+    //   if (index === this.itemList.length) {
+    //     this.$Message.warning("已经移在当前列最底部");
+    //     return;
+    //   }
+    //   let sort = data.sort;
+    //   data.sort = this.itemList[index].sort;
+    //   this.itemList[index].sort = sort;
+    //   Agency.sortDitionaryItem([data, this.itemList[index]]).then(res => {
+    //     this.getDictItemList();
+    //   });
+    // },
+    onDragDrop(index1, index2) {
+      // console.log(index1, index2)
+      let flag = index1 - index2 < 0 ? 1 : 0
+      let move = this.itemList[index1]
+      move.tag = '0'
+      let terget = this.itemList[index2]
+      terget.tag = '1'
+      
+      let sort = move.sort;
+      move.sort = terget.sort;
+      terget.sort = sort;
+
+      Agency.sortDitionaryItem(flag, [move, terget]).then(res => {
         this.getDictItemList();
-      });
+      })
     }
   }
 };
 </script>
 <style lang="less" scoped>
 table {
-  margin-top: 20px;
+  margin-bottom: 10px;
   width: 100% !important;
   transition: all 0.3s;
   tr {
@@ -620,10 +690,11 @@ table {
   margin-right: 10px;
 }
 /deep/.ivu-input[disabled] {
-  background: #fff;
+  background: none;
   color: #444;
   border: none;
   transition: all 0.3s;
+  cursor: auto;
 }
 /deep/.ivu-input {
   height: 30px;
@@ -632,8 +703,14 @@ table {
   min-width: 600px;
   width: 60% !important;
 }
+/deep/.ivu-btn-text{
+  &:hover{
+    background: none;
+  }
+}
 .dict-item {
   &:hover {
+    background: #f8f8f9;
     .button-wrap {
       display: block;
     }

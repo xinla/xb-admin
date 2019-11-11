@@ -1,4 +1,6 @@
 const path = require('path')
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const productionGzipExtensions = ['js', 'css']
 
 const resolve = dir => {
   return path.join(__dirname, dir)
@@ -41,5 +43,17 @@ module.exports = {
     // proxy: 'localhost:3000',
     // host: '192.168.1.58',
     port: 8081,
+  },
+  configureWebpack: {
+    plugins: [
+      new CompressionWebpackPlugin({
+        filename: '[path].gz[query]',
+        algorithm: 'gzip',
+        test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
+        threshold: 10240,
+        deleteOriginalAssets: false,
+        minRatio: 0.8
+      })
+    ]
   }
 }
