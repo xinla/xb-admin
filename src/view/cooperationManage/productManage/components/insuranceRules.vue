@@ -9,9 +9,7 @@
     margin-right: 30px;
   }
   .button {
-    padding: 5px 20px;
     margin-right: 10px;
-    border: 1px solid #ddd;
     line-height: 1;
   }
 }
@@ -19,13 +17,13 @@
   display: block;
   padding: 15px 0;
   color: #fff;
-  margin: 10px 30px 0 0;
+  margin: 0 30px 10px 0;
   cursor: pointer;
   background: #fff;
   color: #444;
 }
 .current {
-  background: #313ac3;
+  background: #2d8cf0;
   color: #fff;
 }
 .ivu-select {
@@ -80,7 +78,7 @@
 }
 </style>
 <template>
-  <div style="height: calc(100% - 62px);">
+  <div>
     <Row style="height: 100%;">
       <Col span="4">
         <div class="anchor-wrap ac">
@@ -123,8 +121,8 @@
               <span class="title">投保人规则</span>
               <Checkbox v-model="applicationForm.confine" :true-value="0" :false-value="1">无限制</Checkbox>
               <div class="button-wrap fr">
-                <button class="button" type="button" @click="submit('applicationForm')">保存</button>
-                <button class="button" type="button" @click="clear('applicationForm')">清空</button>
+                <Button class="button" @click="submit('applicationForm')">保存</Button>
+                <Button class="button" @click="clear('applicationForm')">清空</Button>
               </div>
             </div>
 
@@ -299,8 +297,8 @@
               <span class="title">被保人规则</span>
               <Checkbox v-model="insuranceForm.confine" :true-value="0" :false-value="1">无限制</Checkbox>
               <div class="button-wrap fr">
-                <button class="button" type="button" @click="submit('insuranceForm')">保存</button>
-                <button class="button" type="button" @click="clear('insuranceForm')">清空</button>
+                <Button class="button" @click="submit('insuranceForm')">保存</Button>
+                <Button class="button" @click="clear('insuranceForm')">清空</Button>
               </div>
             </div>
 
@@ -471,8 +469,8 @@
           <div ref="coverage" class="title-wrap bfc-o">
             <span class="title">保额规则</span>
             <div class="button-wrap fr">
-              <button class="button" type="button" @click="submit('coverageForm')">保存</button>
-              <button class="button" type="button" @click="clear('coverageForm')">清空</button>
+              <Button class="button" @click="submit('coverageForm')">保存</Button>
+              <Button class="button" @click="clear('coverageForm')">清空</Button>
             </div>
           </div>
 
@@ -712,24 +710,22 @@
           <div ref="period" class="title-wrap bfc-o">
             <span class="title">保险期间规则</span>
 
-            <button
+            <Button
               :class="['button', {current: periodType === 0}]"
-              type="button"
               @click="periodType = 0"
-            >按年</button>
-            <button
+            >按年</Button>
+            <Button
               :class="['button', {current: periodType === 1}]"
-              type="button"
               @click="periodType = 1"
-            >按天</button>
+            >按天</Button>
 
             <div class="button-wrap fr" v-show="periodType === 0">
-              <button class="button" type="button" @click="submit('periodFormYear')">保存</button>
-              <button class="button" type="button" @click="clear('periodFormYear')">清空</button>
+              <Button class="button" @click="submit('periodFormYear')">保存</Button>
+              <Button class="button" @click="clear('periodFormYear')">清空</Button>
             </div>
             <div class="button-wrap fr" v-show="periodType === 1">
-              <button class="button" type="button" @click="submit('periodFormDay')">保存</button>
-              <button class="button" type="button" @click="clear('periodFormDay')">清空</button>
+              <Button class="button" @click="submit('periodFormDay')">保存</Button>
+              <Button class="button" @click="clear('periodFormDay')">清空</Button>
             </div>
           </div>
 
@@ -829,18 +825,18 @@
           <div ref="payment" class="title-wrap bfc-o">
             <span class="title">交费规则</span>
             <div class="button-wrap fr">
-              <button class="button" type="button" @click="submit('paymentForm')">保存</button>
-              <button class="button" type="button" @click="clear('paymentForm')">清空</button>
+              <Button class="button" @click="submit('paymentForm')">保存</Button>
+              <Button class="button" @click="clear('paymentForm')">清空</Button>
             </div>
           </div>
 
           <Form ref="paymentForm" :model="paymentForm" :label-width="100">
             <FormItem label="交费方式" prop="payType">
               <CheckboxGroup v-model="paymentForm.payType">
-                <Checkbox :label="0">年</Checkbox>
-                <Checkbox :label="1">半年</Checkbox>
-                <Checkbox :label="2">季</Checkbox>
-                <Checkbox :label="3">月</Checkbox>
+                <Checkbox label="0">年</Checkbox>
+                <Checkbox label="1">半年</Checkbox>
+                <Checkbox label="2">季</Checkbox>
+                <Checkbox label="3">月</Checkbox>
               </CheckboxGroup>
             </FormItem>
 
@@ -1010,8 +1006,8 @@
           <div ref="receive" class="title-wrap bfc-o">
             <span class="title">领取规则</span>
             <div class="button-wrap fr">
-              <button class="button" type="button" @click="submit('receiveForm')">保存</button>
-              <button class="button" type="button" @click="clear('receiveForm')">清空</button>
+              <Button class="button" @click="submit('receiveForm')">保存</Button>
+              <Button class="button" @click="clear('receiveForm')">清空</Button>
             </div>
           </div>
 
@@ -1085,8 +1081,8 @@
 
             <FormItem label="领取方式">
               <CheckboxGroup v-model="receiveForm.receiveType">
-                <Checkbox :label="0">年领</Checkbox>
-                <Checkbox :label="1">月领</Checkbox>
+                <Checkbox label="0">年领</Checkbox>
+                <Checkbox label="1">月领</Checkbox>
               </CheckboxGroup>
             </FormItem>
           </Form>

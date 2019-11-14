@@ -1,6 +1,11 @@
 <style lang="less" scoped>
 .box {
   border-bottom: 20px solid #f5f7f9;
+}
+.white {
+  background: #fff;
+  border-radius: 6px;
+}
   .title-wrap {
     padding: 15px 20px;
     background: #e0effd;
@@ -11,9 +16,7 @@
       margin-right: 30px;
     }
     .button {
-      padding: 5px 20px;
       margin-right: 10px;
-      border: 1px solid #ddd;
       line-height: 1;
     }
   }
@@ -37,15 +40,14 @@
     background: rgba(49, 58, 195, 1);
     color: #fff;
   }
-}
 </style>
 <template>
-  <div style="background: #fff; margin-top: 20px;">
-    <div class="box">
+  <div>
+    <div class="box white">
       <div ref="applicant" class="title-wrap bfc-o">
         <span id="a1" class="title">基础规则</span>
         <div class="button-wrap fr">
-          <button class="button" type="button" @click="submit('form')">保存</button>
+          <Button class="button" @click="submit('form')">保存</Button>
         </div>
       </div>
 
@@ -81,7 +83,7 @@
 
     <Row>
       <Col span="8" style="border-right: 20px solid #f5f7f9;">
-        <div class="box">
+        <div class="white">
           <div ref="applicant" class="title-wrap bfc-o">
             <span id="a1" class="title">保费计算器项目</span>
           </div>
@@ -101,7 +103,7 @@
       </Col>
 
       <Col span="16">
-        <div class="box">
+        <div class="white">
           <div ref="applicant" class="title-wrap bfc-o">
             <Checkbox
               v-model="currentConfigInfo.checked"
@@ -111,9 +113,9 @@
               <!-- @on-change="change" -->
             <span id="a1" class="title">{{currentConfigInfo.calItemName}}</span>
             <div class="button-wrap fr">
-              <button class="button" type="button" @click="add()">添加选项</button>
-              <button class="button" type="button" @click="remove()">删除选项</button>
-              <button class="button" type="button" @click="submit('currentConfigInfo')">保存</button>
+              <Button class="button" @click="add()">添加选项</Button>
+              <Button class="button" @click="remove()">删除选项</Button>
+              <Button class="button" @click="submit('currentConfigInfo')">保存</Button>
             </div>
           </div>
 
@@ -139,7 +141,7 @@
                 <Col span="10" style="min-height: 1px;">
                   <!-- 领取年龄 -->
                   <template v-if="currentConfigInfo.calItemTag === 9">
-                    <Select v-model="item.unit" style="width: 80px;">
+                    <Select v-model="item.optionOther" style="width: 80px;">
                       <Option :value="0">不限性别</Option>
                       <Option :value="1">男性</Option>
                       <Option :value="2">女性</Option>
@@ -147,7 +149,15 @@
                   </template>
 
                   <!-- 交费方式 -->
-                  <template v-if="currentConfigInfo.calItemTag === 15">{{['年交', '半年交', '季交', '月交'][item.optionOther]}}</template>
+                  <template v-if="currentConfigInfo.calItemTag === 15">
+                    {{['年交', '半年交', '季交', '月交'][item.option]}}
+                    <Input
+                      type="text"
+                      style="width: 100px; margin: 0 10px;"
+                      v-model="item.optionOther"
+                      placeholder="请输入"
+                    />
+                    </template>
                   <!-- 出生日期 -->
                   <template v-if="currentConfigInfo.calItemTag === 2">
                     <DatePicker
@@ -190,9 +200,13 @@
                   <!-- 职业类别 -->
                   <template v-if="currentConfigInfo.calItemTag === 8">类</template>
                   <!-- 领取期间 -->
-                  <template v-if="currentConfigInfo.calItemTag === 8">年</template>
+                  <template v-if="currentConfigInfo.calItemTag === 13">年</template>
                   <!-- 投保档次 -->
                   <template v-if="currentConfigInfo.calItemTag === 3">档</template>
+                  <!-- 保险期间/交费期间 -->
+                  <template v-if="currentConfigInfo.calItemTag === 5 || currentConfigInfo.calItemTag === 7">
+                    {{item.option.includes("@") ? '岁' : '年'}}
+                  </template>
                 </Col>
                 <Col span="9">
                   <i-switch
@@ -335,6 +349,7 @@ export default {
     // 配置项切换
     switchTo(data) {
       this.current = data.id;
+      this.selected = []
       Agency.getCalculatorItemInfo(this.$route.query.id, data.id).then(res => {
         console.log("currentConfigInfo: ", res);
         if (res) {
@@ -352,7 +367,7 @@ export default {
                 if (iterator.type === 0) {
                   let temp5 = iterator.ruleIntevalDtoList ? iterator.ruleIntevalDtoList : []
                   for (const iterator of temp5) {
-                    configItems.push({option: iterator.ruleIntervalName})
+                    configItems.push({option: iterator.ruleIntervalValue})
                   }
                 }
               }
@@ -361,7 +376,7 @@ export default {
             case 7:
               let temp7 = this.insuranceRules.payRule ?this.insuranceRules.payRule.ruleIntevalDtoList : []
               for (const iterator of temp7) {
-                configItems.push({option: iterator.ruleIntervalName})
+                configItems.push({option: iterator.ruleIntervalValue})
               }
               break;
               // 13  领取期间
@@ -379,7 +394,7 @@ export default {
             case 9:
               let temp9 = this.insuranceRules.receiveForm ? SON.parse(this.insuranceRules.receiveForm.receiveAgeContent) : []
               for (const iterator of temp9) {
-                configItems.push({option: iterator.age, unit: iterator.sex})
+                configItems.push({option: iterator.age, optionOther: iterator.sex})
               }
               break;
               // 4 性别
@@ -399,10 +414,10 @@ export default {
               // 15  交费方式
             case 15:
               configItems = [
-                {optionOther: 0},
-                {optionOther: 1},
-                {optionOther: 2},
-                {optionOther: 3},
+                {option: 0},
+                {option: 1},
+                {option: 2},
+                {option: 3},
               ]
               break;
           }
@@ -479,7 +494,7 @@ export default {
     },
     show(data) {
       // return data === 0 || data === 1 || data === 6 || data === 5 || data === 8 || data === 10  || data === 7 || data === 13 || data === 14 || data === 9 || data === 3 || data === 15
-      return data !== 2 && data !== 4 && data !== 11;
+      return data !== 2 && data !== 4 && data !== 11 && data !== 15;
     }
   }
 };

@@ -1,15 +1,14 @@
 <template>
   <div>
-    <Row>
-      <div class="title-row">供应商类型</div>
-      <Col span="16">
+      <div class="title-row">供应商类型
         <Button
           type="primary"
           size="small"
-          style="display:block; margin:0 5px 5px auto;"
+          class="fr"
           @click="edit(0)"
         >新建</Button>
-        <Table border :columns="supplierColumns" :data="supplierList">
+      </div>
+        <Table max-height="400" :columns="supplierColumns" :data="supplierList">
           <template slot-scope="{ row }" slot="action">
             <Button type="primary" size="small" style="margin-right: 5px" @click="edit(0, row)">编辑</Button>
             <Button
@@ -20,9 +19,6 @@
             >删除</Button>
           </template>
         </Table>
-      </Col>
-      <Col span="12"></Col>
-    </Row>
     <dialogBox v-model="supplierShow">
       <template slot="title">添加类型</template>
       <template>
@@ -42,16 +38,16 @@
 
     <Divider/>
 
-    <Row>
-      <div class="title-row">产品类型</div>
-      <Col span="16">
+      <div class="title-row">产品类型
         <Button
           type="primary"
           size="small"
-          style="display:block; margin:0 5px 5px auto;"
+          class="fr"
           @click="edit(1)"
         >新建</Button>
-        <Table border :columns="productColumns" :data="productList">
+      </div>
+        
+        <Table max-height="400" :columns="productColumns" :data="productList">
           <template slot-scope="{ row }" slot="pid">{{producParentList[row.pid] || row.name}}</template>
 
           <template slot-scope="{ row }" slot="action">
@@ -64,6 +60,8 @@
             >删除</Button>
           </template>
         </Table>
+        <Row>
+      <Col span="16">
       </Col>
       <Col span="12">
         <!-- <div v-show="productShow">

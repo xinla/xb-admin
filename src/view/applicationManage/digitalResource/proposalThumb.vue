@@ -7,7 +7,7 @@
       </Col>
     </Row>
 
-    <Table border :loading="loading" :columns="columns" :data="list">
+    <Table :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="cover">
         <img :src="row.cover" class="logo">
       </template>

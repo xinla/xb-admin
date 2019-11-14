@@ -1,10 +1,10 @@
 <template>
   <div>
     <Row style="padding-bottom: 10px;">
-      <Col span="16">
+      <Col span="8">
         <Button type="info" @click="edit()">新建</Button>
       </Col>
-      <Col span="8">
+      <Col span="16" class="ar">
         所在省市
         <Cascader
           :data="districtsList"
@@ -18,7 +18,7 @@
       </Col>
     </Row>
 
-    <Table border :loading="loading" :columns="columns" :data="list">
+    <Table :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="name">
         <div
           class="a"

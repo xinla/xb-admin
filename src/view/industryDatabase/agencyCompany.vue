@@ -1,10 +1,10 @@
 <template>
   <div>
     <Row style="padding-bottom: 10px;">
-      <Col span="16">
+      <Col span="8">
         <Button type="info" @click="edit()">新建</Button>
       </Col>
-      <Col span="8">
+      <Col span="16" class="ar">
         所在省市
         <Cascader
           :data="districtsList"

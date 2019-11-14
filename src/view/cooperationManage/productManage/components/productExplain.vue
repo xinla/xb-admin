@@ -14,9 +14,7 @@
     margin-right: 30px;
   }
   .button {
-    padding: 5px 20px;
     margin-right: 10px;
-    border: 1px solid #ddd;
     line-height: 1;
   }
 }
@@ -24,13 +22,13 @@
   display: block;
   padding: 15px 0;
   color: #fff;
-  margin: 10px 30px 0 0;
+  margin: 0 30px 10px 0;
   cursor: pointer;
   background: #fff;
   color: #444;
 }
 .current {
-  background: #313ac3;
+  background: #2d8cf0;
   color: #fff;
 }
 .box {
@@ -82,7 +80,7 @@
 </style>
 
 <template>
-  <div style="height: calc(100% - 62px);">
+  <div>
     <Row style="height: 100%;">
       <Col span="4">
         <div class="anchor-wrap ac">
@@ -118,8 +116,8 @@
             <div ref="nav" class="title-wrap bfc-o">
               <span class="title">产品导航</span>
               <div class="button-wrap fr">
-                <button class="button" type="button" @click="submit()">保存</button>
-                <button class="button" type="button" @click="clear()">清空</button>
+                <Button class="button" @click="submit()">保存</Button>
+                <Button class="button" @click="clear()">清空</Button>
               </div>
             </div>
 
@@ -353,7 +351,6 @@
 
               <Tabs>
                 <TabPane label="保险责任">
-                  <div style="border-top: 1px solid #999;padding-top: 10px; margin-top: -1px;">
                     <Row v-for="(item, index) of form.insuranceLiability" :Key="index">
                       <Col span="11">
                         <div>责任类型</div>
@@ -407,7 +404,6 @@
                       type="primary"
                       @click="addItem('insuranceLiability')"
                     >+ 添加</Button>
-                  </div>
                 </TabPane>
                 <TabPane label="免除责任">
                   <Input type="textarea" v-model="form.exemptLiability" style="width: 60%;" />

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="margin-bottom: 15px;">
-      <Button type="primary" @click="isModal = true, form = {}">新建版本</Button>
+      <Button type="info" @click="isModal = true, form = {}">新建版本</Button>
       <Select
         v-model="query.type"
         class="right fr"
@@ -14,7 +14,7 @@
       </Select>
     </div>
 
-    <Table border :loading="loading" :columns="columns" :data="list">
+    <Table :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="content">
         <div v-html="row.content" class="oe"></div>
       </template>
@@ -154,7 +154,7 @@ export default {
         this.loading = false;
         console.log("VersionPage: ", data);
         this.list = data.list;
-        this.total = data.total;
+        this.total = ~~data.total;
         this.isModal = false;
       });
     },

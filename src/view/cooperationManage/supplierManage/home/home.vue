@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bw br" style="padding: 20px;">
     <!-- <div class="title">品牌列表</div> -->
 
     <Row style="padding-bottom: 10px;">
@@ -172,7 +172,7 @@ export default {
         {
           title: "操作",
           slot: "action",
-          minWidth: 60,
+          width: 180,
           align: "center"
         }
       ],

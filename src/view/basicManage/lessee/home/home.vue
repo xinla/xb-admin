@@ -131,7 +131,7 @@ export default {
           key: "name",
           slot: "name",
           align: "center",
-          minWidth: 160
+          minWidth: 140
         },
         {
           title: "租户类型",
@@ -190,7 +190,7 @@ export default {
         {
           title: "操作",
           slot: "action",
-          minWidth: 80,
+          width: 220,
           align: "center"
         }
       ],
@@ -209,7 +209,7 @@ export default {
         // console.log(data);
         this.loading = false;
         this.list = data.list;
-        this.total = data.total;
+        this.total = ~~data.total;
       });
     },
     search() {

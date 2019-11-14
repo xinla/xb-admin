@@ -4,7 +4,7 @@
       <Col span="12">
         <Input
           v-model.trim="query.keyword"
-          placeholder="输入键和值的关键字并按回车键进行搜索"
+          placeholder="输入字典名称关键字并按回车键进行搜索"
           style="width:73%; margin-right: 10px;"
           @on-enter="getData(1)"
         />
@@ -19,7 +19,7 @@
       </Col>
     </Row>
 
-    <Table :loading="loading" :columns="column" :data="list" style="margin-top: 15px;">
+    <Table max-height="600" :loading="loading" :columns="column" :data="list" style="margin-top: 15px;">
       <template slot-scope="{ row }" slot="action">
         <Button type="primary" size="small" @click="showDialog('from', row)">编辑</Button>
         <Button type="error" size="small" @click="remove('dict', row)">删除</Button>
@@ -102,7 +102,7 @@
             </FormItem>
 
             <FormItem label="关连租户">
-              <selectSupplier :val="form.companyName" type="agency" @change="changeCompany" />
+              <selectSupplier :val="form.companyName" type="lessee" @change="changeCompany" :key="form.relationCompanyId"/>
             </FormItem>
           </Col>
           <Col span="8">
@@ -111,7 +111,7 @@
             </FormItem>
 
             <FormItem label="关连供应商品牌">
-              <selectSupplier :val="form.supplierName" type="brand" @change="changeSupplier" />
+              <selectSupplier :val="form.supplierName" type="brand" @change="changeSupplier" :key="form.relationSupplierId" />
             </FormItem>
           </Col>
         </Row>

@@ -1,46 +1,107 @@
 <template>
-<div ref="container" class="container">
+  <div ref="container" class="container">
+    <div class="button-wrap ac">
+      <Button
+        class="button"
+        size="large"
+        :type="current === 0 && 'primary'"
+        @click="current = 0"
+      >基本信息</Button>
+      <Button
+        class="button"
+        size="large"
+        :type="current === 1 && 'primary'"
+        @click="switchTo(1)"
+      >投保规则</Button>
+      <Button
+        class="button"
+        size="large"
+        :type="current === 2 && 'primary'"
+        @click="switchTo(2)"
+      >保费计算器</Button>
+      <Button
+        class="button"
+        size="large"
+        :type="current === 3 && 'primary'"
+        @click="switchTo(3)"
+      >费率表</Button>
+      <Button
+        class="button"
+        size="large"
+        :type="current === 4 && 'primary'"
+        @click="switchTo(4)"
+      >产品说明</Button>
+      <Button
+        class="button"
+        size="large"
+        :type="current === 5 && 'primary'"
+        @click="switchTo(5)"
+      >附加和捆绑</Button>
+    </div>
 
-  <div class="button-wrap">
-    <button :class="['button', {current: current === 0}]" type="button" @click="current = 0">基本信息</button>
-    <button :class="['button', {current: current === 1}]" type="button" @click="switchTo(1)">投保规则</button>
-    <button :class="['button', {current: current === 2}]" type="button" @click="switchTo(2)">保费计算器</button>
-    <button :class="['button', {current: current === 3}]" type="button" @click="switchTo(3)">费率表</button>
-    <button :class="['button', {current: current === 4}]" type="button" @click="switchTo(4)">产品说明</button>
-    <button :class="['button', {current: current === 5}]" type="button" @click="switchTo(5)">附加和捆绑</button>
+    <baseInfo
+      class="item bw br"
+      style="padding: 20px 0 1px 0;"
+      ref="baseInfo"
+      v-show="current === 0"
+      :key="key + 1"
+    />
+    <insuranceRules
+      class="item"
+      ref="insuranceRules"
+      v-show="current === 1"
+      :key="key + 2"
+    />
+    <premiumCalculator
+      class="item"
+      ref="premiumCalculator"
+      v-if="current === 2"
+      :key="key + 3"
+    />
+    <rateSheet
+      class="item bw br"
+      style="padding-bottom: 18px; height: auto; max-height: 100%;"
+      ref="rateSheet"
+      v-if="current === 3"
+      :key="key + 4"
+    />
+    <productExplain
+      class="item"
+      ref="productExplain"
+      v-if="current === 4"
+      :key="key + 5"
+    />
+    <additionRisk
+      class="item"
+      ref="additionRisk"
+      v-if="current === 5"
+      :key="key + 6"
+    />
   </div>
-
-  <baseInfo ref="baseInfo" v-show="current === 0" :key="key + 1" />
-  <insuranceRules ref="insuranceRules" v-show="current === 1" :key="key + 2" />
-  <premiumCalculator ref="premiumCalculator" v-if="current === 2" :key="key + 3" />
-  <rateSheet ref="rateSheet" v-if="current === 3" :key="key + 4" />
-  <productExplain ref="productExplain" v-if="current === 4" :key="key + 5" />
-  <additionRisk ref="additionRisk" v-if="current === 5" :key="key + 6" />
-</div>
 </template>
 
 <script>
-import baseInfo from '../components/baseInfo'
+import baseInfo from "../components/baseInfo";
 
 export default {
-  components:{
+  components: {
     baseInfo,
-    insuranceRules: () => import('../components/insuranceRules'),
-    rateSheet: () => import('../components/rateSheet'),
-    productExplain: () => import('../components/productExplain'),
-    additionRisk: () => import('../components/additionRisk'),
+    insuranceRules: () => import("../components/insuranceRules"),
+    rateSheet: () => import("../components/rateSheet"),
+    productExplain: () => import("../components/productExplain"),
+    additionRisk: () => import("../components/additionRisk"),
 
-    premiumCalculator: () => import('../components/premiumCalculator'),
+    premiumCalculator: () => import("../components/premiumCalculator")
   },
   data() {
     return {
-      current: 0,
+      current: 0
       // firstArray: []
-    }
+    };
   },
   computed: {
     key() {
-      return Math.floor(Math.random()*100)
+      return Math.floor(Math.random() * 100);
     }
   },
   // mounted() {
@@ -50,15 +111,15 @@ export default {
     switchTo(current) {
       if (!this.$route.query.id) {
         this.$Message.error("产品基本属性未设定，无法保存！");
-        return
+        return;
       }
-      this.current = current
-    },
+      this.current = current;
+    }
     // submit(current) {
     //   Promise.resolve()
     //   .then(data => {
     //     switch (current) {
-    //       case 0: 
+    //       case 0:
     //       return this.$refs.baseInfo.submit()
     //       .then(data => {
     //         // console.log('bs data', data)
@@ -73,7 +134,7 @@ export default {
     //         // console.log('current', this.current)
     //       })
     //       break
-    //       case 1: 
+    //       case 1:
     //       return this.$refs.insuranceRules.submit()
     //       .then(data => {
     //         this.current++
@@ -83,7 +144,7 @@ export default {
     //         }
     //       })
     //       break
-    //       case 2: 
+    //       case 2:
     //       return this.$refs.rateCalculation.submit()
     //       .then(data => {
     //         this.current++
@@ -93,7 +154,7 @@ export default {
     //         }
     //       })
     //       break
-    //       case 3: 
+    //       case 3:
     //       return this.$refs.productExplain.submit()
     //       .then(data => {
     //         this.current++
@@ -103,7 +164,7 @@ export default {
     //         }
     //       })
     //       break
-    //       case 4: 
+    //       case 4:
     //       return this.$refs.additionRisk.submit()
     //       .then(data => {
     //         this.current++
@@ -113,7 +174,7 @@ export default {
     //         }
     //       })
     //       break
-    //       case 5: 
+    //       case 5:
     //       return this.$refs.productAccessory.submit()
     //       .then(data => {
     //         this.$router.push({name: 'productManage'})
@@ -131,11 +192,11 @@ export default {
     //   })
     // }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
- @import url('./index.less');
+@import url("./index.less");
 </style>
 
 

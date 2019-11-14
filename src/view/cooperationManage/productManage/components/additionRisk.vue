@@ -9,9 +9,7 @@
     margin-right: 30px;
   }
   .button {
-    padding: 5px 20px;
     margin-right: 10px;
-    border: 1px solid #ddd;
     line-height: 1;
   }
 }
@@ -38,7 +36,7 @@
 }
 .anchor-wrap {
   background: #fff;
-  margin: 10px 10px 0 0;
+  margin-right: 10px;
   padding: 10px;
   line-height: 30px;
   li {
@@ -52,8 +50,8 @@
 }
 </style>
 <template>
-  <div style="height: calc(100% - 62px);">
-    <Row style="height: 100%;">
+  <div>
+    <Row>
       <Col span="4">
         <ul class="anchor-wrap">
           <li
@@ -71,15 +69,15 @@
       <Col
         ref="scroll"
         span="20"
-        style="background: #fff; position: absolute; right: 0; height: 100%; overflow: auto; transition: all 1s;"
+        style="background: #fff; position: absolute; right: 0; overflow: auto; transition: all 1s;"
       >
         <!-- 产品导航 -->
         <div class="box" v-if="form.additionRiskId">
           <div ref="nav" class="title-wrap bfc-o">
             <span class="title">{{form.additionRiskName}}</span>
             <div class="button-wrap fr">
-              <button class="button" type="button" @click="submit(form)">保存</button>
-              <button class="button" type="button" @click="clear(form)">清空</button>
+              <Button class="button" @click="submit(form)">保存</Button>
+              <Button class="button" @click="clear(form)">清空</Button>
             </div>
           </div>
 

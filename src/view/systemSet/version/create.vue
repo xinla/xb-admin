@@ -56,8 +56,10 @@
           <!-- <Input type="textarea" v-model="form.content" placeholder="内容"></Input> -->
           <editor ref="editor" :value="form.content" @on-change="editorChange" />
         </FormItem>
-        <Button class="submit" type="primary" @click="cancel">取消</Button>
-        <Button class="submit" type="primary" @click="handleSubmit">确定</Button>
+        <div class="ac">
+        <Button type="primary" @click="cancel">取消</Button>
+        <Button style="margin-left: 100px;" type="primary" @click="handleSubmit">确定</Button>
+        </div>
       </Col>
     </Row>
   </Form>
@@ -235,9 +237,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.submit {
-  margin-left: 100px;
-}
 /deep/.ivu-select-dropdown {
   z-index: 99999;
 }

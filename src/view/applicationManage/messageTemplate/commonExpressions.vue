@@ -42,7 +42,6 @@
           <Button type="primary" @click="addJoin('role')">添加</Button>
         </Col>
     </Row>
-    <Divider />
   </div>
 </template>
 

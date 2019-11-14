@@ -1,12 +1,10 @@
 <template>
   <div>
     <Button
-      type="primary"
-      size="small"
-      style="display:block; margin:0 5px 5px auto;"
+      type="info"
       @click="$router.push({name: 'createHelp'})"
     >新建</Button>
-    <Table border :loading="loading" :columns="columns" :data="list">
+    <Table :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="content">
         <div v-html="row.content"></div>
       </template>
@@ -120,7 +118,7 @@ export default {
         this.loading = false;
         // console.log(data)
         this.list = data.list;
-        this.total = data.total;
+        this.total = ~~data.total;
       });
     },
     deleteHelp(id, index) {

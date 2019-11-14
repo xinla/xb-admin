@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { getLesseePageByJB, crawlCompanyList, saveCrawlCompany } from "@/api/lessee";
+import { getLesseePage, getLesseePageByJB, crawlCompanyList, saveCrawlCompany } from "@/api/lessee";
 import { getSupplierPage } from "@/api/supplier";
 
 export default {
@@ -75,6 +75,8 @@ export default {
             return getLesseePageByJB(this.query);
           } else if (this.type === "brand") {
             return getSupplierPage(this.query);
+          } else if (this.type === "lessee") {
+            return getLesseePage(this.query);
           }
         })
         .then(({ list }) => {
@@ -100,6 +102,8 @@ export default {
             return getLesseePageByJB(this.query);
           } else if (this.type === "brand") {
             return getSupplierPage(this.query);
+          } else if (this.type === "lessee") {
+            return getLesseePage(this.query);
           }
         })
         .then(data => {

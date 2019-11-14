@@ -50,7 +50,6 @@
     </div>
 
     <Table
-      border
       :loading="loading"
       :columns="columns"
       :data="list"
@@ -221,7 +220,7 @@ export default {
         {
           title: "操作",
           slot: "action",
-          minWidth: 30,
+          width: 220,
           align: "center"
         }
       ],

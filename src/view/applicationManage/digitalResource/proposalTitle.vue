@@ -7,7 +7,7 @@
       </Col>
     </Row>
 
-    <Table border :loading="loading" :columns="columns" :data="list">
+    <Table :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="action">
         <Button type="primary" size="small" style="margin-right: 5px" @click="edit(1, row)">编辑</Button>
         <Button type="error" size="small" style="margin-right: 5px" @click="remove(row.id)">删除</Button>

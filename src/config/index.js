@@ -19,7 +19,7 @@ const config = {
     dev2: 'http://192.168.1.150:8888', // v2.0本地 liusiyuan
     dev1: 'http://192.168.1.150:8888', // caikefu
 
-    domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8888' : '', // wangdong
+    domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8888' : 'http://192.168.1.26:8888', // wangdong
 
     // pro: 'http://112.31.212.46:8118', // line
     pro: 'http://192.168.1.26:8118', // ali line
@@ -32,7 +32,7 @@ const config = {
   //   dev: 'http://47.98.153.101:8118', // 本地
   //   dev1: 'https://gateway.visualinsur.cn:8888', // caikefu
 
-  //   domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8118' : '', // wangdong
+  //   domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8118' : 'https://gateway.visualinsur.cn:8888', // wangdong
 
   //   // pro: 'http://112.31.212.46:8118', // line
   //   pro: 'http://47.98.153.101:8118', // ali line

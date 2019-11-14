@@ -57,7 +57,7 @@
     <Divider/>
 
     <div class="title-row">通知列表</div>
-    <Table :columns="columns" :data="list">
+    <Table max-height="500" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="content">
         <div v-html="row.content"></div>
       </template>

@@ -1,9 +1,5 @@
 <template>
   <Form ref="form" :model="form" :rules="rules" :label-width="120">
-    <div class="button-wrap ar">
-      <button class="button" type="button" @click="submit()">保存</button>
-      <button class="button" type="button" @click="clear()">清空</button>
-    </div>
     <Row>
       <Col span="8">
         <FormItem label="产品全称" prop="productFullName">
@@ -15,6 +11,10 @@
           <Input type="text" v-model="form.productAbbr" placeholder="产品简称" />
         </FormItem>
       </Col>
+      <Col span="8" class="ar">
+      <Button class="button" @click="submit()">保存</Button>
+      <Button class="button" @click="clear()">清空</Button>
+    </Col>
     </Row>
     <Row>
       <Col span="8">
@@ -111,18 +111,25 @@
     </FormItem>
 
     <FormItem label="分销渠道" prop="distributionChannel">
-      <RadioGroup v-model="form.distributionChannel">
-        <Radio :label="0">传统经代</Radio>
-      </RadioGroup>
+      <!-- <RadioGroup v-model="form.distributionChannel">
+        <Radio label="0">传统经代</Radio>
+      </RadioGroup> -->
+      <CheckboxGroup v-model="form.distributionChannel">
+        <Checkbox label="0">传统经代</Checkbox>
+      </CheckboxGroup>
       <FormItem label="是否支持现保投保" prop>
         <RadioGroup v-model="form.vitSupport">
           <Radio :label="0">不支持</Radio>
           <Radio :label="1">支持</Radio>
         </RadioGroup>
       </FormItem>
-      <RadioGroup v-model="form.distributionChannel">
-        <Radio :label="1">互联网</Radio>
-      </RadioGroup>
+
+      <!-- <RadioGroup v-model="form.distributionChannel">
+        <Radio label="1">互联网</Radio>
+      </RadioGroup> -->
+      <CheckboxGroup v-model="form.distributionChannel">
+        <Checkbox label="1">互联网</Checkbox>
+      </CheckboxGroup>
       <FormItem label="互联网投保方式" prop>
         <RadioGroup v-model="form.internetInsurance">
           <Radio :label="0">H5</Radio>
@@ -187,7 +194,7 @@ const defaultForm = {
   underwritingModel: 0,
   underwritingPeriod: 0,
   productForm: 0,
-  distributionChannel: 0,
+  distributionChannel: [],
   sale: 0,
   onlineInsurance: 0,
   insuranceApp: "",
@@ -325,7 +332,7 @@ export default {
               this.$route.query.supplierId = data.supplierId
 
           // 所属小类,分销渠道,保障功能 转为数组
-          let trans = ["smallClass", "protectFunction", "ageLevel"];
+          let trans = ["smallClass", "protectFunction", "ageLevel", 'distributionChannel'];
           for (const iterator of trans) {
             data[iterator] = data[iterator] ? data[iterator].split(",") : [];
           }
@@ -345,7 +352,7 @@ export default {
           if (data) {
             let formData = Object.assign({}, this.form);
               // 数组字段转字符串
-              let trans = ["smallClass", "protectFunction", "ageLevel"];
+              let trans = ["smallClass", "protectFunction", "ageLevel", 'distributionChannel'];
               for (const iterator of trans) {
                 formData[iterator] += "";
               }

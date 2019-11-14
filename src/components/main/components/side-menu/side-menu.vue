@@ -52,7 +52,7 @@ export default {
     },
     rootIconSize: {
       type: Number,
-      default: 20
+      default: 16
     },
     iconSize: {
       type: Number,
@@ -87,7 +87,7 @@ export default {
   },
   computed: {
     textColor () {
-      return this.theme === 'dark' ? '#fff' : '#495060'
+      return this.theme === 'dark' ? '#afb5bc' : '#495060'
     }
   },
   watch: {

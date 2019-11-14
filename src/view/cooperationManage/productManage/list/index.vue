@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="bw br" style="padding: 16px;">
     <Row style="padding-bottom: 10px;">
-      <Col span="6">
+      <Col span="8">
         <Input
           v-model="query.searchValue"
           placeholder="搜索品牌/产品名称/代码"
@@ -9,16 +9,16 @@
         />
         <Button type="info" @click="search()">搜索</Button>
       </Col>
-      <Col span="18">
+      <Col span="16">
         <div class="fr">
-          <button type="button" class="button" @click="goPage('createProduct', {create: true})">新建</button>
-          <button type="button" class="button" @click="fastShow = true">快速创建</button>
-          <button type="button" class="button" @click="handle('edit')">编辑</button>
-          <button type="button" class="button" @click="handle('publish', 1)">发布</button>
-          <button type="button" class="button" @click="handle('publish', 0)">撤回</button>
-          <button type="button" class="button" @click="handle('sale', 0)">停售</button>
-          <button type="button" class="button" @click="handle('sale', 1)">恢复销售</button>
-          <button type="button" class="button" @click="handle('remove')">删除</button>
+          <Button class="button" @click="goPage('createProduct', {create: true})">新建</Button>
+          <Button class="button" @click="fastShow = true">快速创建</Button>
+          <Button class="button" @click="handle('edit')">编辑</Button>
+          <Button class="button" @click="handle('publish', 1)">发布</Button>
+          <Button class="button" @click="handle('publish', 0)">撤回</Button>
+          <Button class="button" @click="handle('sale', 0)">停售</Button>
+          <Button class="button" @click="handle('sale', 1)">恢复销售</Button>
+          <Button class="button" @click="handle('remove')">删除</Button>
         </div>
       </Col>
     </Row>
@@ -633,10 +633,7 @@ export default {
   font-size: 20px;
 }
 .button {
-  padding: 10px 30px;
   margin-right: 10px;
-  border: 1px solid #ddd;
-  cursor: pointer;
 }
 .button-circle {
   display: inline-block;
