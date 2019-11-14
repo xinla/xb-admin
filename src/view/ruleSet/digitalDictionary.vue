@@ -4,7 +4,7 @@
       <Col span="8">
         <Input v-model="query.name" placeholder="搜索公司" style="width:60%; margin-right: 10px;"/>
         <Button type="info" @click="search()">搜索</Button>
-        <Button type="primary" style="margin:0 5px;" @click="edit(0)">新建</Button>
+        <Button type="info" style="margin:0 5px;" @click="edit(0)">新建</Button>
       </Col>
     </Row>
     <Tabs type="card">
@@ -44,7 +44,7 @@
               <template v-for="(unit, unique) in item.vitPolicyDictCategoryVos">
                 <div v-show="show[0] === index && show[1] === unique">
                   <Button
-                    type="primary"
+                    type="info"
                     size="small"
                     style="display:block; margin:0 5px 5px auto;"
                     @click="create(unit.id)"
