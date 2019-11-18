@@ -114,7 +114,7 @@
       <!-- <RadioGroup v-model="form.distributionChannel">
         <Radio label="0">传统经代</Radio>
       </RadioGroup> -->
-      <CheckboxGroup v-model="form.distributionChannel">
+      <CheckboxGroup v-model="form.distributionChannel" @on-change="distChange">
         <Checkbox label="0">传统经代</Checkbox>
       </CheckboxGroup>
       <FormItem label="是否支持现保投保" prop>
@@ -127,7 +127,7 @@
       <!-- <RadioGroup v-model="form.distributionChannel">
         <Radio label="1">互联网</Radio>
       </RadioGroup> -->
-      <CheckboxGroup v-model="form.distributionChannel">
+      <CheckboxGroup v-model="form.distributionChannel" @on-change="distChange">
         <Checkbox label="1">互联网</Checkbox>
       </CheckboxGroup>
       <FormItem label="互联网投保方式" prop>
@@ -393,6 +393,15 @@ export default {
       this.form.supplierId = val.id;
       this.form.name = val.name;
       // console.log(val)
+    },
+    // 分销渠道交互
+    distChange(val) {
+      if (!val.includes('0')) {
+        this.form.vitSupport = ''
+      }
+      if (!val.includes('1')) {
+        this.form.internetInsurance = ''
+      }
     }
   }
 };

@@ -61,7 +61,7 @@
             @click="switchRisk(item)"
           >
             <span v-if="anchor.includes(item.id)">√</span>
-              {{item.productFullName}}
+            {{item.productFullName}}
           </li>
         </ul>
       </Col>
@@ -100,7 +100,7 @@
             <FormItem label="保险金额约束">
               <Checkbox v-model="form.coverageLimit" :true-value="0" :false-value="1">无约束</Checkbox>
               <div v-if="form.coverageLimit === 1">
-              <Checkbox v-model="form.coverageDefine" :true-value="0" :false-value="1">不允许自定义</Checkbox>
+                <Checkbox v-model="form.coverageDefine" :true-value="0" :false-value="1">不允许自定义</Checkbox>
 
                 <template v-if="form.coverageDefine === 0">
                   <div class="title1">不允许自定义，由系统生成</div>
@@ -127,7 +127,7 @@
                       <Radio :label="2">使用公式</Radio>
                     </RadioGroup>
 
-                    <Input type="text" style="width: 40%; margin-right: 10px;"/>
+                    <Input type="text" style="width: 40%; margin-right: 10px;" />
                     <Button>创建公式</Button>
                   </div>
                 </template>
@@ -140,18 +140,25 @@
                     :false-value="0"
                   >保额限保额</Checkbox>
                   <div v-if="form.coverageLimitCoverage === 1">
-                    主险保额 ：附加险保额 
-                    <Select v-model="form.coverageLimitCoverageSymbol" style="width:60px; margin-right: 10px;">
-                            <Option :value="0">>=</Option>
-                            <Option :value="1">></Option>
-                            <Option :value="2"><=</Option>
-                            <Option :value="3"><</Option>
-                          </Select>
+                    主险保额 ：附加险保额
+                    <Select
+                      v-model="form.coverageLimitCoverageSymbol"
+                      style="width:60px; margin-right: 10px;"
+                    >
+                      <Option :value="0">>=</Option>
+                      <Option :value="1">></Option>
+                      <Option :value="2"><=</Option>
+                      <Option :value="3"><</Option>
+                    </Select>
                     <Input type="text" v-model="form.coverageLimitCoverageMain" style="width:10%;" />：
                     <Input type="text" v-model="form.coverageLimitCoverageAdd" style="width:10%;" />
                   </div>
 
-                  <Checkbox v-model="form.premiumLimitCoverage" :true-value="1" :false-value="0">保费限保额</Checkbox>
+                  <Checkbox
+                    v-model="form.premiumLimitCoverage"
+                    :true-value="1"
+                    :false-value="0"
+                  >保费限保额</Checkbox>
                   <div v-if="form.premiumLimitCoverage === 1">
                     <Row>
                       <Col span="10">保费标准</Col>
@@ -200,7 +207,6 @@
                     </Row>
                   </div>
                 </template>
-
               </div>
             </FormItem>
 
@@ -244,7 +250,7 @@
                     <tr v-for="(unit, unique) in form.insurancePeriodContentRate" :key="unique">
                       <td>{{unit.main}}</td>
                       <td>
-                        <span v-for="(_item, _index) in unit.rider" :key="_index">
+                        <span v-for="(_item, _index) in unit.riders" :key="_index">
                           <Checkbox v-model="_item.checked" :true-value="1" :false-value="0"></Checkbox>
                           {{_item.rider}}
                         </span>
@@ -255,7 +261,7 @@
                     <tr v-for="(unit, unique) in form.insurancePeriodContent" :key="unique">
                       <td>{{unit.main}}</td>
                       <td>
-                        <span v-for="(_item, _index) in unit.rider" :key="_index">
+                        <span v-for="(_item, _index) in unit.riders" :key="_index">
                           <Checkbox v-model="_item.checked" :true-value="1" :false-value="0"></Checkbox>
                           {{_item.rider}}
                         </span>
@@ -327,9 +333,9 @@ const defaultForm = {
   insurancePeriodRate: 0,
   insurancePeriodContent: [],
   insurancePeriodContentRate: [],
-  // insurancePeriodContent: [{ main: "", rider: [{ id: '', rider: "", checked: 0 }] }],
+  // insurancePeriodContent: [{ main: "", riders: [{ id: '', rider: "", checked: 0 }] }],
   // insurancePeriodContentRate: [
-  //   { main: "", rider: [{ id: '', rider: "", checked: 0 }] }
+  //   { main: "", riders: [{ id: '', rider: "", checked: 0 }] }
   // ],
   payPeriodLimit: 0,
   payOption: 0,
@@ -352,7 +358,7 @@ export default {
       additionRiskList: [],
       anchor: [],
       infolist: [],
-      current: ''
+      current: ""
     };
   },
   mounted() {
@@ -371,23 +377,21 @@ export default {
         Agency.getAdditionRisk(this.$route.query.id).then(data => {
           console.log("additionRisk", data);
           this.infolist = [];
-          this.anchor = []
+          this.anchor = [];
           if (data) {
             this.infolist = data;
             for (const iterator of data) {
               this.anchor.push(iterator.additionRiskId);
               // 保费限保额内容
-              iterator.premiumLimitCoverageContent = JSON.parse(
-                iterator.premiumLimitCoverageContent
-              );
+              iterator.premiumLimitCoverageContent && (iterator.premiumLimitCoverageContent = JSON.parse(iterator.premiumLimitCoverageContent));
               // 保险期间可选内容
-              iterator.insurancePeriodContent = JSON.parse(
+             iterator.insurancePeriodContent && (iterator.insurancePeriodContent = JSON.parse(
                 iterator.insurancePeriodContent
-              );
+              ));
               // 保险期间可选内容 费率
-              iterator.insurancePeriodContentRate = JSON.parse(
+              iterator.insurancePeriodContentRate && (iterator.insurancePeriodContentRate = JSON.parse(
                 iterator.insurancePeriodContentRate
-              );
+              ));
             }
             // this.form = data[0]
           }
@@ -454,19 +458,19 @@ export default {
       }
     },
     switchRisk(data) {
-      this.current = data.id
+      this.current = data.id;
       for (const iterator of this.infolist) {
         if (data.id === iterator.additionRiskId) {
-          this.form = iterator
-          return
+          this.form = iterator;
+          return;
         }
       }
-      this.form = JSON.parse(JSON.stringify(defaultForm))
-        Object.assign(this.form, {
-          productId: this.$route.query.id,
-          additionRiskId: data.id,
-          additionRiskName: data.productFullName
-        });
+      this.form = JSON.parse(JSON.stringify(defaultForm));
+      Object.assign(this.form, {
+        productId: this.$route.query.id,
+        additionRiskId: data.id,
+        additionRiskName: data.productFullName
+      });
     }
   }
 };
