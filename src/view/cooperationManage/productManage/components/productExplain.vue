@@ -351,59 +351,62 @@
 
               <Tabs>
                 <TabPane label="保险责任">
-                    <Row v-for="(item, index) of form.insuranceLiability" :Key="index">
-                      <Col span="11">
-                        <div>责任类型</div>
-                        <Select v-model="item.mainClass" placeholder="请选择大类" style="width: 38%; margin-right: 4%;">
-                          <Option
-                            v-for="(item, index) in productFeature"
-                            :value="item"
-                            :key="index"
-                          >{{item}}</Option>
-                        </Select>
-                        <Select v-model="item.smallClass" placeholder="请选择小类" style="width: 38%;">
-                          <Option
-                            v-for="(item, index) in productFeature"
-                            :value="item"
-                            :key="index"
-                          >{{item}}</Option>
-                        </Select>
+                  <Row v-for="(item, index) of form.insuranceLiability" :Key="index">
+                    <Col span="11">
+                      <div>责任类型</div>
+                      <Select
+                        v-model="item.mainClass"
+                        placeholder="请选择大类"
+                        style="width: 38%; margin-right: 4%;"
+                      >
+                        <Option
+                          v-for="(unit, index) in allClass"
+                          :value="unit.id"
+                          :key="index"
+                        >{{unit.name}}</Option>
+                      </Select>
 
-                        <div>算法</div>
-                        <Input
+                      <Select v-model="item.smallClass" placeholder="请选择小类" style="width: 38%;">
+                        <template v-for="unit of allClass">
+                          <template v-if="item.mainClass === unit.id">
+                            <template v-for="_item of unit.children">
+                              <Option
+                                v-for="(_unit, index) in _item.children"
+                                :value="_unit.id"
+                                :key="index"
+                              >{{_unit.name}}</Option>
+                            </template>
+                          </template>
+                        </template>
+                      </Select>
+
+                      <div>算法</div>
+                      <Input
                         type="textarea"
-                          v-model="item.algorithm"
-                          placeholder="请输入内容"
-                          style="width:80%;"
-                        />
-                      </Col>
+                        v-model="item.algorithm"
+                        placeholder="请输入内容"
+                        style="width:80%;"
+                      />
+                    </Col>
 
-                      <Col span="11">
-                        <div>标题</div>
-                        <Input
-                          v-model="item.title"
-                          placeholder="请输入标题"
-                          style="width:80%;"
-                        />
+                    <Col span="11">
+                      <div>标题</div>
+                      <Input v-model="item.title" placeholder="请输入标题" style="width:80%;" />
 
-                        <div>对应条款</div>
-                        <Input
+                      <div>对应条款</div>
+                      <Input
                         type="textarea"
-                          v-model="item.provision"
-                          placeholder="请输入条款"
-                          style="width:80%;"
-                        />
-                      </Col>
-                      <Col span="2">
-                        <span class="button-circle" @click="reduce('insuranceLiability', index)">-</span>
-                      </Col>
-                    </Row>
+                        v-model="item.provision"
+                        placeholder="请输入条款"
+                        style="width:80%;"
+                      />
+                    </Col>
+                    <Col span="2">
+                      <span class="button-circle" @click="reduce('insuranceLiability', index)">-</span>
+                    </Col>
+                  </Row>
 
-                    <Button
-                      class="button"
-                      type="primary"
-                      @click="addItem('insuranceLiability')"
-                    >+ 添加</Button>
+                  <Button class="button" type="primary" @click="addItem('insuranceLiability')">+ 添加</Button>
                 </TabPane>
                 <TabPane label="免除责任">
                   <Input type="textarea" v-model="form.exemptLiability" style="width: 60%;" />
@@ -424,6 +427,7 @@ import {
   updateProductDesc,
   clearProductDesc
 } from "@/api/product/desc";
+import { getAllInsuranceSubclass } from "@/api/rulesSet/type";
 
 import axios from "axios";
 import config from "@/config";
@@ -522,24 +526,33 @@ export default {
         pcCoverPicture: [
           { required: true, message: "不能为空", trigger: "change" }
         ],
-        describePicture: [
-          {
-            required: true,
-            type: "array",
-            message: "不能为空",
-            trigger: "change"
-          }
-        ]
+        // describePicture: [
+        //   {
+        //     required: true,
+        //     type: "array",
+        //     message: "不能为空",
+        //     trigger: "change"
+        //   }
+        // ]
       },
 
       anchor: "nav",
       productFeature: [],
-      productFeatureShow: false
+      productFeatureShow: false,
+      allClass: [
+        {
+          children: []
+        }
+      ]
     };
   },
   mounted() {
-    // console.log(this.form.productId)
+    // console.log(this.form.productId);
     // this.form.productId || (this.form.productId = this.$route.query.id)
+    getAllInsuranceSubclass(1).then(data => {
+      // console.log("TypeRule", data);
+      this.allClass = data.children;
+    });
     this.getData();
   },
   methods: {
@@ -614,7 +627,7 @@ export default {
           if (data) {
             let formData = Object.assign({}, this.form);
             // 数组字段转字符串
-            formData.describePicture += "";
+            // formData.describePicture += "";
 
             if (formData.id) {
               return updateProductDesc(formData);

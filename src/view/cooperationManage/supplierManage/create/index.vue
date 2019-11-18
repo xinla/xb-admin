@@ -11,7 +11,6 @@
               :val="form.name"
               type="insurance"
               @change="change"
-              :key="form.name"
             />
           </FormItem>
 
@@ -412,9 +411,10 @@ export default {
     getData() {
       if (this.form.id) {
         getSupplierDetail(this.form.id).then(data => {
-          console.log("SupplierDetail", data);
+          // console.log("SupplierDetail", data);
           if (data) {
             this.form = data.xbSupplier;
+            this.insuranceId = data.xbSupplier.relationId
             // let vitDictProvinceId = data.xbSupplier.vitDictProvinceId
             // if (vitDictProvinceId) {
             //   vitDictProvinceId = vitDictProvinceId.split(',')
@@ -488,7 +488,7 @@ export default {
         defaultFormChild1.type = type;
         this.form.xbCompanyCard || (this.form.xbCompanyCard = []);
         this.form.xbCompanyCard.push(Object.assign({}, defaultFormChild1));
-        console.log(this.form.xbCompanyCard);
+        // console.log(this.form.xbCompanyCard);
       } else {
         this.form.xbSupplierOrganization.push(this.formChild);
         this.formChild = Object.assign({}, defaultFormChild);
@@ -514,7 +514,7 @@ export default {
     },
     upload(index) {
       this.uploadIndex = index;
-      console.log(index);
+      // console.log(index);
     },
     formatError() {
       this.$Message.error("文件格式错误，仅限'jpg','jpeg','png'格式的文件");

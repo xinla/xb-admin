@@ -54,15 +54,17 @@
     <Row>
       <Col span="4">
         <ul class="anchor-wrap">
-          <li
-            v-for="(item, index) in additionRiskList"
-            :class="['anchor', 'cp', {'current': current == item.id}]"
-            :key="index"
-            @click="switchRisk(item)"
-          >
-            <span v-if="anchor.includes(item.id)">√</span>
-            {{item.productFullName}}
-          </li>
+          <template v-for="(item, index) in additionRiskList">
+            <li
+              v-if="item.id !== $route.query.id"
+              :class="['anchor', 'cp', {'current': current == item.id}]"
+              :key="index"
+              @click="switchRisk(item)"
+            >
+              <span v-if="anchor.includes(item.id)">√</span>
+              {{item.productFullName}}
+            </li>
+          </template>
         </ul>
       </Col>
 
@@ -438,7 +440,7 @@ export default {
       });
     },
     constraintChange(data) {
-      if (data.insurancePeriodOption === 1 && !data.id) {
+      if (data.insurancePeriodOption === 1 && !data.insurancePeriodContent.length) {
         Agency.getInsurancePeriodConstraint(
           this.$route.query.id,
           data.additionRiskId,
@@ -447,7 +449,7 @@ export default {
           // console.log(res)
           data.insurancePeriodContent = res;
         });
-      } else if (data.insurancePeriodRate === 1 && !data.id) {
+      } else if (data.insurancePeriodRate === 1 && !data.insurancePeriodContentRate.length) {
         Agency.getInsurancePeriodConstraint(
           this.$route.query.id,
           data.additionRiskId,

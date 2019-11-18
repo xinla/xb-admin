@@ -62,30 +62,30 @@ export default {
       isMatch: true
     };
   },
-  mounted() {
-    // console.log(this.val + 8);
-    if (this.val) {
-      Promise.resolve()
-        .then(() => {
-          this.query.name = this.val;
-          if (this.type === "agency") {
-            return getLesseePageByJB(this.query);
-          } else if (this.type === "insurance") {
-            this.query.type = 0;
-            return getLesseePageByJB(this.query);
-          } else if (this.type === "brand") {
-            return getSupplierPage(this.query);
-          } else if (this.type === "lessee") {
-            return getLesseePage(this.query);
-          }
-        })
-        .then(({ list }) => {
-          // FIX: 结果出现同名保险公司，这里取第一条数据
-          // console.log('LesseePageByJB: ', list)
-          list && list.length && this.$emit("change", list[0]);
-        });
-    }
-  },
+  // mounted() {
+  //   // console.log(this.val + 8);
+  //   if (this.val) {
+  //     Promise.resolve()
+  //       .then(() => {
+  //         this.query.name = this.val;
+  //         if (this.type === "agency") {
+  //           return getLesseePageByJB(this.query);
+  //         } else if (this.type === "insurance") {
+  //           this.query.type = 0;
+  //           return getLesseePageByJB(this.query);
+  //         } else if (this.type === "brand") {
+  //           return getSupplierPage(this.query);
+  //         } else if (this.type === "lessee") {
+  //           return getLesseePage(this.query);
+  //         }
+  //       })
+  //       .then(({ list }) => {
+  //         // FIX: 结果出现同名或包含该名字保险公司，这里取第一条数据
+  //         // console.log('LesseePageByJB: ', list)
+  //         list && list.length && this.$emit("change", list[0]);
+  //       });
+  //   }
+  // },
   methods: {
     search(query) {
       // console.log(query + 2)
