@@ -4,37 +4,37 @@
       <Button
         class="button"
         size="large"
-        :type="current === 0 && 'primary'"
+        :type="current === 0 ? 'primary' : 'default'"
         @click="current = 0"
       >基本信息</Button>
       <Button
         class="button"
         size="large"
-        :type="current === 1 && 'primary'"
+        :type="current === 1 ? 'primary' : 'default'"
         @click="switchTo(1)"
       >投保规则</Button>
       <Button
         class="button"
         size="large"
-        :type="current === 2 && 'primary'"
+        :type="current === 2 ? 'primary' : 'default'"
         @click="switchTo(2)"
       >保费计算器</Button>
       <Button
         class="button"
         size="large"
-        :type="current === 3 && 'primary'"
+        :type="current === 3 ? 'primary' : 'default'"
         @click="switchTo(3)"
       >费率表</Button>
       <Button
         class="button"
         size="large"
-        :type="current === 4 && 'primary'"
+        :type="current === 4 ? 'primary' : 'default'"
         @click="switchTo(4)"
       >产品说明</Button>
       <Button
         class="button"
         size="large"
-        :type="current === 5 && 'primary'"
+        :type="current === 5 ? 'primary' : 'default'"
         @click="switchTo(5)"
       >附加和捆绑</Button>
     </div>

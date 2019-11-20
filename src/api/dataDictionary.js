@@ -145,3 +145,17 @@ export const deleteDitionaryItem = (id) => {
     method: 'post',
   })
 }
+
+/**
+通过表名和数据字典名查询产品大类
+ */
+export const getProductMainClass = () => {
+  return axios.request({
+    url: service + `/findMainClass`,
+    method: 'get',
+    params: {
+      tableName: 'vit_product_desc',
+      fieldName: 'insurance_liability'
+    }
+  })
+}

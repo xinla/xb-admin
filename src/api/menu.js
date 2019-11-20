@@ -35,14 +35,15 @@ export const getOperationList = (id) => {
  * @param {*} size 默认10  页大小  
  * @param {*} pid 菜单Id 不传表示查所有  传值表示查询该菜单下所有应用 
  */
-export const getApplicationPage = ({ keywords, page, size = 100, pid }) => {
+export const getApplicationPage = ({ keywords, page, size = 100, pid, type }) => {
   return axios.request({
     url: service + `/getApplication`,
     params: {
       param: keywords,
       index: page,
       size,
-      pid
+      pid,
+      type
     },
     method: 'get'
   })

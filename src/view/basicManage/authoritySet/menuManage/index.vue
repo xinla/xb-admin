@@ -144,6 +144,7 @@
         <Select v-model="meunType2" style="width:45%" @on-change="getAllMenu()">
           <Option value="管理面板" :key="0">管理面板</Option>
           <Option value="工作台" :key="1">工作台</Option>
+          <Option value="APP工作台" :key="2">APP工作台</Option>
         </Select>
         <Button type="primary" long style="margin: 10px 0;" @click="editMenu()">+ 新建菜单</Button>
 
@@ -442,6 +443,8 @@ export default {
       this.getAllMenu();
     },
     getAllMenu() {
+      this.applicantionList = []
+      this.$store.state.currentMenuId = ''
       getMenuList(this.meunType1).then(res => {
         // console.log("MenuList: ", res);
         async function recursiveGetMenu(data) {
@@ -461,7 +464,9 @@ export default {
           // this.allMenu = _res;
 
           for (const iterator of _res) {
-            if (iterator.name == this.meunType2) {
+            let temp = this.meunType2
+            temp === 'APP工作台' && (temp = '工作台')
+            if (iterator.name == temp) {
               this.allMenu = iterator.children || [];
               // 设置默认一级菜单id
               this.allMenu.id = iterator.id;
@@ -602,7 +607,8 @@ export default {
           keyword: "",
           page: 1,
           size: 10,
-          pid: data.id
+          pid: data.id,
+          type: this.meunType2 === 'APP工作台' ? 1 : 0
         };
       }
       this.loading = true;

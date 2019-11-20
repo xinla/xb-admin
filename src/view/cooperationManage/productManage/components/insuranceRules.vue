@@ -754,7 +754,7 @@
                 >
                   <template v-if="item.ruleIntervalType === 1">
                     <Input type="text" v-model="item.ruleIntervalValue" placeholder="输入年数" />年
-                    <span class="button-circle">-</span>
+                    <span class="button-circle" @click="reduce('periodFormYear', 'ruleIntevalDtoList', index)">-</span>
                   </template>
                 </div>
                 <span

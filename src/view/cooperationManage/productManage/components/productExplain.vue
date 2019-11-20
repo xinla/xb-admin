@@ -349,7 +349,7 @@
                 <span>{{form.insuranceLiabilityPdf}}</span>
               </Upload>
 
-              <Tabs>
+              <Tabs style="min-height: 300px;">
                 <TabPane label="保险责任">
                   <Row v-for="(item, index) of form.insuranceLiability" :Key="index">
                     <Col span="11">
@@ -363,19 +363,18 @@
                           v-for="(unit, index) in allClass"
                           :value="unit.id"
                           :key="index"
-                        >{{unit.name}}</Option>
+                        >{{unit.dictName}}</Option>
                       </Select>
 
                       <Select v-model="item.smallClass" placeholder="请选择小类" style="width: 38%;">
-                        <template v-for="unit of allClass">
-                          <template v-if="item.mainClass === unit.id">
-                            <template v-for="_item of unit.children">
-                              <Option
-                                v-for="(_unit, index) in _item.children"
-                                :value="_unit.id"
-                                :key="index"
-                              >{{_unit.name}}</Option>
-                            </template>
+                        <template v-for="_item in allClass">
+                          <template v-if="item.mainClass === _item.id">
+                            <Option
+                          v-for="(unit, index) in _item.childs"
+                          :value="unit.id"
+                          :key="index"
+                        >{{unit.dataName}}</Option>
+
                           </template>
                         </template>
                       </Select>
@@ -425,9 +424,9 @@ import {
   getProductDesc,
   saveProductDesc,
   updateProductDesc,
-  clearProductDesc
+  clearProductDesc,
 } from "@/api/product/desc";
-import { getAllInsuranceSubclass } from "@/api/rulesSet/type";
+import { getProductMainClass, getAllDitionaryItem } from "@/api/dataDictionary";
 
 import axios from "axios";
 import config from "@/config";
@@ -539,19 +538,15 @@ export default {
       anchor: "nav",
       productFeature: [],
       productFeatureShow: false,
-      allClass: [
-        {
-          children: []
-        }
-      ]
+      allClass: [],
     };
   },
   mounted() {
     // console.log(this.form.productId);
     // this.form.productId || (this.form.productId = this.$route.query.id)
-    getAllInsuranceSubclass(1).then(data => {
-      // console.log("TypeRule", data);
-      this.allClass = data.children;
+    getProductMainClass().then(res => {
+      // console.log("allClass", res);
+      this.allClass = res
     });
     this.getData();
   },
@@ -695,7 +690,7 @@ export default {
     selectChange() {
       this.form.productFeature = this.productFeature.join(",");
       // console.log(this.form.specialProfessionalLimit)
-    }
+    },
   }
 };
 </script>
