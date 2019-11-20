@@ -192,9 +192,9 @@
                     v-if="currentConfigInfo.calItemTag === 12 || currentConfigInfo.calItemTag === 10"
                   >
                     <Select v-model="item.unit" style="width: 80px;">
-                      <Option :value="0">万元</Option>
-                      <Option :value="1">元</Option>
-                      <Option :value="2">元/每天</Option>
+                      <Option value="0">万元</Option>
+                      <Option value="1">元</Option>
+                      <Option value="2">元/每天</Option>
                     </Select>
                   </template>
                   <!-- 职业类别 -->
