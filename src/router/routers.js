@@ -52,6 +52,30 @@ export default [
       }
     ]
   },
+  // 权限管理
+  {
+    path: '/authorityManage',
+    name: 'authorityManage',
+    component: Main,
+    meta: {
+      icon: '_Basicmanagement',
+      title: '权限管理',
+      hideInMenu: false,
+      notCache: true
+    },
+    children: [
+      {
+        path: 'user',
+        name: 'user',
+        meta: {
+          icon: '_Tenantmanagement',
+          title: '用户管理'
+        },
+        component: () => import('@/view/authorityManage/user')
+      },
+    ]
+  },
+
   // 基础管理
   {
     path: '/basicManage',
