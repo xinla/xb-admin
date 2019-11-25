@@ -236,12 +236,12 @@
                   <Radio :label="1">可选</Radio>
                 </RadioGroup>
 
-                <Checkbox
+                <!-- <Checkbox
                   v-model="form.insurancePeriodRate"
                   :true-value="1"
                   :false-value="0"
                   @on-change="constraintChange(form)"
-                >作为费率查询条件</Checkbox>
+                >作为费率查询条件</Checkbox> -->
 
                 <table class="table ac" border>
                   <tr>
@@ -440,7 +440,7 @@ export default {
       });
     },
     constraintChange(data) {
-      if (data.insurancePeriodOption === 1 && !data.insurancePeriodContent.length) {
+      if (data.insurancePeriodOption === 1 && (!data.insurancePeriodContent ||!data.insurancePeriodContent.length)) {
         Agency.getInsurancePeriodConstraint(
           this.$route.query.id,
           data.additionRiskId,
@@ -449,7 +449,7 @@ export default {
           // console.log(res)
           data.insurancePeriodContent = res;
         });
-      } else if (data.insurancePeriodRate === 1 && !data.insurancePeriodContentRate.length) {
+      } else if (data.insurancePeriodRate === 1 && (!data.insurancePeriodContentRate || !data.insurancePeriodContentRate.length)) {
         Agency.getInsurancePeriodConstraint(
           this.$route.query.id,
           data.additionRiskId,
