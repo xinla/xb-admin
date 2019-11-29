@@ -217,8 +217,7 @@
                     <Upload
                       :action="uploadUrl"
                       :show-upload-list="false"
-                      :format="['jpg','jpeg','png']"
-                      accept="image/*"
+                      accept="video/*"
                       :on-success="uploadCoverVideo"
                     >
                       <img class="logo" v-if="form.coverVideoUrl" :src="form.pcCoverPicture" />
@@ -317,11 +316,12 @@
                 :action="uploadUrl"
                 :show-upload-list="false"
                 :data="{image: true}"
+                :format="['pdf']"
+                :on-format-error="formatErrorPdf"
                 :on-success="uploadRulePdf"
                 :before-upload="beforeUpload"
               >
-                <Button icon="ios-cloud-upload-outline">上传投保规则</Button>
-                <span>{{form.insuranceRulePdf}}</span>
+                <Button icon="ios-cloud-upload-outline">{{form.insuranceRulePdf ? '替换' : '上传'}}投保规则</Button>
               </Upload>
               <ckeditor
                 :editor="editor"
@@ -342,11 +342,12 @@
                 :action="uploadUrl"
                 :show-upload-list="false"
                 :data="{image: true}"
+                :format="['pdf']"
+                :on-format-error="formatErrorPdf"
                 :on-success="uploadLiabilityPdf"
                 :before-upload="beforeUpload"
               >
-                <Button icon="ios-cloud-upload-outline">上传条款</Button>
-                <span>{{form.insuranceLiabilityPdf}}</span>
+                <Button icon="ios-cloud-upload-outline">{{form.insuranceLiabilityPdf ? '替换' : '上传'}}条款</Button>
               </Upload>
 
               <Tabs style="min-height: 300px;">
@@ -606,11 +607,11 @@ export default {
       this.form.atlas += "," + response.result.fileUrl;
     },
     uploadRulePdf(response, file, fileList) {
-      this.form.insuranceRulePdf = response.result.fileUrl;
+      this.form.insuranceRulePdf = response.result.imageUrl;
       this.$Spin.hide();
     },
     uploadLiabilityPdf(response, file, fileList) {
-      this.form.insuranceLiabilityPdf = response.result.fileUrl;
+      this.form.insuranceLiabilityPdf = response.result.imageUrl;
       this.$Spin.hide();
     },
     submit() {
@@ -691,6 +692,10 @@ export default {
       this.form.productFeature = this.productFeature.join(",");
       // console.log(this.form.specialProfessionalLimit)
     },
+    formatErrorPdf() {
+      this.$Spin.hide();
+      this.$Message.error("文件格式不正确，请选择“pdf”格式的文件")
+    }
   }
 };
 </script>

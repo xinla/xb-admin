@@ -144,14 +144,22 @@
           <FormItem label="APP名称" prop="insuranceApp">
             <Input type="text" v-model="form.insuranceApp" placeholder="APP名称" />
           </FormItem>
-        </Col>
-        <Col span="10">
+
           <FormItem label="PC网址" prop="insurancePc">
             <Input type="text" v-model="form.insurancePc" placeholder="PC网址" />
           </FormItem>
+
+          <FormItem label="小程序" prop="insuranceSmallProgram">
+            <Input type="text" v-model="form.insuranceSmallProgram" placeholder="小程序" />
+          </FormItem>
         </Col>
+        <!-- <Col span="10">
+          <FormItem label="PC网址" prop="insurancePc">
+            <Input type="text" v-model="form.insurancePc" placeholder="PC网址" />
+          </FormItem>
+        </Col> -->
       </Row>
-      <Row>
+      <!-- <Row>
         <Col span="10">
           <FormItem label="H5网址" prop="insuranceH5">
             <Input type="text" v-model="form.insuranceH5" placeholder="H5网址" />
@@ -162,7 +170,7 @@
             <Input type="text" v-model="form.insuranceSmallProgram" placeholder="小程序" />
           </FormItem>
         </Col>
-      </Row>
+      </Row> -->
     </FormItem>
   </Form>
 </template>
