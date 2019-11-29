@@ -1,5 +1,5 @@
 import { login, logout, getUserById } from '@/api/user'
-import { setToken, setUserId, getToken, getUserId } from '@/libs/util'
+import { setToken, setUserId, getToken, getUserId, encryption } from '@/libs/util'
 import Cookies from 'js-cookie' 
 
 export default {
@@ -36,16 +36,20 @@ export default {
   actions: {
     // 登录
     handleLogin ({ commit }, {userName, password}) {
-      name = userName.trim()
+      let userInfo = {
+        name: userName.trim(),
+        password,
+      }
+      const user = encryption({
+        data: userInfo,
+        key: 'pigxpigxpigxpigx',
+        param: ['password']
+      })
       return new Promise((resolve, reject) => {
-        login({
-          name,
-          password
-        }).then(res => {
-          const user = res.user
+        login(user).then(res => {
           // console.log(user)
-          commit('setToken', res.token)
-          commit('setUserId', user.id)
+          commit('setToken', res.access_token)
+          commit('setUserId', res.user_id)
           resolve()
         }).catch(err => {
           reject(err)
@@ -72,13 +76,13 @@ export default {
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
         try {
-          getUserById(state.userId).then(res => {
-            commit('setAvator', res.headImage)
-            commit('setUserName', res.name)
-            commit('setUserId', res.id)
+          getUserById(state.userId).then(({permissions, roles, sysUser}) => {
+            commit('setAvator', sysUser.avatar)
+            commit('setUserName', sysUser.username)
+            commit('setUserId', sysUser.userId)
             // commit('setAccess', res.access)
             commit('setHasGetInfo', true)
-            resolve(res)
+            resolve(sysUser)
           }).catch(err => {
             reject(err)
           })

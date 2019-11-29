@@ -1,6 +1,7 @@
 import axios from 'axios'
+import { setToken, setUserId, getToken, getUserId, encryption } from '@/libs/util'
 import store from '@/store'
-import { Spin, Message } from 'iview'
+import { Spin, Message } from 'view-design'
 const addErrorLog = errorInfo => {
   const { data, statusText, status, request: { responseText, responseURL } } = errorInfo
   // let info = {
@@ -30,7 +31,8 @@ class HttpRequest {
     const config = {
       baseURL: this.baseUrl,
       headers: {
-        Auth_token: localStorage.Auth_token
+        Authorization: 'Bearer ' + getToken(),
+        'TENANT-ID': '1'
       }
     }
     return config
@@ -58,8 +60,13 @@ class HttpRequest {
     instance.interceptors.response.use(res => {
       this.destroy(url)
       // debugger
-      // console.log('res: ' + res)
+      // console.log('res: ' + JSON.stringify(res))
       const { data, status } = res
+      // console.log(url)
+      // 登录接口判断
+      if (url === '/auth/oauth/token' && status === 200) {
+        return data
+      }
       // code 0:成功，-1/其它:错误
       if (status === 200 && data.code === 0) {
         return JSON.stringify(data.result) ? data.result : data.data

@@ -1,4 +1,5 @@
 import axios from '@/libs/api.request'
+import { setToken, setUserId, getToken, getUserId, encryption } from '@/libs/util'
 import config from '@/config/index'
 
 const service = config.services.user
@@ -7,15 +8,33 @@ const service = config.services.user
  * 登录
  * @param {*} param0 
  */
+// export const login = ({ name, password }) => {
+//   const data = {
+//     name,
+//     password
+//   }
+//   return axios.request({
+//     url: service + '/login',
+//     data,
+//     method: 'post'
+//   })
+// }
+
 export const login = ({ name, password }) => {
-  const data = {
-    name,
-    password
-  }
   return axios.request({
-    url: service + '/login',
-    data,
-    method: 'post'
+    url: '/auth/oauth/token',
+    params: {
+      username: name,
+      password: password,
+      randomStr: '156456',
+      code: 456456,
+      grant_type: 'password',
+      scope: 'server'
+    },
+    method: 'get',
+    headers: {
+      Authorization: 'Basic eGJrajp4Ymtq',
+    }
   })
 }
 
@@ -25,8 +44,12 @@ export const login = ({ name, password }) => {
  */
 export const getUserById = (id) => {
   return axios.request({
-    url: service + '/' + id,
-    method: 'get'
+    url: '/admin/user/info',
+    method: 'get',
+    headers: {
+      Authorization: 'Bearer ' + getToken(),
+      'TENANT-ID': '1'
+    }
   })
 }
 

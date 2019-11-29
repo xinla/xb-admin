@@ -41,7 +41,7 @@ export default [
       {
         path: '/home',
         name: 'home',
-        redirect: '/basicManage/lessee',
+        redirect: '/permissionManage/user',
         meta: {
           hideInMenu: true,
           title: '首页',
@@ -54,8 +54,8 @@ export default [
   },
   // 权限管理
   {
-    path: '/authorityManage',
-    name: 'authorityManage',
+    path: '/permissionManage',
+    name: 'permissionManage',
     component: Main,
     meta: {
       icon: '_Basicmanagement',
@@ -71,7 +71,34 @@ export default [
           icon: '_Tenantmanagement',
           title: '用户管理'
         },
-        component: () => import('@/view/authorityManage/user')
+        component: () => import('@/view/permissionManage/user')
+      },
+      {
+        path: 'menu',
+        name: 'menu',
+        meta: {
+          icon: '_Tenantmanagement',
+          title: '菜单管理'
+        },
+        component: () => import('@/view/permissionManage/menu')
+      },
+      {
+        path: 'role',
+        name: 'role',
+        meta: {
+          icon: '_Tenantmanagement',
+          title: '角色管理'
+        },
+        component: () => import('@/view/permissionManage/role')
+      },
+      {
+        path: 'department',
+        name: 'department',
+        meta: {
+          icon: '_Tenantmanagement',
+          title: '部门管理'
+        },
+        component: () => import('@/view/permissionManage/department')
       },
     ]
   },
