@@ -12,6 +12,11 @@
     {{fileName}}
     <Table :loading="loading" :columns="columns" :data="list">
       <template slot="sex" slot-scope="{row}">{{row.sex | sex}}</template>
+
+      <template slot="socialInsuranceFlag" slot-scope="{row}">{{ ['无', '有'][row.socialInsuranceFlag] }}</template>
+      
+      <template slot="renewalFlag" slot-scope="{row}">{{ {1: '首期', 2: '续期'}[row.renewalFlag]}}</template>
+
     </Table>
 
     <Page
@@ -67,7 +72,7 @@ export default {
         },
         {
           title: "社保标记",
-          key: "socialInsuranceFlag",
+          slot: "socialInsuranceFlag",
           align: "center"
         },
         {
@@ -77,7 +82,7 @@ export default {
         },
         {
           title: "首续保标记",
-          key: "renewalFlag",
+          slot: "renewalFlag",
           align: "center"
         },
         {
@@ -87,7 +92,7 @@ export default {
         },
         {
           title: "投保份数",
-          key: "countMethod",
+          key: "insuranceShares",
           align: "center"
         },
         {

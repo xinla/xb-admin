@@ -977,13 +977,13 @@
                     </Select>
                   </Col>
                   <Col span="5">
-                    <Input type="text" v-model="item.min" placeholder="请输入金额" />元
+                    <Input type="text" v-model="item.min" placeholder="请输入金额" />份
                   </Col>
                   <Col span="5">
-                    <Input type="text" v-model="item.max" placeholder="请输入金额" />元
+                    <Input type="text" v-model="item.max" placeholder="请输入金额" />份
                   </Col>
                   <Col span="5">
-                    <Input v-model="item.increaseUnit" placeholder="请输入金额" />元
+                    <Input v-model="item.increaseUnit" placeholder="请输入金额" />份
                   </Col>
                   <Col span="4">
                     <span
@@ -1305,6 +1305,12 @@ export default {
                   this.periodFormYear = iterator;
                   iterator.ruleIntevalDtoList ||
                     (iterator.ruleIntevalDtoList = []);
+
+                    if (iterator.ruleIntevalDtoList.length) {
+                      for (const _iterator of iterator.ruleIntevalDtoList) {
+                        _iterator.ruleIntervalValue.includes("@") && (_iterator.ruleIntervalValue = _iterator.ruleIntervalValue.replace("@", ''))
+                      }
+                    }
                 } else if (form === "periodFormDay" || !form) {
                   this.periodFormDay = iterator;
 
@@ -1335,6 +1341,13 @@ export default {
                 : [];
 
               temp.ruleIntevalDtoList || (temp.ruleIntevalDtoList = []);
+
+              if (temp.ruleIntevalDtoList.length) {
+                      for (const _iterator of temp.ruleIntevalDtoList) {
+                        console.log(_iterator.ruleIntervalValue.includes("@"))
+                        _iterator.ruleIntervalValue.includes("@") && (_iterator.ruleIntervalValue = _iterator.ruleIntervalValue.replace("@", ''))
+                      }
+                    }
             }
             // 领取规则
             if (
@@ -1430,6 +1443,7 @@ export default {
                   ) {
                     iterator.ruleIntervalName =
                       iterator.ruleIntervalValue + "岁";
+                      iterator.ruleIntervalValue += '@'
                   }
                 }
                 return formData.id
@@ -1458,6 +1472,7 @@ export default {
                     // 岁满型
                     iterator.ruleIntervalName =
                       iterator.ruleIntervalValue + "岁";
+                      iterator.ruleIntervalValue += '@'
                   }
                 }
                 return formData.id
