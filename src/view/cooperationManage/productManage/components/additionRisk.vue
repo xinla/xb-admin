@@ -37,6 +37,14 @@
     background: #ddd;
   }
 }
+.card {
+      margin-left: 23px;
+    // border: 1px solid #eee;
+    vertical-align: top;
+    width: 300px;
+    padding: 0 10px 8px;
+    border-radius: 6px;
+}
 </style>
 <template>
   <div>
@@ -95,17 +103,17 @@
 
                 <template v-if="form.coverageDefine === 0">
                   <div class="title1">不允许自定义，由系统生成</div>
-                    <RadioGroup v-model="form.coverageDefineItem" @on-change="form.premiumLimitCoverage = 0">
-                      <Radio :label="1">用公式计算</Radio>
-                    </RadioGroup>
+                  <RadioGroup
+                    v-model="form.coverageDefineItem"
+                    vertical
+                    @on-change="form.premiumLimitCoverage = 0"
+                  >
+                    <Radio :label="1">用公式计算</Radio>
+                  </RadioGroup>
 
-                  <div v-if="form.coverageDefineItem === 1">
-                      <!-- style="border: 1px solid #ddd; padding: 0 10px;" -->
-                    <RadioGroup
-                      v-model="form.coveragePremiumItem"
-                      vertical
-                    >
-                    <Radio :label="0">= 主险保额</Radio>
+                  <div v-if="form.coverageDefineItem === 1" class="card">
+                    <RadioGroup v-model="form.coveragePremiumItem" vertical>
+                      <Radio :label="0">= 主险保额</Radio>
                       <Radio :label="1">= 主险期交保费</Radio>
                       <Radio :label="2">= 主险及其它附加险期交保费</Radio>
                       <Radio :label="3">= （主险缴费期间-1）* 期交保费</Radio>
@@ -119,10 +127,14 @@
                       <!-- <Button>创建公式</Button> -->
                     </div>
                   </div>
-
-                  <RadioGroup v-model="form.premiumLimitCoverage" @on-change="form.coverageDefineItem = 0">
-                      <Radio :label="1">主险保费约束</Radio>
-                    </RadioGroup>
+<br>
+                  <RadioGroup
+                    v-model="form.premiumLimitCoverage"
+                    vertical
+                    @on-change="form.coverageDefineItem = 0"
+                  >
+                    <Radio :label="1">主险保费约束</Radio>
+                  </RadioGroup>
 
                   <div v-if="form.premiumLimitCoverage === 1">
                     <Row>
@@ -176,8 +188,8 @@
                 <template v-if="form.coverageDefine === 1">
                   <div class="title1">允许自定义，用保费计算器设定</div>
                   <RadioGroup v-model="form.coverageLimitCoverage">
-                      <Radio :label="1">保额限保额</Radio>
-                    </RadioGroup>
+                    <Radio :label="1">保额限保额</Radio>
+                  </RadioGroup>
                   <div v-if="form.coverageLimitCoverage === 1">
                     主险保额 ：附加险保额
                     <Select
@@ -244,7 +256,7 @@
                         >+</span>
                       </Col>
                     </Row>
-                  </div> -->
+                  </div>-->
                 </template>
               </div>
             </FormItem>

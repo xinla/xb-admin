@@ -500,7 +500,7 @@
                     <Input type="text" v-model="item.ageEnd" placeholder="请输入" />周岁
                   </Col>
                   <Col span="6">
-                    <InputNumber v-model="item.maxAmount" placeholder="请输入金额"></InputNumber>元
+                    <Input v-model="item.maxAmount" placeholder="请输入金额" />元
                   </Col>
                   <Col span="8">
                     <span

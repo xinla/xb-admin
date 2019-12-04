@@ -261,7 +261,7 @@
             </div>
             <Tabs>
               <TabPane label="图文">
-                <div class="box-content">
+                <div class="box-content" style="width: 100%; max-width: 640px;">
                   <ckeditor
                     :editor="editor"
                     v-model="form.imageText"
@@ -311,12 +311,14 @@
               >
                 <Button icon="ios-cloud-upload-outline">{{form.insuranceRulePdf ? '替换' : '上传'}}投保规则</Button>
               </Upload>
+              <div style="width: 100%; max-width: 640px;">
               <ckeditor
                 :editor="editor"
                 v-model="form.insuranceRuleText"
                 :config="editorConfig"
                 @ready="onReady"
               ></ckeditor>
+              </div>
             </div>
           </div>
 
