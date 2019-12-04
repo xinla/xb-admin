@@ -37,18 +37,6 @@
     margin: 20px;
   }
 }
-.button-circle {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #ddd;
-  color: #ddd;
-  border-radius: 50%;
-  text-align: center;
-  line-height: 14px;
-  cursor: pointer;
-  margin-right: 5px;
-}
 /deep/.up-wrap .ivu-form-item-content {
   margin-left: 0 !important;
 }
@@ -86,10 +74,10 @@
         <div class="anchor-wrap ac">
           <span :class="['anchor', {current: anchor == 'nav'}]" @click="goPosition('nav')">产品导航</span>
           <span :class="['anchor', {current: anchor == 'cover'}]" @click="goPosition('cover')">产品封面</span>
-          <span
+          <!-- <span
             :class="['anchor', {current: anchor == 'benefit'}]"
             @click="goPosition('benefit')"
-          >保障利益</span>
+          >保障利益</span> -->
           <span
             :class="['anchor', {current: anchor == 'feature'}]"
             @click="goPosition('feature')"
@@ -229,7 +217,7 @@
             </div>
           </div>
 
-          <div class="box">
+          <!-- <div class="box">
             <div ref="benefit" class="title-wrap bfc-o">
               <span class="title">保险利益说明</span>
             </div>
@@ -265,7 +253,7 @@
               </Row>
               <Button @click="addItem('insurableInterest')">添加</Button>
             </div>
-          </div>
+          </div> -->
 
           <div class="box">
             <div ref="feature" class="title-wrap bfc-o">
@@ -474,12 +462,12 @@ const defaultForm = {
   coverUrl: "", // 封面图片链接地址
   coverVideoUrl: "", // 封面视频链接地址
   // 保险利益
-  insurableInterest: [
-    {
-      title: "",
-      algorithm: ""
-    }
-  ],
+  // insurableInterest: [
+  //   {
+  //     title: "",
+  //     algorithm: ""
+  //   }
+  // ],
   imageText: "", // 图文  富文本编辑内容
   atlas: "", // 图集  多个图片上传逗号分隔
   insuranceRulePdf: "", // 投保规则pdf链接地址
@@ -563,7 +551,7 @@ export default {
           // 图集空值判断设置
           data.atlas = data.atlas || "";
           // 保险利益
-          data.insurableInterest = JSON.parse(data.insurableInterest);
+          // data.insurableInterest = JSON.parse(data.insurableInterest);
           // 保险责任内容
           data.insuranceLiability = JSON.parse(data.insuranceLiability);
           this.form = data;

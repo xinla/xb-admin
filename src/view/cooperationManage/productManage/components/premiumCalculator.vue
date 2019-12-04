@@ -131,7 +131,7 @@
               <Col span="4" class="ar">是否显示</Col>
             </Row>
 
-            <div style="position: relative; max-height: 300px; min-height: 150px; overflow: auto;">
+            <div style="position: relative; min-height: 150px;">
               <Row v-for="(item, index) in currentConfigInfo.configItems" :key="index">
                 <Col span="1">
                   <CheckboxGroup v-model="selected">
@@ -142,9 +142,9 @@
                   <!-- 领取年龄 -->
                   <template v-if="currentConfigInfo.calItemTag === 9">
                     <Select v-model="item.optionOther" style="width: 80px;">
-                      <Option :value="0">不限性别</Option>
-                      <Option :value="1">男性</Option>
-                      <Option :value="2">女性</Option>
+                      <Option value="0">不限性别</Option>
+                      <Option value="1">男性</Option>
+                      <Option value="2">女性</Option>
                     </Select>
                   </template>
 
