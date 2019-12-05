@@ -38,12 +38,12 @@
   }
 }
 .card {
-      margin-left: 23px;
-    // border: 1px solid #eee;
-    vertical-align: top;
-    width: 300px;
-    padding: 0 10px 8px;
-    border-radius: 6px;
+  margin-left: 23px;
+  // border: 1px solid #eee;
+  vertical-align: top;
+  width: 300px;
+  padding: 0 10px 8px;
+  border-radius: 6px;
 }
 </style>
 <template>
@@ -127,61 +127,63 @@
                       <!-- <Button>创建公式</Button> -->
                     </div>
                   </div>
-<br>
-                  <RadioGroup
-                    v-model="form.premiumLimitCoverage"
-                    vertical
-                    @on-change="form.coverageDefineItem = 0"
-                  >
-                    <Radio :label="1">主险保费约束</Radio>
-                  </RadioGroup>
+                  <div>
+                    <RadioGroup
+                      v-model="form.premiumLimitCoverage"
+                      vertical
+                      @on-change="form.coverageDefineItem = 0"
+                    >
+                      <Radio :label="1">主险保费约束</Radio>
+                    </RadioGroup>
 
-                  <div v-if="form.premiumLimitCoverage === 1">
-                    <Row>
-                      <Col span="10">保费标准</Col>
-                      <Col span="10">搭配保额</Col>
-                    </Row>
-                    <Row v-for="(unit, unique) of form.premiumLimitCoverageContent" :Key="unique">
-                      <Col span="10">
-                        <FormItem label="主险保费" prop="pcCoverPicture">
-                          <Select v-model="unit.symbol" style="width:20%; margin-right: 10px;">
-                            <Option :value="0">>=</Option>
-                            <Option :value="1">></Option>
-                            <Option :value="2"><=</Option>
-                            <Option :value="3"><</Option>
-                          </Select>
-                          <Input
-                            v-model="unit.premium"
-                            placeholder="请输入内容"
-                            style="width:40%; margin-right: 10px;"
-                          />
-                        </FormItem>
-                      </Col>
+                    <div v-if="form.premiumLimitCoverage === 1">
+                      <Row>
+                        <Col span="10">保费标准</Col>
+                        <Col span="10">搭配保额</Col>
+                      </Row>
 
-                      <Col span="8">
-                        <FormItem prop="pcCoverPicture">
-                          <Input
-                            v-model="unit.coverage"
-                            placeholder="请输入内容"
-                            style="width:70%; margin-right: 10px;"
-                          />
-                          <Select v-model="unit.unit" style="width:20%; margin-right: 10px;">
-                            <Option :value="0">元</Option>
-                            <Option :value="1">份</Option>
-                          </Select>
-                        </FormItem>
-                      </Col>
-                      <Col span="2">
-                        <span
-                          class="button-circle"
-                          @click="reduce(form, 'premiumLimitCoverageContent', unique)"
-                        >-</span>
-                        <span
-                          class="button-circle"
-                          @click="addItem(form, 'premiumLimitCoverageContent')"
-                        >+</span>
-                      </Col>
-                    </Row>
+                      <Row v-for="(unit, unique) of form.premiumLimitCoverageContent" :Key="unique">
+                        <Col span="10">
+                          <FormItem label="主险保费" prop="pcCoverPicture">
+                            <Select v-model="unit.symbol" style="width:20%; margin-right: 10px;">
+                              <Option :value="0">>=</Option>
+                              <Option :value="1">></Option>
+                              <Option :value="2"><=</Option>
+                              <Option :value="3"><</Option>
+                            </Select>
+                            <Input
+                              v-model="unit.premium"
+                              placeholder="请输入内容"
+                              style="width:40%; margin-right: 10px;"
+                            />
+                          </FormItem>
+                        </Col>
+
+                        <Col span="8">
+                          <FormItem prop="pcCoverPicture">
+                            <Input
+                              v-model="unit.coverage"
+                              placeholder="请输入内容"
+                              style="width:70%; margin-right: 10px;"
+                            />
+                            <Select v-model="unit.unit" style="width:20%; margin-right: 10px;">
+                              <Option :value="0">元</Option>
+                              <Option :value="1">份</Option>
+                            </Select>
+                          </FormItem>
+                        </Col>
+                        <Col span="2">
+                          <span
+                            class="button-circle"
+                            @click="reduce(form, 'premiumLimitCoverageContent', unique)"
+                          >-</span>
+                          <span
+                            class="button-circle"
+                            @click="addItem(form, 'premiumLimitCoverageContent')"
+                          >+</span>
+                        </Col>
+                      </Row>
+                    </div>
                   </div>
                 </template>
 
@@ -372,11 +374,11 @@ const defaultForm = {
   coverageLimitCoverageSymbol: 0,
   coveragePremiumItem: 0,
   coverageLimitCoverage: 0,
-  coverageLimitCoverageMain: "0",
-  coverageLimitCoverageAdd: "0",
+  coverageLimitCoverageMain: "",
+  coverageLimitCoverageAdd: "",
   premiumLimitCoverage: 0,
   premiumLimitCoverageContent: [
-    { coverage: 0, symbol: 0, unit: 0, premium: 0 }
+    { coverage: "", symbol: 0, unit: 0, premium: "" }
   ],
   insurancePeriodLimit: 0,
   insurancePeriodOption: 0,

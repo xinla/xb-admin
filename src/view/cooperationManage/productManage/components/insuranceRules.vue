@@ -534,7 +534,7 @@
                 </Row>
                 <Row v-for="(item, index) in coverageForm.professionalLimitContent" :key="index">
                   <Col span="6">
-                    <Input type="text" v-model="item.grade" placeholder="数字" />类
+                    <Input type="text" v-model="item.grade" placeholder="请输入职业类别" />类
                   </Col>
                   <Col span="6">
                     <InputNumber v-model="item.maxAmount" placeholder="请输入金额"></InputNumber>元
@@ -610,7 +610,7 @@
                     <Input type="text" v-model="item.areaType" placeholder="请输入地区类型" />
                   </Col>
                   <Col span="8">
-                    <Input v-model="item.maxAmount" style="width: 170px;" placeholder="请输入金额">
+                    <InputNumber v-model="item.maxAmount" style="width: 170px;" placeholder="请输入金额"></InputNumber>
                       <Select v-model="item.unit" slot="append" style="width: 70px">
                         <Option :value="0">万元</Option>
                         <Option :value="1">元</Option>
@@ -1080,18 +1080,18 @@ import * as Agency from "@/api/product/rule";
 
 const defaultPeopleForm = {
   productId: "",
-  applicationAgeStart: 0,
-  applicationAgeEnd: 0,
-  applicationAgeDay: 0,
-  renewalAge: 0,
-  payAgeMax: 0,
+  applicationAgeStart: null,
+  applicationAgeEnd: null,
+  applicationAgeDay: null,
+  renewalAge: null,
+  payAgeMax: null,
   sexLimit: 0,
   professionalLimit: 0,
   professionalGradeLimit: 0,
   specialProfessionalLimit: "",
-  socialInsuranceLimit: 0,
+  socialInsuranceLimit: 2,
   multipleInsurer: 0,
-  insurerNum: 0,
+  insurerNum: null,
   relationLimit: [],
   confine: 0,
   type: 0
@@ -1099,26 +1099,26 @@ const defaultPeopleForm = {
 const defaultCoverageForm = {
   productId: "", //	number产品基本信息表主键
   generalLimit: 0, //	number一般限制        0  无限制   1  有限制
-  minAmount: 0, //	number最低保额(单位:元)
-  maxAmount: 0, //	number最高保额(单位:元)
-  increaseUnit: 0, //	number递增单位(单位:元)
+  minAmount: null, //	number最低保额(单位:元)
+  maxAmount: null, //	number最高保额(单位:元)
+  increaseUnit: null, //	number递增单位(单位:元)
   ageLimit: 0, //	number年龄保额限制    0 无限制  1 有限制
-  ageContent: [{ ageBegin: 0, ageEnd: 0, maxAmount: 0 }], //	object []年龄保额限制内容
+  ageContent: [{ ageBegin: undefined, ageEnd: undefined, maxAmount: undefined }], //	object []年龄保额限制内容
   professionaltLimit: 0, //	number职业保额限制    0无限制  1 有限制
-  professionalLimitContent: [{ grade: 0, maxAmount: 0 }], //,	object []职业保额限制内容
+  professionalLimitContent: [{ grade: undefined, maxAmount: null }], //,	object []职业保额限制内容
   specialProfessionalLimit: 0, //	number特殊职业限制   0无限制  1 有限制
-  specialProfessionalLimitContent: [{ jobCode: 0, maxAmount: 0 }], //,	object []特殊职业限制内容
+  specialProfessionalLimitContent: [{ jobCode: undefined, maxAmount: null }], //,	object []特殊职业限制内容
   areaLimit: 0, //	number地区保额限制   0无限制  1 有限制
-  areaLimitContent: [{ areaType: "", maxAmount: 0, unit: 0 }], //,	object []地区保额限制内容  unit  单位  0  万元  1 元  2  元/天
+  areaLimitContent: [{ areaType: "", maxAmount: null, unit: 0 }], //,	object []地区保额限制内容  unit  单位  0  万元  1 元  2  元/天
   insurancePlan: 0, //	number保险计划   0 无  1 有
-  insurancePlanContent: [{ code: 1, name: "", option: [], amount: 0, unit: 0 }] //,	object []保险计划内容
+  insurancePlanContent: [{ code: '', name: "", option: [], amount: "", unit: 0 }] //,	object []保险计划内容
 };
 const defaultPeriodFormYear = {
   productId: "", //	number	产品基本信息表主键id
   insurancePeriodYear: 0, //	number	保险期间类型   年满型   存1代表年满型存在
   insurancePeriodAge: 0, //	number	保险期间类型   岁满型   存1代表岁满型存在
   renewal: 0, //	number	保证续保   0  不支持  1  支持
-  renewalCycle: 0, //	number	续保周期    多少年
+  renewalCycle: "", //	number	续保周期    多少年
   ruleIntevalDtoList: [
     {
       productId: "", //	number 产品基本信息表主键id
@@ -1138,17 +1138,17 @@ const defaultPeriodFormYear = {
 const defaultPeriodFormDay = {
   type: 1, //	number	保险期间分类   0  按年  1 按天
   fixedDay: [""], //	string	固定天数   多个用逗号隔开
-  elasticDay: [{ begin: 0, end: 0 }] //	object []弹性天数
+  elasticDay: [{ begin: "", end: "" }] //	object []弹性天数
 };
 const defaultPaymentForm = {
-  productId: 0, //	number	产品基本信息表主键id
+  productId: '', //	number	产品基本信息表主键id
   payType: [], //	 1,2,3	交费方式   0  年   1 半年  2  季   3  月
   payPeriodAge: 0, //	number	交费期间    岁满型   存1表示年满型有值
   payPeriodYear: 0, //	number	交费期间    年满型   存1表示年满型有值
   premiumLimitAmount: 0, //	number	保费限制    按金额限制  0  不按金额限制     1  按金额限制
-  premiumLimitAmountContent: [{ payType: 0, min: 0, max: 0, increaseUnit: 0 }], //	object []
+  premiumLimitAmountContent: [{ payType: 0, min: "", max: "", increaseUnit: "" }], //	object []
   premiumLimitCopy: 0, //	number	保费限制   按份数限制    0  不按份数限制     1  按份数限制
-  premiumLimitCopyAmount: [{ payType: 0, min: 0, max: 0, increaseUnit: 0 }], //	object []
+  premiumLimitCopyAmount: [{ payType: 0, min: "", max: "", increaseUnit: "" }], //	object []
   ruleIntevalDtoList: [
     {
       productId: "", //	number 产品基本信息表主键id
@@ -1167,7 +1167,7 @@ const defaultPaymentForm = {
 const defaultReceiveForm = {
   productId: "", //	string
   receiveAge: 0, //	number	年金领取年龄  0  不支持   1  支持
-  receiveAgeContent: [{ sex: 0, age: 0 }], //	object []年金领取年龄内容        sex  0  不限制  1 男 2 女
+  receiveAgeContent: [{ sex: 0, age: "" }], //	object []年金领取年龄内容        sex  0  不限制  1 男 2 女
   startReceiveAge: 0, //	number	起领时间  0   不支持   1  支持
   receiveAgeNum: [""], //	string	起领时间多少年    多个逗号分隔
   receivePeriod: 0, //	number	领取期间   0  不支持   1  支持
