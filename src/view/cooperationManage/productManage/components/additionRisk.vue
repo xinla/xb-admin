@@ -113,14 +113,16 @@
 
                   <div v-if="form.coverageDefineItem === 1" class="card">
                     <RadioGroup v-model="form.coveragePremiumItem" vertical>
-                      <Radio :label="0">= 主险保额</Radio>
-                      <Radio :label="1">= 主险期交保费</Radio>
-                      <Radio :label="2">= 主险及其它附加险期交保费</Radio>
-                      <Radio :label="3">= （主险缴费期间-1）* 期交保费</Radio>
+                      <Radio :label="0">= 主险所设定保额</Radio>
+                      <Radio :label="1">= 主险年交保费 × 主险交费期间</Radio>
+                      <Radio :label="2">=（主险年交保费 + 其他所有附加险年交保费）× 主险交费期间</Radio>
+                      <Radio :label="3">= 主险年交保费 ×（主险交费期间-1）</Radio>
+                      <Radio :label="4">=（主险年交保费 + 其他所有附加险年交保费）×（主险交费期间-1）</Radio>
+                      <Radio :label="5">=（主险年交保费 + 其他长期型附加险年交保费）×（主险交费期间-1）</Radio>
                     </RadioGroup>
                     <div>
                       <RadioGroup v-model="form.coveragePremiumItem">
-                        <Radio :label="4">=其他公式</Radio>
+                        <Radio :label="6">= 其他公式</Radio>
                       </RadioGroup>
 
                       <Input type="text" style="width: 40%; margin-right: 10px;" />

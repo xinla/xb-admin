@@ -150,7 +150,13 @@
 
                   <!-- 交费方式 -->
                   <template v-if="currentConfigInfo.calItemTag === 15">
-                    {{['年交', '半年交', '季交', '月交'][item.option]}}
+                    <!-- {{['年交', '半年交', '季交', '月交'][item.option]}} -->
+                    <Select v-model="item.option" style="width: 80px;">
+                      <Option :value="0">年交</Option>
+                      <Option :value="1">半年交</Option>
+                      <Option :value="2">季交</Option>
+                      <Option :value="3">月交</Option>
+                    </Select>
                     <Input
                       type="text"
                       style="width: 100px; margin: 0 10px;"
