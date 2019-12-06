@@ -5,13 +5,14 @@
         <Row :gutter="10">
           <Col span="6">
             <Card title="保险企业" :padding="0">
-              <CellGroup @on-click="clickClass">
+              <CellGroup>
                 <Cell
                   v-for="(item, index) in list"
                   :key="index"
                   :title="item.supplierName"
                   :name="index"
                   :selected="show[0] === index"
+                  @click.native="clickClass(index)"
                 />
               </CellGroup>
             </Card>
@@ -24,9 +25,8 @@
               </div>
               <CellGroup
                 v-for="(item, index) in list"
-                v-show="show[0] === index"
+                v-if="show[0] === index"
                 :key="item.supplierId"
-                @on-click="clickClassSub"
               >
               <div v-if="!item.dictVoList || !item.dictVoList.length" class="ac">
                 <br>
@@ -40,6 +40,7 @@
                   :title="unit.dictName"
                   :name="unique"
                   :selected="show[1] === unique"
+                  @click.native="clickClassSub(unique)"
                 />
               </CellGroup>
             </Card>
@@ -128,13 +129,14 @@
         <Row :gutter="10">
           <Col span="4">
             <Card title="保险企业" :padding="0">
-              <CellGroup @on-click="clickClass">
+              <CellGroup>
                 <Cell
-                  v-for="(item, index) in list"
+                  v-for="(item, index) in list.slice(1)"
                   :key="index"
                   :title="item.supplierName"
                   :name="index"
                   :selected="show[0] === index"
+                  @click.native="clickClass(index)"
                 />
               </CellGroup>
             </Card>
@@ -143,10 +145,9 @@
           <Col span="4">
             <Card title="字典" :padding="0">
               <CellGroup
-                v-for="(item, index) in list"
-                v-show="show[0] === index"
+                v-for="(item, index) in list.slice(1)"
+                v-if="show[0] === index"
                 :key="item.supplierId"
-                @on-click="clickClassSub"
               >
                 <Cell
                   v-for="(unit, unique) in item.dictVoList"
@@ -154,6 +155,7 @@
                   :title="unit.dictName"
                   :name="unique"
                   :selected="show[1] === unique"
+                  @click.native="clickClassSub(unique)"
                 />
               </CellGroup>
             </Card>
@@ -161,7 +163,7 @@
 
           <Col span="6">
             <Card :padding="0">
-              <template v-for="(item,index) in list">
+              <template v-for="(item,index) in list.slice(1)">
                 <template v-for="(unit, unique) in item.dictVoList">
                   <Table
                     v-show="show[0] === index && show[1] === unique"
@@ -177,7 +179,7 @@
 
           <Col span="10">
             <Card :padding="0">
-              <template v-for="(item,index) in list">
+              <template v-for="(item,index) in list.slice(1)">
                 <template v-for="(unit, unique) in item.dictVoList">
                   <Table
                     v-show="show[0] === index && show[1] === unique"
@@ -342,7 +344,7 @@ export default {
       dialogShow: false,
       baseClass: [],
       eidtObj: {},
-      eidtType: ""
+      eidtType: "",
     };
   },
   watch: {},
@@ -370,6 +372,8 @@ export default {
     },
     edit(type, item) {
       this.eidtType = type;
+      this.form = []
+      this.baseClass = []
       Promise.resolve()
         .then(res => {
           if (type === "add") {
@@ -422,7 +426,7 @@ export default {
           return
         }
       }
-      data.dictValueVoList.push({ dictCategoryId: data.id, isEdit: true, isShow: 0 })
+      data.dictValueVoList.push({ dictCategoryId: data.id, isEdit: true, isShow: 0, supplierId: data.supplierId })
     },
     cancle(data, array) {
       if (data.id) {

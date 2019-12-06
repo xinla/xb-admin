@@ -170,7 +170,7 @@ export default {
       },
       compayAccountType: Object.assign({}, compayAccountType),
       businessType: Object.assign({}, businessType),
-      formAll: Object.assign({}, dafaultForm),
+      formAll: JSON.parse(JSON.stringify(dafaultForm)),
       formRole: Object.assign({}, defaultFormRole),
       formAccount: Object.assign({}, defaultFormAccount),
       roleColumns: [
