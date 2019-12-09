@@ -495,6 +495,7 @@ export default {
       });
     },
     getData(pageNum) {
+      this.selectData = [];
       this.loading = true;
       pageNum && (this.query.pageNum = pageNum);
       getProductPage(this.query).then(data => {
@@ -585,7 +586,6 @@ export default {
           this.remove(data);
           break;
       }
-      this.selectData = [];
     },
     change(val) {
       this.form.supplierId = val.id;
@@ -598,8 +598,27 @@ export default {
         .validate()
         .then(data => {
           if (data) {
-            let formData = Object.assign({}, this.form);
+            let formData = JSON.parse(JSON.stringify(this.form));
             formData.smallClass += "";
+            let arr = ['vitProductInPeriodDto', 'vitProductPayRuleDto']
+            for (const item of arr) {
+              for (const iterator of formData[item].ruleIntevalDtoList) {
+                if (
+                      iterator.ruleIntervalType === 1 ||
+                      iterator.ruleIntervalType === 2
+                    ) {
+                      iterator.ruleIntervalName =
+                        iterator.ruleIntervalValue + "年";
+                    } else if (
+                      iterator.ruleIntervalType === 0 ||
+                      iterator.ruleIntervalType === 3
+                    ) {
+                      iterator.ruleIntervalName =
+                        iterator.ruleIntervalValue + "岁";
+                        iterator.ruleIntervalValue += '@'
+                    }
+              }
+            }
             return fastCreateProductInfo(formData);
           } else {
             this.fastShow = true;
@@ -607,7 +626,7 @@ export default {
           }
         })
         .then(res => {
-          this.fastShow = true;
+          this.fastShow = false;
           this.$Message.success("操作成功");
           this.form = JSON.parse(JSON.stringify(defaultForm))
           this.getData();
@@ -637,15 +656,17 @@ export default {
 }
 .button-circle {
   display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #ddd;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #ddd;
   color: #ddd;
   border-radius: 50%;
   text-align: center;
-  line-height: 14px;
+  line-height: 11px;
   cursor: pointer;
+  font-size: 14px;
   margin-right: 5px;
+  background: #fffefe;
 }
 /deep/.ivu-form-item .ivu-form-item .ivu-form-item-label {
   min-width: 50px !important;

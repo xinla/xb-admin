@@ -13,18 +13,7 @@
     line-height: 1;
   }
 }
-.button-circle {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #ddd;
-  color: #ddd;
-  border-radius: 50%;
-  text-align: center;
-  line-height: 14px;
-  cursor: pointer;
-  margin-right: 5px;
-}
+
 .table {
   border: 1px solid #ddd;
   width: 100%;
@@ -47,6 +36,14 @@
   .current {
     background: #ddd;
   }
+}
+.card {
+  margin-left: 23px;
+  // border: 1px solid #eee;
+  vertical-align: top;
+  width: 300px;
+  padding: 0 10px 8px;
+  border-radius: 6px;
 }
 </style>
 <template>
@@ -78,8 +75,8 @@
           <div ref="nav" class="title-wrap bfc-o">
             <span class="title">{{form.additionRiskName}}</span>
             <div class="button-wrap fr">
-              <Button class="button" @click="submit(form)">保存</Button>
-              <Button class="button" @click="clear(form)">清空</Button>
+              <Button class="button" @click="submit(form)">添加</Button>
+              <Button class="button" @click="clear(form)">删除</Button>
             </div>
           </div>
 
@@ -106,41 +103,97 @@
 
                 <template v-if="form.coverageDefine === 0">
                   <div class="title1">不允许自定义，由系统生成</div>
-                  <RadioGroup v-model="form.coverageDefineItem">
-                    <Radio :label="0">= 主险保额</Radio>
+                  <RadioGroup
+                    v-model="form.coverageDefineItem"
+                    vertical
+                    @on-change="form.premiumLimitCoverage = 0"
+                  >
+                    <Radio :label="1">用公式计算</Radio>
                   </RadioGroup>
-                  <div>
-                    <RadioGroup v-model="form.coverageDefineItem">
-                      <Radio :label="1">主险保费推算</Radio>
-                    </RadioGroup>
 
-                    <RadioGroup
-                      v-if="form.coverageDefineItem === 1"
-                      v-model="form.coveragePremiumItem"
-                      style="border: 1px solid #ddd; padding: 0 10px;"
-                    >
-                      <Radio :label="0">= 主险期交保费</Radio>
-                      <Radio :label="1">= 主险及其他附加险期交保费</Radio>
-                      <Radio :label="2">= （主险缴费期间-1）* 期交保费</Radio>
+                  <div v-if="form.coverageDefineItem === 1" class="card">
+                    <RadioGroup v-model="form.coveragePremiumItem" vertical>
+                      <Radio :label="0">= 主险所设定保额</Radio>
+                      <Radio :label="1">= 主险年交保费 × 主险交费期间</Radio>
+                      <Radio :label="2">=（主险年交保费 + 其他所有附加险年交保费）× 主险交费期间</Radio>
+                      <Radio :label="3">= 主险年交保费 ×（主险交费期间-1）</Radio>
+                      <Radio :label="4">=（主险年交保费 + 其他所有附加险年交保费）×（主险交费期间-1）</Radio>
+                      <Radio :label="5">=（主险年交保费 + 其他长期型附加险年交保费）×（主险交费期间-1）</Radio>
                     </RadioGroup>
+                    <div>
+                      <RadioGroup v-model="form.coveragePremiumItem">
+                        <Radio :label="6">= 其他公式</Radio>
+                      </RadioGroup>
+
+                      <Input type="text" style="width: 40%; margin-right: 10px;" />
+                      <!-- <Button>创建公式</Button> -->
+                    </div>
                   </div>
                   <div>
-                    <RadioGroup v-model="form.coverageDefineItem">
-                      <Radio :label="2">使用公式</Radio>
+                    <RadioGroup
+                      v-model="form.premiumLimitCoverage"
+                      vertical
+                      @on-change="form.coverageDefineItem = 0"
+                    >
+                      <Radio :label="1">主险保费约束</Radio>
                     </RadioGroup>
 
-                    <Input type="text" style="width: 40%; margin-right: 10px;" />
-                    <Button>创建公式</Button>
+                    <div v-if="form.premiumLimitCoverage === 1">
+                      <Row>
+                        <Col span="10">保费标准</Col>
+                        <Col span="10">搭配保额</Col>
+                      </Row>
+
+                      <Row v-for="(unit, unique) of form.premiumLimitCoverageContent" :Key="unique">
+                        <Col span="10">
+                          <FormItem label="主险保费" prop="pcCoverPicture">
+                            <Select v-model="unit.symbol" style="width:20%; margin-right: 10px;">
+                              <Option :value="0">>=</Option>
+                              <Option :value="1">></Option>
+                              <Option :value="2"><=</Option>
+                              <Option :value="3"><</Option>
+                            </Select>
+                            <Input
+                              v-model="unit.premium"
+                              placeholder="请输入内容"
+                              style="width:40%; margin-right: 10px;"
+                            />
+                          </FormItem>
+                        </Col>
+
+                        <Col span="8">
+                          <FormItem prop="pcCoverPicture">
+                            <Input
+                              v-model="unit.coverage"
+                              placeholder="请输入内容"
+                              style="width:70%; margin-right: 10px;"
+                            />
+                            <Select v-model="unit.unit" style="width:20%; margin-right: 10px;">
+                              <Option :value="0">元</Option>
+                              <Option :value="1">份</Option>
+                            </Select>
+                          </FormItem>
+                        </Col>
+                        <Col span="2">
+                          <span
+                            class="button-circle"
+                            @click="reduce(form, 'premiumLimitCoverageContent', unique)"
+                          >-</span>
+                          <span
+                            class="button-circle"
+                            @click="addItem(form, 'premiumLimitCoverageContent')"
+                          >+</span>
+                        </Col>
+                      </Row>
+                    </div>
                   </div>
                 </template>
 
                 <template v-if="form.coverageDefine === 1">
                   <div class="title1">允许自定义，用保费计算器设定</div>
-                  <Checkbox
-                    v-model="form.coverageLimitCoverage"
-                    :true-value="1"
-                    :false-value="0"
-                  >保额限保额</Checkbox>
+                  <RadioGroup v-model="form.coverageLimitCoverage">
+                    <Radio :label="1">保额限保额</Radio>
+                  </RadioGroup>
                   <div v-if="form.coverageLimitCoverage === 1">
                     主险保额 ：附加险保额
                     <Select
@@ -156,7 +209,7 @@
                     <Input type="text" v-model="form.coverageLimitCoverageAdd" style="width:10%;" />
                   </div>
 
-                  <Checkbox
+                  <!-- <Checkbox
                     v-model="form.premiumLimitCoverage"
                     :true-value="1"
                     :false-value="0"
@@ -207,7 +260,7 @@
                         >+</span>
                       </Col>
                     </Row>
-                  </div>
+                  </div>-->
                 </template>
               </div>
             </FormItem>
@@ -236,12 +289,12 @@
                   <Radio :label="1">可选</Radio>
                 </RadioGroup>
 
-                <Checkbox
+                <!-- <Checkbox
                   v-model="form.insurancePeriodRate"
                   :true-value="1"
                   :false-value="0"
                   @on-change="constraintChange(form)"
-                >作为费率查询条件</Checkbox>
+                >作为费率查询条件</Checkbox>-->
 
                 <table class="table ac" border>
                   <tr>
@@ -323,11 +376,11 @@ const defaultForm = {
   coverageLimitCoverageSymbol: 0,
   coveragePremiumItem: 0,
   coverageLimitCoverage: 0,
-  coverageLimitCoverageMain: "0",
-  coverageLimitCoverageAdd: "0",
+  coverageLimitCoverageMain: "",
+  coverageLimitCoverageAdd: "",
   premiumLimitCoverage: 0,
   premiumLimitCoverageContent: [
-    { coverage: 0, symbol: 0, unit: 0, premium: 0 }
+    { coverage: "", symbol: 0, unit: 0, premium: "" }
   ],
   insurancePeriodLimit: 0,
   insurancePeriodOption: 0,
@@ -385,17 +438,33 @@ export default {
             for (const iterator of data) {
               this.anchor.push(iterator.additionRiskId);
               // 保费限保额内容
-              iterator.premiumLimitCoverageContent && (iterator.premiumLimitCoverageContent = JSON.parse(iterator.premiumLimitCoverageContent));
+              iterator.premiumLimitCoverageContent &&
+                (iterator.premiumLimitCoverageContent = JSON.parse(
+                  iterator.premiumLimitCoverageContent
+                ));
               // 保险期间可选内容
-             iterator.insurancePeriodContent && (iterator.insurancePeriodContent = JSON.parse(
-                iterator.insurancePeriodContent
-              ));
+              iterator.insurancePeriodContent &&
+                (iterator.insurancePeriodContent = JSON.parse(
+                  iterator.insurancePeriodContent
+                ));
               // 保险期间可选内容 费率
-              iterator.insurancePeriodContentRate && (iterator.insurancePeriodContentRate = JSON.parse(
-                iterator.insurancePeriodContentRate
-              ));
+              iterator.insurancePeriodContentRate &&
+                (iterator.insurancePeriodContentRate = JSON.parse(
+                  iterator.insurancePeriodContentRate
+                ));
             }
             // this.form = data[0]
+
+            for (const iterator of this.infolist) {
+              if (this.current === iterator.additionRiskId) {
+                this.form = iterator;
+                break;
+              } else {
+                this.form.id = "";
+              }
+            }
+          } else {
+            this.form.id = "";
           }
         });
     },
@@ -412,6 +481,7 @@ export default {
       form[field].splice(index, 1);
     },
     submit(data) {
+      console.log(data);
       Promise.resolve()
         .then(() => {
           let formData = JSON.parse(JSON.stringify(data));
@@ -428,19 +498,23 @@ export default {
         });
     },
     clear(item) {
+      // console.log(item)
       this.$Modal.confirm({
         title: "提示",
-        content: "确定要清空么",
+        content: "确定要删除么",
         onOk: () => {
           Agency.deleteAdditionRisk(item.id).then(() => {
             this.getData();
-            this.$Message.info("清空成功");
+            this.$Message.info("删除成功");
           });
         }
       });
     },
     constraintChange(data) {
-      if (data.insurancePeriodOption === 1 && !data.insurancePeriodContent.length) {
+      if (
+        data.insurancePeriodOption === 1 &&
+        (!data.insurancePeriodContent || !data.insurancePeriodContent.length)
+      ) {
         Agency.getInsurancePeriodConstraint(
           this.$route.query.id,
           data.additionRiskId,
@@ -449,7 +523,11 @@ export default {
           // console.log(res)
           data.insurancePeriodContent = res;
         });
-      } else if (data.insurancePeriodRate === 1 && !data.insurancePeriodContentRate.length) {
+      } else if (
+        data.insurancePeriodRate === 1 &&
+        (!data.insurancePeriodContentRate ||
+          !data.insurancePeriodContentRate.length)
+      ) {
         Agency.getInsurancePeriodConstraint(
           this.$route.query.id,
           data.additionRiskId,

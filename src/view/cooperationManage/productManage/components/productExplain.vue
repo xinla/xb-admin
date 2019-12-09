@@ -37,18 +37,6 @@
     margin: 20px;
   }
 }
-.button-circle {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #ddd;
-  color: #ddd;
-  border-radius: 50%;
-  text-align: center;
-  line-height: 14px;
-  cursor: pointer;
-  margin-right: 5px;
-}
 /deep/.up-wrap .ivu-form-item-content {
   margin-left: 0 !important;
 }
@@ -86,10 +74,10 @@
         <div class="anchor-wrap ac">
           <span :class="['anchor', {current: anchor == 'nav'}]" @click="goPosition('nav')">产品导航</span>
           <span :class="['anchor', {current: anchor == 'cover'}]" @click="goPosition('cover')">产品封面</span>
-          <span
+          <!-- <span
             :class="['anchor', {current: anchor == 'benefit'}]"
             @click="goPosition('benefit')"
-          >保障利益</span>
+          >保障利益</span>-->
           <span
             :class="['anchor', {current: anchor == 'feature'}]"
             @click="goPosition('feature')"
@@ -217,8 +205,7 @@
                     <Upload
                       :action="uploadUrl"
                       :show-upload-list="false"
-                      :format="['jpg','jpeg','png']"
-                      accept="image/*"
+                      accept="video/*"
                       :on-success="uploadCoverVideo"
                     >
                       <img class="logo" v-if="form.coverVideoUrl" :src="form.pcCoverPicture" />
@@ -230,7 +217,7 @@
             </div>
           </div>
 
-          <div class="box">
+          <!-- <div class="box">
             <div ref="benefit" class="title-wrap bfc-o">
               <span class="title">保险利益说明</span>
             </div>
@@ -266,7 +253,7 @@
               </Row>
               <Button @click="addItem('insurableInterest')">添加</Button>
             </div>
-          </div>
+          </div>-->
 
           <div class="box">
             <div ref="feature" class="title-wrap bfc-o">
@@ -274,13 +261,14 @@
             </div>
             <Tabs>
               <TabPane label="图文">
-                <div class="box-content">
-                  <ckeditor
+                <div style="width: 100%; max-width: 640px; margin: 0 20px 20px;">
+                  <!-- <ckeditor
                     :editor="editor"
                     v-model="form.imageText"
                     :config="editorConfig"
                     @ready="onReady"
-                  ></ckeditor>
+                  ></ckeditor>-->
+                  <editor ref="editor" :value="form.imageText" @on-change="handleChange" />
                 </div>
               </TabPane>
               <TabPane label="图集">
@@ -312,23 +300,25 @@
               <span class="title">投保须知</span>
             </div>
 
-            <div class="box-content">
+            <div class="box-content" style="width: 100%; max-width: 640px;">
               <Upload
                 :action="uploadUrl"
                 :show-upload-list="false"
                 :data="{image: true}"
+                :format="['pdf']"
+                :on-format-error="formatErrorPdf"
                 :on-success="uploadRulePdf"
                 :before-upload="beforeUpload"
               >
-                <Button icon="ios-cloud-upload-outline">上传投保规则</Button>
-                <span>{{form.insuranceRulePdf}}</span>
+                <Button icon="ios-cloud-upload-outline">{{form.insuranceRulePdf ? '替换' : '上传'}}投保规则</Button>
               </Upload>
-              <ckeditor
+              <!-- <ckeditor
                 :editor="editor"
                 v-model="form.insuranceRuleText"
                 :config="editorConfig"
                 @ready="onReady"
-              ></ckeditor>
+              ></ckeditor>-->
+              <editor ref="editor1" :value="form.insuranceRuleText" @on-change="handleChange1" />
             </div>
           </div>
 
@@ -342,11 +332,14 @@
                 :action="uploadUrl"
                 :show-upload-list="false"
                 :data="{image: true}"
+                :format="['pdf']"
+                :on-format-error="formatErrorPdf"
                 :on-success="uploadLiabilityPdf"
                 :before-upload="beforeUpload"
               >
-                <Button icon="ios-cloud-upload-outline">上传条款</Button>
-                <span>{{form.insuranceLiabilityPdf}}</span>
+                <Button
+                  icon="ios-cloud-upload-outline"
+                >{{form.insuranceLiabilityPdf ? '替换' : '上传'}}条款</Button>
               </Upload>
 
               <Tabs style="min-height: 300px;">
@@ -370,11 +363,10 @@
                         <template v-for="_item in allClass">
                           <template v-if="item.mainClass === _item.id">
                             <Option
-                          v-for="(unit, index) in _item.childs"
-                          :value="unit.id"
-                          :key="index"
-                        >{{unit.dataName}}</Option>
-
+                              v-for="(unit, index) in _item.childs"
+                              :value="unit.id"
+                              :key="index"
+                            >{{unit.dataName}}</Option>
                           </template>
                         </template>
                       </Select>
@@ -424,45 +416,46 @@ import {
   getProductDesc,
   saveProductDesc,
   updateProductDesc,
-  clearProductDesc,
+  clearProductDesc
 } from "@/api/product/desc";
 import { getProductMainClass, getAllDitionaryItem } from "@/api/dataDictionary";
+import Editor from "_c/editor";
 
 import axios from "axios";
 import config from "@/config";
 
-import CKEditor from "@ckeditor/ckeditor5-vue";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import "@ckeditor/ckeditor5-build-classic/build/translations/zh-cn";
+// import CKEditor from "@ckeditor/ckeditor5-vue";
+// import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+// import "@ckeditor/ckeditor5-build-classic/build/translations/zh-cn";
 
-class MyUploadAdapter {
-  constructor(loader) {
-    // Save Loader instance to update upload progress.
-    this.loader = loader;
-  }
+// class MyUploadAdapter {
+//   constructor(loader) {
+//     // Save Loader instance to update upload progress.
+//     this.loader = loader;
+//   }
 
-  async upload() {
-    const data = new FormData();
-    data.append("typeOption", "upload_image");
-    data.append("file", await this.loader.file);
+//   async upload() {
+//     const data = new FormData();
+//     data.append("typeOption", "upload_image");
+//     data.append("file", await this.loader.file);
 
-    return new Promise((resolve, reject) => {
-      axios({
-        url: config.services.upload,
-        data,
-        method: "post",
-        headers: { "Content-Type": "multipart/form-data" }
-      })
-        .then(res => {
-          // console.log(res);
-          resolve({ default: res.data.result.fileUrl });
-        })
-        .catch(error => {
-          reject(error);
-        });
-    });
-  }
-}
+//     return new Promise((resolve, reject) => {
+//       axios({
+//         url: config.services.upload,
+//         data,
+//         method: "post",
+//         headers: { "Content-Type": "multipart/form-data" }
+//       })
+//         .then(res => {
+//           // console.log(res);
+//           resolve({ default: res.data.result.fileUrl });
+//         })
+//         .catch(error => {
+//           reject(error);
+//         });
+//     });
+//   }
+// }
 
 const defaultForm = {
   productId: "",
@@ -473,12 +466,12 @@ const defaultForm = {
   coverUrl: "", // 封面图片链接地址
   coverVideoUrl: "", // 封面视频链接地址
   // 保险利益
-  insurableInterest: [
-    {
-      title: "",
-      algorithm: ""
-    }
-  ],
+  // insurableInterest: [
+  //   {
+  //     title: "",
+  //     algorithm: ""
+  //   }
+  // ],
   imageText: "", // 图文  富文本编辑内容
   atlas: "", // 图集  多个图片上传逗号分隔
   insuranceRulePdf: "", // 投保规则pdf链接地址
@@ -490,16 +483,17 @@ const defaultForm = {
 
 export default {
   components: {
-    ckeditor: CKEditor.component
+    // ckeditor: CKEditor.component,
+    Editor
   },
   data() {
     return {
-      editor: ClassicEditor,
       uploadUrl: this.$config.services.upload,
-      editorConfig: {
-        // The configuration of the editor.
-        language: "zh-cn"
-      },
+      // editor: ClassicEditor,
+      // editorConfig: {
+      //   // The configuration of the editor.
+      //   language: "zh-cn"
+      // },
       form: JSON.parse(JSON.stringify(defaultForm)),
       rules: {
         coreBuy: [
@@ -524,7 +518,7 @@ export default {
         exclusion: [{ required: true, message: "不能为空", trigger: "blur" }],
         pcCoverPicture: [
           { required: true, message: "不能为空", trigger: "change" }
-        ],
+        ]
         // describePicture: [
         //   {
         //     required: true,
@@ -538,7 +532,7 @@ export default {
       anchor: "nav",
       productFeature: [],
       productFeatureShow: false,
-      allClass: [],
+      allClass: []
     };
   },
   mounted() {
@@ -546,7 +540,7 @@ export default {
     // this.form.productId || (this.form.productId = this.$route.query.id)
     getProductMainClass().then(res => {
       // console.log("allClass", res);
-      this.allClass = res
+      this.allClass = res;
     });
     this.getData();
   },
@@ -555,14 +549,14 @@ export default {
       this.form.productId = this.$route.query.id;
       this.form.productId &&
         getProductDesc(this.form.productId).then(data => {
-          console.log("productExplain", data);
+          // console.log("productExplain", data);
           if (!data) {
             return;
           }
           // 图集空值判断设置
           data.atlas = data.atlas || "";
           // 保险利益
-          data.insurableInterest = JSON.parse(data.insurableInterest);
+          // data.insurableInterest = JSON.parse(data.insurableInterest);
           // 保险责任内容
           data.insuranceLiability = JSON.parse(data.insuranceLiability);
           this.form = data;
@@ -570,6 +564,9 @@ export default {
           // 设置富文本内容
           this.form.imageText || (this.form.imageText = "");
           this.form.insuranceRuleText || (this.form.insuranceRuleText = "");
+
+          this.$refs.editor.setHtml(this.form.imageText);
+          this.$refs.editor1.setHtml(this.form.insuranceRuleText);
         });
     },
     beforeUpload() {
@@ -606,11 +603,11 @@ export default {
       this.form.atlas += "," + response.result.fileUrl;
     },
     uploadRulePdf(response, file, fileList) {
-      this.form.insuranceRulePdf = response.result.fileUrl;
+      this.form.insuranceRulePdf = response.result.imageUrl;
       this.$Spin.hide();
     },
     uploadLiabilityPdf(response, file, fileList) {
-      this.form.insuranceLiabilityPdf = response.result.fileUrl;
+      this.form.insuranceLiabilityPdf = response.result.imageUrl;
       this.$Spin.hide();
     },
     submit() {
@@ -670,17 +667,17 @@ export default {
       this.anchor = data;
     },
     // 富文本自定义图片删除插件
-    onReady(editor) {
-      // DecoupledEditor.create(document.querySelector("#editor"), {
-      //   extraPlugins: [MyCustomUploadAdapterPlugin]
-      // }).catch(error => {
-      //   console.log(error);
-      // });
-      // function MyCustomUploadAdapterPlugin() {}
-      editor.plugins.get("FileRepository").createUploadAdapter = loader => {
-        return new MyUploadAdapter(loader);
-      };
-    },
+    // onReady(editor) {
+    //   // DecoupledEditor.create(document.querySelector("#editor"), {
+    //   //   extraPlugins: [MyCustomUploadAdapterPlugin]
+    //   // }).catch(error => {
+    //   //   console.log(error);
+    //   // });
+    //   // function MyCustomUploadAdapterPlugin() {}
+    //   editor.plugins.get("FileRepository").createUploadAdapter = loader => {
+    //     return new MyUploadAdapter(loader);
+    //   };
+    // },
     transLabel() {
       if (this.form.productFeature) {
         this.productFeature = this.form.productFeature.split(",");
@@ -691,6 +688,20 @@ export default {
       this.form.productFeature = this.productFeature.join(",");
       // console.log(this.form.specialProfessionalLimit)
     },
+    formatErrorPdf() {
+      this.$Spin.hide();
+      this.$Message.error("文件格式不正确，请选择“pdf”格式的文件");
+    },
+    handleChange(html, text) {
+      // console.log(html, text);
+      this.form.imageText = html;
+      // console.log(this.form.underwritingRulesText)
+    },
+    handleChange1(html, text) {
+      // console.log(html, text);
+      this.form.insuranceRuleText = html;
+      // console.log(this.form.underwritingRulesText)
+    }
   }
 };
 </script>

@@ -74,11 +74,13 @@
     <FormItem label="适合人群" prop="ageLevel">
       <CheckboxGroup v-model="form.ageLevel">
         <Checkbox label="0">母婴</Checkbox>
-        <Checkbox label="1">少儿</Checkbox>
-        <Checkbox label="2">青中年</Checkbox>
-        <Checkbox label="3">中老年</Checkbox>
-        <Checkbox label="4">老年</Checkbox>
-        <Checkbox label="5">全龄</Checkbox>
+        <Checkbox label="1">孕妇</Checkbox>
+        <Checkbox label="2">胎儿</Checkbox>
+        <Checkbox label="3">婴儿</Checkbox>
+        <Checkbox label="4">幼儿</Checkbox>
+        <Checkbox label="5">少儿</Checkbox>
+        <Checkbox label="6">青年</Checkbox>
+        <Checkbox label="7">老年</Checkbox>
       </CheckboxGroup>
     </FormItem>
 
@@ -111,12 +113,12 @@
     </FormItem>
 
     <FormItem label="分销渠道" prop="distributionChannel">
-      <!-- <RadioGroup v-model="form.distributionChannel">
+      <RadioGroup v-model="form.distributionChannel" @on-change="distChange">
         <Radio label="0">传统经代</Radio>
-      </RadioGroup> -->
-      <CheckboxGroup v-model="form.distributionChannel" @on-change="distChange">
-        <Checkbox label="0">传统经代</Checkbox>
-      </CheckboxGroup>
+      </RadioGroup>
+      <!-- <CheckboxGroup v-model="form.distributionChannel" @on-change="distChange">
+        <Checkbox :label="0">传统经代</Checkbox>
+      </CheckboxGroup> -->
       <FormItem label="是否支持现保投保" prop>
         <RadioGroup v-model="form.vitSupport">
           <Radio :label="0">不支持</Radio>
@@ -124,40 +126,50 @@
         </RadioGroup>
       </FormItem>
 
-      <!-- <RadioGroup v-model="form.distributionChannel">
+      <RadioGroup v-model="form.distributionChannel" @on-change="distChange">
         <Radio label="1">互联网</Radio>
-      </RadioGroup> -->
-      <CheckboxGroup v-model="form.distributionChannel" @on-change="distChange">
-        <Checkbox label="1">互联网</Checkbox>
-      </CheckboxGroup>
+      </RadioGroup>
+      <!-- <CheckboxGroup v-model="form.distributionChannel" @on-change="distChange">
+        <Checkbox :label="1">互联网</Checkbox>
+      </CheckboxGroup> -->
       <FormItem label="互联网投保方式" prop>
         <RadioGroup v-model="form.internetInsurance">
           <Radio :label="0">H5</Radio>
           <Radio :label="1">API</Radio>
         </RadioGroup>
+        <Input v-if="form.internetInsurance == 0" v-model="form.internetInsuranceH5" placeholder="请输入网址" class="inline-input" />
       </FormItem>
     </FormItem>
 
     <FormItem label="保险公司投保渠道">
-      <Row>
+      <!-- <Row>
         <Col span="10">
           <FormItem label="APP名称" prop="insuranceApp">
             <Input type="text" v-model="form.insuranceApp" placeholder="APP名称" />
           </FormItem>
-        </Col>
-        <Col span="10">
+
           <FormItem label="PC网址" prop="insurancePc">
             <Input type="text" v-model="form.insurancePc" placeholder="PC网址" />
           </FormItem>
+
+          <FormItem label="小程序" prop="insuranceSmallProgram">
+            <Input type="text" v-model="form.insuranceSmallProgram" placeholder="小程序" />
+          </FormItem>
         </Col>
-      </Row>
+      </Row> -->
       <Row>
         <Col span="10">
+        <FormItem label="APP名称" prop="insuranceApp">
+            <Input type="text" v-model="form.insuranceApp" placeholder="APP名称" />
+          </FormItem>
           <FormItem label="H5网址" prop="insuranceH5">
             <Input type="text" v-model="form.insuranceH5" placeholder="H5网址" />
           </FormItem>
         </Col>
         <Col span="10">
+        <FormItem label="PC网址" prop="insurancePc">
+            <Input type="text" v-model="form.insurancePc" placeholder="PC网址" />
+          </FormItem>
           <FormItem label="小程序" prop="insuranceSmallProgram">
             <Input type="text" v-model="form.insuranceSmallProgram" placeholder="小程序" />
           </FormItem>
@@ -194,14 +206,15 @@ const defaultForm = {
   underwritingModel: 0,
   underwritingPeriod: 0,
   productForm: 0,
-  distributionChannel: [],
+  distributionChannel: 0,
   sale: 0,
   onlineInsurance: 0,
   insuranceApp: "",
   insurancePc: "",
-  insuranceH5: "",
+  insuranceH5: "http://app.visualinsur.cn/product",
   insuranceSmallProgram: "",
   internetInsurance: 0,
+  internetInsuranceH5: '',
   vitSupport: 0
 };
 
@@ -332,7 +345,7 @@ export default {
               this.$route.query.supplierId = data.supplierId
 
           // 所属小类,分销渠道,保障功能 转为数组
-          let trans = ["smallClass", "protectFunction", "ageLevel", 'distributionChannel'];
+          let trans = ["smallClass", "protectFunction", "ageLevel"];
           for (const iterator of trans) {
             data[iterator] = data[iterator] ? data[iterator].split(",") : [];
           }
@@ -351,8 +364,11 @@ export default {
         .then(data => {
           if (data) {
             let formData = Object.assign({}, this.form);
+            if (formData.internetInsurance != 0) {
+              formData.internetInsuranceH5 = ''
+            }
               // 数组字段转字符串
-              let trans = ["smallClass", "protectFunction", "ageLevel", 'distributionChannel'];
+              let trans = ["smallClass", "protectFunction", "ageLevel"];
               for (const iterator of trans) {
                 formData[iterator] += "";
               }
@@ -396,11 +412,13 @@ export default {
     },
     // 分销渠道交互
     distChange(val) {
-      if (!val.includes('0')) {
-        this.form.vitSupport = ''
+      if (val === '0') {
+        this.form.internetInsurance = undefined
+        this.form.vitSupport = 0
       }
-      if (!val.includes('1')) {
-        this.form.internetInsurance = ''
+      if (val === '1') {
+        this.form.vitSupport = undefined
+        this.form.internetInsurance = 0
       }
     }
   }

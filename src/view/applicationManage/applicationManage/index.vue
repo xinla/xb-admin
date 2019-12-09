@@ -282,7 +282,7 @@
                 <Checkbox v-for="(value, key) in terminalList" :label="key" :key="key">{{value}}</Checkbox>
               </CheckboxGroup>
             </FormItem>
-            <FormItem label="Web地址">
+            <FormItem :label="applicantForm.terminal ? terminalList[applicantForm.terminal] : 'web' + '地址'">
               <Input v-model.trim="applicantForm.menuUrl" placeholder="请输入请求地址" />
             </FormItem>
             <FormItem label="ICON">
@@ -341,7 +341,7 @@
                 <Checkbox v-for="(value, key) in terminalList" :label="key" :key="key">{{value}}</Checkbox>
               </CheckboxGroup>
             </FormItem>
-            <FormItem label="Web地址">
+            <FormItem :label="operationForm.terminal ? terminalList[operationForm.terminal] : 'web' + '地址'">
               <Input v-model.trim="operationForm.menuUrl" placeholder="请输入请求地址" />
             </FormItem>
             <FormItem label="ICON">

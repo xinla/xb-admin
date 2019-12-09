@@ -48,7 +48,7 @@ export const getCalculatorBase = (id) => {
 }
 
 /**
- * 查询保费计算器项目
+ * 查询所有保费计算器项目列表
  * @param {*} id 产品主键id
  */
 export const getAllCalculatorItem = (id) => {
@@ -59,13 +59,13 @@ export const getAllCalculatorItem = (id) => {
 }
 
 /**
- * 勾选左侧选项项目(查询勾选项目信息)
+ * 单个查询保费计算器项目的(查询勾选项目信息)
  * @param {*} productId 产品基本信息id
  * @param {*} id 左侧选项id
  */
 export const getCalculatorItemInfo = (productId, id) => {
   return axios.request({
-    url: service + `/cal/queryConfigItem/${productId}/${id}`,
+    url: service + `/cal/queryConfigItemVar/${productId}/${id}`,
     method: 'get'
   })
 }
