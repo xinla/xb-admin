@@ -66,6 +66,19 @@ body {
 .ivu-modal-wrap {
   z-index: 10002 !important;
 }
+// 按钮间距
+.ivu-btn, .ivu-select, .ivu-input-wrapper , .ivu-date-picker {
+    margin-right: 10px;
+  // &:first-of-type {
+  //   margin-left: 10px;
+  // }
+  // &:first-child {
+  //   margin-left: 0;
+  // }
+  &:last-child {
+    margin-right: 0;
+  }
+}
 
 #app {
   .ivu-table-wrapper{

@@ -15,11 +15,13 @@ const config = {
   baseUrl: {
     // 测试服
     // dev: 'http://192.168.1.64', // 虚拟机 liusiyuan
-    dev: 'http://192.168.1.32:8118', // 本地
+    dev: 'http://192.168.1.91:9999', // 本地
     dev2: 'http://192.168.1.150:8888', // v2.0本地 liusiyuan
     dev1: 'http://192.168.1.150:8888', // caikefu
 
     domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8888' : 'http://192.168.1.26:8888', // wangdong
+
+    domainPs: process.env.NODE_ENV === 'development' ? 'http://192.168.1.91:9999' : 'http://192.168.1.26:8888', // wangdong
 
     // pro: 'http://112.31.212.46:8118', // line
     pro: 'http://192.168.1.26:8118', // ali line
@@ -61,40 +63,48 @@ const config = {
 }
 
 config.services = {
-  company: '/xbcompany',
-  menuSet: '-/xbBasePermissionMenu',
-  systemHelp: '/xbSystemHelp',
-  system: '/system',
-  user: '/user',
-  systemMessage: '/imNoticeMsg',
-  businessInformation: '/xbCompanyBusinessInformation',
-  product: '/product',
-  supplier: '/xbsupplier',
-  supplierUser: '/xbSupplierUser',
-  supplierOrganization: '/xbSupplierOrganization',
-  supplierNews: '/xbSupplierNews',
-  typeRule: '/typeRule',
-  profession: '/xbProfession',
-  roleGroup: '/roleGroup',
-  role: '/role',
-  nationality: '/vitNationality',
-  policyDictCategory: '/policyDictCategory',
-  insurance: '/insurance',
-  proposal: '/vitProposal',
-  version: '/version',
-  sensitive: '/v1/sensitive',
-  dataDitionary: '/api/base/v1/dataDict',
+  company: '/vitadmin/xbcompany',
+  menuSet: '-/vitadmin/xbBasePermissionMenu',
+  systemHelp: '/vitadmin/xbSystemHelp',
+  system: '/vitadmin/system',
+  user: '/vitadmin/user',
+  systemMessage: '/vitadmin/imNoticeMsg',
+  businessInformation: '/vitadmin/xbCompanyBusinessInformation',
+  product: '/vitadmin/product',
+  supplier: '/vitadmin/xbsupplier',
+  supplierUser: '/vitadmin/xbSupplierUser',
+  supplierOrganization: '/vitadmin/xbSupplierOrganization',
+  supplierNews: '/vitadmin/xbSupplierNews',
+  typeRule: '/vitadmin/typeRule',
+  profession: '/vitadmin/xbProfession',
+  roleGroup: '/vitadmin/roleGroup',
+  role: '/vitadmin/role',
+  nationality: '/vitadmin/vitNationality',
+  policyDictCategory: '/vitadmin/policyDictCategory',
+  insurance: '/vitadmin/insurance',
+  proposal: '/vitadmin/vitProposal',
+  version: '/vitadmin/version',
+  sensitive: '/vitadmin/v1/sensitive',
+  dataDitionary: '/vitadmin/v1/dataDict',
 
 
-  upload: config.domain + '/upload',
-  // mSystemHelp: config.baseUrl.dev2 + '/systemHelp',
-  saas: '/api/permission/company/saas',
+  upload: config.domain + '/vitadmin/upload',
+  // mSystemHelp: c/vitadminonfig.baseUrl.dev2 + '/systemHelp',
+  saas: '/vitadmin/company/saas',
 }
 config.servicesV2 = {
-  saas: '/api/permission/saas',
-  product: '/v2/product',
-  calculator: '/v2/calculator',
-  rate: '/v2/rate',
+  saas: '/vitadmin/saas',
+  product: '/vitadmin/v2/product',
+  calculator: '/vitadmin/v2/calculator',
+  rate: '/vitadmin/v2/rate',
+}
+
+config.servicesPs = {
+  admin: '/admin',
+  log: '/admin/log',
+  param: '/admin/param',
+  client: '/admin/client',
+  social: '/admin/social',
 }
 
 export default config

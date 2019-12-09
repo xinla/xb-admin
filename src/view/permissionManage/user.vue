@@ -7,7 +7,7 @@
       </Col>
       <Col span="18">
         <div>
-          <Input v-model="query.username" placeholder="用户名" style="width:200px; padding-right: 10px;" />
+          <Input v-model="query.username" placeholder="用户名" style="width:200px;" />
           <Button type="primary" icon="ios-search" @click="getData(1)">搜索</Button>
         </div>
         <Table :loading="loading" :columns="columns" :data="list">

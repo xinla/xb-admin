@@ -52,14 +52,15 @@ export default [
       }
     ]
   },
-  // 权限管理
-  {
-    path: '/permissionManage',
-    name: 'permissionManage',
+
+  // 系统管理
+   {
+    path: '/systemManage',
+    name: 'systemManage',
     component: Main,
     meta: {
       icon: '_Basicmanagement',
-      title: '权限管理',
+      title: '系统管理',
       hideInMenu: false,
       notCache: true
     },
@@ -74,13 +75,13 @@ export default [
         component: () => import('@/view/permissionManage/user')
       },
       {
-        path: 'menu',
-        name: 'menu',
+        path: 'department',
+        name: 'department',
         meta: {
           icon: '_Tenantmanagement',
-          title: '菜单管理'
+          title: '部门管理'
         },
-        component: () => import('@/view/permissionManage/menu')
+        component: () => import('@/view/permissionManage/department')
       },
       {
         path: 'role',
@@ -92,13 +93,49 @@ export default [
         component: () => import('@/view/permissionManage/role')
       },
       {
-        path: 'department',
-        name: 'department',
+        path: 'menu',
+        name: 'menu',
         meta: {
           icon: '_Tenantmanagement',
-          title: '部门管理'
+          title: '菜单管理'
         },
-        component: () => import('@/view/permissionManage/department')
+        component: () => import('@/view/permissionManage/menu')
+      },
+      {
+        path: 'log',
+        name: 'log',
+        meta: {
+          icon: '_Tenantmanagement',
+          title: '日志管理'
+        },
+        component: () => import('@/view/systemManage/log')
+      },
+      // {
+      //   path: 'param',
+      //   name: 'param',
+      //   meta: {
+      //     icon: '_Tenantmanagement',
+      //     title: '参数管理'
+      //   },
+      //   component: () => import('@/view/systemManage/param')
+      // },
+      // {
+      //   path: 'client',
+      //   name: 'client',
+      //   meta: {
+      //     icon: '_Tenantmanagement',
+      //     title: '终端管理'
+      //   },
+      //   component: () => import('@/view/systemManage/client')
+      // },
+      {
+        path: 'social',
+        name: 'social',
+        meta: {
+          icon: '_Tenantmanagement',
+          title: '密钥管理'
+        },
+        component: () => import('@/view/systemManage/social')
       },
     ]
   },
