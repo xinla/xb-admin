@@ -31,17 +31,18 @@ export default [
   {
     path: '/',
     name: '_home',
+    redirect: '/home',
     component: Main,
-    redirect: '/basicManage/lessee',
     meta: {
       hideInMenu: true,
-      notCache: true
+      notCache: true,
+      title: '首页',
+      icon: 'md-home'
     },
     children: [
       {
         path: '/home',
         name: 'home',
-        redirect: '/permissionManage/user',
         meta: {
           hideInMenu: true,
           title: '首页',
@@ -52,9 +53,35 @@ export default [
       }
     ]
   },
+  // 个人信息
+  {
+    path: '/selfInfo',
+    name: '_selfInfo',
+    redirect: '/selfInfo',
+    component: Main,
+    meta: {
+      hideInMenu: true,
+      notCache: true,
+      title: '个人信息',
+      icon: 'md-home'
+    },
+    children: [
+      {
+        path: 'index',
+        name: 'selfInfo',
+        meta: {
+          hideInMenu: true,
+          title: '个人信息',
+          notCache: true,
+          icon: 'md-home'
+        },
+        component: () => import('@/view/single-page/selfInfo')
+      }
+    ]
+  },
 
   // 系统管理
-   {
+  {
     path: '/systemManage',
     name: 'systemManage',
     component: Main,
@@ -129,6 +156,15 @@ export default [
       //   component: () => import('@/view/systemManage/client')
       // },
       {
+        path: 'dataDictionary',
+        name: 'dataDictionary',
+        meta: {
+          icon: '_Datastatistics',
+          title: '数据字典'
+        },
+        component: () => import('@/view/dataDictionary')
+      },
+      {
         path: 'social',
         name: 'social',
         meta: {
@@ -147,7 +183,7 @@ export default [
     component: Main,
     meta: {
       icon: '_Basicmanagement',
-      title: '基础管理',
+      title: '租户管理',
       hideInMenu: false,
       notCache: true
     },
@@ -157,7 +193,7 @@ export default [
         name: 'lessee',
         meta: {
           icon: '_Tenantmanagement',
-          title: '租户管理'
+          title: '租户列表'
         },
         component: () => import('@/view/basicManage/lessee')
       },
@@ -181,67 +217,76 @@ export default [
         },
         component: () => import('@/view/basicManage/lessee/detail')
       },
-      // 权限配置
       {
-        path: 'authoritySet',
-        name: 'authoritySet',
+        path: 'resourceList',
+        name: 'resourceList',
         meta: {
-          icon: '_Jurisdiction',
-          title: '权限配置'
+          icon: '_Resourcelist',
+          title: '菜单管理'
         },
-        component: MainSub,
-        // redirect: '/basicManage/authoritySet/resourceList',
-        children: [
-          {
-            path: 'resourceList',
-            name: 'resourceList',
-            meta: {
-              icon: '_Resourcelist',
-              title: '菜单管理'
-            },
-            component: () => import('@/view/basicManage/authoritySet/menuManage')
-          },
-          // {
-          //   path: 'SaaS2',
-          //   name: '资源列表2',
-          //   meta: {
-          //     icon: 'md-funnel',
-          //     title: 'SaaS'
-          //   },
-          //   component: () => import('@/view/basicManage/authoritySet/index.vue')
-          // },
-          // {
-          //   path: 'insurance',
-          //   name: 'insurance',
-          //   meta: {
-          //     hideInMenu: true,
-          //     icon: 'md-funnel',
-          //     title: '保险'
-          //   },
-          //   component: () => import('@/view/basicManage/authoritySet/insurance.vue'),
-          // },
-          // {
-          //   path: 'credit',
-          //   name: 'credit',
-          //   meta: {
-          //     hideInMenu: true,
-          //     icon: 'md-funnel',
-          //     title: '信贷'
-          //   },
-          //   component: () => import('@/view/basicManage/authoritySet/credit.vue'),
-          // }
-        ]
+        component: () => import('@/view/basicManage/authoritySet/menuManage')
       },
+      // 权限配置
+      // {
+      //   path: 'authoritySet',
+      //   name: 'authoritySet',
+      //   meta: {
+      //     icon: '_Jurisdiction',
+      //     title: '权限配置'
+      //   },
+      //   component: MainSub,
+      //   // redirect: '/basicManage/authoritySet/resourceList',
+      //   children: [
+      //     {
+      //       path: 'resourceList',
+      //       name: 'resourceList',
+      //       meta: {
+      //         icon: '_Resourcelist',
+      //         title: '菜单管理'
+      //       },
+      //       component: () => import('@/view/basicManage/authoritySet/menuManage')
+      //     },
+      //     // {
+      //     //   path: 'SaaS2',
+      //     //   name: '资源列表2',
+      //     //   meta: {
+      //     //     icon: 'md-funnel',
+      //     //     title: 'SaaS'
+      //     //   },
+      //     //   component: () => import('@/view/basicManage/authoritySet/index.vue')
+      //     // },
+      //     // {
+      //     //   path: 'insurance',
+      //     //   name: 'insurance',
+      //     //   meta: {
+      //     //     hideInMenu: true,
+      //     //     icon: 'md-funnel',
+      //     //     title: '保险'
+      //     //   },
+      //     //   component: () => import('@/view/basicManage/authoritySet/insurance.vue'),
+      //     // },
+      //     // {
+      //     //   path: 'credit',
+      //     //   name: 'credit',
+      //     //   meta: {
+      //     //     hideInMenu: true,
+      //     //     icon: 'md-funnel',
+      //     //     title: '信贷'
+      //     //   },
+      //     //   component: () => import('@/view/basicManage/authoritySet/credit.vue'),
+      //     // }
+      //   ]
+      // },
     ]
   },
-  // 合作管理
+  // 资源管理
   {
     path: '/cooperationManage',
     name: 'cooperationManage',
     component: Main,
     meta: {
       icon: '_CooperativemanagementCooperativemanagement',
-      title: '合作管理',
+      title: '资源管理',
       notCache: true
     },
     children: [
@@ -437,127 +482,14 @@ export default [
       // },
     ]
   },
-
-  {
-    path: '/functionManage',
-    name: 'functionManage',
-    component: Main,
-    meta: {
-      icon: '_Applicationmanagement',
-      title: '功能管理',
-      hideInMenu: false,
-      notCache: true
-    },
-    children: [
-      {
-        path: 'instantMessage',
-        name: 'instantMessage',
-        meta: {
-          icon: '_Message',
-          title: '即时通讯'
-        },
-        component: MainSub,
-        // redirect: '/applicationManage/systemMessage',
-        children: [
-          {
-            path: 'systemMessage',
-            name: 'systemMessage',
-            meta: {
-              icon: '_systemnotification',
-              title: '系统消息'
-            },
-            component: () => import('@/view/applicationManage/systemMessage.vue')
-          },
-          {
-            path: 'messageTemplate',
-            name: 'messageTemplate',
-            meta: {
-              icon: '_Messagetemplate',
-              title: '消息模板'
-            },
-            component: () => import('@/view/applicationManage/messageTemplate/commonExpressions.vue')
-          },
-        ]
-      },
-      {
-        path: 'commonExpressions',
-        name: 'commonExpressions',
-        meta: {
-          icon: 'md-funnel',
-          title: '常用语',
-          hideInMenu: true,
-        },
-        component: () => import('@/view/applicationManage/messageTemplate/commonExpressions.vue')
-      },
-      {
-        path: 'applicationMessage',
-        name: 'applicationMessage',
-        meta: {
-          icon: 'md-funnel',
-          title: '应用消息',
-          hideInMenu: true,
-        },
-        component: () => import('@/view/applicationManage/messageTemplate/applicationMessage.vue'),
-      },
-      {
-        path: 'intelligentSecretary',
-        name: 'intelligentSecretary',
-        meta: {
-          icon: 'md-funnel',
-          title: '职能秘书',
-          hideInMenu: true,
-        },
-        component: () => import('@/view/applicationManage/messageTemplate/intelligentSecretary.vue'),
-      },
-      {
-        path: 'digitalResource',
-        name: 'digitalResource',
-        meta: {
-          icon: '_Recommendation',
-          title: '保险建议书',
-        },
-        component: () => import('@/view/applicationManage/digitalResource/index'),
-        redirect: '/functionManage/digitalResource/proposalTitle',
-        children: [
-          {
-            path: 'proposalTitle',
-            name: 'proposalTitle',
-            meta: {
-              hideInMenu: true,
-              title: '标题库',
-            },
-            component: () => import('@/view/applicationManage/digitalResource/proposalTitle.vue')
-          },
-          {
-            path: 'proposalThumb',
-            name: 'proposalThumb',
-            meta: {
-              hideInMenu: true,
-              title: '封面库',
-            },
-            component: () => import('@/view/applicationManage/digitalResource/proposalThumb.vue')
-          },
-        ]
-      },
-      {
-        path: 'applicationManage',
-        name: 'applicationManage',
-        meta: {
-          icon: '_Recommendation',
-          title: '应用管理',
-        },
-        component: () => import('@/view/applicationManage/applicationManage/index'),
-      }
-    ]
-  },
-  // 规则配置
+  // 投保管理
   {
     path: '/ruleSet',
     name: 'ruleSet',
     component: Main,
     meta: {
       icon: '_Ruleconfiguration',
-      title: '规则引擎',
+      title: '投保管理',
       hideInMenu: false,
       notCache: true
     },
@@ -567,7 +499,7 @@ export default [
         name: 'typeRule',
         meta: {
           icon: '_Typerule',
-          title: '数据字典'
+          title: '投保字典'
         },
         component: () => import('@/view/ruleSet/type.vue')
       },
@@ -598,111 +530,253 @@ export default [
         },
         component: () => import('@/view/ruleSet/database/profession.vue'),
       },
-      // 通用数据库
       {
-        path: 'commonDatabase',
-        name: 'commonDatabase',
+        path: 'nationalityTable',
+        name: 'nationalityTable',
         meta: {
-          icon: '_Generalpurposedatabase',
-          title: '通用数据库'
+          hideInMenu: false,
+          icon: 'md-funnel',
+          title: '国籍表'
         },
-        component: () => import('@/view/ruleSet/database/index.vue'),
-        redirect: '/ruleSet/commonDatabase/nationalityTable',
-        children: [
-          {
-            path: 'nationalityTable',
-            name: 'nationalityTable',
-            meta: {
-              hideInMenu: true,
-              icon: 'md-funnel',
-              title: '国籍表'
-            },
-            component: () => import('@/view/ruleSet/database/nationality.vue')
-          },
-          {
-            path: 'districtTable',
-            name: 'districtTable',
-            meta: {
-              hideInMenu: true,
-              icon: 'md-funnel',
-              title: '行政区划表'
-            },
-            component: () => import('@/view/ruleSet/database/district.vue'),
-          },
-        ]
+        component: () => import('@/view/ruleSet/database/nationality.vue')
       },
+      {
+        path: 'districtTable',
+        name: 'districtTable',
+        meta: {
+          hideInMenu: false,
+          icon: 'md-funnel',
+          title: '行政区划表'
+        },
+        component: () => import('@/view/ruleSet/database/district.vue'),
+      },
+      // {
+      //   path: 'commonDatabase',
+      //   name: 'commonDatabase',
+      //   meta: {
+      //     icon: '_Generalpurposedatabase',
+      //     title: '通用数据库'
+      //   },
+      //   component: () => import('@/view/ruleSet/database/index.vue'),
+      //   redirect: '/ruleSet/commonDatabase/nationalityTable',
+      //   children: [
+      //     {
+      //       path: 'nationalityTable',
+      //       name: 'nationalityTable',
+      //       meta: {
+      //         hideInMenu: true,
+      //         icon: 'md-funnel',
+      //         title: '国籍表'
+      //       },
+      //       component: () => import('@/view/ruleSet/database/nationality.vue')
+      //     },
+      //     {
+      //       path: 'districtTable',
+      //       name: 'districtTable',
+      //       meta: {
+      //         hideInMenu: true,
+      //         icon: 'md-funnel',
+      //         title: '行政区划表'
+      //       },
+      //       component: () => import('@/view/ruleSet/database/district.vue'),
+      //     },
+      //   ]
+      // },
       {
         path: 'digitalDictionary',
         name: 'digitalDictionary',
         meta: {
           icon: '_Dictionaries',
-          title: '投保匹配'
+          title: '投保规则'
         },
         component: () => import('@/view/ruleSet/digitalDictionary.vue')
       }
     ]
   },
-  // 行业数据库
+  // 应用管理
   {
-    path: '/industryDatabase',
-    name: 'industryDatabase',
+    path: '/functionManage',
+    name: 'functionManage',
     component: Main,
     meta: {
-      icon: '_Industrydatabase',
-      title: '行业数据库',
+      icon: '_Applicationmanagement',
+      title: '应用管理',
       hideInMenu: false,
       notCache: true
     },
     children: [
       {
-        path: 'insuranceCompany',
-        name: 'insuranceCompany',
+        path: 'applicationManage',
+        name: 'applicationManage',
         meta: {
-          icon: '_Insurancecompany',
-          title: '保险公司'
+          icon: '_Recommendation',
+          title: '应用配置',
         },
-        component: () => import('@/view/industryDatabase/insuranceCompany.vue')
+        component: () => import('@/view/applicationManage/applicationManage/index'),
       },
       {
-        path: 'companyDetail',
-        name: 'companyDetail',
+        path: 'instantMessage',
+        name: 'instantMessage',
         meta: {
-          icon: 'md-funnel',
-          hideInMenu: true,
-          title: '公司详情'
+          icon: '_Message',
+          title: '即时通讯'
         },
-        component: () => import('@/view/industryDatabase/detail.vue')
+        component: MainSub,
+        // redirect: '/applicationManage/systemMessage',
+        children: [
+          {
+            path: 'sensitive',
+            name: 'sensitive',
+            meta: {
+              icon: '_Sensitive',
+              title: '敏感词'
+            },
+            component: () => import('@/view/systemSet/sensitive')
+          },
+          {
+            path: 'createSensitive',
+            name: 'createSensitive',
+            meta: {
+              icon: 'md-funnel',
+              hideInMenu: true,
+              title: '新建敏感词'
+            },
+            component: () => import('@/view/systemSet/sensitive/create.vue')
+          },
+          {
+            path: 'messageTemplate',
+            name: 'messageTemplate',
+            meta: {
+              icon: '_Messagetemplate',
+              title: '消息模板'
+            },
+            component: () => import('@/view/applicationManage/messageTemplate/commonExpressions.vue')
+          },
+        ]
       },
+      // {
+      //   path: 'commonExpressions',
+      //   name: 'commonExpressions',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     title: '常用语',
+      //     hideInMenu: true,
+      //   },
+      //   component: () => import('@/view/applicationManage/messageTemplate/commonExpressions.vue')
+      // },
+      // {
+      //   path: 'applicationMessage',
+      //   name: 'applicationMessage',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     title: '应用消息',
+      //     hideInMenu: true,
+      //   },
+      //   component: () => import('@/view/applicationManage/messageTemplate/applicationMessage.vue'),
+      // },
+      // {
+      //   path: 'intelligentSecretary',
+      //   name: 'intelligentSecretary',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     title: '职能秘书',
+      //     hideInMenu: true,
+      //   },
+      //   component: () => import('@/view/applicationManage/messageTemplate/intelligentSecretary.vue'),
+      // },
       {
-        path: 'agency',
-        name: 'agency',
+        path: 'digitalResource',
+        name: 'digitalResource',
         meta: {
-          icon: '_Generationcompany',
-          title: '经代公司'
+          icon: '_Recommendation',
+          title: '保险建议书',
         },
-        component: () => import('@/view/industryDatabase/agencyCompany.vue'),
+        component: () => import('@/view/applicationManage/digitalResource/index'),
+        redirect: '/functionManage/digitalResource/proposalTitle',
+        children: [
+          {
+            path: 'proposalTitle',
+            name: 'proposalTitle',
+            meta: {
+              hideInMenu: true,
+              title: '标题库',
+            },
+            component: () => import('@/view/applicationManage/digitalResource/proposalTitle.vue')
+          },
+          {
+            path: 'proposalThumb',
+            name: 'proposalThumb',
+            meta: {
+              hideInMenu: true,
+              title: '封面库',
+            },
+            component: () => import('@/view/applicationManage/digitalResource/proposalThumb.vue')
+          },
+        ]
       },
-      {
-        path: 'insuranceProduct',
-        name: 'insuranceProduct',
-        meta: {
-          hideInMenu: true,
-          icon: '_InsuranceProducts',
-          title: '保险产品（待定）'
-        },
-        component: () => import('@/view/industryDatabase/insuranceProduct.vue'),
-      }
     ]
   },
-  // 财务结算
+  // 行业数据库
+  // {
+  //   path: '/industryDatabase',
+  //   name: 'industryDatabase',
+  //   component: Main,
+  //   meta: {
+  //     icon: '_Industrydatabase',
+  //     title: '行业数据库',
+  //     hideInMenu: false,
+  //     notCache: true
+  //   },
+  //   children: [
+  //     {
+  //       path: 'insuranceCompany',
+  //       name: 'insuranceCompany',
+  //       meta: {
+  //         icon: '_Insurancecompany',
+  //         title: '保险公司'
+  //       },
+  //       component: () => import('@/view/industryDatabase/insuranceCompany.vue')
+  //     },
+  //     {
+  //       path: 'companyDetail',
+  //       name: 'companyDetail',
+  //       meta: {
+  //         icon: 'md-funnel',
+  //         hideInMenu: true,
+  //         title: '公司详情'
+  //       },
+  //       component: () => import('@/view/industryDatabase/detail.vue')
+  //     },
+  //     {
+  //       path: 'agency',
+  //       name: 'agency',
+  //       meta: {
+  //         icon: '_Generationcompany',
+  //         title: '经代公司'
+  //       },
+  //       component: () => import('@/view/industryDatabase/agencyCompany.vue'),
+  //     },
+  //     {
+  //       path: 'insuranceProduct',
+  //       name: 'insuranceProduct',
+  //       meta: {
+  //         hideInMenu: true,
+  //         icon: '_InsuranceProducts',
+  //         title: '保险产品（待定）'
+  //       },
+  //       component: () => import('@/view/industryDatabase/insuranceProduct.vue'),
+  //     }
+  //   ]
+  // },
+  // 支付管理
   {
     path: '/financialSettlement',
     name: 'financialSettlement',
     component: Main,
     meta: {
       icon: '_Financialsettlement',
-      title: '财务结算（待定）',
-      hideInMenu: true,
+      title: '支付管理',
+      hideInMenu: false,
       notCache: true
     },
     children: [
@@ -711,25 +785,16 @@ export default [
         name: 'shouldStatement',
         meta: {
           icon: '_Billingstatement',
-          title: '应结账单'
+          title: '商品管理'
         },
         component: () => import('@/view/financialSettlement/shouldStatement.vue')
-      },
-      {
-        path: 'invoiceManage',
-        name: 'invoiceManage',
-        meta: {
-          icon: '_Invoicemanagement',
-          title: '发票管理'
-        },
-        component: () => import('@/view/financialSettlement/invoiceManage.vue'),
       },
       {
         path: 'allOrders',
         name: 'allOrders',
         meta: {
           icon: '_Allorders',
-          title: '全部订单'
+          title: '订单管理'
         },
         component: () => import('@/view/financialSettlement/allOrders.vue'),
       },
@@ -742,77 +807,90 @@ export default [
           title: '订单详情'
         },
         component: () => import('@/view/financialSettlement/orderDetail.vue'),
-      }
-    ]
-  },
-  // 数据统计
-  {
-    path: '/dataStatistics',
-    name: 'dataStatistics',
-    component: Main,
-    meta: {
-      icon: '_Datastatistics',
-      title: '数据统计（待定）',
-      hideInMenu: true,
-      notCache: true
-    },
-    children: [
+      },
       {
-        path: 'statistics',
-        name: 'statistics',
+        path: 'invoiceManage',
+        name: 'invoiceManage',
         meta: {
-          icon: '_Datastatistics',
-          title: '数据统计（待定）'
+          icon: '_Invoicemanagement',
+          title: '发票管理'
         },
-        component: () => import('@/view/dataStatistics')
+        component: () => import('@/view/financialSettlement/invoiceManage.vue'),
       },
     ]
   },
   // 数据字典
-  {
-    path: '/dataDictionary',
-    name: 'dataDictionary',
-    component: Main,
-    meta: {
-      icon: '_Datastatistics',
-      title: '数据字典',
-      hideInMenu: false,
-      notCache: true
-    },
-    children: [
-      {
-        path: 'index',
-        name: 'dataDictionaryIndex',
-        meta: {
-          icon: '_Datastatistics',
-          title: '数据字典'
-        },
-        component: () => import('@/view/dataDictionary')
-      }
-    ]
-  },
-  // 系统设置
+  // {
+  //   path: '/dataDictionary',
+  //   name: 'dataDictionary',
+  //   component: Main,
+  //   meta: {
+  //     icon: '_Datastatistics',
+  //     title: '数据字典',
+  //     hideInMenu: false,
+  //     notCache: true
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'dataDictionaryIndex',
+  //       meta: {
+  //         icon: '_Datastatistics',
+  //         title: '数据字典'
+  //       },
+  //       component: () => import('@/view/dataDictionary')
+  //     }
+  //   ]
+  // },
+  // 系统支持
   {
     path: '/systemSet',
     name: 'systemSet',
     component: Main,
     meta: {
       icon: '_Systemsettings',
-      title: '系统设置',
+      title: '系统支持',
       hideInMenu: false,
       notCache: true
     },
     children: [
       {
-        path: 'systemSetting',
-        name: 'systemSetting',
+        path: 'systemMessage',
+        name: 'systemMessage',
         meta: {
-          hideInMenu: true,
-          icon: '_Systemsettings-',
-          title: '系统设置（待定）'
+          icon: '_systemnotification',
+          title: '系统消息'
         },
-        component: () => import('@/view/systemSet/systemSet.vue')
+        component: () => import('@/view/applicationManage/systemMessage.vue')
       },
+      {
+        path: 'version',
+        name: 'version',
+        meta: {
+          icon: '_version',
+          title: '版本管理'
+        },
+        component: () => import('@/view/systemSet/version')
+      },
+      {
+        path: 'feedback',
+        name: 'feedback',
+        meta: {
+          icon: '_feedback',
+          title: '反馈管理'
+        },
+        component: () => import('@/view/systemSet/feedback'),
+      },
+      // {
+      //   path: 'systemSetting',
+      //   name: 'systemSetting',
+      //   meta: {
+      //     hideInMenu: true,
+      //     icon: '_Systemsettings-',
+      //     title: '系统设置（待定）'
+      //   },
+      //   component: () => import('@/view/systemSet/systemSet.vue')
+      // },
       {
         path: 'help',
         name: 'help',
@@ -832,51 +910,46 @@ export default [
         },
         component: () => import('@/view/systemSet/createHelp.vue')
       },
+      // {
+      //   path: 'service',
+      //   name: 'service',
+      //   meta: {
+      //     icon: '_Customerservice',
+      //     title: '现保云客服'
+      //   },
+      //   component: () => import('@/view/customerService')
+      // },
+    ]
+  },
+  // 系统统计
+  {
+    path: '/dataStatistics',
+    name: 'dataStatistics',
+    component: Main,
+    meta: {
+      icon: '_Datastatistics',
+      title: '系统统计',
+      hideInMenu: false,
+      notCache: true
+    },
+    children: [
       {
-        path: 'version',
-        name: 'version',
+        path: 'statistics',
+        name: 'statistics1',
         meta: {
-          icon: '_version',
-          title: '版本管理'
+          icon: '_Datastatistics',
+          title: '用户属性'
         },
-        component: () => import('@/view/systemSet/version')
+        component: () => import('@/view/dataStatistics')
       },
       {
-        path: 'sensitive',
-        name: 'sensitive',
+        path: 'statistics',
+        name: 'statistics2',
         meta: {
-          icon: '_Sensitive',
-          title: '敏感词'
+          icon: '_Datastatistics',
+          title: '用户行为'
         },
-        component: () => import('@/view/systemSet/sensitive')
-      },
-      {
-        path: 'createSensitive',
-        name: 'createSensitive',
-        meta: {
-          icon: 'md-funnel',
-          hideInMenu: true,
-          title: '新建敏感词'
-        },
-        component: () => import('@/view/systemSet/sensitive/create.vue')
-      },
-      {
-        path: 'feedback',
-        name: 'feedback',
-        meta: {
-          icon: '_feedback',
-          title: '反馈管理'
-        },
-        component: () => import('@/view/systemSet/feedback'),
-      },
-      {
-        path: 'service',
-        name: 'service',
-        meta: {
-          icon: '_Customerservice',
-          title: '现保云客服'
-        },
-        component: () => import('@/view/customerService')
+        component: () => import('@/view/dataStatistics')
       },
     ]
   },

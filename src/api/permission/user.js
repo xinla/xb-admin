@@ -21,10 +21,7 @@ export const getUserPage = (data) => {
  */
 export const getUserInfo = (data) => {
   return axios.request({
-    url: service + `/details`,
-    params: {
-      username: data
-    },
+    url: service + `/details/${data}`,
     method: 'get'
   })
 }
@@ -42,7 +39,7 @@ export const addUser = (data) => {
 }
 
 /**
- * 修改用户
+ * 修改用户/修改密码
  * @param {*} data 
  */
 export const updateUser = (data) => {
@@ -61,5 +58,17 @@ export const removeUser = (userId) => {
   return axios.request({
     url: service + `/${userId}`,
     method: 'DELETE'
+  })
+}
+
+/**
+ * 修改个人信息
+ * @param {*} data 
+ */
+export const modifyUser = (data) => {
+  return axios.request({
+    url: service + '/edit',
+    data,
+    method: 'put'
   })
 }

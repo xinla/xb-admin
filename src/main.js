@@ -16,6 +16,8 @@ Vue.use(Tool)
 
 import dialogBox from '@/components/dialogBox'
 Vue.component('dialogBox', dialogBox)
+import xUpload from '@/components/upload'
+Vue.component('xUpload', xUpload)
 
 import config from '@/config'
 import importDirective from '@/directive'
