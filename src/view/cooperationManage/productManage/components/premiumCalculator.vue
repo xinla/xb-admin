@@ -6,40 +6,40 @@
   background: #fff;
   border-radius: 6px;
 }
-  .title-wrap {
-    padding: 15px 20px;
-    background: #e0effd;
-    line-height: 25px;
-    .title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-right: 30px;
-    }
-    .button {
-      margin-right: 10px;
-      line-height: 1;
-    }
+.title-wrap {
+  padding: 15px 20px;
+  background: #e0effd;
+  line-height: 25px;
+  .title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-right: 30px;
   }
-  .button-right-wrap {
-    margin: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    .button {
-      // max-width: 48%;
-      width: 48%;
-      // min-width: 48%;
-      display: inline-block;
-      text-align: center;
-      border: 1px solid #ddd;
-      line-height: 50px;
-      margin: 10px 0;
-    }
+  .button {
+    margin-right: 10px;
+    line-height: 1;
   }
-  .current {
-    background: rgba(49, 58, 195, 1);
-    color: #fff;
+}
+.button-right-wrap {
+  margin: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  .button {
+    // max-width: 48%;
+    width: 48%;
+    // min-width: 48%;
+    display: inline-block;
+    text-align: center;
+    border: 1px solid #ddd;
+    line-height: 50px;
+    margin: 10px 0;
   }
+}
+.current {
+  background: rgba(49, 58, 195, 1);
+  color: #fff;
+}
 </style>
 <template>
   <div>
@@ -105,12 +105,8 @@
       <Col span="16">
         <div class="white">
           <div ref="applicant" class="title-wrap bfc-o">
-            <Checkbox
-              v-model="currentConfigInfo.checked"
-              :true-value="1"
-              :false-value="0"
-            ></Checkbox>
-              <!-- @on-change="change" -->
+            <Checkbox v-model="currentConfigInfo.checked" :true-value="1" :false-value="0"></Checkbox>
+            <!-- @on-change="change" -->
             <span id="a1" class="title">{{currentConfigInfo.calItemName}}</span>
             <div class="button-wrap fr">
               <Button class="button" @click="add()">添加选项</Button>
@@ -123,7 +119,11 @@
             <Row>
               <Col span="11">
                 <div class="bfc-d">选项配置</div>
-                <div v-if="currentConfigInfo.calItemTag === 15" class="bfc-d" style="margin-left: 10px;">计算系数</div>
+                <div
+                  v-if="currentConfigInfo.calItemTag === 15"
+                  class="bfc-d"
+                  style="margin-left: 10px;"
+                >计算系数</div>
               </Col>
               <Col span="9">
                 <div>设为默认</div>
@@ -152,10 +152,10 @@
                   <template v-if="currentConfigInfo.calItemTag === 15">
                     <!-- {{['年交', '半年交', '季交', '月交'][item.option]}} -->
                     <Select v-model="item.option" style="width: 80px;">
-                      <Option :value="0">年交</Option>
-                      <Option :value="1">半年交</Option>
-                      <Option :value="2">季交</Option>
-                      <Option :value="3">月交</Option>
+                      <Option value="0">年交</Option>
+                      <Option value="1">半年交</Option>
+                      <Option value="2">季交</Option>
+                      <Option value="3">月交</Option>
                     </Select>
                     <Input
                       type="text"
@@ -163,7 +163,7 @@
                       v-model="item.optionOther"
                       placeholder="请输入"
                     />
-                    </template>
+                  </template>
                   <!-- 出生日期 -->
                   <template v-if="currentConfigInfo.calItemTag === 2">
                     <DatePicker
@@ -173,7 +173,7 @@
                       @on-change="changeDate($event, item)"
                     ></DatePicker>
                   </template>
-<!-- 通用输入框 -->
+                  <!-- 通用输入框 -->
                   <template v-if="show(currentConfigInfo.calItemTag)">
                     <Input
                       type="text"
@@ -185,14 +185,22 @@
 
                   <!-- 投保份数 -->
                   <template v-if="currentConfigInfo.calItemTag === 1">份</template>
+
                   <!-- 性别-->
-                  <template
-                    v-if="currentConfigInfo.calItemTag === 4"
-                  >{{{1: '男', 2: '女'}[item.option]}}</template>
+                  <template v-if="currentConfigInfo.calItemTag === 4">
+                    <Select v-model="item.option" style="width: 80px;">
+                      <Option value="1">男</Option>
+                      <Option value="2">女</Option>
+                    </Select>
+                  </template>
+
                   <!-- 领取方式-->
-                  <template
-                    v-if="currentConfigInfo.calItemTag === 11"
-                  >{{['年领', '月领'][item.option]}}</template>
+                  <template v-if="currentConfigInfo.calItemTag === 11">
+                    <Select v-model="item.option" style="width: 80px;">
+                      <Option value="0">年领</Option>
+                      <Option value="1">月领</Option>
+                    </Select>
+                  </template>
                   <!-- 保费/保险金额 -->
                   <template
                     v-if="currentConfigInfo.calItemTag === 12 || currentConfigInfo.calItemTag === 10"
@@ -210,13 +218,16 @@
                   <!-- 投保档次 -->
                   <template v-if="currentConfigInfo.calItemTag === 3">档</template>
                   <!-- 保险期间/交费期间 -->
-                  <template v-if="currentConfigInfo.calItemTag === 5 || currentConfigInfo.calItemTag === 7">
+                  <template
+                    v-if="currentConfigInfo.calItemTag === 5 || currentConfigInfo.calItemTag === 7"
+                  >
                     <Select v-model="item.optionOther" style="width: 80px;">
                       <Option value="岁">岁</Option>
                       <Option value="年">年</Option>
                     </Select>
                   </template>
                 </Col>
+
                 <Col span="9">
                   <i-switch
                     :true-value="1"
@@ -267,13 +278,13 @@
 
 <script>
 import * as Agency from "@/api/product/calculator";
-import {getProductRule} from "@/api/product/rule";
+import { getProductRule } from "@/api/product/rule";
 
 const defaultConfigInfo = {
   checked: 0,
   isShow: 0,
   rateFactor: 0,
-  define: 0,
+  define: 0
 };
 export default {
   data() {
@@ -298,11 +309,11 @@ export default {
   mounted() {
     this.getData();
     let id = this.$route.query.id;
-    id && getProductRule(id).then(res => {
-      // console.log(res)
-      this.insuranceRules = res
-    })
-
+    id &&
+      getProductRule(id).then(res => {
+        // console.log(res)
+        this.insuranceRules = res;
+      });
   },
   methods: {
     getData() {
@@ -333,7 +344,7 @@ export default {
                 // 保险期间/交费期间格式转换
                 if (formData.calItemTag === 5 || formData.calItemTag === 7) {
                   for (const iterator of formData.configItems) {
-                    iterator.optionOther === '岁' && (iterator.option += '@')
+                    iterator.optionOther === "岁" && (iterator.option += "@");
                   }
                 }
                 return formData.id
@@ -341,7 +352,7 @@ export default {
                   : Agency.saveCalculatorItemInfo(formData);
               } else {
                 this.$Message.warning("请选择保费计算器项目");
-                return Promise.reject()
+                return Promise.reject();
               }
               break;
           }
@@ -354,15 +365,15 @@ export default {
               formData.calItemId
             ).then(res => {
               console.log("currentConfigInfo: ", res);
-                if (res) {
-                  if (res.calItemTag === 5 || res.calItemTag === 7) {
+              if (res) {
+                if (res.calItemTag === 5 || res.calItemTag === 7) {
                   for (const iterator of res.configItems) {
-                    let temp = iterator.option.match(/\d+/g)
-                    temp && (iterator.option = temp[0])
+                    let temp = iterator.option.match(/\d+/g);
+                    temp && (iterator.option = temp[0]);
                   }
                 }
                 res && (this.currentConfigInfo = res);
-                }
+              }
             });
           }
           this.$Message.success("操作成功");
@@ -371,89 +382,96 @@ export default {
     // 配置项切换
     switchTo(data) {
       this.current = data.id;
-      this.selected = []
+      this.selected = [];
       Agency.getCalculatorItemInfo(this.$route.query.id, data.id).then(res => {
         // console.log("currentConfigInfo: ", res);
         if (res) {
           if (res.calItemTag === 5 || res.calItemTag === 7) {
-                  for (const iterator of res.configItems) {
-                    let temp = iterator.option.match(/\d+/g)
-                    temp && (iterator.option = temp[0])
-                  }
-                }
+            for (const iterator of res.configItems) {
+              let temp = iterator.option.match(/\d+/g);
+              temp && (iterator.option = temp[0]);
+            }
+          }
           this.currentConfigInfo = res;
           // data.checked = 1
         } else {
           // console.log("insuranceRules: ", this.insuranceRules);
           // 加载核保规则默认配置项
           // 0 可投保地区   1 投保份数  2  出生日期  3  投保档次  4 性别  5 保险期间  6 有无社保  7  交费期间  8  职业（风险）类别  9  领取年龄  10  保险金额  11  起领时间/领取方式  12  保费  13  领取期间  14 保险计划  15 交费方式
-          let configItems = []
+          let configItems = [];
+          let rules = this.insuranceRules;
           switch (data.tag) {
             // 5 保险期间
             case 5:
-              for (const iterator of this.insuranceRules.insurancePeriodRule) {
+              for (const iterator of rules.insurancePeriodRule) {
                 if (iterator.type === 0) {
-                  let temp5 = iterator.ruleIntevalDtoList ? iterator.ruleIntevalDtoList : []
-                  console.log(temp5)
+                  let temp5 = iterator.ruleIntevalDtoList
+                    ? iterator.ruleIntevalDtoList
+                    : [];
+                  console.log(temp5);
                   for (const _iterator of temp5) {
-                    _iterator.ruleIntervalValue && configItems.push({
-                      option: _iterator.ruleIntervalValue.match(/\d+/g)[0],
-                      optionOther: _iterator.ruleIntervalValue.includes("@") ? '岁' : '年'
-                    })
+                    _iterator.ruleIntervalValue &&
+                      configItems.push({
+                        option: _iterator.ruleIntervalValue.match(/\d+/g)[0],
+                        optionOther: _iterator.ruleIntervalValue.includes("@")
+                          ? "岁"
+                          : "年"
+                      });
                   }
                 }
               }
               break;
-              // 7  交费期间
+            // 7  交费期间
             case 7:
-              let temp7 = this.insuranceRules.payRule ?this.insuranceRules.payRule.ruleIntevalDtoList : []
+              let temp7 = rules.payRule ? rules.payRule.ruleIntevalDtoList : [];
               for (const iterator of temp7) {
-                iterator.ruleIntervalValue && configItems.push({
-                      option: iterator.ruleIntervalValue.match(/\d+/g)[0],
-                      optionOther: iterator.ruleIntervalValue.includes("@") ? '岁' : '年'
-                    })
+                iterator.ruleIntervalValue &&
+                  configItems.push({
+                    option: iterator.ruleIntervalValue.match(/\d+/g)[0],
+                    optionOther: iterator.ruleIntervalValue.includes("@")
+                      ? "岁"
+                      : "年"
+                  });
               }
               break;
-              // 13  领取期间
+            // 13  领取期间
             case 13:
-              this.insuranceRules.receiveForm && (configItems = this.insuranceRules.receiveForm.receiveAgeNum.split(","))
+              rules.receiveForm &&
+                rules.receiveForm.receiveAgeNum &&
+                (configItems = rules.receiveForm.receiveAgeNum.split(","));
               break;
-              // 14 保险计划
+            // 14 保险计划
             case 14:
-              let temp14 = this.insuranceRules.coverageForm? JSON.parse(this.insuranceRules.coverageForm.insurancePlanContent) : []
+              let temp14 = rules.coverageForm
+                ? JSON.parse(rules.coverageForm.insurancePlanContent)
+                : [];
               for (const iterator of temp14) {
-                configItems.push({option: iterator.name})
+                configItems.push({ option: iterator.name });
               }
               break;
-              // 9  领取年龄
+            // 9  领取年龄
             case 9:
-              let temp9 = this.insuranceRules.receiveForm ? SON.parse(this.insuranceRules.receiveForm.receiveAgeContent) : []
+              let temp9 = rules.receiveForm
+                ? SON.parse(rules.receiveForm.receiveAgeContent)
+                : [];
               for (const iterator of temp9) {
-                configItems.push({option: iterator.age, optionOther: iterator.sex})
+                configItems.push({
+                  option: iterator.age,
+                  optionOther: iterator.sex
+                });
               }
               break;
-              // 4 性别
-            case 4:
-              configItems = [
-                {option: 1},
-                {option: 2},
-              ]
-              break;
-              // 11  领取方式
+            // 11  领取方式
             case 11:
-              configItems = [
-                {option: 0},
-                {option: 1},
-              ]
+              rules.receiveForm &&
+                rules.receiveForm.receiveType &&
+                (configItems = rules.receiveForm.receiveType.split(","));
               break;
-              // 15  交费方式
+            // 15  交费方式
             case 15:
-              configItems = [
-                {option: 0},
-                {option: 1},
-                {option: 2},
-                {option: 3},
-              ]
+              rules.payRule &&
+                rules.payRule.payType &&
+                (configItems = rules.payRule.payType.split(","));
               break;
           }
           this.currentConfigInfo = Object.assign(
@@ -462,7 +480,7 @@ export default {
               calItemId: data.id,
               calItemName: data.name,
               calItemTag: data.tag,
-              configItems,
+              configItems
             },
             defaultConfigInfo
           );
@@ -503,8 +521,12 @@ export default {
       }
       form.push({
         option: "",
-        unit: '0',
-        optionOther: this.currentConfigInfo.calItemTag === 5 || this.currentConfigInfo.calItemTag === 7 ? '年' : "",
+        unit: "0",
+        optionOther:
+          this.currentConfigInfo.calItemTag === 5 ||
+          this.currentConfigInfo.calItemTag === 7
+            ? "年"
+            : "",
         isDefault: 0,
         isShow: 0
       });
@@ -513,7 +535,7 @@ export default {
     remove() {
       if (this.selected.length === 0) {
         this.$Message.warning("请选择需要删除的选择");
-        return
+        return;
       }
       this.$Modal.confirm({
         title: "提示",
