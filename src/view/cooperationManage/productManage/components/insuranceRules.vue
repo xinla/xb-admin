@@ -1421,19 +1421,24 @@ export default {
                 break;
               case "periodFormYear":
                 for (const iterator of formData.ruleIntevalDtoList) {
-                  if (
-                    iterator.ruleIntervalType === 1 ||
-                    iterator.ruleIntervalType === 2
-                  ) {
-                    iterator.ruleIntervalName =
-                      iterator.ruleIntervalValue + "年";
-                  } else if (
-                    iterator.ruleIntervalType === 0 ||
-                    iterator.ruleIntervalType === 3
-                  ) {
-                    iterator.ruleIntervalName =
-                      iterator.ruleIntervalValue + "岁";
-                      iterator.ruleIntervalValue += '@'
+                  if (iterator.ruleIntervalValue) {
+                    if (
+                      (iterator.ruleIntervalType === 1 ||
+                      iterator.ruleIntervalType === 2)
+                    ) {
+                      iterator.ruleIntervalName =
+                        iterator.ruleIntervalValue + "年";
+                    } else if (
+                      iterator.ruleIntervalType === 0 ||
+                      iterator.ruleIntervalType === 3
+                    ) {
+                      iterator.ruleIntervalName =
+                        iterator.ruleIntervalValue + "岁";
+                        iterator.ruleIntervalValue += '@'
+                    }
+                  } else {
+                    this.$Message.warning("数值不可为空，请确认填写");
+                    return
                   }
                 }
                 return formData.id
@@ -1448,21 +1453,26 @@ export default {
               case "paymentForm":
                 formData.payType += ''
                 for (const iterator of formData.ruleIntevalDtoList) {
-                  // 年满型
-                  if (
-                    iterator.ruleIntervalType === 1 ||
-                    iterator.ruleIntervalType === 2
-                  ) {
-                    iterator.ruleIntervalName =
-                      iterator.ruleIntervalValue + "年";
-                  } else if (
-                    iterator.ruleIntervalType === 0 ||
-                    iterator.ruleIntervalType === 3
-                  ) {
-                    // 岁满型
-                    iterator.ruleIntervalName =
-                      iterator.ruleIntervalValue + "岁";
-                      iterator.ruleIntervalValue += '@'
+                  if (iterator.ruleIntervalValue) {
+                    // 年满型
+                    if (
+                      iterator.ruleIntervalType === 1 ||
+                      iterator.ruleIntervalType === 2
+                    ) {
+                      iterator.ruleIntervalName =
+                        iterator.ruleIntervalValue + "年";
+                    } else if (
+                      iterator.ruleIntervalType === 0 ||
+                      iterator.ruleIntervalType === 3
+                    ) {
+                      // 岁满型
+                      iterator.ruleIntervalName =
+                        iterator.ruleIntervalValue + "岁";
+                        iterator.ruleIntervalValue += '@'
+                    }
+                  } else {
+                    this.$Message.warning("数值不可为空，请确认填写");
+                    return
                   }
                 }
                 return formData.id

@@ -173,6 +173,7 @@
                       @on-change="changeDate($event, item)"
                     ></DatePicker>
                   </template>
+
                   <!-- 通用输入框 -->
                   <template v-if="show(currentConfigInfo.calItemTag)">
                     <Input
@@ -344,7 +345,12 @@ export default {
                 // 保险期间/交费期间格式转换
                 if (formData.calItemTag === 5 || formData.calItemTag === 7) {
                   for (const iterator of formData.configItems) {
-                    iterator.optionOther === "岁" && (iterator.option += "@");
+                    if (iterator.option) {
+                      iterator.optionOther === "岁" && (iterator.option += "@");
+                    } else {
+                      this.$Message.warning("数值不可为空，请确认填写");
+                      return;
+                    }
                   }
                 }
                 return formData.id
@@ -412,7 +418,8 @@ export default {
                   for (const _iterator of temp5) {
                     _iterator.ruleIntervalValue &&
                       configItems.push({
-                        option: _iterator.ruleIntervalValue.match(/\d+/g)[0],
+                        option: (_iterator.ruleIntervalValue.match(/\d+/g) ||
+                          [])[0],
                         optionOther: _iterator.ruleIntervalValue.includes("@")
                           ? "岁"
                           : "年"
@@ -427,7 +434,7 @@ export default {
               for (const iterator of temp7) {
                 iterator.ruleIntervalValue &&
                   configItems.push({
-                    option: iterator.ruleIntervalValue.match(/\d+/g)[0],
+                    option: (iterator.ruleIntervalValue.match(/\d+/g) || [])[0],
                     optionOther: iterator.ruleIntervalValue.includes("@")
                       ? "岁"
                       : "年"
@@ -436,9 +443,12 @@ export default {
               break;
             // 13  领取期间
             case 13:
-              rules.receiveForm &&
-                rules.receiveForm.receiveAgeNum &&
-                (configItems = rules.receiveForm.receiveAgeNum.split(","));
+              if (rules.receiveForm && rules.receiveForm.receiveAgeNum) {
+                let arr = rules.receiveForm.receiveAgeNum.split(",");
+                for (const iterator of arr) {
+                  configItems.push({ option: iterator });
+                }
+              }
               break;
             // 14 保险计划
             case 14:
@@ -463,15 +473,21 @@ export default {
               break;
             // 11  领取方式
             case 11:
-              rules.receiveForm &&
-                rules.receiveForm.receiveType &&
-                (configItems = rules.receiveForm.receiveType.split(","));
+              if (rules.receiveForm && rules.receiveForm.receiveType) {
+                let arr = rules.receiveForm.receiveType.split(",");
+                for (const iterator of arr) {
+                  configItems.push({ option: iterator });
+                }
+              }
               break;
             // 15  交费方式
             case 15:
-              rules.payRule &&
-                rules.payRule.payType &&
-                (configItems = rules.payRule.payType.split(","));
+                if (rules.payRule && rules.payRule.payType) {
+                let arr = rules.payRule.payType.split(",");
+                for (const iterator of arr) {
+                  configItems.push({ option: iterator });
+                }
+              }
               break;
           }
           this.currentConfigInfo = Object.assign(
