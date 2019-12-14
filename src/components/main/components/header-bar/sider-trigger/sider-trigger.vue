@@ -12,7 +12,7 @@ export default {
     },
     size: {
       type: Number,
-      default: 26
+      default: 24
     }
   },
   methods: {

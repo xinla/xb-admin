@@ -65,23 +65,15 @@
         </tr>
       </table>
 
-      <Divider />
+      <Divider dashed />
 
       <div class="title-row">公司简介</div>
-      <!-- <Input
-        type="textarea"
-        placeholder="公司介绍"
-        :autosize="true"
-        :disabled="disabled"
-        :rows="3"
-        v-model="form.xbCompany.companyContent"
-      />-->
       <editor ref="editor" :value="form.xbCompany.companyContent" @on-change="handleChange" />
 
-      <Divider />
+      <Divider dashed />
 
       <div class="title-row">公司荣誉</div>
-      <Table border :columns="columns" :data="form.honor">
+      <Table :columns="columns" :data="form.honor">
         <template slot-scope="{ row }" slot="action">
           <img class="logo" :src="row.url" @click="zoom(row.url)" />
         </template>
@@ -129,7 +121,7 @@
         </Form>
       </Row>
 
-      <Divider />
+      <Divider dashed />
 
       <div class="title-row">公司足迹</div>
       <Timeline>
@@ -212,18 +204,22 @@ export default {
       columns: [
         {
           title: "颁发机构",
+          align: 'left',
           key: "certificationAuthority"
         },
         {
           title: "荣誉名称",
+          align: 'left',
           key: "honorName"
         },
         {
           title: "获奖时间",
+          align: 'left',
           key: "prizeTime"
         },
         {
           title: "图片/附件",
+          align: 'left',
           slot: "action"
         }
       ],

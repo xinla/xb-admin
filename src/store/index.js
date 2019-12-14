@@ -10,7 +10,8 @@ export default new Vuex.Store({
   state: {
     //
     moreMenuId: '', // 用于控制当前更多菜单的显示位置
-    currentMenuId: ''
+    currentMenuId: '',
+    refresh: 1 // 控制页面局部刷新
   },
   mutations: {
     //

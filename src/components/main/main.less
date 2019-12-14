@@ -1,17 +1,19 @@
 .main{
+  .ivu-layout-sider{
+    box-shadow:3px 0px 6px rgba(0,0,0,0.14);
+  }
   .logo-con{
     // height: 64px;
     padding: 10px;
     text-align: center;
     .logo{
-      height: 44px;
-      width: auto;
+      width: 30px;
     }
     .logo-text{
-      font-size: 18px;
-      color: #fff;
+      font-size: 17px;
       display: inline-block;
-      margin-left: 5px; 
+      vertical-align: middle;
+      margin-left: 15px; 
     }
   }
   .header-con{
@@ -33,9 +35,11 @@
     background:#F0F0F0;
   }
   .content-wrapper{
-    margin: 18px;
+    margin: 24px;
     height: ~"calc(100% - 80px)";
     overflow: auto;
+    background-color: #fff;
+    // padding: 16px;
   }
   .left-sider{
     .ivu-layout-sider-children{
@@ -77,10 +81,4 @@
 
 .ivu-select-dropdown.ivu-dropdown-transfer{
   max-height: 400px;
-}
-
-.router-view{
-  background-color: #fff;
-  padding: 16px;
-  border-radius: 6px;
 }

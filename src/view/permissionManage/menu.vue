@@ -1,9 +1,10 @@
 <template>
   <div>
-        <ButtonGroup>
-          <Button type="primary" @click="form.menuId && (disabled = false)">编辑</Button>
-          <Button type="primary" @click="remove">删除</Button>
-        </ButtonGroup>
+    <ButtonGroup>
+      <Button type="primary" @click="add">添加</Button>
+      <Button type="primary" @click="form.menuId && (disabled = false)">编辑</Button>
+      <Button type="primary" @click="remove">删除</Button>
+    </ButtonGroup>
     <Row>
       <Col span="8">
         <Tree :data="list" @on-select-change="clickMenu"></Tree>
@@ -11,11 +12,11 @@
       <Col span="16">
         <Form ref="form" :model="form" :rules="rules" :label-width="60" :disabled="disabled">
           <FormItem label="父级节点" prop="name">
-            <Input v-model="form.parentId" placeholder="请输入" />
+            <Input v-model="form.parentId" placeholder="请输入" disabled />
           </FormItem>
 
-          <FormItem label="节点ID" prop="name">
-            <Input v-model="form.menuId" placeholder="请输入" />
+          <FormItem v-show="disabled" label="节点ID" prop="name">
+            <Input v-model="form.menuId" placeholder="请输入" disabled />
           </FormItem>
 
           <FormItem label="标题" prop="name">
@@ -29,25 +30,31 @@
             </RadioGroup>
           </FormItem>
 
-          <FormItem label="地址">
-            <Input v-model.trim="form.path" placeholder="请输入请求地址" />
-          </FormItem>
+          <template v-if="form.type == 0">
+            <FormItem label="地址">
+              <Input v-model.trim="form.path" placeholder="请输入请求地址" />
+            </FormItem>
 
-          <FormItem label="图标">
-            <Input v-model.trim="form.icon" placeholder="请输入请求图标" />
-          </FormItem>
+            <FormItem label="图标">
+              <Input v-model.trim="form.icon" placeholder="请输入请求图标" />
+            </FormItem>
 
-          <FormItem label="排序" prop="name">
-            <Input v-model.trim="form.sort" placeholder="请输入排序" />
-          </FormItem>
+            <FormItem label="排序" prop="name">
+              <Input v-model.trim="form.sort" placeholder="请输入排序" />
+            </FormItem>
 
-          <FormItem label="路由缓冲" prop="name">
-            <i-switch v-model="form.keepAlive" true-value="1" false-value="0" />
+            <FormItem label="路由缓冲" prop="name">
+              <i-switch v-model="form.keepAlive" true-value="1" false-value="0" />
+            </FormItem>
+          </template>
+
+          <FormItem v-else label="权限标识" prop="name">
+            <Input v-model.trim="form.permission" placeholder="请输入权限标识" />
           </FormItem>
 
           <FormItem v-show="!disabled">
             <Button type="primary" style="margin-right: 10px;" @click="save">保存</Button>
-            <Button>取消</Button>
+            <Button @click="cancle">取消</Button>
           </FormItem>
         </Form>
       </Col>
@@ -62,11 +69,12 @@ const defaultForm = {
   parentId: "",
   menuId: "",
   name: "",
-  type: "", // 0:菜单 1:按钮
+  type: "0", // 0:菜单 1:按钮
   path: "",
   icon: "",
   sort: "",
-  keepAlive: ""
+  keepAlive: "0",
+  permission: ""
 };
 
 export default {
@@ -74,8 +82,7 @@ export default {
   props: {},
   data() {
     return {
-      list: [
-      ],
+      list: [],
       form: Object.assign({}, defaultForm),
       rules: {},
       disabled: true
@@ -84,13 +91,13 @@ export default {
   computed: {},
   watch: {},
   mounted() {
-    this.getData()
+    this.getData();
   },
   methods: {
     getData() {
       A.getMenuTree().then(res => {
         // console.log(res);
-        this.list = []
+        this.list = [];
         function recursive(origin, target) {
           for (const iterator of origin) {
             let obj = {
@@ -109,16 +116,26 @@ export default {
       });
     },
     clickMenu(selected, current) {
-      console.log(current)
+      // console.log(current);
+      current.expand = !current.expand;
       A.getMenuInfo(current.id).then(res => {
-        this.form = res
-      })
+        this.form = res;
+        console.log(res);
+      });
     },
     save() {
-      A.updateMenu(this.form).then(res => {
-        this.getData();
-        this.$Message.success("操作成功");
-      })
+      (this.form.id ? A.updateMenu(this.form) : A.addMenu(this.form)).then(
+        res => {
+          this.getData();
+          this.$Message.success("操作成功");
+        }
+      );
+    },
+    add() {
+      this.form = Object.assign({}, defaultForm, {
+        parentId: this.form.parentId
+      });
+      this.disabled = false;
     },
     remove() {
       // if (data.lockFlag) {
@@ -127,20 +144,24 @@ export default {
       //   }
       if (!this.form.menuId) {
         this.$Message.warning("请选择一个菜单");
-        return
+        return;
       }
       this.$Modal.confirm({
         title: "提示",
         content: "此操作将永久删除, 是否继续?",
         onOk: () => {
           A.removeMenu(this.form.menuId).then(res => {
-            this.form = {}
+            this.form = {};
             this.$Message.success("操作成功");
             this.getData();
           });
         }
       });
     },
+    cancle() {
+      this.form.menuId || (this.form = Object.assign({}, defaultForm));
+      this.disabled = true;
+    }
   }
 };
 </script>

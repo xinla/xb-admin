@@ -1,6 +1,7 @@
 <template>
   <Layout style="height: 100%" class="main">
     <Sider
+    breakpoint="xl"
       hide-trigger
       collapsible
       :width="256"
@@ -16,13 +17,14 @@
         :collapsed="collapsed"
         @on-select="turnToPage"
         :menu-list="menuList"
+        theme="light"
       >
         <!-- 需要放在菜单上面的内容，如Logo，写】在side-menu标签内部，如下 -->
         <div class="logo-con">
           <img class="logo" :src="minLogo" key="min-logo">
-          <div class="logo-text" v-show="!collapsed">
-            现保科技后台管理系统
-          </div>
+          <strong class="logo-text" v-show="!collapsed">
+            现保云
+          </strong>
           <!-- <div class="logo-text" v-show="collapsed">现保后台</div> -->
           <!-- <img v-show="!collapsed" :src="maxLogo" key="max-logo" /> -->
         </div>
@@ -51,7 +53,7 @@
           <Content class="content-wrapper">
             <transition name="slide-inside">
             <keep-alive :include="cacheList">
-              <router-view class="router-view"/>
+              <router-view :key="$store.state.refresh" />
             </keep-alive>
             </transition>
           </Content>
@@ -170,6 +172,8 @@ export default {
     }
   },
   mounted() {
+    console.log(this.$router)
+    console.log(this.$route)
     /**
      * @description 初始化设置面包屑导航和标签导航
      */

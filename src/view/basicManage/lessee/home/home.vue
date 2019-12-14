@@ -1,49 +1,34 @@
 <template>
   <div>
-    <!-- <div class="title">租户列表</div> -->
-
-    <Row style="padding-bottom: 10px;">
-      <Col span="16">
-        <Button type="info" @click="goPage('createLessee')">新建租户</Button>
-      </Col>
-      <Col span="8">
-        <Input v-model="query.name" placeholder="搜索公司" style="width:73%; margin-right: 10px;"/>
-        <Button type="info" @click="search()">搜索</Button>
-      </Col>
-    </Row>
+    <div style="padding-bottom: 24px; background: #f5f7f9;">
+      <Input v-model="query.name" class="search-input" placeholder="请输入公司关键字搜索" style="width:280px;" />
+      <Button type="primary" shape="circle" icon="ios-search" @click="search()"></Button>
+      <Button type="primary" class="fr" @click="goPage('createLessee')">新建租户</Button>
+    </div>
 
     <Table :loading="loading" :columns="columns" :data="list">
-
       <template slot-scope="{ row }" slot="name">
-        <div
-          class="a"
-          @click="goPage('companyDetail', {id: row.id})"
-        >{{row.name}}</div>
+        <div class="a" @click="goPage('lesseeDetail', {id: row.id})">{{row.name}}</div>
       </template>
 
-      <template slot-scope="{ row }" slot="compayAccountType">
-        {{row.compayAccountType | compayAccountType}}
-      </template>
+      <template
+        slot-scope="{ row }"
+        slot="compayAccountType"
+      >{{row.compayAccountType | compayAccountType}}</template>
 
-      <template slot-scope="{ row }" slot="businessType">
-        {{row.businessType | businessType}}
-      </template>
+      <template slot-scope="{ row }" slot="businessType">{{row.businessType | businessType}}</template>
 
+      
       <template slot-scope="{ row }" slot="isActive">
-        {{row.outageTime ? '停用' : '正常'}}
+        <Tag type="dot" :color="row.outageTime ? 'error' : 'success'">{{row.outageTime ? '停用' : '正常'}}</Tag>
       </template>
 
       <template slot-scope="{ row }" slot="action">
-        <Button
-          type="info"
-          size="small"
-          @click="goPage('lesseeDetail', {id: row.id})"
-        >详情</Button>
-        <Button type="primary" size="small" @click="goPage('createLessee', {id: row.id})">编辑</Button>
-        <Button type="warning" size="small" @click="set(row)">{{row.outageTime ? '启用' : '停用'}}</Button>
-        <Button type="error" size="small" @click="remove(row)">删除</Button>
+        <span class="button-pri" @click="goPage('lesseeDetail', {id: row.id})">详情</span>
+        <span class="button-pri" @click="goPage('createLessee', {id: row.id})">编辑</span>
+        <span class="button-pri" @click="set(row)">{{row.outageTime ? '启用' : '停用'}}</span>
+        <span class="button-err" @click="remove(row)">删除</span>
       </template>
-
     </Table>
 
     <Page
@@ -76,7 +61,7 @@ const compayAccountType = [
     label: "旗舰",
     value: 3
   }
-]
+];
 const businessType = [
   {
     label: "保险",
@@ -90,7 +75,7 @@ const businessType = [
     label: "基金",
     value: 2
   }
-]
+];
 const isActive = [
   {
     label: "停用",
@@ -99,17 +84,17 @@ const isActive = [
   {
     label: "正常",
     value: 2
-  },
-]
+  }
+];
 
 export default {
   filters: {
     compayAccountType(val) {
-      return compayAccountType[val] && compayAccountType[val].label
+      return compayAccountType[val] && compayAccountType[val].label;
     },
     businessType(val) {
-      return businessType[val] && businessType[val].label
-    },
+      return businessType[val] && businessType[val].label;
+    }
   },
   data() {
     return {
@@ -130,29 +115,26 @@ export default {
           title: "租户名称",
           key: "name",
           slot: "name",
-          align: "center",
           minWidth: 140
         },
         {
           title: "租户类型",
           key: "compayAccountType",
-          align: "center",
           slot: "compayAccountType",
           filters: compayAccountType,
           filterMultiple: false,
           filterMethod(value, row) {
-            return row.compayAccountType == value
+            return row.compayAccountType == value;
           }
         },
         {
           title: "业务类型",
           key: "businessType",
-          align: "center",
           slot: "businessType",
           filters: businessType,
           filterMultiple: false,
           filterMethod(value, row) {
-            return row.businessType == value
+            return row.businessType == value;
           }
         },
         {
@@ -178,13 +160,11 @@ export default {
         {
           title: "租户状态",
           key: "isActive",
-          align: "center",
-          slot: "isActive",
+          slot: "isActive"
         },
         {
           title: "最近更新时间",
           key: "updateTime",
-          align: "center",
           minWidth: 80
         },
         {
@@ -218,12 +198,12 @@ export default {
       this.getData();
     },
     set(data) {
-      let state = data.outageTime ? 2 : 1
+      let state = data.outageTime ? 2 : 1;
       setState(data.id, state).then(res => {
         this.$Message.success("操作成功");
-        this.getData()
+        this.getData();
         // console.log(data)
-      })
+      });
     },
     goPage(name, query) {
       this.$router.push({ name, query });
@@ -241,7 +221,7 @@ export default {
               this.$Message.success("操作成功");
             });
           }
-        })
+        });
       }
     }
   }
@@ -249,5 +229,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import url("./home.less");
+@import url("./home.less");
 </style>

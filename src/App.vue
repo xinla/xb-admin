@@ -79,6 +79,10 @@ body {
     margin-right: 0;
   }
 }
+// 按钮组无间距
+.ivu-btn-group .ivu-btn {
+  margin-right: 0;
+}
 
 #app {
   .ivu-table-wrapper{
@@ -91,21 +95,22 @@ body {
       &::before {
         height: 0;
       }
-      th{
+      th, td{
         background:#fff;
         border-bottom: 0;
-        font-weight: normal;
-        color: #999;
+        color: #515A6E;
         height: 44px;
         text-align: center;
       }
-      td {
-        border-bottom: 0;
-        color:#333;
-        height: 44px;
-        text-align: center;
+      th.ivu-table-column-left, td.ivu-table-column-left {
+        text-align: left;
+      }
+      th.ivu-table-column-right, td.ivu-table-column-right {
+        text-align: right;
       }
     }
   }
+  
 }
+
 </style>

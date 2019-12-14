@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="contenter">
     <div class="title-row">基本信息</div>
 
     <Form ref="formAll" :model="formAll" :rules="rules" :label-width="100">
@@ -25,13 +25,13 @@
       </Row>
     </Form>
 
-    <Divider/>
+    <Divider dashed/>
 
     <div class="title-row">超级管理员</div>
-    <Table border :columns="roleColumns" :data="formAll.listAdmin" style="text-align: center;">
+    <Table :columns="roleColumns" :data="formAll.listAdmin" no-data-text="">
       <template slot-scope="{}" slot="rname">超级管理员</template>
       <template slot-scope="{ row, index }" slot="action">
-        <Icon type="ios-close-circle-outline" @click="deleteRole(0, index)"/>
+         <span class="button-pri" @click="deleteRole(0, index)">删除</span>
       </template>
     </Table>
     <Form ref="formRole" :model="formRole" :rules="rules" :label-width="0">
@@ -59,12 +59,12 @@
           <Input placeholder="超级管理员" disabled style="width:73%; margin-right: 10px;"/>
         </Col>
         <Col span="6">
-          <Button type="info" @click="add('role')">添加</Button>
+          <span class="button-pri" @click="add('role')">添加</span>
         </Col>
       </Row>
     </Form>
 
-    <Divider/>
+    <!-- <Divider dashed/> -->
 
     <!-- <div class="title-row">体验账号</div>
     <Table 
@@ -103,7 +103,10 @@
         </Col>
     </Row>-->
 
-    <Button type="info" @click="create" style="margin: 20px auto; display: block;">确认</Button>
+    <div class="bottom-wrap ac">
+      <Button type="primary" @click="create">确认</Button>
+      <Button type="primary" @click="$router.back()">取消</Button>
+      </div>
   </div>
 </template>
 
@@ -176,51 +179,55 @@ export default {
       roleColumns: [
         {
           title: "姓名",
-          key: "name"
+          key: "name",
+          align: 'left'
         },
         {
           title: "手机号",
-          key: "mobile"
+          key: "mobile",
+          align: 'left'
         },
         {
           title: "职位",
-          slot: "rname"
+          slot: "rname",
+          align: 'left'
         },
         {
           title: "操作",
-          slot: "action"
+          slot: "action",
+          align: 'left'
         }
       ],
-      accountColumns: [
-        {
-          title: "姓名",
-          key: "name"
-        },
-        {
-          title: "手机号",
-          key: "mobile"
-        },
-        {
-          title: "职位",
-          key: "duty"
-        },
-        {
-          title: "应用模块权限",
-          key: "jurisdiction"
-        },
-        {
-          title: "体验期限",
-          key: "timeStart"
-        },
-        {
-          title: "",
-          key: "timeEnd"
-        },
-        {
-          title: "操作",
-          slot: "action"
-        }
-      ],
+      // accountColumns: [
+      //   {
+      //     title: "姓名",
+      //     key: "name"
+      //   },
+      //   {
+      //     title: "手机号",
+      //     key: "mobile"
+      //   },
+      //   {
+      //     title: "职位",
+      //     key: "duty"
+      //   },
+      //   {
+      //     title: "应用模块权限",
+      //     key: "jurisdiction"
+      //   },
+      //   {
+      //     title: "体验期限",
+      //     key: "timeStart"
+      //   },
+      //   {
+      //     title: "",
+      //     key: "timeEnd"
+      //   },
+      //   {
+      //     title: "操作",
+      //     slot: "action"
+      //   }
+      // ],
       jurisdictionList: {
         0: "消息",
         1: "工作",
@@ -348,14 +355,19 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.contenter {
+  padding: 20px;
+}
 .title {
   padding: 0px 0px 20px 10px;
   font-size: 20px;
 }
-.ivu-row {
-  margin-top: 10px;
-}
 .ivu-col {
-  padding-right: 10%;
+  padding-left: 18px;
+}
+.bottom-wrap {
+  position: relative;
+  top: 200px;
+  text-align: center;
 }
 </style>

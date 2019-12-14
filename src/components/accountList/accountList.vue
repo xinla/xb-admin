@@ -8,7 +8,7 @@
     :data="listRole">
     </Table>
 
-    <Divider />
+    <Divider dashed />
 
     <div class="title-row">体验账号
     </div>
@@ -45,35 +45,51 @@ export default {
         {
             title: '姓名',
             key: 'uname',
+            align: 'left',
+            width: 250
         },
         {
             title: '手机号',
             key: 'mobile',
+            align: 'left',
+            width: 250
         },
         {
             title: '职务',
             key: 'rname',
+            align: 'left',
+            width: 250
         },
       ],
       columnsAccount: [
         {
             title: '姓名',
             key: 'uname',
+            align: 'left',
+            width: 250
         },
         {
             title: '手机号',
             key: 'mobile',
+            align: 'left',
+            width: 250
         },
         {
             title: '职务',
             key: 'rname',
+            align: 'left',
+            width: 250
         },
         {
             title: '应用权限',
             key: 'mname',
+            align: 'left',
+            width: 250
         },
         {
             title: '有效期',
+            align: 'left',
+            width: 225,
             slot: 'time'
         }
       ],

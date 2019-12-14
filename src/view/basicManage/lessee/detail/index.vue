@@ -1,5 +1,4 @@
 <template>
-  <div>
     <Tabs type="card">
         <TabPane label="工商信息">
           <businessInfo :id="id"/>
@@ -11,7 +10,6 @@
           <accountList :id="id"/>
         </TabPane>
     </Tabs>
-  </div>
 </template>
 
 <script>
@@ -35,4 +33,7 @@ export default {
 </script>
 <style lang="less" scoped>
   @import url("./detail.less");
+  /deep/.ivu-tabs-tabpane{
+    padding: 20px;
+  }
 </style>

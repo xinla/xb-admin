@@ -1,8 +1,9 @@
 <template>
   <div class="header-bar">
     <sider-trigger :collapsed="collapsed" icon="md-menu" @on-change="handleCollpasedChange"></sider-trigger>
-    <i class="iconfont iconMore-left bfc-d cp" @click="back"></i>
-    <custom-bread-crumb style="margin-left: 30px;" :list="breadCrumbList"></custom-bread-crumb>
+    <Icon type="md-refresh" class="md-refresh bfc-d cp" @click="back"/>
+    <!-- <i class="iconfont iconMore-left bfc-d cp"></i> -->
+    <custom-bread-crumb style="margin-left: 10px;" :list="breadCrumbList"></custom-bread-crumb>
     <div class="custom-content-con">
       <slot></slot>
     </div>
@@ -31,7 +32,7 @@ export default {
       this.$emit('on-coll-change', state)
     },
     back() {
-      this.$router.back()
+      this.$store.state.refresh++
     }
   }
 }

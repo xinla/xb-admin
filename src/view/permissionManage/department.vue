@@ -12,11 +12,11 @@
       <Col span="16">
         <Form ref="form" :model="form" :rules="rules" :label-width="60" :disabled="disabled">
           <FormItem label="父级节点" prop="name">
-            <Input v-model="form.parentId" placeholder="请输入父级节点" />
+            <Input v-model="form.parentId" placeholder="请输入父级节点" disabled/>
           </FormItem>
 
           <FormItem label="节点编号" prop="name" v-show="disabled">
-            <Input v-model="form.deptId" placeholder="请输入节点编号" />
+            <Input v-model="form.deptId" placeholder="请输入节点编号" disabled/>
           </FormItem>
 
           <FormItem label="部门名称" prop="name">
@@ -88,6 +88,7 @@ export default {
       });
     },
     clickDepartment(selected, current) {
+      current.expand = !current.expand
       this.form = Object.assign({}, current)
     },
     add() {

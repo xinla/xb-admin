@@ -2,6 +2,7 @@
   <div class="user-avator-dropdown">
     <Dropdown @on-click="handleClick">
       <Avatar :src="userAvator" />
+      <span style="padding-left: 5px;">{{$store.state.user.userName}}</span>
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list">
         <DropdownItem name="selfInfo">个人信息</DropdownItem>
