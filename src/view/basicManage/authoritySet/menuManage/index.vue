@@ -83,15 +83,15 @@
   max-height: 200px;
   overflow: auto;
 }
-.no-data{
+.no-data {
   text-align: center;
   padding: 100px 0;
 }
 /deep/.ivu-checkbox-group-item {
-    vertical-align: top;
-        width: 105px;
+  vertical-align: top;
+  width: 105px;
 }
-.app-icon{
+.app-icon {
   width: 100px;
   height: 100px;
   margin: 10px 15px 15px 0;
@@ -143,7 +143,7 @@
         </Select>
         <Select v-model="meunType2" style="width:45%" @on-change="getAllMenu()">
           <Option value="管理面板" :key="0">管理面板</Option>
-          <Option value="工作台" :key="1">工作台</Option>
+          <Option value="工作台" :key="1">WEB工作台</Option>
           <Option value="APP工作台" :key="2">APP工作台</Option>
         </Select>
         <Button type="primary" long style="margin: 10px 0;" @click="editMenu()">+ 新建菜单</Button>
@@ -170,26 +170,35 @@
           <span class="other" @click="edit(2)">移出</span>
         </div>
         <div class="a-content">
-            <Table
-              ref="organUserList"
-              :loading="loading"
-              :columns="columns"
-              :data="applicantionList"
-              @on-selection-change="selectChange"
-            >
+          <Table
+            ref="organUserList"
+            :loading="loading"
+            :columns="columns"
+            :data="applicantionList"
+            @on-selection-change="selectChange"
+          >
             <template slot-scope="{ row }" slot="type">{{typeList[row.type]}}</template>
             <template slot-scope="{ row }" slot="companyIds">
-                <!-- <span
+              <!-- <span
                   v-for="(item, index) of row.companyRelationMenuList"
                   :key="index"
-                >{{item.companyName}}</span>-->
-                <div v-if="row.companyRelationMenuList.length === 0">全部</div>
-                <div v-else>{{row.companyRelationMenuList[0].companyName}} {{row.companyRelationMenuList.length > 2 ? '...' : ''}}</div>
-              </template>
-              <template slot-scope="{ row }" slot="level">{{levelList[row.level]}}</template>
-            </Table>
+              >{{item.companyName}}</span>-->
+              <div v-if="row.companyRelationMenuList.length === 0">全部</div>
+              <div
+                v-else
+              >{{row.companyRelationMenuList[0].companyName}} {{row.companyRelationMenuList.length > 2 ? '...' : ''}}</div>
+            </template>
+            <template slot-scope="{ row }" slot="level">{{levelList[row.level]}}</template>
+          </Table>
         </div>
-        <Page :total="total" :current="query.page" show-elevator show-total style="text-align:center;margin-top:20px;" @on-change="getDataPage"/>
+        <Page
+          :total="total"
+          :current="query.page"
+          show-elevator
+          show-total
+          style="text-align:center;margin-top:20px;"
+          @on-change="getDataPage"
+        />
       </div>
     </div>
 
@@ -282,12 +291,9 @@
     <!--  -->
     <Drawer title="添加应用" v-model="isApplicantion" width="500">
       <CheckboxGroup v-model="addApplicantionsList">
-        <Checkbox
-          v-for="(item, index) of allApplicantions"
-          :label="item.id"
-          :key="index"
-        >{{item.name}}
-        <img class="app-icon" v-if="item.webImageUrl" :src="item.webImageUrl" />
+        <Checkbox v-for="(item, index) of allApplicantions" :label="item.id" :key="index">
+          {{item.name}}
+          <img class="app-icon" v-if="item.webImageUrl" :src="item.webImageUrl" />
         </Checkbox>
       </CheckboxGroup>
       <div class="demo-drawer-footer ar" style="margin-top: 20px">
@@ -394,7 +400,7 @@ export default {
           title: "所属版本",
           slot: "level",
           tooltip: true
-        },
+        }
         // {
         //   key: "serialNum",
         //   sortable: true,
@@ -443,36 +449,44 @@ export default {
       this.getAllMenu();
     },
     getAllMenu() {
-      this.applicantionList = []
-      this.$store.state.currentMenuId = ''
-      getMenuList(this.meunType1).then(res => {
-        // console.log("MenuList: ", res);
+      this.applicantionList = [];
+      this.$store.state.currentMenuId = "";
+      getMenuList(this.meunType1).then(data => {
+        console.log("MenuList: ", data);
+        let res = {};
+        for (const iterator of data) {
+          let temp = this.meunType2;
+          temp === "APP工作台" && (temp = "工作台");
+          if (temp === iterator.name) {
+            res = iterator;
+            break;
+          }
+        }
         async function recursiveGetMenu(data) {
-          for (const iterator of data) {
-            if (iterator.hasChild) {
-              iterator.children = await getMenuList(
-                this.meunType1,
-                iterator.id
-              );
-              await recursiveGetMenu.call(this, iterator.children);
+          // console.log(1);
+          // for (const iterator of data) {
+          //   if (iterator.hasChild) {
+          //     iterator.children = await getMenuList(
+          //       this.meunType1,
+          //       iterator.id
+          //     );
+          //     await recursiveGetMenu.call(this, iterator.children);
+          //   }
+          // }
+
+          if (data.hasChild) {
+            data.children = await getMenuList(this.meunType1, data.id, this.meunType2 === 'APP工作台' ? 1 : '');
+            for (const iterator of data.children) {
+              await recursiveGetMenu.call(this, iterator);
             }
           }
           return data;
         }
         recursiveGetMenu.call(this, res).then(_res => {
-          // console.log("_res:", _res);
           // this.allMenu = _res;
-
-          for (const iterator of _res) {
-            let temp = this.meunType2
-            temp === 'APP工作台' && (temp = '工作台')
-            if (iterator.name == temp) {
-              this.allMenu = iterator.children || [];
-              // 设置默认一级菜单id
-              this.allMenu.id = iterator.id;
-              break;
-            }
-          }
+            this.allMenu = _res.children || [];
+            // 设置默认一级菜单id
+            this.allMenu.id = _res.id;
         });
       });
     },
@@ -526,10 +540,9 @@ export default {
       let move = currentTxt[index - 1];
       moveApp(data.id, move.id).then(res => {
         // 移动项互换位置
-        data._checked = true // 设置移动后该项选中效果
+        data._checked = true; // 设置移动后该项选中效果
         currentTxt[index - 1] = data;
         currentTxt.splice(index, 1, move);
-        
       });
     },
     // 下移动
@@ -549,7 +562,7 @@ export default {
       let move = currentTxt[index + 1];
       moveApp(data.id, move.id).then(res => {
         // 移动项互换位置
-        data._checked = true // 设置移动后该项选中效果
+        data._checked = true; // 设置移动后该项选中效果
         currentTxt[index + 1] = data;
         currentTxt.splice(index, 1, move);
       });
@@ -597,7 +610,7 @@ export default {
         this.addApplicantionsList + ""
       ).then(res => {
         this.$Message.success("操作成功");
-        this.getData()
+        this.getData();
       });
     },
     getData(data) {
@@ -608,20 +621,20 @@ export default {
           page: 1,
           size: 10,
           pid: data.id,
-          type: this.meunType2 === 'APP工作台' ? 1 : 0
+          type: this.meunType2 === "APP工作台" ? 1 : 0
         };
       }
       this.loading = true;
       getApplicationPage(this.query).then(res => {
-        console.log("ApplicationPage：", res)
+        console.log("ApplicationPage：", res);
         this.loading = false;
         this.total = res.total;
         this.applicantionList = res.records;
       });
     },
     getDataPage(page) {
-      this.query.page = page
-      this.getData()
+      this.query.page = page;
+      this.getData();
     },
     clickMoreMenu(args) {
       switch (args[0]) {
