@@ -195,6 +195,14 @@
                     </Select>
                   </template>
 
+                  <!-- 社保-->
+                  <!-- <template v-if="currentConfigInfo.calItemTag === 6">
+                    <Select v-model="item.option" style="width: 80px;">
+                      <Option value="0">无</Option>
+                      <Option value="1">有</Option>
+                    </Select>
+                  </template> -->
+
                   <!-- 领取方式-->
                   <template v-if="currentConfigInfo.calItemTag === 11">
                     <Select v-model="item.option" style="width: 80px;">
@@ -566,7 +574,7 @@ export default {
       });
     },
     show(data) {
-      // return data === 0 || data === 1 || data === 6 || data === 5 || data === 8 || data === 10  || data === 7 || data === 13 || data === 14 || data === 9 || data === 3 || data === 15
+      // data !== 6 社保
       return data !== 2 && data !== 4 && data !== 11 && data !== 15;
     }
   }

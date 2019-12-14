@@ -7,12 +7,13 @@ const service = config.domainCKF + config.servicesV2.saas
  * 查询菜单
  * @param {*} type 业务类型   2:保险,1:Saas,0:信贷,3:基金;4:理财
  * @param {*} id 父级Id  传id表示查询此id下所有子菜单
+ * @param {*} terminal 区分app web 
  */
-export const getMenuList = (type, id) => {
+export const getMenuList = (type, id, terminal) => {
   return axios.request({
     url: service + `/getMenu`,
     params: {
-      type, id
+      type, id, terminal
     },
     method: 'get'
   })
