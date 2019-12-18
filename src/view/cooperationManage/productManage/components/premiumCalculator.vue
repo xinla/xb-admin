@@ -196,12 +196,12 @@
                   </template>
 
                   <!-- 社保-->
-                  <!-- <template v-if="currentConfigInfo.calItemTag === 6">
+                  <template v-if="currentConfigInfo.calItemTag === 6">
                     <Select v-model="item.option" style="width: 80px;">
                       <Option value="0">无</Option>
                       <Option value="1">有</Option>
                     </Select>
-                  </template> -->
+                  </template>
 
                   <!-- 领取方式-->
                   <template v-if="currentConfigInfo.calItemTag === 11">
@@ -451,8 +451,8 @@ export default {
               break;
             // 13  领取期间
             case 13:
-              if (rules.receiveForm && rules.receiveForm.receiveAgeNum) {
-                let arr = rules.receiveForm.receiveAgeNum.split(",");
+              if (rules.vitProductReceiveRule && rules.vitProductReceiveRule.receiveAgeNum) {
+                let arr = rules.vitProductReceiveRule.receiveAgeNum.split(",");
                 for (const iterator of arr) {
                   configItems.push({ option: iterator });
                 }
@@ -460,8 +460,8 @@ export default {
               break;
             // 14 保险计划
             case 14:
-              let temp14 = rules.coverageForm
-                ? JSON.parse(rules.coverageForm.insurancePlanContent)
+              let temp14 = rules.coverageRule
+                ? JSON.parse(rules.coverageRule.insurancePlanContent)
                 : [];
               for (const iterator of temp14) {
                 configItems.push({ option: iterator.name });
@@ -469,8 +469,8 @@ export default {
               break;
             // 9  领取年龄
             case 9:
-              let temp9 = rules.receiveForm
-                ? SON.parse(rules.receiveForm.receiveAgeContent)
+              let temp9 = rules.vitProductReceiveRule
+                ? SON.parse(rules.vitProductReceiveRule.receiveAgeContent)
                 : [];
               for (const iterator of temp9) {
                 configItems.push({
@@ -481,8 +481,8 @@ export default {
               break;
             // 11  领取方式
             case 11:
-              if (rules.receiveForm && rules.receiveForm.receiveType) {
-                let arr = rules.receiveForm.receiveType.split(",");
+              if (rules.vitProductReceiveRule && rules.vitProductReceiveRule.receiveType) {
+                let arr = rules.vitProductReceiveRule.receiveType.split(",");
                 for (const iterator of arr) {
                   configItems.push({ option: iterator });
                 }
@@ -574,8 +574,7 @@ export default {
       });
     },
     show(data) {
-      // data !== 6 社保
-      return data !== 2 && data !== 4 && data !== 11 && data !== 15;
+      return data !== 2 && data !== 4 && data !== 11 && data !== 15 && data !== 6;
     }
   }
 };
