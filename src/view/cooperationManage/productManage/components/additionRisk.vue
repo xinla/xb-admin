@@ -96,6 +96,21 @@
               </div>
             </FormItem>
 
+            <FormItem label="禁止同时投保">
+              <Checkbox v-model="form.forbid_product_limit" :true-value="0" :false-value="1">无约束</Checkbox>
+              <div v-if="form.forbid_product_limit === 1">
+                <Select v-model="form.forbid_product_id" style="width:30%">
+                  <template v-for="(unit, index) in additionRiskList">
+                    <Option
+                      v-if="unit.id !== form.additionRiskId"
+                      :value="unit.id"
+                      :key="index"
+                    >{{unit.productFullName}}</Option>
+                  </template>
+                </Select>
+              </div>
+            </FormItem>
+
             <FormItem label="保险金额约束">
               <Checkbox v-model="form.coverageLimit" :true-value="0" :false-value="1">无约束</Checkbox>
               <div v-if="form.coverageLimit === 1">
@@ -349,9 +364,9 @@
               </div>
             </FormItem>
 
-            <FormItem label="捆绑其他产品">
+            <!-- <FormItem label="捆绑其他产品">
               <Checkbox v-model="form.bindOtherProduct" :true-value="0" :false-value="1">无约束</Checkbox>
-            </FormItem>
+            </FormItem> -->
           </Form>
         </div>
       </Col>
@@ -370,6 +385,8 @@ const defaultForm = {
   additionRiskName: "",
   priorityProductLimit: 0,
   priorityProductId: "",
+  forbid_product_limit: 0,
+  forbid_product_id: '',
   coverageLimit: 0,
   coverageDefine: 0,
   coverageDefineItem: 0,

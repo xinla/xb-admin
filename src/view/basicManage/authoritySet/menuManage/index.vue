@@ -106,14 +106,14 @@
   <div class="apps-manage">
     <div class="menu-apps">
       <div class="all-menu-wrap">
-        <Select v-model="meunType1" style="width:48%; margin-right: 4%;" @on-change="getAllMenu()">
+        <Select v-model="meunType1" @on-change="getAllMenu()">
           <Option v-for="(value, key) in typeList" :value="+key" :key="key">{{ value }}</Option>
         </Select>
-        <Select v-model="meunType2" style="width:48%; margin-right: 0;" @on-change="getAllMenu()">
+        <!-- <Select v-model="meunType2" style="width:45%" @on-change="getAllMenu()">
           <Option value="管理面板" :key="0">管理面板</Option>
           <Option value="工作台" :key="1">WEB工作台</Option>
           <Option value="APP工作台" :key="2">APP工作台</Option>
-        </Select>
+        </Select> -->
         <Button type="primary" long style="margin: 10px 0;" @click="editMenu()">+ 新建菜单</Button>
 
         <div style="background: #fff;">
@@ -178,13 +178,13 @@
             <Option v-for="(value, key) in typeList" :value="+key" :key="key">{{ value }}</Option>
           </Select>-->
         </FormItem>
-        <FormItem label="匹配位置" v-show="menuForm.pid == allMenu.id">
+        <!-- <FormItem label="匹配位置" v-show="menuForm.pid == allMenu.id">
           <div>{{meunType2}}</div>
-          <!-- <Select v-model="meunType2" placeholder="请输入匹配位置" disabled>
+          <Select v-model="meunType2" placeholder="请输入匹配位置" disabled>
             <Option :value="0" :key="0">管理面板</Option>
             <Option :value="1" :key="1">工作台</Option>
-          </Select>-->
-        </FormItem>
+          </Select>
+        </FormItem> -->
         <FormItem label="菜单名称">
           <Input v-model="menuForm.name" placeholder="请输入菜单名称" />
         </FormItem>
@@ -382,7 +382,7 @@ export default {
       applicantionList: [],
       selectData: [],
       meunType1: 2, // 业务类型   2:保险,1:Saas,0:信贷,3:基金;4:理财
-      meunType2: "管理面板",
+      // meunType2: "管理面板",
       // 业务类型列表
       typeList: Object.freeze({
         0: "信贷",
@@ -423,46 +423,41 @@ export default {
     getAllMenu() {
       this.applicantionList = [];
       this.$store.state.currentMenuId = "";
-      getMenuList(this.meunType1).then(data => {
-        console.log("MenuList: ", data);
-        let res = {};
-        for (const iterator of data) {
-          let temp = this.meunType2;
-          temp === "APP工作台" && (temp = "工作台");
-          if (temp === iterator.name) {
-            res = iterator;
-            break;
-          }
-        }
+      getMenuList(this.meunType1).then(res => {
+        // console.log("MenuList: ", res);
+        // for (const iterator of data) {
+        //   let temp = this.meunType2;
+        //   temp === "APP工作台" && (temp = "工作台");
+        //   if (temp === iterator.name) {
+        //     res = iterator;
+        //     break;
+        //   }
+        // }
         async function recursiveGetMenu(data) {
           // console.log(1);
-          // for (const iterator of data) {
-          //   if (iterator.hasChild) {
-          //     iterator.children = await getMenuList(
-          //       this.meunType1,
-          //       iterator.id
-          //     );
-          //     await recursiveGetMenu.call(this, iterator.children);
-          //   }
-          // }
-
-          if (data.hasChild) {
-            data.children = await getMenuList(
-              this.meunType1,
-              data.id,
-              this.meunType2 === "APP工作台" ? 1 : ""
-            );
-            for (const iterator of data.children) {
-              await recursiveGetMenu.call(this, iterator);
+          for (const iterator of data) {
+            if (iterator.hasChild) {
+              iterator.children = await getMenuList(
+                this.meunType1,
+                iterator.id
+              );
+              await recursiveGetMenu.call(this, iterator.children);
             }
           }
+
+          // if (data.hasChild) {
+          //   data.children = await getMenuList(this.meunType1, data.id);
+          //   for (const iterator of data.children) {
+          //     await recursiveGetMenu.call(this, iterator);
+          //   }
+          // }
           return data;
         }
         recursiveGetMenu.call(this, res).then(_res => {
           // this.allMenu = _res;
-          this.allMenu = _res.children || [];
-          // 设置默认一级菜单id
-          this.allMenu.id = _res.id;
+            this.allMenu = _res || [];
+            // 设置默认一级菜单id
+            this.allMenu.id = _res.id;
         });
       });
     },
@@ -597,7 +592,7 @@ export default {
           page: 1,
           size: 10,
           pid: data.id,
-          type: this.meunType2 === "APP工作台" ? 1 : 0
+          type: 0
         };
       }
       this.loading = true;

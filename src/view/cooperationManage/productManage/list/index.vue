@@ -23,7 +23,15 @@
       </Col>
     </Row>
 
-    <Table :loading="loading" :columns="columns" :data="list" @on-selection-change="selectChange">
+    <Table
+      ref="table"
+      :loading="loading"
+      :columns="columns"
+      :data="list"
+      @on-selection-change="selectChange"
+      @on-row-click="singleClick"
+      @on-row-dblclick="dbClick"
+    >
       <!-- <template slot-scope="{ row }" slot="age">
           {{row.applicationAgeStart + '-' + row.applicationAgeEnd + '周岁'}}
       </template>-->
@@ -83,29 +91,29 @@
         </FormItem>
 
         <FormItem label="所属中类" prop="mediumClass">
-           <template v-for="item of allClass">
-        <RadioGroup v-model="form.mediumClass" v-show="form.mainClass === item.id">
-          <Radio
-            v-for="(unit, index) of item.children"
-            :label="unit.id"
-            :key="index"
-          >{{unit.name}}</Radio>
-        </RadioGroup>
-      </template>
+          <template v-for="item of allClass">
+            <RadioGroup v-model="form.mediumClass" v-show="form.mainClass === item.id">
+              <Radio
+                v-for="(unit, index) of item.children"
+                :label="unit.id"
+                :key="index"
+              >{{unit.name}}</Radio>
+            </RadioGroup>
+          </template>
         </FormItem>
 
         <FormItem label="所属小类" prop="smallClass">
           <template v-for="item of allClass">
-      <div v-for="_item of item.children" :key="_item.id">
-        <CheckboxGroup v-model="form.smallClass" v-show="form.mediumClass === _item.id">
-          <Checkbox
-            v-for="unit of _item.children"
-            :key="unit.id"
-            :label="unit.id"
-          >{{unit.name}}</Checkbox>
-        </CheckboxGroup>
-      </div>
-       </template>
+            <div v-for="_item of item.children" :key="_item.id">
+              <CheckboxGroup v-model="form.smallClass" v-show="form.mediumClass === _item.id">
+                <Checkbox
+                  v-for="unit of _item.children"
+                  :key="unit.id"
+                  :label="unit.id"
+                >{{unit.name}}</Checkbox>
+              </CheckboxGroup>
+            </div>
+          </template>
         </FormItem>
 
         <FormItem label="在售状态" prop="sale">
@@ -116,7 +124,6 @@
         </FormItem>
 
         <FormItem label="保险期间">
-          
           <Checkbox
             v-model="form.vitProductInPeriodDto.insurancePeriodYear"
             :true-value="1"
@@ -174,13 +181,13 @@
             :true-value="1"
             :false-value="0"
           >年满型</Checkbox>
-          
+
           <Checkbox
             v-model="form.vitProductPayRuleDto.payPeriodAge"
             :true-value="1"
             :false-value="0"
           >岁满型</Checkbox>
-          
+
           <FormItem label="年满型" v-if="form.vitProductPayRuleDto.payPeriodYear">
             <div
               class="bfc-d"
@@ -274,7 +281,7 @@ const onlineInsurance = [
 ];
 
 const defaultForm = {
-  name: '',
+  name: "",
   productFullName: "", //	string 产品名称
   productAbbr: "", //	string 产品简称
   productCode: "", //	string 产品代码
@@ -590,7 +597,7 @@ export default {
     change(val) {
       this.form.supplierId = val.id;
       // this.form.name = val.name;
-      this.$set(this.form, 'name', val.name)
+      this.$set(this.form, "name", val.name);
       // console.log(val)
     },
     creat() {
@@ -600,23 +607,21 @@ export default {
           if (data) {
             let formData = JSON.parse(JSON.stringify(this.form));
             formData.smallClass += "";
-            let arr = ['vitProductInPeriodDto', 'vitProductPayRuleDto']
+            let arr = ["vitProductInPeriodDto", "vitProductPayRuleDto"];
             for (const item of arr) {
               for (const iterator of formData[item].ruleIntevalDtoList) {
                 if (
-                      iterator.ruleIntervalType === 1 ||
-                      iterator.ruleIntervalType === 2
-                    ) {
-                      iterator.ruleIntervalName =
-                        iterator.ruleIntervalValue + "年";
-                    } else if (
-                      iterator.ruleIntervalType === 0 ||
-                      iterator.ruleIntervalType === 3
-                    ) {
-                      iterator.ruleIntervalName =
-                        iterator.ruleIntervalValue + "岁";
-                        iterator.ruleIntervalValue += '@'
-                    }
+                  iterator.ruleIntervalType === 1 ||
+                  iterator.ruleIntervalType === 2
+                ) {
+                  iterator.ruleIntervalName = iterator.ruleIntervalValue + "年";
+                } else if (
+                  iterator.ruleIntervalType === 0 ||
+                  iterator.ruleIntervalType === 3
+                ) {
+                  iterator.ruleIntervalName = iterator.ruleIntervalValue + "岁";
+                  iterator.ruleIntervalValue += "@";
+                }
               }
             }
             return fastCreateProductInfo(formData);
@@ -628,7 +633,7 @@ export default {
         .then(res => {
           this.fastShow = false;
           this.$Message.success("操作成功");
-          this.form = JSON.parse(JSON.stringify(defaultForm))
+          this.form = JSON.parse(JSON.stringify(defaultForm));
           this.getData();
         });
     },
@@ -641,6 +646,15 @@ export default {
         return;
       }
       this.form[array].ruleIntevalDtoList.splice(index, 1);
+    },
+    singleClick(data, index) {
+      this.$refs.table.toggleSelect(index);
+    },
+    dbClick(data) {
+      this.goPage("createProduct", {
+        id: data.id,
+        edit: true
+      });
     }
   }
 };

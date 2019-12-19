@@ -1143,8 +1143,8 @@ const defaultPeriodFormDay = {
 const defaultPaymentForm = {
   productId: '', //	number	产品基本信息表主键id
   payType: [], //	 1,2,3	交费方式   0  年   1 半年  2  季   3  月
-  payPeriodAge: 0, //	number	交费期间    岁满型   存1表示年满型有值
   payPeriodYear: 0, //	number	交费期间    年满型   存1表示年满型有值
+  payPeriodAge: 0, //	number	交费期间    岁满型   存1表示岁满型有值
   premiumLimitAmount: 0, //	number	保费限制    按金额限制  0  不按金额限制     1  按金额限制
   premiumLimitAmountContent: [{ payType: 0, min: "", max: "", increaseUnit: "" }], //	object []
   premiumLimitCopy: 0, //	number	保费限制   按份数限制    0  不按份数限制     1  按份数限制
@@ -1421,25 +1421,26 @@ export default {
                 break;
               case "periodFormYear":
                 for (const iterator of formData.ruleIntevalDtoList) {
-                  if (iterator.ruleIntervalValue) {
-                    if (
-                      (iterator.ruleIntervalType === 1 ||
-                      iterator.ruleIntervalType === 2)
-                    ) {
-                      iterator.ruleIntervalName =
-                        iterator.ruleIntervalValue + "年";
-                    } else if (
-                      iterator.ruleIntervalType === 0 ||
-                      iterator.ruleIntervalType === 3
-                    ) {
-                      iterator.ruleIntervalName =
-                        iterator.ruleIntervalValue + "岁";
-                        iterator.ruleIntervalValue += '@'
+                    // 保险期间年满型
+                    if ( iterator.ruleIntervalType === 1 && formData.insurancePeriodYear) {
+                        if (iterator.ruleIntervalValue) {
+                          iterator.ruleIntervalName =
+                            iterator.ruleIntervalValue + "年";
+                        } else {
+                          this.$Message.warning("保险期间年满型数值不可为空，请确认填写");
+                          return Promise.reject()
+                        }
+                    } else if ( formData.insurancePeriodAge && iterator.ruleIntervalType === 0 ) {
+                      // 保险期间岁满型
+                      if (iterator.ruleIntervalValue) {
+                        iterator.ruleIntervalName =
+                          iterator.ruleIntervalValue + "岁";
+                          iterator.ruleIntervalValue += '@'
+                      } else {
+                        this.$Message.warning("保险期间岁满型数值不可为空，请确认填写");
+                        return Promise.reject()
+                      }
                     }
-                  } else {
-                    this.$Message.warning("数值不可为空，请确认填写");
-                    return
-                  }
                 }
                 return formData.id
                   ? Agency.updateInPeriodRule([formData])
@@ -1453,27 +1454,26 @@ export default {
               case "paymentForm":
                 formData.payType += ''
                 for (const iterator of formData.ruleIntevalDtoList) {
-                  if (iterator.ruleIntervalValue) {
-                    // 年满型
-                    if (
-                      iterator.ruleIntervalType === 1 ||
-                      iterator.ruleIntervalType === 2
-                    ) {
-                      iterator.ruleIntervalName =
-                        iterator.ruleIntervalValue + "年";
-                    } else if (
-                      iterator.ruleIntervalType === 0 ||
-                      iterator.ruleIntervalType === 3
-                    ) {
-                      // 岁满型
-                      iterator.ruleIntervalName =
-                        iterator.ruleIntervalValue + "岁";
-                        iterator.ruleIntervalValue += '@'
+                  // 交费期间年满型
+                    if ( iterator.ruleIntervalType === 2 && formData.payPeriodYear) {
+                        if (iterator.ruleIntervalValue) {
+                          iterator.ruleIntervalName =
+                            iterator.ruleIntervalValue + "年";
+                        } else {
+                          this.$Message.warning("交费期间年满型数值不可为空，请确认填写");
+                          return Promise.reject()
+                        }
+                    } else if ( formData.payPeriodAge && iterator.ruleIntervalType === 3 ) {
+                      // 交费期间岁满型
+                      if (iterator.ruleIntervalValue) {
+                        iterator.ruleIntervalName =
+                          iterator.ruleIntervalValue + "岁";
+                          iterator.ruleIntervalValue += '@'
+                      } else {
+                        this.$Message.warning("交费期间岁满型数值不可为空，请确认填写");
+                        return Promise.reject()
+                      }
                     }
-                  } else {
-                    this.$Message.warning("数值不可为空，请确认填写");
-                    return
-                  }
                 }
                 return formData.id
                   ? Agency.updatePayRule(formData)

@@ -2,41 +2,13 @@
   <div ref="container" class="container">
     <div class="button-wrap ac">
       <Button
+      v-for="(item, index) of listModule"
         class="button"
         size="large"
-        :type="current === 0 ? 'primary' : 'default'"
-        @click="current = 0"
-      >基本信息</Button>
-      <Button
-        class="button"
-        size="large"
-        :type="current === 1 ? 'primary' : 'default'"
-        @click="switchTo(1)"
-      >投保规则</Button>
-      <Button
-        class="button"
-        size="large"
-        :type="current === 2 ? 'primary' : 'default'"
-        @click="switchTo(2)"
-      >保费计算器</Button>
-      <Button
-        class="button"
-        size="large"
-        :type="current === 3 ? 'primary' : 'default'"
-        @click="switchTo(3)"
-      >费率表</Button>
-      <Button
-        class="button"
-        size="large"
-        :type="current === 4 ? 'primary' : 'default'"
-        @click="switchTo(4)"
-      >产品说明</Button>
-      <Button
-        class="button"
-        size="large"
-        :type="current === 5 ? 'primary' : 'default'"
-        @click="switchTo(5)"
-      >附加和捆绑</Button>
+        :type="current === index ? 'primary' : 'default'"
+        :key="index"
+        @click="current = index"
+      >{{item.name}}</Button>
     </div>
 
     <baseInfo
@@ -77,6 +49,12 @@
       v-if="current === 5"
       :key="key + 6"
     />
+    <bundleSales
+      class="item"
+      ref="bundleSales"
+      v-if="current === 6"
+      :key="key + 7"
+    />
   </div>
 </template>
 
@@ -90,13 +68,23 @@ export default {
     rateSheet: () => import("../components/rateSheet"),
     productExplain: () => import("../components/productExplain"),
     additionRisk: () => import("../components/additionRisk"),
+    premiumCalculator: () => import("../components/premiumCalculator"),
+    bundleSales: () => import("../components/bundleSales")
 
-    premiumCalculator: () => import("../components/premiumCalculator")
   },
   data() {
     return {
-      current: 0
+      current: 0,
       // firstArray: []
+      listModule: Object.freeze([
+        {name: '基本信息', key: ''},
+        {name: '投保规则', key: ''},
+        {name: '保费计算器', key: ''},
+        {name: '费率表', key: ''},
+        {name: '产品说明', key: ''},
+        {name: '附加和捆绑', key: ''},
+        {name: '捆绑规则', key: ''},
+      ])
     };
   },
   computed: {
