@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin-bottom: 15px;">
+    <div class="bg pb24">
       <Select
         v-model="query.type"
         style="width:150px; margin-right:10px;"
@@ -27,63 +27,42 @@
       <div class="right fr">
         <Button
           type="primary"
-          size="small"
           :disabled="!this.selectData.length || disDispose"
-          style="margin-right: 5px"
           @click="multEdit(1)"
         >处理</Button>
         <Button
-          type="warning"
-          size="small"
+          type="primary"
           :disabled="!this.selectData.length || disClose"
-          style="margin-right: 5px"
           @click="multEdit(2)"
         >关闭</Button>
-        <Button
-          type="error"
-          size="small"
-          :disabled="!this.selectData.length"
-          style="margin-right: 5px"
-          @click="multEdit(0)"
-        >删除</Button>
+        <Button type="error" :disabled="!this.selectData.length" @click="multEdit(0)">删除</Button>
       </div>
     </div>
 
-    <Table
-      :loading="loading"
-      :columns="columns"
-      :data="list"
-      @on-selection-change="selectChange"
-    >
+    <Table :loading="loading" :columns="columns" :data="list" @on-selection-change="selectChange">
       <template slot-scope="{ row }" slot="type">{{row.type | type}}</template>
       <template slot-scope="{ row }" slot="status">
         <Tag :color="statusList[row.status].color">{{statusList[row.status].label}}</Tag>
       </template>
       <template slot-scope="{ row }" slot="action">
-        <Button type="info" size="small" style="margin-right: 5px" @click="goDetail(row)">详情</Button>
-        <Button
-          type="primary"
-          size="small"
-          :disabled="row.status != 0"
-          style="margin-right: 5px"
-          @click="edit(row, 1)"
-        >处理</Button>
+        <Button size="small" class="button-pri" @click="goDetail(row)">详情</Button>
+        <Button :disabled="row.status != 0" class="button-pri" @click="edit(row, 1)">处理</Button>
         <Button
           type="warning"
-          size="small"
+          class="button-pri"
           :disabled="row.status > 1"
-          style="margin-right: 5px"
           @click="edit(row, 2)"
         >关闭</Button>
-        <Button type="error" size="small" style="margin-right: 5px" @click="edit(row, 3)">删除</Button>
+        <Button class="button-err" @click="edit(row, 3)">删除</Button>
       </template>
     </Table>
 
     <Page
+      v-show="+total"
       :total="total"
+      :current="query.page"
       show-elevator
       show-total
-      style="text-align:center;margin-top:20px;"
       @on-change="getData"
     />
 
@@ -159,7 +138,7 @@ export default {
   filters: {
     type(val) {
       if (val > 1) {
-        return
+        return;
       }
       val || (val = 0);
       return type[val].label;
@@ -177,13 +156,11 @@ export default {
       columns: [
         {
           type: "selection",
-          align: "center",
           width: 50
         },
         {
           title: "类型",
           slot: "type",
-          align: "center",
           filters: type,
           width: 80,
           filterMultiple: false,
@@ -193,35 +170,29 @@ export default {
         },
         {
           title: "反馈时间",
-          key: "createTime",
-          align: "center"
+          key: "createTime"
         },
         {
           title: "内容详情",
           key: "content",
-          align: "center",
           tooltip: true
         },
         {
           title: "当前状态",
-          slot: "status",
-          align: "center"
+          slot: "status"
         },
         {
           title: "所属用户",
-          key: "userName",
-          align: "center"
+          key: "userName"
         },
         {
           title: "所属租户",
-          key: "companyName",
-          align: "center"
+          key: "companyName"
         },
         {
           title: "操作",
           slot: "action",
-          width: 220,
-          align: "center"
+          width: 240
         }
       ],
       list: [],

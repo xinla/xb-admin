@@ -1,79 +1,86 @@
 <template>
   <div>
-    <div class="title-row">创建通知</div>
-    <Form ref="form" :model="form" :rules="rules" :label-width="120">
-      <Row>
-        <Col span="8">
-          <FormItem label="通知标题" prop="title">
-            <Input type="text" v-model="form.title" placeholder="通知标题"/>
-          </FormItem>
-          <FormItem label="跳转链接" prop="linkUrl">
-            <Input
-              type="text"
-              v-model="form.linkUrl"
-              placeholder="格式如: http(https)://www.xbkj.com"
-            />
-          </FormItem>
-          <FormItem label="推送时间" prop="noticedAt">
-            <DatePicker
-              :value="form.noticedAt"
-              type="datetime"
-              format="yyyy-MM-dd HH:mm:ss"
-              placeholder="推送时间"
-              style="width: 200px"
-              @on-change="change"
-            ></DatePicker>
-          </FormItem>
-        </Col>
-        <Col span="8">
-          <FormItem label="通知封面" prop="coverUrl">
-            <Upload
-              :action="uploadUrl"
-              :show-upload-list="false"
-              :format="['jpg','jpeg','png']"
-              accept="image/*"
-              :on-success="uploadSuccess"
-            >
-              <img class="logo" v-if="form.coverUrl" :src="form.coverUrl">
-              <div v-else class="upload-icon cp">+</div>
-            </Upload>
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span="12">
-          <FormItem label="通知内容" prop="content">
-            <Input type="textarea" v-model="form.content" placeholder="通知内容"/>
-            <!-- <editor ref="editor" :value="form.content" @on-change="editorChange"/> -->
-          </FormItem>
-          <div class="ac">
-            <Button type="primary" ghost @click="handleReset('form')">清空内容</Button>
-            <Button type="primary" @click="submit">{{isEdit ? '确认修改' : '确认添加'}}</Button>
-          </div>
-        </Col>
-      </Row>
-    </Form>
+    <dialogBox v-model="modal">
+      <div slot="title">{{form.id ? '编辑' : '新建'}}</div>
+      <Form ref="form" :model="form" :rules="rules" :label-width="80" style="width: 520px;">
+        <FormItem label="通知标题" prop="title">
+          <Input type="text" v-model="form.title" placeholder="通知标题" />
+        </FormItem>
+        <FormItem label="跳转链接" prop="linkUrl">
+          <Input type="text" v-model="form.linkUrl" placeholder="格式如: http(https)://www.xbkj.com" />
+        </FormItem>
+        <FormItem label="推送时间" prop="noticedAt">
+          <DatePicker
+            :value="form.noticedAt"
+            type="datetime"
+            format="yyyy-MM-dd HH:mm:ss"
+            placeholder="推送时间"
+            @on-change="change"
+          ></DatePicker>
+        </FormItem>
 
-    <Divider/>
+        <FormItem label="通知封面" prop="coverUrl">
+          <Upload
+            :action="uploadUrl"
+            :show-upload-list="false"
+            :format="['jpg','jpeg','png']"
+            accept="image/*"
+            :on-success="uploadSuccess"
+          >
+            <img class="logo" v-if="form.coverUrl" :src="form.coverUrl" />
+            <div v-else class="upload-icon cp">
+              <Icon type="md-cloud-upload" />
+              <p>上传图片</p>
+            </div>
+          </Upload>
+        </FormItem>
 
-    <div class="title-row">通知列表</div>
-    <Table max-height="500" :columns="columns" :data="list">
+        <FormItem label="通知内容" prop="content">
+          <Input type="textarea" v-model="form.content" placeholder="通知内容" />
+          <!-- <editor ref="editor" :value="form.content" @on-change="editorChange"/> -->
+        </FormItem>
+      </Form>
+      <div class="demo-drawer-footer ar">
+        <Button
+          type="primary"
+          ghost
+          style="margin-right: 20px"
+          @click="modal = false, handleReset('form')"
+        >取消</Button>
+        <Button type="primary" @click="submit">确定</Button>
+      </div>
+    </dialogBox>
+
+    <div class="ar bg pb24">
+      <Button type="primary" @click="edit()">创建通知</Button>
+    </div>
+    <Table :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="content">
         <div v-html="row.content"></div>
       </template>
       <template slot-scope="{ row }" slot="coverUrl">
-        <img class="logo" :src="row.coverUrl">
+        <img class="logo" :src="row.coverUrl" />
       </template>
       <template slot-scope="{ row }" slot="action">
-        <Button type="primary" size="small" :disabled="row.status == 0" @click="edit(row)">编辑</Button>
-        <Button type="error" size="small" @click="deleteMessage(row)">删除</Button>
-        <Button
-          type="primary"
-          size="small"
-          @click="row.status && send(row)"
-        >{{row.status == 0 ? '已推送' : '推送'}}</Button>
+        <span
+          class="button-pri"
+          :style="{'cursor': row.status == 0 ? 'no-drop' : 'pointer'}"
+          @click="edit(row)"
+        >编辑</span>
+        <span class="button-err" @click="deleteMessage(row)">删除</span>
+        <span class="button-pri" @click="row.status && send(row)">{{row.status == 0 ? '已推送' : '推送'}}</span>
       </template>
     </Table>
+
+    <Page
+      v-show="total"
+      :total="total"
+      :current="query.page"
+      show-elevator
+      show-total
+      style="text-align:center;margin-top:20px;"
+      @on-change="getData"
+    />
   </div>
 </template>
 
@@ -110,7 +117,7 @@ export default {
       uploadUrl: this.$config.services.upload,
       query: {
         page: 1,
-        size: 20
+        size: 5
       },
       form: Object.assign({}, defaultForm),
       columns: [
@@ -137,8 +144,7 @@ export default {
         {
           title: "操作",
           slot: "action",
-          width: 200,
-          align: "center"
+          width: 200
         }
       ],
       list: [],
@@ -152,51 +158,53 @@ export default {
         content: [{ required: true, message: "不能为空", trigger: "blur" }],
         noticedAt: [{ required: true, message: "不能为空", trigger: "change" }]
       },
-      isEdit: false
+      modal: false,
+      total: 0
     };
   },
   watch: {},
   created() {
-    this.getSystemMessagePage();
+    this.getData();
   },
   mounted() {
     // this.$refs.editor.setHtml("");
   },
   methods: {
-    getSystemMessagePage() {
+    getData(page) {
+      page && (this.query.page = page);
       getSystemMessagePage(this.query).then(data => {
         // console.log(data)
         this.list = data.list;
+        this.total = +data.total;
       });
     },
     handleReset(name) {
       this.$refs[name].resetFields();
-      this.isEdit = false;
     },
     submit() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          Promise.resolve()
-            .then(() => {
-              return this.isEdit
-                ? updateMessageTemplateById(this.form)
-                : addMessageTemplate(this.form);
-            })
-            .then(() => {
-              this.isEdit = false;
-              this.handleReset("form");
-              // this.$refs.editor.setHtml("");
-              this.getSystemMessagePage();
-              this.$Message.success("操作成功");
-            });
+          (this.form.id
+            ? updateMessageTemplateById(this.form)
+            : addMessageTemplate(this.form)
+          ).then(() => {
+            this.modal = false;
+            this.handleReset("form");
+            // this.$refs.editor.setHtml("");
+            this.getData(1);
+            this.$Message.success("操作成功");
+          });
         }
       });
     },
     edit(mes) {
       // console.log(mes)
-      this.form = Object.assign({}, mes);
+      if (mes && mes.status === 0) {
+        return;
+      }
+      this.modal = !this.modal;
+      this.form = Object.assign({}, mes || {});
       // this.$refs.editor.setHtml(mes.content);
-      this.isEdit = true;
     },
     deleteMessage(mes) {
       this.$Modal.confirm({
@@ -205,7 +213,7 @@ export default {
         onOk: () => {
           deleteMessageTemplateById(mes).then(data => {
             this.$Message.success("删除成功");
-            this.getSystemMessagePage();
+            this.getData();
           });
         }
       });
@@ -241,15 +249,10 @@ export default {
   margin-right: 50px;
 }
 .logo {
-  width: 89px;
+  width: 130px;
   height: 83px;
-  margin: 5px;
+  margin: 10px 0;
+  border-radius: 4px;
   cursor: pointer;
-}
-.upload-icon {
-  border: 1px dashed #000;
-  font-size: 36px;
-  padding: 30px;
-  line-height: 21px;
 }
 </style>

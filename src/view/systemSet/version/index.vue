@@ -1,17 +1,11 @@
 <template>
   <div>
-    <div style="margin-bottom: 15px;">
-      <Button type="info" @click="isModal = true, form = {}">新建版本</Button>
-      <Select
-        v-model="query.type"
-        class="right fr"
-        style="width:150px;"
-        placeholder="请选择状态"
-        @on-change="getData()"
-      >
-      <Option value>全部</Option>
+    <div class="bg pb24">
+      <Select v-model="query.type" style="width:150px;" placeholder="请选择状态" @on-change="getData()">
+        <Option value>全部</Option>
         <Option v-for="(item, index) in typeList" :value="item.value" :key="index">{{ item.label }}</Option>
       </Select>
+      <Button type="primary" class="fr" @click="isModal = true, form = {}">新建版本</Button>
     </div>
 
     <Table :loading="loading" :columns="columns" :data="list">
@@ -27,18 +21,12 @@
       </template>
       <template slot-scope="{ row }" slot="forceUpdate">{{row.forceUpdate === 0 ? "是" : "否"}}</template>
       <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row)">编辑</Button>
-        <Button type="error" size="small" @click="remove(row, index)">删除</Button>
+        <span class="button-pri" size="small" style="margin-right: 5px" @click="edit(row)">编辑</span>
+        <span class="button-err" size="small" @click="remove(row, index)">删除</span>
       </template>
     </Table>
 
-    <Page
-      :total="total"
-      show-elevator
-      show-total
-      style="text-align:center;margin-top:20px;"
-      @on-change="getData"
-    />
+    <Page :total="total" show-elevator show-total @on-change="getData" />
 
     <!-- <Modal v-model="isModal" title="新建版本" style="width: 50%;">
       <create :form="form" :key="0" @submit="getData()"/>
@@ -76,47 +64,41 @@ export default {
         {
           title: "版本号",
           key: "versionNum",
-          align: "center"
+          width: 120
         },
         {
           title: "发布端",
-          key: "type",
           slot: "type",
-          align: "center"
+          minWidth: 80,
+          tooltip: true
         },
         {
           title: "发布时间",
-          key: "updateTime",
+          key: "updateTime"
           // slot: "time",
-          align: "center"
         },
         {
           title: "是否强制更新",
-          slot: "forceUpdate", //  0是,1否
-          align: "center"
+          slot: "forceUpdate" //  0是,1否
         },
         {
           title: "更新标题",
           key: "title",
-          align: "center",
-          ellipsis: true
+          tooltip: true
         },
         {
           title: "更新内容",
           slot: "content",
-          align: "center",
           ellipsis: true
         },
         // {
         //   title: "下载地址",
         //   key: "download",
-        //   align: "center"
         // },
         {
           title: "操作",
           slot: "action",
-          width: 150,
-          align: "center"
+          width: 150
         }
       ],
       list: [],
@@ -184,8 +166,5 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-/deep/.dialog {
-  max-height: none !important;
 }
 </style>

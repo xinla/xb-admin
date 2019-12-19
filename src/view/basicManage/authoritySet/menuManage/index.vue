@@ -3,55 +3,28 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
   .menu-apps {
+    height: 100%;
     display: flex;
     .all-menu-wrap {
+      height: 100%;
       width: 30%;
-      margin-right: 1%;
+      padding: 18px 15px;
       flex: 1;
-      max-width: 300px;
+      max-width: 330px;
+      border-right: 24px solid #f5f7f9;
     }
   }
   .apps-manage-list {
-    background: #f1f3f5;
-    box-sizing: border-box;
-    padding: 10px;
+    padding: 18px 0 20px;
     display: flex;
     flex-direction: column;
     height: 100%;
     width: 60%;
     flex: 1;
-    .top-btn {
-      padding: 10px;
-      span {
-        display: inline-block;
-        font-size: 12px;
-        line-height: 24px;
-        cursor: pointer;
-      }
-      .add-btn {
-        padding: 0 10px;
-        background: #6582ff;
-        border: #6582ff solid 1px;
-        color: #fff;
-        border-radius: 4px;
-        margin-right: 14px;
-        &:hover {
-          opacity: 0.8;
-        }
-        .iconfont {
-          font-size: 12px;
-        }
-      }
-      .other {
-        border: #f1f3f5 solid 1px;
-        border-radius: 4px;
-        color: #6582ff;
-        padding: 0 10px;
-        &:hover {
-          border-color: #6582ff;
-        }
-      }
+    .ivu-btn-primary {
+      margin-right: 24px;
     }
     .a-content {
       display: flex;
@@ -59,6 +32,7 @@
       background: #fff;
       flex: 1;
       overflow: auto;
+      margin-top: 10px;
       .a-page {
         padding: 10px 0 20px;
         font-size: 12px;
@@ -71,13 +45,7 @@
   height: 83px;
   cursor: pointer;
 }
-.upload-icon {
-  border: 1px dashed #000;
-  width: 100px;
-  padding: 30px;
-  line-height: 21px;
-  text-align: center;
-}
+
 // iview 下拉菜单列表过多支持滚动
 /deep/.ivu-select-dropdown {
   max-height: 200px;
@@ -138,10 +106,10 @@
   <div class="apps-manage">
     <div class="menu-apps">
       <div class="all-menu-wrap">
-        <Select v-model="meunType1" style="width:45%; margin-right: 8%;" @on-change="getAllMenu()">
+        <Select v-model="meunType1" style="width:48%; margin-right: 4%;" @on-change="getAllMenu()">
           <Option v-for="(value, key) in typeList" :value="+key" :key="key">{{ value }}</Option>
         </Select>
-        <Select v-model="meunType2" style="width:45%" @on-change="getAllMenu()">
+        <Select v-model="meunType2" style="width:48%; margin-right: 0;" @on-change="getAllMenu()">
           <Option value="管理面板" :key="0">管理面板</Option>
           <Option value="工作台" :key="1">WEB工作台</Option>
           <Option value="APP工作台" :key="2">APP工作台</Option>
@@ -162,12 +130,10 @@
 
       <div class="apps-manage-list">
         <div class="top-btn ar">
-          <span class="add-btn" @click="showApplicantion">
-            <i class="iconfont"></i>+添加应用
-          </span>
-          <span class="other" @click="edit(0)">上移</span>
-          <span class="other" @click="edit(1)">下移</span>
-          <span class="other" @click="edit(2)">移出</span>
+          <Button type="primary" @click="showApplicantion">添加应用</Button>
+          <Button type="primary" ghost @click="edit(0)">上移</Button>
+          <Button type="primary" ghost @click="edit(1)">下移</Button>
+          <Button type="primary" ghost @click="edit(2)">移出</Button>
         </div>
         <div class="a-content">
           <Table
@@ -192,11 +158,11 @@
           </Table>
         </div>
         <Page
+          v-show="+total"
           :total="total"
           :current="query.page"
           show-elevator
           show-total
-          style="text-align:center;margin-top:20px;"
           @on-change="getDataPage"
         />
       </div>
@@ -271,19 +237,25 @@
             <div v-else class="upload-icon cp">APP</div>
           </Upload>-->
 
-          <div class="bfc-d" style="margin: 0 20px 20px 0;" @click="showUpload('webImageUrl')">
+          <div class="bfc-d" style="margin: 0 25px 20px 0;" @click="showUpload('webImageUrl')">
             <img class="logo" v-if="menuForm.webImageUrl" :src="menuForm.webImageUrl" />
-            <div v-else class="upload-icon cp">web</div>
+            <div v-else class="upload-icon cp">
+              <Icon type="md-cloud-upload" />
+              <p>web</p>
+            </div>
           </div>
 
           <div class="bfc-d" @click="showUpload('appImageUrl')">
             <img class="logo" v-if="menuForm.appImageUrl" :src="menuForm.appImageUrl" />
-            <div v-else class="upload-icon cp">app</div>
+            <div v-else class="upload-icon cp">
+              <Icon type="md-cloud-upload" />
+              <p>app</p>
+            </div>
           </div>
         </FormItem>
       </Form>
       <div class="demo-drawer-footer ar">
-        <Button style="margin-right: 20px" @click="isMenu = false">取消</Button>
+        <Button type="primary" ghost style="margin-right: 20px" @click="isMenu = false">取消</Button>
         <Button type="primary" @click="save(0)">确定</Button>
       </div>
     </dialogBox>
@@ -475,7 +447,11 @@ export default {
           // }
 
           if (data.hasChild) {
-            data.children = await getMenuList(this.meunType1, data.id, this.meunType2 === 'APP工作台' ? 1 : '');
+            data.children = await getMenuList(
+              this.meunType1,
+              data.id,
+              this.meunType2 === "APP工作台" ? 1 : ""
+            );
             for (const iterator of data.children) {
               await recursiveGetMenu.call(this, iterator);
             }
@@ -484,9 +460,9 @@ export default {
         }
         recursiveGetMenu.call(this, res).then(_res => {
           // this.allMenu = _res;
-            this.allMenu = _res.children || [];
-            // 设置默认一级菜单id
-            this.allMenu.id = _res.id;
+          this.allMenu = _res.children || [];
+          // 设置默认一级菜单id
+          this.allMenu.id = _res.id;
         });
       });
     },

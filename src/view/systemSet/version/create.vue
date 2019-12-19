@@ -25,7 +25,7 @@
             :on-success="uploadSuccess"
             :on-format-error="formatError"
           >
-            <Button icon="ios-cloud-upload-outline" :loading="upLoading">
+            <Button type="primary" icon="ios-cloud-upload-outline" :loading="upLoading">
               <span>上传</span>
             </Button>
           </Upload>
@@ -57,8 +57,8 @@
           <editor ref="editor" :value="form.content" @on-change="editorChange" />
         </FormItem>
         <div class="ac">
-        <Button type="primary" @click="cancel">取消</Button>
-        <Button style="margin-left: 100px;" type="primary" @click="handleSubmit">确定</Button>
+          <Button type="primary" @click="cancel">取消</Button>
+          <Button style="margin-left: 100px;" type="primary" @click="handleSubmit">确定</Button>
         </div>
       </Col>
     </Row>
@@ -76,7 +76,7 @@ const defaultForm = {
   content: "",
   download: "",
   forceUpdate: 1,
-  type: ''
+  type: ""
 };
 export default {
   props: {
@@ -165,8 +165,10 @@ export default {
     };
   },
   created() {
-    this.form.type = this.form.type ? this.form.type.split(",") : this.$set(this.form, 'type', []);
-    console.log(this.form)
+    this.form.type = this.form.type
+      ? this.form.type.split(",")
+      : this.$set(this.form, "type", []);
+    console.log(this.form);
   },
   mounted() {
     this.$refs.editor.setHtml(this.form.content || "");
@@ -180,7 +182,7 @@ export default {
           // 判断是否为安卓端
           // if (this.form.type.includes("0")) {
           // }
-          
+
           if (valid) {
             let form = Object.assign({}, this.form);
             form.type += "";

@@ -1,5 +1,5 @@
 <template>
-  <Form ref="form" :model="form" :rules="rules" :label-width="80">
+  <Form ref="form" :model="form" :rules="rules" :label-width="80" style="margin-top: 24px;">
     <Row>
       <Col span="8">
         <FormItem prop="title" label="标题">
@@ -15,12 +15,12 @@
           </Select>
         </FormItem>
       </Col>
-      </Row>
-      <Row>
+    </Row>
+    <Row>
       <Col span="16">
         <FormItem prop="content" label="内容">
           <!-- <Input type="textarea" v-model="form.content" placeholder="内容"></Input> -->
-          <editor ref="editor" :value="form.content" @on-change="editorChange"/>
+          <editor ref="editor" :value="form.content" @on-change="editorChange" />
         </FormItem>
         <Button class="submit" type="primary" @click="handleSubmit">确定</Button>
       </Col>

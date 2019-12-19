@@ -1,9 +1,8 @@
 <template>
   <div>
-    <Button
-      type="info"
-      @click="$router.push({name: 'createHelp'})"
-    >新建</Button>
+    <div class="bg pb24 ar">
+      <Button type="primary" @click="$router.push({name: 'createHelp'})">新建</Button>
+    </div>
     <Table :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="content">
         <div v-html="row.content"></div>
@@ -11,16 +10,17 @@
       <template slot-scope="{ row }" slot="time">{{row.updateTime | transTime}}</template>
       <template slot-scope="{ row }" slot="classify">{{classifyList[row.classifyId - 1].name}}</template>
       <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row.id)">编辑</Button>
-        <Button type="error" size="small" @click="deleteHelp(row.id, index)">删除</Button>
+        <Button class="button-pri" @click="edit(row.id)">编辑</Button>
+        <Button class="button-err" @click="deleteHelp(row.id, index)">删除</Button>
       </template>
     </Table>
 
     <Page
+      v-show="+total"
       :total="total"
+      :current="query.page"
       show-elevator
       show-total
-      style="text-align:center;margin-top:20px;"
       @on-change="getHelpPage"
     />
   </div>
@@ -53,13 +53,11 @@ export default {
         {
           title: "序号",
           type: "index",
-          align: "center",
           width: 80
         },
         {
           title: "分类",
           slot: "classify",
-          align: "center",
           filters: [],
           filterMultiple: false,
           filterMethod(value, row) {
@@ -68,25 +66,21 @@ export default {
         },
         {
           title: "标题",
-          key: "title",
-          align: "center"
+          key: "title"
         },
         {
           title: "内容",
-          slot: "content",
-          align: "center"
+          slot: "content"
         },
         {
           title: "时间",
           key: "updateTime",
-          slot: "time",
-          align: "center"
+          slot: "time"
         },
         {
           title: "操作",
           slot: "action",
-          width: 150,
-          align: "center"
+          width: 150
         }
       ],
       list: [],
