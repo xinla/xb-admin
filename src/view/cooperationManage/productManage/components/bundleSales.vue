@@ -265,14 +265,13 @@ export default {
         discountRate: [
           { required: true, message: "不能为空", trigger: "blur" }
         ],
-        // startTime: [
-        //   {
-        //     required: true,
-        //     type: "date",
-        //     message: "不能为空",
-        //     trigger: "change"
-        //   }
-        // ]
+        startTime: [
+          {
+            required: true,
+            message: "不能为空",
+            trigger: "change"
+          }
+        ]
       }
     };
   },
@@ -297,11 +296,14 @@ export default {
       // console.log(data);
       this.$refs.form
         .validate(valid => {
-          if (valid) {
+          return valid
+        })
+        .then((res) => {
+          if (res) {
             let formData = { ...this.form };
             this.xForm.paymentPeriod && (formData.paymentPeriod += "@");
             this.xForm.policyPeriod && (formData.policyPeriod += "@");
-            console.log("formData: ", formData);
+            // console.log("formData: ", formData);
             return A.saveBind(formData);
           } else {
             return Promise.reject();
