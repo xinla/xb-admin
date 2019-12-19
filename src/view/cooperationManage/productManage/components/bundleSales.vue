@@ -109,7 +109,7 @@
                 <Select v-model="form.bindProductId" placeholder="请选择险种名称">
                   <template v-for="(item, index) in additionRiskList">
                     <Option
-                      v-if="item.id !== currentRisk.id"
+                      v-if="item.id !== form.productId"
                       :value="item.id"
                       :key="index"
                     >{{item.productFullName}}</Option>
@@ -246,7 +246,7 @@ export default {
       additionRiskList: [],
       anchor: [],
       current: "",
-      currentRisk: {},
+      // currentRisk: {},
       rules: {
         bindProductId: [
           { required: true, message: "不能为空", trigger: "change" }
@@ -346,7 +346,7 @@ export default {
           }
         }
       } else {
-        this.form = {...defaultForm}
+        this.form = {...defaultForm, productId: this.$route.query.id}
       }
     },
     startTimeChange(data) {
