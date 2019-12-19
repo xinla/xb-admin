@@ -86,7 +86,7 @@
           <div v-for="(item, index) in bandleRules" :key="index">
             <div class="sale-item bw bfc-o">
               <em class="name">{{item.productName}}</em>
-              <sub :style="{'fontSize': '12px', color: item.status ? 'green' : 'gray' }">{{['正在进行', '已结束'][item.status]}}</sub>
+              <sub :style="{'fontSize': '12px', color: item.status ? 'gray' : 'green' }">{{['正在进行', '已结束'][item.status]}}</sub>
               <div class="fr">
                 <Button type="primary" size="small" style="margin-right: 10px;" @click="showForm(item)">规则设置</Button>
                 <Button type="primary" size="small" style="margin-right: 10px;" class="button" @click="clear(item)">删除</Button>
