@@ -178,7 +178,7 @@
                   :value="form.startTime"
                   type="datetime"
                   format="yyyy-MM-dd HH:mm:ss"
-                  placeholder="选择日期和时间"
+                  placeholder="设置时间"
                   @on-change="startTimeChange"
                 ></Date-picker>
               </FormItem>
@@ -188,7 +188,7 @@
                   :value="form.endTime"
                   type="datetime"
                   format="yyyy-MM-dd HH:mm:ss"
-                  placeholder="选择日期和时间"
+                  placeholder="设置时间"
                   @on-change="endTimeChange"
                 ></Date-picker>
               </FormItem>
@@ -248,30 +248,30 @@ export default {
       current: "",
       // currentRisk: {},
       rules: {
-        bindProductId: [
-          { required: true, message: "不能为空", trigger: "change" }
-        ],
-        activityName: [
-          { required: true, message: "不能为空", trigger: "blur" }
-        ],
-        priceStrategy: [
-          {
-            required: true,
-            type: "number",
-            message: "不能为空",
-            trigger: "change"
-          }
-        ],
-        discountRate: [
-          { required: true, message: "不能为空", trigger: "blur" }
-        ],
-        startTime: [
-          {
-            required: true,
-            message: "不能为空",
-            trigger: "change"
-          }
-        ]
+        // bindProductId: [
+        //   { required: true, message: "不能为空", trigger: "change" }
+        // ],
+        // activityName: [
+        //   { required: true, message: "不能为空", trigger: "blur" }
+        // ],
+        // priceStrategy: [
+        //   {
+        //     required: true,
+        //     type: "number",
+        //     message: "不能为空",
+        //     trigger: "change"
+        //   }
+        // ],
+        // discountRate: [
+        //   { required: true, message: "不能为空", trigger: "blur" }
+        // ],
+        // startTime: [
+        //   {
+        //     required: true,
+        //     message: "不能为空",
+        //     trigger: "change"
+        //   }
+        // ]
       }
     };
   },

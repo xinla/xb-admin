@@ -50,9 +50,34 @@
   max-width: 300px;
 }
 .atlas {
-  width: 200px;
-  height: 200px;
   margin: 0 20px 20px 0;
+  position: relative;
+  overflow: hidden;
+  img {
+    width: 200px;
+    height: 200px;
+  }
+  .delete {
+    opacity: 0;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    -webkit-transform: translate(50%, -50%);
+    transform: translate(50%, -50%);
+    padding: 20px 20px 6px 6px;
+    background: #555;
+    border-radius: 50%;
+    color: #eee;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+  &:hover {
+    .delete {
+      opacity: 1;
+    }
+  }
 }
 /deep/.box .ivu-row {
   margin-bottom: 10px;
@@ -273,13 +298,10 @@
               </TabPane>
               <TabPane label="图集">
                 <div class="box-content">
-                  <img
-                    class="atlas fl"
-                    v-for="(item, index) of form.atlas.split(',')"
-                    :Key="index"
-                    :src="item"
-                    alt
-                  />
+                  <div class="atlas fl" v-for="(item, index) of form.atlas" :key="index">
+                    <span class="delete" @click="remove(index)">x</span>
+                    <img v-if="item" :src="item" alt />
+                  </div>
                   <Upload
                     class="up-wrap"
                     :action="uploadUrl"
@@ -554,7 +576,12 @@ export default {
             return;
           }
           // 图集空值判断设置
-          data.atlas = data.atlas || "";
+          data.atlas = data.atlas
+            ? data.atlas.split(",")
+            : [];
+            if (!data.atlas[0]) {
+              data.atlas.shift()
+            }
           // 保险利益
           // data.insurableInterest = JSON.parse(data.insurableInterest);
           // 保险责任内容
@@ -600,7 +627,7 @@ export default {
       this.form.coverVideoUrl = response.result.fileUrl;
     },
     uploadAtlas(response, file, fileList) {
-      this.form.atlas += "," + response.result.fileUrl;
+      this.form.atlas.push(response.result.fileUrl);
     },
     uploadRulePdf(response, file, fileList) {
       this.form.insuranceRulePdf = response.result.imageUrl;
@@ -610,6 +637,15 @@ export default {
       this.form.insuranceLiabilityPdf = response.result.imageUrl;
       this.$Spin.hide();
     },
+    remove(index) {
+      this.$Modal.confirm({
+        title: "提示",
+        content: "确定要清空吗",
+        onOk: () => {
+          this.form.atlas.splice(index, 1);
+        }
+      });
+    },
     submit() {
       this.form.productId = this.$route.query.id;
 
@@ -617,9 +653,9 @@ export default {
         .validate()
         .then(data => {
           if (data) {
-            let formData = Object.assign({}, this.form);
+            let formData = JSON.parse(JSON.stringify(this.form));
             // 数组字段转字符串
-            // formData.describePicture += "";
+            formData.atlas += "";
 
             if (formData.id) {
               return updateProductDesc(formData);
