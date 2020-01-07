@@ -28,12 +28,11 @@
                 v-if="show[0] === index"
                 :key="item.supplierId"
               >
-              <div v-if="!item.dictVoList || !item.dictVoList.length" class="ac">
-                <br>
-                无字典条目，请添加
-                <br>
-                <br>
-              </div>
+                <div v-if="!item.dictVoList || !item.dictVoList.length" class="ac">
+                  <br />无字典条目，请添加
+                  <br />
+                  <br />
+                </div>
                 <Cell
                   v-for="(unit, unique) in item.dictVoList"
                   :key="unit.id"
@@ -48,14 +47,16 @@
           <Col span="12">
             <template v-for="(item,index) in list">
               <template v-for="(unit, unique) in item.dictVoList">
-                <Card :padding="0" style="padding: 0 15px;"
+                <Card
+                  :padding="0"
+                  style="padding: 0 15px;"
                   v-show="show[0] === index && show[1] === unique"
-                  :key="unique"
+                  :key="unit.id"
                 >
                   <Table
                     :columns="productColumns"
                     :data="unit.dictValueVoList"
-                    :key="unit.id"
+                    :max-height="700"
                   >
                     <template slot-scope="{ row }" slot="categoryNumber">
                       <Input
@@ -78,7 +79,7 @@
                       <!-- <RadioGroup v-model="row.isShow">
                         <Radio :label="0" :disabled="!row.isEdit">显示</Radio>
                         <Radio :label="1" :disabled="!row.isEdit">隐藏</Radio>
-                      </RadioGroup> -->
+                      </RadioGroup>-->
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
                       <template v-if="row.isEdit">
@@ -113,11 +114,7 @@
                       </template>
                     </template>
                   </Table>
-                  <Button
-                    long
-                    style="margin: 10px 0;"
-                    @click="add(unit)"
-                  >+ 添加字典</Button>
+                  <Button long style="margin: 10px 0;" @click="add(unit)">+ 添加字典</Button>
                 </Card>
               </template>
             </template>
@@ -149,13 +146,18 @@
                 v-if="show[0] === index"
                 :key="item.supplierId"
               >
+                <div v-if="!item.dictVoList || !item.dictVoList.length" class="ac">
+                  <br />暂无字典条目
+                  <br />
+                  <br />
+                </div>
                 <Cell
                   v-for="(unit, unique) in item.dictVoList"
                   :key="unit.id"
                   :title="unit.dictName"
                   :name="unique"
                   :selected="show[1] === unique"
-                  @click.native="clickClassSub(unique)"
+                  @click.native="getXbDictVlaueList(unit.dictName, unique)"
                 />
               </CellGroup>
             </Card>
@@ -163,17 +165,12 @@
 
           <Col span="6">
             <Card :padding="0">
-              <template v-for="(item,index) in list.slice(1)">
-                <template v-for="(unit, unique) in item.dictVoList">
-                  <Table
-                    v-show="show[0] === index && show[1] === unique"
-                    :columns="columns2"
-                    :data="unit.dictValueVoList"
-                    :key="unique + '' + index"
-                    no-data-text="尚未设置字典项"
-                  ></Table>
-                </template>
-              </template>
+              <Table
+                :columns="columns2"
+                :data="XbdictValueVoList"
+                :max-height="700"
+                no-data-text="点击左侧选项卡获取字典项"
+              ></Table>
             </Card>
           </Col>
 
@@ -186,10 +183,16 @@
                     :columns="columns3"
                     :data="unit.dictValueVoList"
                     :key="unit.id"
+                    :max-height="700"
                     no-data-text="尚未设置字典项"
                   >
                     <template slot-scope="{ row }" slot="vitValue">
-                      <Input type="text" v-model="row.vitValue" :disabled="!row.isEdit" placeholder="请输入对应代码" />
+                      <Input
+                        type="text"
+                        v-model="row.vitValue"
+                        :disabled="!row.isEdit"
+                        placeholder="请输入对应代码"
+                      />
                     </template>
                     <template slot-scope="{ row }" slot="action">
                       <Button
@@ -222,7 +225,7 @@
       @on-ok="submit()"
     >
       <Form ref="form">
-        关连公司：{{list[show[0]].supplierName}}
+        关连公司：{{list[show[0]] && list[show[0]].supplierName}}
         <FormItem prop="dictName" style="max-width: 
         100%;">
           <CheckboxGroup v-model="form">
@@ -345,6 +348,7 @@ export default {
       baseClass: [],
       eidtObj: {},
       eidtType: "",
+      XbdictValueVoList: []
     };
   },
   watch: {},
@@ -364,16 +368,25 @@ export default {
       this.show[1] = 0;
       this.show.splice();
       this.dialogShow = false;
+      this.XbdictValueVoList = [];
       // console.log(index)
     },
     clickClassSub(index) {
       this.show[1] = index;
       this.show.splice();
     },
+    getXbDictVlaueList(data, index) {
+      this.clickClassSub(index);
+      A.getPolicyDictCategoryValueList("3390302094096596999", data).then(
+        res => {
+          this.XbdictValueVoList = res;
+        }
+      );
+    },
     edit(type, item) {
       this.eidtType = type;
-      this.form = []
-      this.baseClass = []
+      this.form = [];
+      this.baseClass = [];
       Promise.resolve()
         .then(res => {
           if (type === "add") {
@@ -418,15 +431,20 @@ export default {
       });
     },
     add(data) {
-      data.dictValueVoList || (data.dictValueVoList = [])
-      let len = data.length
+      data.dictValueVoList || (data.dictValueVoList = []);
+      let len = data.length;
       for (const iterator of data.dictValueVoList) {
         if (iterator.isEdit) {
           this.$Message.error("请保存编辑项后再添加");
-          return
+          return;
         }
       }
-      data.dictValueVoList.push({ dictCategoryId: data.id, isEdit: true, isShow: 0, supplierId: data.supplierId })
+      data.dictValueVoList.push({
+        dictCategoryId: data.id,
+        isEdit: true,
+        isShow: 0,
+        supplierId: data.supplierId
+      });
     },
     cancle(data, array) {
       if (data.id) {
@@ -452,7 +470,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-/deep/.ivu-input[disabled]{
+/deep/.ivu-input[disabled] {
   background: none;
   border: none;
   color: inherit;

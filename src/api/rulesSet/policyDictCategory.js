@@ -89,15 +89,13 @@ export const deletePolicyDictCategoryValue = (id) => {
 }
 
 /**
- * 
- * @param {*} param0 
+ * 根据供应商id和字典名称查询字典内容
+ * @param {*} supplierId 供应商id
+ * @param {*} name 字典名称  URL编码  
  */
-export const getPolicyDictCategoryValueDetail = ({page, size, CategoryId, name}) => {
+export const getPolicyDictCategoryValueList = (supplierId, name) => {
   return axios.request({
-    url: service + `/deleteById/${id}`,
-    params: {
-      name
-    },
+    url: service + `/findDictValue/${supplierId}/${name}`,
     method: 'get'
   })
 }

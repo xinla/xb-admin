@@ -12,8 +12,8 @@
 
 <body>
   <script>
-    if (document.domain != "ad.visualinsur.cn" && document.domain !=  '192.168.1.58' && document.domain !=  '192.168.1.26' && document.domain !=  'localhost') { top.location.href = "http://ad.visualinsur.cn" };
-    if (top.location != location) { top.location.href = location.href };
+    document.domain != "admin.visualinsur.com" && document.domain != '192.168.1.58' && document.domain != '192.168.1.26' && document.domain != 'localhost' && (top.location.href = "http://admin.visualinsur.com");
+    top.location != location && (top.location.href = location.href);
     // console.log(top.location.href)
   </script>
   <noscript>

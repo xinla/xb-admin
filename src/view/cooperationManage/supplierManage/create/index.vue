@@ -84,6 +84,7 @@
             <RadioGroup v-model="form.typeRule">
               <Radio :label="0">寿险</Radio>
               <Radio :label="1">财险</Radio>
+              <Radio :label="2">合作公司</Radio>
             </RadioGroup>
           </FormItem>
         </Col>

@@ -66,10 +66,10 @@
         </FormItem>
         <FormItem label="费率计算方式" prop="socialInsuranceLimit">
           <RadioGroup v-model="form.rateCalculation">
-            <Radio :label="0">常规投保</Radio>
-            <Radio :label="1">按保险计划投保</Radio>
-            <Radio :label="2">按份数投保</Radio>
-            <Radio :label="3">按档次投保</Radio>
+            <Radio :label="0">只有保额</Radio>
+            <Radio :label="1">计划名称+保额</Radio>
+            <Radio :label="2">份数+保额</Radio>
+            <Radio :label="3">档次+保额</Radio>
           </RadioGroup>
         </FormItem>
         <FormItem label="年金基本保额设计依据" prop="socialInsuranceLimit">
