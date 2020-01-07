@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="x-h100">
     <xNav type="digitalResource" />
 
     <router-view></router-view>

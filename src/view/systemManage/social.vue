@@ -1,14 +1,14 @@
 <template>
-  <div>
-    <div class="bfc-o">
-         <Button type="info" @click="showModal()">添加</Button>
+  <div class="x-h100">
+    <div class="bfc-o bg pb24">
+         <Button type="primary" @click="showModal()">添加</Button>
         <div class="fr">
           <Select v-model="query.type" style="width:200px;" placeholder='类型'>
             <Option :value="0">业务类</Option>
             <Option :value="1">系统类</Option>
           </Select>
-          <Button type="primary" icon="ios-search" @click="getData(1)">搜索</Button>
-          <Button icon="ios-close-circle-outline" @click="query.publicName = '', query.system = '', getData(1)">清空</Button>
+          <Button type="primary" icon="ios-search" shape="circle" @click="getData(1)"></Button>
+          <!-- <Button icon="ios-close-circle-outline" @click="query.publicName = '', query.system = '', getData(1)">清空</Button> -->
         </div>
     </div>
         <Table :loading="loading" :columns="columns" :data="list">
@@ -23,17 +23,13 @@
           <template slot-scope="{ row }" slot="lockFlag">{{row.outageTime ? '锁定' : '正常'}}</template>
 
           <template slot-scope="{ row }" slot="action">
-            <Button
-              type="primary"
-              size="small"
+            <span class="button-pri"
               @click="showModal(row)"
-            >编辑</Button>
-            <Button
-              type="primary"
-              size="small"
+            >编辑</span>
+            <span class="button-pri"
               @click="showModal(row)"
-            >编辑</Button>
-            <Button type="primary" size="small" @click="remove(row)">删除</Button>
+            >编辑</span>
+            <span class="button-err" @click="remove(row)">删除</span>
           </template>
         </Table>
 
@@ -42,7 +38,7 @@
           :total="total"
           show-elevator
           show-total
-          style="text-align:center;margin-top:20px;"
+          class="c-page"
           @on-change="getData"
         />
 

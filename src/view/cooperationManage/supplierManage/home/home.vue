@@ -1,14 +1,12 @@
 <template>
-  <div class="bw br" style="padding: 20px;">
-    <!-- <div class="title">品牌列表</div> -->
-
-    <Row style="padding-bottom: 10px;">
-      <Col span="16">
-        <Button type="info" @click="goPage('createSupplier')">新建品牌</Button>
-      </Col>
+  <div class="bw br x-h100">
+    <Row class="bg pb24">
       <Col span="8">
-        <Input v-model="query.name" placeholder="搜索公司" style="width:73%; margin-right: 10px;" />
-        <Button type="info" @click="search()">搜索</Button>
+        <Input v-model="query.name" class="search-input" placeholder="搜索公司" style="width:73%;background: #fff;" />
+        <Button type="primary" icon="ios-search" shape="circle" @click="search()"></Button>
+      </Col>
+      <Col span="16" class="ar">
+        <Button type="primary" @click="goPage('createSupplier')">新建品牌</Button>
       </Col>
     </Row>
 
@@ -32,13 +30,11 @@
       </template>
 
       <template slot-scope="{ row }" slot="action">
-        <Button
-          type="info"
-          size="small"
+        <span class="button-pri"
           @click="goPage('businessInfo', {id: row.id, readOnly: true})"
-        >详情</Button>
-        <Button type="primary" size="small" @click="goPage('createSupplier', {id: row.id})">编辑</Button>
-        <Button type="error" size="small" @click="remove(row)">删除</Button>
+        >详情</span>
+        <span class="button-pri" @click="goPage('createSupplier', {id: row.id})">编辑</span>
+        <span class="button-err" @click="remove(row)">删除</span>
       </template>
     </Table>
 
@@ -46,7 +42,7 @@
       :total="total"
       show-elevator
       show-total
-      style="text-align:center;margin-top:20px;"
+      class="c-page"
       @on-change="getData"
     />
 

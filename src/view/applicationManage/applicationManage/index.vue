@@ -1,98 +1,8 @@
 <style lang="less" scoped>
-.apps-manage {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  // height: 100%;
-  .s-wrapper {
-    flex: 1;
-    width: 100%;
-    background: #f1f3f5;
-    overflow-y: auto;
-    .apps-manage-list {
-      box-sizing: border-box;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      .s-title {
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        color: #333;
-        .search-input {
-          width: 40%;
-          height: 26px;
-          text-align: left;
-          line-height: 26px;
-          color: #999;
-          background: #fff;
-          border-radius: 12px;
-          input {
-            vertical-align: top;
-            border: none;
-            width: calc(98% - 30px);
-            height: 24px;
-            font-size: 12px;
-            background: none;
-          }
-          i {
-            padding: 0 8px;
-          }
-        }
-        .top-btn {
-          span {
-            display: inline-block;
-            font-size: 12px;
-            line-height: 24px;
-            cursor: pointer;
-          }
-          .add-btn {
-            padding: 0 10px;
-            background: #6582ff;
-            border: #6582ff solid 1px;
-            color: #fff;
-            border-radius: 4px;
-            margin-right: 14px;
-            &:hover {
-              opacity: 0.8;
-            }
-            .iconfont {
-              font-size: 12px;
-            }
-          }
-          .other {
-            border: #f1f3f5 solid 1px;
-            border-radius: 4px;
-            color: #6582ff;
-            padding: 0 10px;
-            &:hover {
-              border-color: #6582ff;
-            }
-          }
-        }
-      }
-      .a-content {
-        display: flex;
-        flex-direction: column;
-        background: #fff;
-        flex: 1;
-        padding: 0 0 10px;
-        overflow: auto;
-        .apps-table {
-          display: flex;
-          flex-direction: column;
-          background: #fff;
-          flex: 1;
-          overflow-y: auto;
-        }
-        .a-page {
-          padding: 10px 0 20px;
-          font-size: 12px;
-        }
-      }
-    }
-  }
+.search-input {
+  width: 30%;
+  background: #fff;
+  font-size: 12px;
 }
 /deep/.mask {
   z-index: 10000;
@@ -105,9 +15,6 @@
 .upload-icon {
   border: 1px dashed #000;
   width: 100px;
-  padding: 30px;
-  line-height: 21px;
-  text-align: center;
 }
 /deep/.ivu-tag .ivu-icon-ios-close {
   visibility: hidden;
@@ -117,284 +24,280 @@
 }
 </style>
 <style lang="less">
-.apps-manage {
-  .search-input {
-    .ivu-input-wrapper {
-      vertical-align: top;
-      width: 80%;
-      input {
-        border: none;
-        height: 24px;
-        font-size: 12px;
-        background: none;
-      }
-    }
-  }
-  .ivu-poptip-popper {
-    min-width: 100px;
-  }
-}
-.vertical-center-modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  .ivu-modal-body {
-    padding: 0 15px;
-  }
-  .ivu-modal {
-    top: 0;
-  }
-  .ivu-modal-header,
-  .ivu-modal-footer {
-    border: 0;
-  }
-  .ivu-modal-footer {
-    .ivu-btn-large {
-      padding: 5px 15px;
-      font-size: 12px;
-      line-height: 14px;
-    }
-    .ivu-btn-primary {
-      background-color: #6582ff;
-      border-color: #6582ff;
-    }
-  }
-  .stopTip {
-    padding: 10px 0 20px;
-    color: #333;
-  }
-}
+// .apps-manage {
+//   .search-input {
+//     .ivu-input-wrapper {
+//       vertical-align: top;
+//       width: 80%;
+//       input {
+//         border: none;
+//         height: 24px;
+//         font-size: 12px;
+//         background: none;
+//       }
+//     }
+//   }
+//   .ivu-poptip-popper {
+//     min-width: 100px;
+//   }
+// }
+// .vertical-center-modal {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   .ivu-modal-body {
+//     padding: 0 15px;
+//   }
+//   .ivu-modal {
+//     top: 0;
+//   }
+//   .ivu-modal-header,
+//   .ivu-modal-footer {
+//     border: 0;
+//   }
+//   .ivu-modal-footer {
+//     .ivu-btn-large {
+//       padding: 5px 15px;
+//       font-size: 12px;
+//       line-height: 14px;
+//     }
+//     .ivu-btn-primary {
+//       background-color: #6582ff;
+//       border-color: #6582ff;
+//     }
+//   }
+//   .stopTip {
+//     padding: 10px 0 20px;
+//     color: #333;
+//   }
+// }
 </style>
 <template>
-  <div class="apps-manage">
-    <div class="s-wrapper">
-      <div class="apps-manage-list">
-        <div class="s-title">
-          <div class="search-input">
-            <i class="iconfont"></i>
-            <input
-              type="text"
-              v-model="query.keywords"
-              @keyup.enter="getData(1)"
-              placeholder="搜你想搜、输入文字并按回车键搜索"
-            />
-          </div>
-          <div class="top-btn">
-            <span class="add-btn" @click="showApplication()">+ 新建</span>
-            <span class="other" @click="getIds(0, true)">添加操作</span>
-            <span class="other" @click="getIds(1, true)">应用配置</span>
-            <span class="other" @click="getIds(2)">删除</span>
-          </div>
-        </div>
-        <div class="a-content">
-          <div v-if="total" class="apps-table ac">
-            <Table
-              ref="organUserList"
-              :columns="columns"
-              :data="list"
-              @on-selection-change="selectChange"
-              @on-row-dblclick="showApplication"
-            >
-              <template slot-scope="{ row }" slot="type">{{typeList[row.type]}}</template>
-              <template slot-scope="{ row }" slot="companyIds">
-                <!-- <span
-                  v-for="(item, index) of row.companyRelationMenuList"
-                  :key="index"
-                >{{item.companyName}}</span>-->
-                <div v-if="row.companyRelationMenuList.length === 0">全部</div>
-                <div v-else>{{row.companyRelationMenuList[0].companyName}} {{row.companyRelationMenuList.length > 2 ? '...' : ''}}</div>
-              </template>
-              <template slot-scope="{ row }" slot="level">{{levelList[row.level]}}</template>
-            </Table>
-            <Page
-              show-elevator
-              show-total
-              class-name="a-page"
-              :total="total"
-              :current="query.page"
-              @on-change="getData"
-            />
-          </div>
-        </div>
-
-        <!-- 编辑/新建应用 -->
-        <Drawer
-          :title="applicantForm.id ? '编辑应用' : '新建应用'"
-          v-model="isApplicantion"
-          width="500"
-          :styles="styles"
-        >
-          <Form
-            ref="applicantForm"
-            :model="applicantForm"
-            :rules="rules"
-            label-position="left"
-            :label-width="80"
-          >
-            <FormItem label="应用名称" prop="name">
-              <Input v-model.trim="applicantForm.name" placeholder="请输入功能名称" />
-            </FormItem>
-            <FormItem label="所属行业" prop="type">
-              <RadioGroup v-model="applicantForm.type">
-                <Radio v-for="(value, key) in typeList" :label="+key" :key="key">{{value}}</Radio>
-              </RadioGroup>
-            </FormItem>
-            <FormItem label="所属版本" prop="level">
-              <RadioGroup v-model="applicantForm.level">
-                <Radio v-for="(value, key) in levelList" :label="+key" :key="key">{{value}}</Radio>
-              </RadioGroup>
-            </FormItem>
-            <FormItem label="所属租户">
-              <Select
-                v-model="applicantForm.companyIds"
-                filterable
-                remote
-                multiple
-                :remote-method="getLesseePage"
-                :loading="searchLoading"
-                placeholder="请输入租户名称"
-              >
-                <!-- 过去配置的选项 -->
-                <Option
-                  v-for="(option, index) in applicantForm.companyRelationMenuList"
-                  :value="option.companyId"
-                  :key="index + 'a'"
-                >{{option.companyName}}</Option>
-                <!-- 查询列表 -->
-                <Option
-                  v-for="(option, index) in lesseeList"
-                  :value="option.id"
-                  :key="index"
-                  @click.native="choiceOption(option)"
-                >
-                {{option.name}}
-                </Option>
-                <!-- 新增选项的列表 -->
-                <Option v-show="false"
-                  v-for="(option, index) in newSelectedList"
-                  :value="option.id"
-                  :key="index + 'b'"
-                >{{option.name}}</Option>
-              </Select>
-            </FormItem>
-            <FormItem label="适用终端" prop="terminal">
-              <CheckboxGroup v-model="applicantForm.terminal">
-                <Checkbox v-for="(value, key) in terminalList" :label="key" :key="key">{{value}}</Checkbox>
-              </CheckboxGroup>
-            </FormItem>
-            <FormItem :label="applicantForm.terminal ? terminalList[applicantForm.terminal] : 'web' + '地址'">
-              <Input v-model.trim="applicantForm.menuUrl" placeholder="请输入请求地址" />
-            </FormItem>
-            <FormItem label="ICON">
-              <div
-                class="bfc-d"
-                style="margin: 0 20px 20px 0;"
-                @click="showUpload('webImageUrl', 'applicantForm')"
-              >
-                <img class="logo" v-if="applicantForm.webImageUrl" :src="applicantForm.webImageUrl" />
-                <div v-else class="upload-icon cp">web</div>
-              </div>
-
-              <div class="bfc-d" @click="showUpload('appImageUrl', 'applicantForm')">
-                <img class="logo" v-if="applicantForm.appImageUrl" :src="applicantForm.appImageUrl" />
-                <div v-else class="upload-icon cp">app</div>
-              </div>
-            </FormItem>
-            <FormItem label="操作" v-show="applicantForm.id">
-              <Tag
-                v-for="(item, index) in applicantForm.operateStr"
-                type="border"
-                closable
-                color="primary"
-                @dblclick.native="showOperation(item, 2)"
-                @on-close="applicantForm.operateStr.splice(index, 1)"
-                :key="index"
-              >{{item.name}}</Tag>
-            </FormItem>
-          </Form>
-          <div class="demo-drawer-footer ar">
-            <Button style="margin-right: 8px" @click="isApplicantion = false">取消</Button>
-            <Button type="primary" @click="save(3, 'applicantForm')">确定</Button>
-          </div>
-        </Drawer>
-
-        <!-- 编辑/新建操作 -->
-        <Drawer
-          :title="applicantForm.id ? '编辑操作' : '新建操作'"
-          v-model="isOperation"
-          width="500"
-          :styles="styles"
-        >
-          <Form
-            ref="operationForm"
-            :model="operationForm"
-            :rules="rules"
-            label-position="left"
-            :label-width="80"
-          >
-            <FormItem label="所属应用">{{operationForm.pName}}</FormItem>
-            <FormItem label="操作名称" prop="name">
-              <Input v-model.trim="operationForm.name" placeholder="请输入功能名称" />
-            </FormItem>
-            <FormItem label="适用终端" prop="terminal">
-              <CheckboxGroup v-model="operationForm.terminal">
-                <Checkbox v-for="(value, key) in terminalList" :label="key" :key="key">{{value}}</Checkbox>
-              </CheckboxGroup>
-            </FormItem>
-            <FormItem :label="operationForm.terminal ? terminalList[operationForm.terminal] : 'web' + '地址'">
-              <Input v-model.trim="operationForm.menuUrl" placeholder="请输入请求地址" />
-            </FormItem>
-            <FormItem label="ICON">
-              <div
-                class="bfc-d"
-                style="margin: 0 20px 20px 0;"
-                @click="showUpload('webImageUrl', 'operationForm')"
-              >
-                <img class="logo" v-if="operationForm.webImageUrl" :src="operationForm.webImageUrl" />
-                <div v-else class="upload-icon cp">web</div>
-              </div>
-
-              <div class="bfc-d" @click="showUpload('appImageUrl', 'operationForm')">
-                <img class="logo" v-if="operationForm.appImageUrl" :src="operationForm.appImageUrl" />
-                <div v-else class="upload-icon cp">app</div>
-              </div>
-            </FormItem>
-          </Form>
-          <div class="demo-drawer-footer ar">
-            <Button style="margin-right: 8px" @click="isOperation = false">取消</Button>
-            <Button type="primary" @click="save(1, 'operationForm')">确定</Button>
-          </div>
-        </Drawer>
-
-        <!-- 上传图片弹窗 -->
-        <dialogBox v-model="upload.show">
-          <div slot="title">图片上传</div>
-          <Form style="width: 20vw;">
-            <FormItem>
-              <Input
-                v-model="iconUrl"
-                placeholder="请输入图片地址"
-                style="width: 70%; margin-right: 10px;"
-              />
-              <Upload
-                :action="$config.services.upload"
-                :format="['png','gif','jpg']"
-                :show-upload-list="false"
-                :on-success="uploadSuccess"
-                :on-format-error="formatError"
-                style="display:inline-block;"
-              >
-                <Button icon="ios-cloud-upload-outline">上传</Button>
-              </Upload>
-            </FormItem>
-          </Form>
-          <div class="demo-drawer-footer ar">
-            <Button style="margin-right: 8px" @click="upload.show = false">取消</Button>
-            <Button type="primary" @click="uploadIcon">确定</Button>
-          </div>
-        </dialogBox>
+  <div class="x-h100">
+    <div class="bg pb24">
+      <Input
+        type="text"
+        v-model="query.keywords"
+        @keyup.enter="getData(1)"
+        class="search-input"
+        placeholder="请输入关键字搜索"
+      />
+      <Button type="primary" icon="ios-search" shape="circle" @click="getData(1)"></Button>
+      <div class="fr">
+        <Button type="primary" @click="showApplication()">新建应用</Button>
+        <Button type="primary" @click="getIds(0, true)">添加操作</Button>
+        <Button type="primary" @click="getIds(1, true)">应用配置</Button>
+        <Button type="primary" ghost @click="getIds(2)">删除</Button>
       </div>
     </div>
+    <Table
+      ref="organUserList"
+      :columns="columns"
+      :data="list"
+      @on-selection-change="selectChange"
+      @on-row-dblclick="showApplication"
+    >
+      <template slot-scope="{ row }" slot="type">{{typeList[row.type]}}</template>
+      <template slot-scope="{ row }" slot="companyIds">
+        <!-- <span
+                  v-for="(item, index) of row.companyRelationMenuList"
+                  :key="index"
+        >{{item.companyName}}</span>-->
+        <div v-if="row.companyRelationMenuList.length === 0">全部</div>
+        <div
+          v-else
+        >{{row.companyRelationMenuList[0].companyName}} {{row.companyRelationMenuList.length > 2 ? '...' : ''}}</div>
+      </template>
+      <template slot-scope="{ row }" slot="level">{{levelList[row.level]}}</template>
+    </Table>
+    <Page
+      show-elevator
+      show-total
+      class-name="c-page"
+      :total="total"
+      :current="query.page"
+      @on-change="getData"
+    />
+
+    <!-- 编辑/新建应用 -->
+    <Drawer
+      :title="applicantForm.id ? '编辑应用' : '新建应用'"
+      v-model="isApplicantion"
+      width="500"
+      :styles="styles"
+    >
+      <Form
+        ref="applicantForm"
+        :model="applicantForm"
+        :rules="rules"
+        label-position="left"
+        :label-width="80"
+      >
+        <FormItem label="应用名称" prop="name">
+          <Input v-model.trim="applicantForm.name" placeholder="请输入功能名称" />
+        </FormItem>
+        <FormItem label="所属行业" prop="type">
+          <RadioGroup v-model="applicantForm.type">
+            <Radio v-for="(value, key) in typeList" :label="+key" :key="key">{{value}}</Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="所属版本" prop="level">
+          <RadioGroup v-model="applicantForm.level">
+            <Radio v-for="(value, key) in levelList" :label="+key" :key="key">{{value}}</Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="所属租户">
+          <Select
+            v-model="applicantForm.companyIds"
+            filterable
+            remote
+            multiple
+            :remote-method="getLesseePage"
+            :loading="searchLoading"
+            placeholder="请输入租户名称"
+          >
+            <!-- 过去配置的选项 -->
+            <Option
+              v-for="(option, index) in applicantForm.companyRelationMenuList"
+              :value="option.companyId"
+              :key="index + 'a'"
+            >{{option.companyName}}</Option>
+            <!-- 查询列表 -->
+            <Option
+              v-for="(option, index) in lesseeList"
+              :value="option.id"
+              :key="index"
+              @click.native="choiceOption(option)"
+            >{{option.name}}</Option>
+            <!-- 新增选项的列表 -->
+            <Option
+              v-show="false"
+              v-for="(option, index) in newSelectedList"
+              :value="option.id"
+              :key="index + 'b'"
+            >{{option.name}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="适用终端" prop="terminal">
+          <CheckboxGroup v-model="applicantForm.terminal">
+            <Checkbox v-for="(value, key) in terminalList" :label="key" :key="key">{{value}}</Checkbox>
+          </CheckboxGroup>
+        </FormItem>
+        <FormItem
+          :label="applicantForm.terminal ? terminalList[applicantForm.terminal] : 'web' + '地址'"
+        >
+          <Input v-model.trim="applicantForm.menuUrl" placeholder="请输入请求地址" />
+        </FormItem>
+        <FormItem label="ICON">
+          <div
+            class="bfc-d"
+            style="margin: 0 20px 20px 0;"
+            @click="showUpload('webImageUrl', 'applicantForm')"
+          >
+            <img class="logo" v-if="applicantForm.webImageUrl" :src="applicantForm.webImageUrl" />
+            <div v-else class="upload-icon cp">
+              <Icon type="md-cloud-upload" />
+              <p>web</p>
+              </div>
+          </div>
+
+          <div class="bfc-d" @click="showUpload('appImageUrl', 'applicantForm')">
+            <img class="logo" v-if="applicantForm.appImageUrl" :src="applicantForm.appImageUrl" />
+            <div v-else class="upload-icon cp">
+              <Icon type="md-cloud-upload" /><p>app</p></div>
+          </div>
+        </FormItem>
+        <FormItem label="操作" v-show="applicantForm.id">
+          <Tag
+            v-for="(item, index) in applicantForm.operateStr"
+            type="border"
+            closable
+            color="primary"
+            @dblclick.native="showOperation(item, 2)"
+            @on-close="applicantForm.operateStr.splice(index, 1)"
+            :key="index"
+          >{{item.name}}</Tag>
+        </FormItem>
+      </Form>
+      <div class="demo-drawer-footer ar">
+        <Button style="margin-right: 8px" @click="isApplicantion = false">取消</Button>
+        <Button type="primary" @click="save(3, 'applicantForm')">确定</Button>
+      </div>
+    </Drawer>
+
+    <!-- 编辑/新建操作 -->
+    <Drawer
+      :title="applicantForm.id ? '编辑操作' : '新建操作'"
+      v-model="isOperation"
+      width="500"
+      :styles="styles"
+    >
+      <Form
+        ref="operationForm"
+        :model="operationForm"
+        :rules="rules"
+        label-position="left"
+        :label-width="80"
+      >
+        <FormItem label="所属应用">{{operationForm.pName}}</FormItem>
+        <FormItem label="操作名称" prop="name">
+          <Input v-model.trim="operationForm.name" placeholder="请输入功能名称" />
+        </FormItem>
+        <FormItem label="适用终端" prop="terminal">
+          <CheckboxGroup v-model="operationForm.terminal">
+            <Checkbox v-for="(value, key) in terminalList" :label="key" :key="key">{{value}}</Checkbox>
+          </CheckboxGroup>
+        </FormItem>
+        <FormItem
+          :label="operationForm.terminal ? terminalList[operationForm.terminal] : 'web' + '地址'"
+        >
+          <Input v-model.trim="operationForm.menuUrl" placeholder="请输入请求地址" />
+        </FormItem>
+        <FormItem label="ICON">
+          <div
+            class="bfc-d"
+            style="margin: 0 20px 20px 0;"
+            @click="showUpload('webImageUrl', 'operationForm')"
+          >
+            <img class="logo" v-if="operationForm.webImageUrl" :src="operationForm.webImageUrl" />
+            <div v-else class="upload-icon cp"><Icon type="md-cloud-upload" /><p>web</p></div>
+          </div>
+
+          <div class="bfc-d" @click="showUpload('appImageUrl', 'operationForm')">
+            <img class="logo" v-if="operationForm.appImageUrl" :src="operationForm.appImageUrl" />
+            <div v-else class="upload-icon cp"><Icon type="md-cloud-upload" /><p>app</p></div>
+          </div>
+        </FormItem>
+      </Form>
+      <div class="demo-drawer-footer ar">
+        <Button style="margin-right: 8px" @click="isOperation = false">取消</Button>
+        <Button type="primary" @click="save(1, 'operationForm')">确定</Button>
+      </div>
+    </Drawer>
+
+    <!-- 上传图片弹窗 -->
+    <dialogBox v-model="upload.show">
+      <div slot="title">图片上传</div>
+      <Form style="width: 20vw;">
+        <FormItem>
+          <Input v-model="iconUrl" placeholder="请输入图片地址" style="width: 70%; margin-right: 10px;" />
+          <Upload
+            :action="$config.services.upload"
+            :format="['png','gif','jpg']"
+            :show-upload-list="false"
+            :on-success="uploadSuccess"
+            :on-format-error="formatError"
+            style="display:inline-block;"
+          >
+            <Button icon="ios-cloud-upload-outline">上传</Button>
+          </Upload>
+        </FormItem>
+      </Form>
+      <div class="demo-drawer-footer ar">
+        <Button style="margin-right: 8px" @click="upload.show = false">取消</Button>
+        <Button type="primary" @click="uploadIcon">确定</Button>
+      </div>
+    </dialogBox>
   </div>
 </template>
 <script>
@@ -563,7 +466,7 @@ export default {
       this.$refs.applicantForm.resetFields();
       this.isApplicantion = true;
       this.applicantForm = Object.assign({}, defaultApplicationForm);
-      this.newSelectedList = []
+      this.newSelectedList = [];
       if (data) {
         this.applicantForm = Object.assign({}, data);
         // 适用终端字符串集合转为数组
@@ -739,12 +642,12 @@ export default {
     choiceOption(data) {
       for (const iterator of this.newSelectedList) {
         if (iterator.id === data.id) {
-          return
+          return;
         }
       }
       this.$nextTick(() => {
         this.newSelectedList.push(data);
-      })
+      });
     }
   }
 };

@@ -1,11 +1,9 @@
 <template>
   <div>
-    <Row>
-      <Col span="16">
-        <Button type="primary" size="small" style="margin-right:5px;" @click="edit(0)">添加分类</Button>
-        <Button type="primary" size="small" style="margin-right:5px;" @click="edit(1)">添加标题</Button>
-      </Col>
-    </Row>
+    <div class="right">
+          <Button type="primary" size="small" style="margin-right:5px;" @click="edit(0)">添加分类</Button>
+          <Button type="primary" size="small" style="margin-right:5px;" @click="edit(1)">添加标题</Button>
+      </div>
 
     <Table :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="action">
@@ -14,27 +12,19 @@
       </template>
     </Table>
 
-    <Page
-        :total="total"
-        show-elevator
-        show-total
-        style="text-align:center;margin-top:20px;"
-        @on-change="getData"
-      />
+    <Page :total="total" show-elevator show-total class="c-page" @on-change="getData" />
 
     <dialogBox v-model="isShow">
       <template slot="title">添加分类</template>
       <template>
         <Form ref="form" :model="form" :rules="rules">
           <FormItem prop="value">
-            <Input type="text" v-model="form.value" placeholder="親輸入分类"></Input>
+            <Input type="text" v-model="form.value" placeholder="请输入分类"></Input>
           </FormItem>
-          <Button
-            type="primary"
-            size="small"
-            style="display: block; margin: 0 auto"
-            @click="submit(0, form)"
-          >确定</Button>
+          <div class="ar">
+            <Button type="primary" ghost @click="isShow = false">取消</Button>
+            <Button type="primary" @click="submit(0, form)">确定</Button>
+          </div>
         </Form>
       </template>
     </dialogBox>
@@ -45,24 +35,17 @@
         <Form ref="form1" :model="form1" :rules="rules">
           <FormItem prop="classifyId">
             <Select v-model="form1.classifyId">
-              <Option
-                v-for="(item, index) in list2"
-                :value="item.id"
-                :key="index"
-              >{{ item.value }}</Option>
+              <Option v-for="(item, index) in list2" :value="item.id" :key="index">{{ item.value }}</Option>
             </Select>
           </FormItem>
 
           <FormItem prop="title">
-            <Input type="text" v-model="form1.title" placeholder="親輸入标题"></Input>
+            <Input type="text" v-model="form1.title" placeholder="请输入标题"></Input>
           </FormItem>
-
-          <Button
-            type="primary"
-            size="small"
-            style="display: block; margin: 0 auto"
-            @click="submit(1, form1)"
-          >确定</Button>
+          <div class="ar">
+            <Button type="primary" ghost @click="isShow1 = false">取消</Button>
+            <Button type="primary" @click="submit(1, form1)">确定</Button>
+          </div>
         </Form>
       </template>
     </dialogBox>
@@ -80,18 +63,18 @@ import {
 import dialogBox from "@/components/dialogBox";
 
 const form = {
-  value: "",
+  value: ""
 };
 
 const form1 = {
-  classifyId: '',
+  classifyId: "",
   title: "",
   cover: "",
   type: 0,
   key: "",
   value: "",
   createTime: "",
-  updateTime: "",
+  updateTime: ""
 };
 
 export default {
@@ -103,7 +86,7 @@ export default {
         page: 1,
         size: 10,
         type: 0,
-        classifyId: ''
+        classifyId: ""
       },
       columns: [
         {
@@ -129,13 +112,13 @@ export default {
       ],
       list: [],
       list2: [
-        {id: '1', value: '健康类'},
-        {id: '2', value: '养老类'},
-        {id: '3', value: '教育类'},
-        {id: '4', value: '保障类'},
-        {id: '5', value: '理财类'},
-        {id: '6', value: '人寿类'},
-        {id: '7', value: '意外类'},
+        { id: "1", value: "健康类" },
+        { id: "2", value: "养老类" },
+        { id: "3", value: "教育类" },
+        { id: "4", value: "保障类" },
+        { id: "5", value: "理财类" },
+        { id: "6", value: "人寿类" },
+        { id: "7", value: "意外类" }
       ],
       rules: {
         value: [{ required: true, message: "不能为空", trigger: "blur" }],
@@ -153,12 +136,12 @@ export default {
   watch: {
     isShow(val) {
       if (!val) {
-        this.cancel()
+        this.cancel();
       }
     },
     isShow1(val) {
       if (!val) {
-        this.cancel()
+        this.cancel();
       }
     }
   },
@@ -175,7 +158,7 @@ export default {
         this.list = res.list;
         this.total = res.total;
       });
-      getProposalDictPage({page: 1, size: 100}).then(res => {
+      getProposalDictPage({ page: 1, size: 100 }).then(res => {
         // console.log("ProposalDictPage", res);
         // 先写死，后期获取
         // this.list2 = res.list
@@ -192,14 +175,11 @@ export default {
       }
     },
     submit(type, item) {
-      console.log(item)
+      console.log(item);
       // 0 分类 ， 1 建议书
       // console.log('supplierForm', this.supplierForm)
       // console.log('productForm', this.productForm)
-      ;(type === 0
-        ? this.$refs.form.validate()
-        : this.$refs.form1.validate()
-      )
+      (type === 0 ? this.$refs.form.validate() : this.$refs.form1.validate())
         .then(data => {
           if (data) {
             return Promise.resolve();
@@ -221,7 +201,7 @@ export default {
         });
     },
     cancel(type) {
-      this.$refs.form.resetFields()
+      this.$refs.form.resetFields();
       this.$refs.form1.resetFields();
       type === 0 ? (this.isShow = false) : (this.isShow1 = false);
     },
@@ -236,9 +216,18 @@ export default {
           });
         }
       });
-    },
+    }
   }
 };
 </script>
 <style lang="less" scoped>
+/deep/.dialog{
+  width: 350px;
+  overflow: visible;
+}
+.right{
+  position: absolute;
+  top: 5px;
+  right: 0;
+}
 </style>

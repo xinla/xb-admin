@@ -34,10 +34,10 @@ export default [
     redirect: '/home',
     component: Main,
     meta: {
-      hideInMenu: true,
+      // hideInMenu: true,
       notCache: true,
       title: '首页',
-      icon: 'md-home'
+      icon: '_home',
     },
     children: [
       {
@@ -47,7 +47,7 @@ export default [
           hideInMenu: true,
           title: '首页',
           notCache: true,
-          icon: 'md-home'
+          icon: '_home'
         },
         component: () => import('@/view/single-page/home')
       }
@@ -86,7 +86,7 @@ export default [
     name: 'systemManage',
     component: Main,
     meta: {
-      icon: '_Basicmanagement',
+      icon: '_system-management',
       title: '系统管理',
       hideInMenu: false,
       notCache: true
@@ -182,7 +182,7 @@ export default [
     name: 'basicManage',
     component: Main,
     meta: {
-      icon: '_Basicmanagement',
+      icon: '_lessee-management',
       title: '租户管理',
       hideInMenu: false,
       notCache: true
@@ -198,7 +198,7 @@ export default [
         component: () => import('@/view/basicManage/lessee')
       },
       {
-        path: 'createLessee',
+        path: 'create',
         name: 'createLessee',
         meta: {
           icon: 'md-funnel',
@@ -208,7 +208,7 @@ export default [
         component: () => import('@/view/basicManage/lessee/create/index')
       },
       {
-        path: 'lesseeDetail',
+        path: 'detail',
         name: 'lesseeDetail',
         meta: {
           icon: 'md-funnel',
@@ -218,8 +218,8 @@ export default [
         component: () => import('@/view/basicManage/lessee/detail')
       },
       {
-        path: 'resourceList',
-        name: 'resourceList',
+        path: 'menu',
+        name: 'lesseeMenu',
         meta: {
           icon: '_Resourcelist',
           title: '菜单管理'
@@ -281,17 +281,17 @@ export default [
   },
   // 资源管理
   {
-    path: '/cooperationManage',
-    name: 'cooperationManage',
+    path: '/resourceManage',
+    name: 'resourceManage',
     component: Main,
     meta: {
-      icon: '_CooperativemanagementCooperativemanagement',
+      icon: '_resource-management',
       title: '资源管理',
       notCache: true
     },
     children: [
       {
-        path: 'supplierManage',
+        path: 'supplier',
         name: 'supplierManage',
         meta: {
           icon: '_Suppliermanagement',
@@ -383,7 +383,7 @@ export default [
       // },
       // 产品管理
       {
-        path: 'productManage',
+        path: 'product',
         name: 'productManage',
         meta: {
           icon: '_Productmanagement',
@@ -484,19 +484,19 @@ export default [
   },
   // 投保管理
   {
-    path: '/ruleSet',
-    name: 'ruleSet',
+    path: '/insuranceManagement',
+    name: 'insuranceManagement',
     component: Main,
     meta: {
-      icon: '_Ruleconfiguration',
+      icon: '_insurance-management',
       title: '投保管理',
       hideInMenu: false,
       notCache: true
     },
     children: [
       {
-        path: 'typeRule',
-        name: 'typeRule',
+        path: 'insuranceDictionary',
+        name: 'insuranceDictionary',
         meta: {
           icon: '_Typerule',
           title: '投保字典'
@@ -583,8 +583,8 @@ export default [
       //   ]
       // },
       {
-        path: 'digitalDictionary',
-        name: 'digitalDictionary',
+        path: 'insuranceRules',
+        name: 'insuranceRules',
         meta: {
           icon: '_Dictionaries',
           title: '投保规则'
@@ -599,15 +599,15 @@ export default [
     name: 'functionManage',
     component: Main,
     meta: {
-      icon: '_Applicationmanagement',
+      icon: '_application-management',
       title: '应用管理',
       hideInMenu: false,
       notCache: true
     },
     children: [
       {
-        path: 'applicationManage',
-        name: 'applicationManage',
+        path: 'config',
+        name: 'config',
         meta: {
           icon: '_Recommendation',
           title: '应用配置',
@@ -770,19 +770,19 @@ export default [
   // },
   // 支付管理
   {
-    path: '/financialSettlement',
-    name: 'financialSettlement',
+    path: '/paymentManagement',
+    name: 'paymentManagement',
     component: Main,
     meta: {
-      icon: '_Financialsettlement',
+      icon: '_payment-management',
       title: '支付管理',
       hideInMenu: false,
       notCache: true
     },
     children: [
       {
-        path: 'shouldStatement',
-        name: 'shouldStatement',
+        path: 'commodity',
+        name: 'commodity',
         meta: {
           icon: '_Billingstatement',
           title: '商品管理'
@@ -790,8 +790,8 @@ export default [
         component: () => import('@/view/financialSettlement/shouldStatement.vue')
       },
       {
-        path: 'allOrders',
-        name: 'allOrders',
+        path: 'orders',
+        name: 'orders',
         meta: {
           icon: '_Allorders',
           title: '订单管理'
@@ -809,8 +809,8 @@ export default [
         component: () => import('@/view/financialSettlement/orderDetail.vue'),
       },
       {
-        path: 'invoiceManage',
-        name: 'invoiceManage',
+        path: 'invoice',
+        name: 'invoice',
         meta: {
           icon: '_Invoicemanagement',
           title: '发票管理'
@@ -844,11 +844,11 @@ export default [
   // },
   // 系统支持
   {
-    path: '/systemSet',
-    name: 'systemSet',
+    path: '/systemSupport',
+    name: 'systemSupport',
     component: Main,
     meta: {
-      icon: '_Systemsettings',
+      icon: '_system-support',
       title: '系统支持',
       hideInMenu: false,
       notCache: true
@@ -923,11 +923,11 @@ export default [
   },
   // 系统统计
   {
-    path: '/dataStatistics',
-    name: 'dataStatistics',
+    path: '/systemStatistics',
+    name: 'systemStatistics',
     component: Main,
     meta: {
-      icon: '_Datastatistics',
+      icon: '_system-statistics',
       title: '系统统计',
       hideInMenu: false,
       notCache: true

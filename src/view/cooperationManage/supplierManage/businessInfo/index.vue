@@ -3,7 +3,7 @@
     
     <xNav/>
 
-    <businessInfo type="supplier"/>
+    <businessInfo type="supplier" style="padding: 20px;"/>
 
   </div>
 </template>

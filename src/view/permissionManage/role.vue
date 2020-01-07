@@ -1,25 +1,27 @@
 <template>
-  <div>
+  <div class="x-h100">
     <!-- <div class="title">用户列表</div> -->
-
-    <Row style="padding-bottom: 10px;">
+    <div class="ar bg pb24">
+      <Button type="primary" @click="showModal()">添加角色</Button>
+    </div>
+    <!-- <Row style="padding-bottom: 10px;">
       <Col span="16">
         <Button type="info" @click="showModal()">添加</Button>
       </Col>
-      <!-- <Col span="8">
+      <Col span="8">
         <Input v-model="query.name" placeholder="用户名" style="width:73%; margin-right: 10px;"/>
         <Button type="primary" icon="ios-search" @click="search()">搜索</Button>
-      </Col>-->
-    </Row>
+      </Col>
+    </Row>-->
 
     <Table :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="isActive">{{row.outageTime ? '停用' : '正常'}}</template>
 
       <template slot-scope="{ row }" slot="action">
-        <!-- <Button type="primary" size="small" @click="showModal(row)">查看</Button> -->
-        <Button type="primary" style="margin-right: 10px;" size="small" @click="showModal(row)">编辑</Button>
-        <Button type="primary" style="margin-right: 10px;" size="small" @click="remove(row)">删除</Button>
-        <Button type="primary" size="small" @click="showPsModal(row)">权限</Button>
+        <span class="button-pri" @click="showModal(row), disabled = true">查看</span>
+        <span class="button-pri" @click="showModal(row)">编辑</span>
+        <span class="button-pri" @click="remove(row)">删除</span>
+        <span class="button-err" @click="showPsModal(row)">权限</span>
       </template>
     </Table>
 
@@ -28,13 +30,13 @@
       :total="total"
       show-elevator
       show-total
-      style="text-align:center;margin-top:20px;"
+      class="c-page"
       @on-change="getData"
     />
 
     <!-- 编辑角色弹窗 -->
     <Modal v-model="modal" :title="form.roleId ? '编辑' : '新建'" @on-ok="save">
-      <Form ref="form" :model="form" :rules="rules" :label-width="60">
+      <Form ref="form" :model="form" :rules="rules" :label-width="60" :disabled="disabled">
         <FormItem label="角色名称" prop="name">
           <Input v-model="form.roleName" placeholder="请输入角色名称" style="width:73%;" />
         </FormItem>
@@ -63,8 +65,16 @@
     </Modal>
 
     <!-- 分配权限弹窗 -->
-    <Modal v-model="modalPs" scrollable :title="form.roleId ? '编辑' : '新建'" @on-ok="savePermission">
-      <Tree ref="menuTree" check-strictly :key="roleId" :data="menuList" show-checkbox @on-select-change="clickMenu" @on-check-change="clickMenuCheck"></Tree>
+    <Modal v-model="modalPs" class="ps" scrollable title="分配权限" @on-ok="savePermission">
+      <Tree
+        ref="menuTree"
+        check-strictly
+        :key="roleId"
+        :data="menuList"
+        show-checkbox
+        @on-select-change="clickMenu"
+        @on-check-change="clickMenuCheck"
+      ></Tree>
     </Modal>
   </div>
 </template>
@@ -133,7 +143,7 @@ export default {
       rules: {},
       menuList: [],
       _menuList: [],
-      roleId: ''
+      roleId: ""
     };
   },
   mounted() {
@@ -156,7 +166,7 @@ export default {
         }
       }
       recursive(res, this.menuList);
-      this._menuList = JSON.parse(JSON.stringify(this.menuList))
+      this._menuList = JSON.parse(JSON.stringify(this.menuList));
       // this.list = data.records;
       // this.total = ~~data.total;
     });
@@ -179,24 +189,25 @@ export default {
     showModal(data) {
       this.modal = true;
       this.form = Object.assign({}, data || {});
+      this.disabled = false
     },
     showPsModal(data) {
       this.modalPs = true;
-      this.roleId = data.roleId
-      this.menuList = JSON.parse(JSON.stringify(this._menuList))
+      this.roleId = data.roleId;
+      this.menuList = JSON.parse(JSON.stringify(this._menuList));
       getMenuTree(data.roleId).then(res => {
-      console.log(res);
-      function recursive(data) {
-        for (const iterator of data) {
-          if (res.includes(iterator.id)) {
-            iterator.checked = true
+        console.log(res);
+        function recursive(data) {
+          for (const iterator of data) {
+            if (res.includes(iterator.id)) {
+              iterator.checked = true;
+            }
+            recursive(iterator.children);
           }
-          recursive(iterator.children)
         }
-      }
 
-      recursive(this.menuList)
-    })
+        recursive(this.menuList);
+      });
     },
     save() {
       Promise.resolve()
@@ -212,15 +223,15 @@ export default {
         });
     },
     savePermission() {
-      console.log(this.$refs.menuTree.getCheckedAndIndeterminateNodes())
-      let selectedObj = this.$refs.menuTree.getCheckedAndIndeterminateNodes()
-      let selectedIds = []
+      console.log(this.$refs.menuTree.getCheckedAndIndeterminateNodes());
+      let selectedObj = this.$refs.menuTree.getCheckedAndIndeterminateNodes();
+      let selectedIds = [];
       for (const iterator of selectedObj) {
-        selectedIds.push(iterator.id)
+        selectedIds.push(iterator.id);
       }
-      A.updateRolePermission(this.roleId, selectedIds + '').then(res => {
+      A.updateRolePermission(this.roleId, selectedIds + "").then(res => {
         this.$Message.success("操作成功");
-      })
+      });
     },
     remove(data) {
       this.$Modal.confirm({
@@ -235,24 +246,24 @@ export default {
       });
     },
     clickMenu(selected, current) {
-      current.expand = !current.expand
+      current.expand = !current.expand;
     },
     clickMenuCheck(chenked, current) {
       function recursive(data) {
         for (const iterator of data.children) {
-          iterator.checked = data.checked
-          recursive(iterator)
+          iterator.checked = data.checked;
+          recursive(iterator);
         }
       }
 
-      recursive(current)
+      recursive(current);
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-/deep/.ivu-modal-body{
+.ps /deep/.ivu-modal-body {
   max-height: 65vh;
   overflow: auto;
 }

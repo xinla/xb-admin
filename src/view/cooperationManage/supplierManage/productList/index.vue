@@ -1,24 +1,23 @@
 <template>
-  <div>
+  <div class="x-h100">
     <xNav/>
     
-    <Form class="form " inline :model="query" :label-width="80">
-      <FormItem label="在售状态:">
+    <Form class="ar" style="padding-top: 18px;" inline :model="query" :label-width="80">
+      <FormItem label="在售状态" style="width:15%" class="al">
         <Select v-model="query.sale" clearable>
             <Option v-for="(value, key) in saleState" :value="key" :key="key">{{ value }}</Option>
             <Option value="" key="6">全部</Option>
         </Select>
       </FormItem>
-      <FormItem label="产品类型:">
+      <FormItem label="产品类型" style="width:20%" class="al">
         <Select v-model="query.typeRuleId" clearable>
             <Option v-for="(item, index) in productType" :value="item.id" :key="index">{{ item.name }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="组织名称" style="width:400px">
-        <Input v-model="query.nameAndCode" placeholder="搜索公司"/>
+      <FormItem label="组织名称" style="width:30%" class="al">
+        <Input v-model="query.nameAndCode" class="search-input" placeholder="搜索公司" />
       </FormItem>
-       <Button type="info" @click="search()">搜索</Button>
-      
+       <Button type="primary" icon="ios-search" shape="circle" @click="search()"></Button>
     </Form>
 
     <Table border :loading="loading" :columns="columns" :data="list">
@@ -43,7 +42,7 @@
       :total="total"
       show-elevator
       show-total
-      style="text-align:center;margin-top:20px;"
+      class="c-page"
       @on-Change="getListByPage"
     />
   </div>

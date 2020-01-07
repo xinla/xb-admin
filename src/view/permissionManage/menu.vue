@@ -1,15 +1,15 @@
 <template>
-  <div>
-    <ButtonGroup>
+  <div class="x-h100">
+    <div class="ar bg pb24">
       <Button type="primary" @click="add">添加</Button>
       <Button type="primary" @click="form.menuId && (disabled = false)">编辑</Button>
       <Button type="primary" @click="remove">删除</Button>
-    </ButtonGroup>
-    <Row>
-      <Col span="8">
+    </div>
+    <Row style="height: calc(100% - 56px)">
+      <Col span="6" class="x-h100" style="padding: 20px 15px; border-right: 25px solid #f5f7f9;">
         <Tree :data="list" @on-select-change="clickMenu"></Tree>
       </Col>
-      <Col span="16">
+      <Col span="18" style="padding: 20px 15px;">
         <Form ref="form" :model="form" :rules="rules" :label-width="60" :disabled="disabled">
           <FormItem label="父级节点" prop="name">
             <Input v-model="form.parentId" placeholder="请输入" disabled />

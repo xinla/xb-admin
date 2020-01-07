@@ -1,17 +1,20 @@
 <template>
-  <div>
+  <div class="x-h100">
+    <div class="bg pb24 ar">
     <Button
-      type="info"
-      @click="$router.push({name: 'createSensitive'})"
-    >新建</Button>
+      type="primary"
+      @click="isModal = true, form = {}"
+    >新建敏感词</Button>
+    </div>
+
     <Table :loading="loading" :columns="columns" :data="list">
       <template slot-scope="{ row }" slot="content">
         <div v-html="row.content"></div>
       </template>
       <template slot-scope="{ row }" slot="isDisable">{{!row.isDisable ? "是" : "否"}}</template>
       <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row.id)">编辑</Button>
-        <Button type="error" size="small" @click="remove(row, index)">删除</Button>
+        <span class="button-pri" @click="edit(row.id)">编辑</span>
+        <span class="button-err" @click="remove(row, index)">删除</span>
       </template>
     </Table>
 
@@ -19,20 +22,30 @@
       :total="total"
       show-elevator
       show-total
-      style="text-align:center;margin-top:20px;"
+      class="c-page"
       @on-change="getData"
     />
+
+    <dialogBox v-model="isModal">
+      <div slot="title">新建敏感词</div>
+      <create :formData="form" style="width: 320px;" :key="form.id || 0" @submit="getData()" />
+    </dialogBox>
   </div>
 </template>
 
 <script>
 import { getSensitivePage, deleteSensitive } from "@/api/sensitive";
 import { formatDate } from "@/libs/tools";
+import create from "./create";
+
 export default {
   filters: {
     transTime(time) {
       return formatDate(time, "year");
     }
+  },
+  components: {
+    create
   },
   props: {},
   data() {
@@ -72,7 +85,9 @@ export default {
         }
       ],
       list: [],
-      total: 0
+      total: 0,
+      isModal: false,
+      form: {},
     };
   },
   mounted() {

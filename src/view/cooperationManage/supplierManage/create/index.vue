@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="contenter">
     <Form ref="form" :model="form" :rules="rules" :label-width="120">
       <div class="title-row">基本信息</div>
 
       <Row>
-        <Col span="10">
+        <Col span="14">
           <FormItem label="品牌名称" prop="name">
             <selectSupplier
               :disabled="disabled"
@@ -30,29 +30,6 @@
             ></DatePicker>
           </FormItem>
 
-          <FormItem label="品牌类型" prop="typeRule">
-            <RadioGroup v-model="form.typeRule">
-              <Radio :label="0">寿险</Radio>
-              <Radio :label="1">财险</Radio>
-            </RadioGroup>
-          </FormItem>
-        </Col>
-
-        <Col span="8">
-          <FormItem label="品牌Logo" prop="logo">
-            <Upload
-              :action="$config.services.upload"
-              :show-upload-list="false"
-              :format="['jpg','jpeg','png']"
-              :on-format-error="formatError"
-              accept="image/*"
-              :on-success="upFile"
-            >
-              <img class="logo" v-if="form.logo" :src="form.logo" />
-              <div v-else class="upload-icon cp">+</div>
-            </Upload>
-          </FormItem>
-
           <FormItem label="可投保地区" prop="vitDictProvinceId">
             <Select
               :disabled="disabled"
@@ -68,6 +45,25 @@
             </Select>
           </FormItem>
 
+        </Col>
+
+        <Col span="10">
+          <FormItem label="品牌Logo" prop="logo">
+            <Upload
+              :action="$config.services.upload"
+              :show-upload-list="false"
+              :format="['jpg','jpeg','png']"
+              :on-format-error="formatError"
+              accept="image/*"
+              :on-success="upFile"
+            >
+              <img class="logo" v-if="form.logo" :src="form.logo" />
+              <div v-else class="upload-icon cp">
+                <Icon type="md-cloud-upload" />
+              </div>
+            </Upload>
+          </FormItem>
+
           <FormItem label="宣传图" prop="logo">
             <Upload
               :action="$config.services.upload"
@@ -78,16 +74,25 @@
               :on-success="upFile1"
             >
               <img class="logo" v-if="form.publicityImage" :src="form.publicityImage" />
-              <div v-else class="upload-icon cp">+</div>
+              <div v-else class="upload-icon cp">
+                <Icon type="md-cloud-upload" />
+              </div>
             </Upload>
+          </FormItem>
+          
+          <FormItem label="品牌类型" prop="typeRule">
+            <RadioGroup v-model="form.typeRule">
+              <Radio :label="0">寿险</Radio>
+              <Radio :label="1">财险</Radio>
+            </RadioGroup>
           </FormItem>
         </Col>
       </Row>
-      <Divider />
+      <Divider dashed/>
 
       <div class="title-row">联系方式</div>
       <Row>
-        <Col span="10">
+        <Col span="14">
           <FormItem label="公司地址" prop="companyAddress">
             <Input
               type="text"
@@ -124,49 +129,49 @@
 
       <div class="title-row">公司简介</div>
       <editor ref="editor" :value="form.supplierDescription" @on-change="handleChange" />
-      <Divider />
+      <Divider dashed/>
 
       <div class="title-row">分公司</div>
-      <Table border :columns="columns" :data="form.xbSupplierOrganization">
+      <Table :columns="columns" no-data-text="" :data="form.xbSupplierOrganization">
         <template slot-scope="{ row, index }" slot="action">
           <Icon type="ios-close-circle-outline" @click="remove(index)" />
         </template>
       </Table>
 
       <Row style="margin-top: 20px;" v-if="!disabled">
-        <Col span="6">
+        <Col span="5">
           <Input
             :disabled="disabled"
             v-model="formChild.name"
             placeholder="请输入名称"
-            style="width:73%; margin-right: 10px;"
+            style="width:73%;"
           />
         </Col>
-        <Col span="6">
+        <Col span="5">
           <Input
             :disabled="disabled"
             v-model="formChild.organizationAddress"
             placeholder="请输入地址"
-            style="width:73%; margin-right: 10px;"
+            style="width:73%;"
           />
         </Col>
-        <Col span="6">
+        <Col span="5">
           <Input
             :disabled="disabled"
             v-model="formChild.organizationPhone"
             placeholder="请输入电话"
-            style="width:73%; margin-right: 10px;"
+            style="width:73%;"
           />
         </Col>
-        <Col span="6">
-          <Button type="info" @click="add()">添加</Button>
+        <Col span="5">
+          <span class="button-pri" @click="add()">添加</span>
         </Col>
       </Row>
-      <Divider />
+      <Divider dashed/>
 
       <div class="title-row">
         公司足迹
-        <Button type="info" size="small" @click="add(0)">添加</Button>
+        <Button type="primary" size="small" @click="add(0)">添加</Button>
       </div>
       <Row
         style="margin-top: 20px;"
@@ -174,34 +179,34 @@
         :key="index"
         v-if="item.type == 0"
       >
-        <Col span="10">
+        <Col span="5">
           <Input
             :disabled="disabled"
             v-model="item.bigEvents"
             placeholder="请输入大事记"
-            style="width:73%; margin-right: 10px;"
+            style="width:73%;"
           />
         </Col>
-        <Col span="10">
+        <Col span="5">
           <DatePicker
             :disabled="disabled"
             type="date"
             format="yyyy-MM-dd"
             placeholder="请选择时间"
-            style="width:73%; margin-right: 10px;"
+            style="width:73%;"
             :value="item.time"
             @on-change="(data) => {item.time = data + ' 00:00:00'}"
           ></DatePicker>
         </Col>
-        <Col span="4">
-          <Button type="info" @click="remove(index, 'card')">删除</Button>
+        <Col span="5">
+          <span class="button-pri" @click="remove(index, 'card')">删除</span>
         </Col>
       </Row>
       <Divider />
 
       <div class="title-row">
         公司荣誉
-        <Button type="info" size="small" @click="add(1)">添加</Button>
+        <Button type="primary" size="small" @click="add(1)">添加</Button>
       </div>
       <Row
         style="margin-top: 20px;"
@@ -210,10 +215,10 @@
         v-if="item.type == 1"
       >
         <Col span="5">
-          <Input :disabled="disabled" v-model="item.certificationAuthority" placeholder="请输入颁发机构" />
+          <Input :disabled="disabled" style="width:73%;" v-model="item.certificationAuthority" placeholder="请输入颁发机构" />
         </Col>
         <Col span="5">
-          <Input :disabled="disabled" v-model="item.honorName" placeholder="请输入荣誉名称" />
+          <Input :disabled="disabled" style="width:73%;" v-model="item.honorName" placeholder="请输入荣誉名称" />
         </Col>
         <Col span="5">
           <DatePicker
@@ -222,6 +227,7 @@
             format="yyyy-MM-dd"
             placeholder="请选择时间"
             :value="item.prizeTime"
+            style="width:73%;"
             @on-change="(data) => {item.prizeTime = data + ' 00:00:00'}"
           ></DatePicker>
         </Col>
@@ -236,15 +242,16 @@
             @click.native="upload(index)"
           >
             <img class="logo cp" v-if="item.url" :src="item.url" />
-            <Button v-else icon="ios-cloud-upload-outline">上传证书或奖杯照片</Button>
+            <Button type="primary" v-else icon="ios-cloud-upload-outline">上传证书或奖杯照片</Button>
           </Upload>
         </Col>
         <Col span="4">
-          <Button type="info" @click="remove(index, 'card')">删除</Button>
+          <span class="button-pri" @click="remove(index, 'card')">删除</span>
         </Col>
       </Row>
 
-      <Button v-if="!disabled" type="primary" @click="submit">确认</Button>
+      <Button v-if="!disabled" type="primary" @click="submit" style="display: block;
+  margin: 50px auto;">确认</Button>
     </Form>
   </div>
 </template>
@@ -371,15 +378,18 @@ export default {
       columns: [
         {
           title: "名称",
-          key: "name"
+          key: "name",
+          width: 300
         },
         {
           title: "地址",
-          key: "organizationAddress"
+          key: "organizationAddress",
+          width: 300
         },
         {
           title: "电话",
-          key: "organizationPhone"
+          key: "organizationPhone",
+          width: 300
         },
         {
           title: "操作",

@@ -1,12 +1,12 @@
 <template>
-  <div>
-        <div>
+  <div class="x-h100">
+        <div class="bg pb24">
           <Select v-model="query.type" style="width:20%;" placeholder='类型'>
             <Option :value="0">正常</Option>
             <Option :value="1">异常</Option>
           </Select>
-          <Button type="primary" icon="ios-search" @click="getData(1)">搜索</Button>
-          <Button type="primary" icon="ios-close-circle-outline" @click="query.type = '', getData(1)">清空</Button>
+          <Button type="primary" icon="ios-search" shape="circle" @click="getData(1)"></Button>
+          <!-- <Button type="primary" icon="ios-close-circle-outline" @click="query.type = '', getData(1)">清空</Button> -->
         </div>
         <Table :loading="loading" :columns="columns" :data="list">
           <template slot-scope="{ row }" slot="roleList">
@@ -20,12 +20,10 @@
           <template slot-scope="{ row }" slot="lockFlag">{{row.outageTime ? '锁定' : '正常'}}</template>
 
           <template slot-scope="{ row }" slot="action">
-            <Button
-              type="primary"
-              size="small"
+            <span class="button-pri"
               @click="showModal(row)"
-            >查看</Button>
-            <Button type="primary" size="small" @click="remove(row)">删除</Button>
+            >查看</span>
+            <span class="button-err" @click="remove(row)">删除</span>
           </template>
         </Table>
 
@@ -34,7 +32,7 @@
           :total="total"
           show-elevator
           show-total
-          style="text-align:center;margin-top:20px;"
+          class="c-page"
           @on-change="getData"
         />
 

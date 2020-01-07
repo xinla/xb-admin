@@ -1,14 +1,23 @@
 <template>
-  <div>
-    <Row>
-      <Col span="6">
-        <!-- <Button type="info" @click="showModal()">新建用户</Button> -->
+  <div class="x-h100">
+    <Row class="x-h100">
+      <Col span="6" class="x-h100" style="padding: 20px 15px; border-right: 25px solid #f5f7f9;">
+        <div>
+          <Input v-model="query.username" placeholder="请输入关键字进行筛选" style="width:75%;" />
+          <Button type="primary" @click="getData(1)">筛选</Button>
+        </div>
         <Tree :data="departmentList" @on-select-change="clickDepartment"></Tree>
       </Col>
-      <Col span="18">
-        <div>
-          <Input v-model="query.username" placeholder="用户名" style="width:200px;" />
-          <Button type="primary" icon="ios-search" @click="getData(1)">搜索</Button>
+      <Col span="18" class="x-h100">
+        <div class="col-right">
+          <Input
+            v-model="query.username"
+            class="search-input"
+            placeholder="请输入用户名关键字搜索"
+            style="width:35%;background:rgba(245,247,249,1)"
+          />
+          <Button type="primary" shape="circle" icon="ios-search" @click="getData(1)"></Button>
+          <Button type="primary" class="fr" @click="showModal()">新建用户</Button>
         </div>
         <Table :loading="loading" :columns="columns" :data="list">
           <template slot-scope="{ row }" slot="roleList">
@@ -19,31 +28,31 @@
             >{{item.roleName}}</Tag>
           </template>
 
-          <template slot-scope="{ row }" slot="lockFlag">{{row.outageTime ? '锁定' : '正常'}}</template>
+          <template slot-scope="{ row }" slot="lockFlag">
+            <Tag
+              type="dot"
+              :color="row.outageTime ? 'error' : 'success'"
+            >{{row.outageTime ? '锁定' : '正常'}}</Tag>
+          </template>
 
           <template slot-scope="{ row }" slot="action">
-            <Button
-              type="primary"
-              style="margin-right: 10px;"
-              size="small"
-              @click="showModal(row)"
-            >编辑</Button>
-            <Button type="primary" size="small" @click="remove(row)">删除</Button>
+            <span class="button-pri" @click="showModal(row)">编辑</span>
+            <span class="button-err" @click="remove(row)">删除</span>
           </template>
         </Table>
 
         <Page
-          :current='query.current'
+          :current="query.current"
           :total="total"
           show-elevator
           show-total
-          style="text-align:center;margin-top:20px;"
+          class="c-page"
           @on-change="getData"
         />
       </Col>
     </Row>
 
-    <Modal v-model="modal" :title="form.userId ? '编辑' : '新建'" @on-ok="save">
+    <Modal v-model="modal" :title="(form.userId ? '编辑' : '新建') + '用户'" @on-ok="save">
       <Form ref="form" :model="form" :rules="rules" :label-width="60">
         <FormItem label="用户名" prop="name">
           <Input v-model="form.username" placeholder="请输入用户名" style="width:73%;" />
@@ -101,45 +110,38 @@ export default {
         current: 1, // 页数
         size: 10, // 一页数据
         deptId: "", // 部门id
-        username: ''
+        username: ""
       },
       columns: [
         {
           title: "序号",
           type: "index",
-          align: "center",
           width: 60
         },
         {
           title: "用户名",
-          key: "username",
-          align: "center"
+          key: "username"
         },
         {
           title: "手机号",
-          key: "phone",
-          align: "center"
+          key: "phone"
         },
         {
           title: "角色",
-          slot: "roleList",
-          align: "center"
+          slot: "roleList"
         },
         {
           title: "状态",
-          align: "center",
           slot: "lockFlag"
         },
         {
           title: "创建时间",
-          key: "createTime",
-          align: "center"
+          key: "createTime"
         },
         {
           title: "操作",
           slot: "action",
-          width: 140,
-          align: "center"
+          width: 140
         }
       ],
       list: [],
@@ -162,7 +164,7 @@ export default {
     init() {
       // 获取部门树
       getDeptTree().then(res => {
-        this.departmentList = []
+        this.departmentList = [];
         function recursive(origin, target) {
           for (const iterator of origin) {
             let obj = {
@@ -193,8 +195,8 @@ export default {
     },
     showModal(data) {
       this.modal = true;
-      this.form = JSON.parse(JSON.stringify(data || defaultForm))
-      this.form.password = ''
+      this.form = JSON.parse(JSON.stringify(data || defaultForm));
+      this.form.password = "";
       this.form.role = [];
       for (const iterator of this.form.roleList) {
         this.form.role.push(iterator.roleId);
@@ -239,5 +241,9 @@ export default {
 }
 .ivu-btn-small {
   margin-right: 5px;
+}
+.col-right {
+  padding: 20px 15px;
+  position: relative;
 }
 </style>

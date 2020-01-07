@@ -1,81 +1,74 @@
 <template>
-  <div>
-    <Row>
-      <Col span="16">
-        <Button type="primary" size="small" style="margin-right:5px;" @click="edit(0)">添加分类</Button>
-        <Button type="primary" size="small" style="margin-right:5px;" @click="edit(1)">添加标题</Button>
-      </Col>
-    </Row>
+    <div>
+      <div class="right">
+          <Button type="primary" size="small" style="margin-right:5px;" @click="edit(0)">添加分类</Button>
+          <Button type="primary" size="small" style="margin-right:5px;" @click="edit(1)">添加标题</Button>
+      </div>
 
-    <Table :loading="loading" :columns="columns" :data="list">
-      <template slot-scope="{ row }" slot="cover">
-        <img :src="row.cover" class="logo">
-      </template>
+      <Table :loading="loading" :columns="columns" :data="list">
+        <template slot-scope="{ row }" slot="cover">
+          <img :src="row.cover" class="logo" />
+        </template>
 
-      <template slot-scope="{ row }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(1, row)">编辑</Button>
-        <Button type="error" size="small" style="margin-right: 5px" @click="remove(row.id)">删除</Button>
-      </template>
-    </Table>
+        <template slot-scope="{ row }" slot="action">
+          <Button type="primary" size="small" style="margin-right: 5px" @click="edit(1, row)">编辑</Button>
+          <Button type="error" size="small" style="margin-right: 5px" @click="remove(row.id)">删除</Button>
+        </template>
+      </Table>
 
-    <Page
-      :total="total"
-      show-elevator
-      show-total
-      style="text-align:center;margin-top:20px;"
-      @on-change="getData"
-    />
+      <Page :total="total" show-elevator show-total class="c-page" @on-change="getData" />
 
-    <dialogBox v-model="isShow">
-      <template slot="title">添加分类</template>
-      <template>
-        <Form ref="form" :model="form" :rules="rules">
-          <FormItem prop="value">
-            <Input type="text" v-model="form.value" placeholder="親輸入分类"></Input>
-          </FormItem>
-          <Button
-            type="primary"
-            size="small"
-            style="display: block; margin: 0 auto"
-            @click="submit(0, form)"
-          >确定</Button>
-        </Form>
-      </template>
-    </dialogBox>
+      <dialogBox v-model="isShow">
+        <template slot="title">添加分类</template>
+        <template>
+          <Form ref="form" :model="form" :rules="rules">
+            <FormItem prop="value">
+              <Input type="text" v-model="form.value" placeholder="请输入分类"></Input>
+            </FormItem>
+            <div class="ar">
+              <Button type="primary" ghost @click="isShow = false">取消</Button>
+              <Button type="primary" @click="submit(0, form)">确定</Button>
+            </div>
+          </Form>
+        </template>
+      </dialogBox>
 
-    <dialogBox v-model="isShow1">
-      <template slot="title">添加标题</template>
-      <template>
-        <Form ref="form1" :model="form1" :rules="rules">
-          <FormItem prop="classifyId">
-            <Select v-model="form1.classifyId">
-              <Option v-for="(item, index) in list2" :value="item.id" :key="index">{{ item.value }}</Option>
-            </Select>
-          </FormItem>
+      <dialogBox v-model="isShow1">
+        <template slot="title">添加标题</template>
+        <template>
+          <Form ref="form1" :model="form1" :rules="rules">
+            <FormItem prop="classifyId">
+              <Select v-model="form1.classifyId">
+                <Option
+                  v-for="(item, index) in list2"
+                  :value="item.id"
+                  :key="index"
+                >{{ item.value }}</Option>
+              </Select>
+            </FormItem>
 
-          <FormItem prop="cover" label="上传封面">
-            <Upload
-              :action="$config.services.upload"
-              :show-upload-list="false"
-              :format="['jpg','jpeg','png']"
-              accept="image/*"
-              :on-success="upFile"
-            >
-              <img class="logo" v-if="form1.cover" :src="form1.cover">
-              <div v-else class="upload-icon cp">+</div>
-            </Upload>
-          </FormItem>
-
-          <Button
-            type="primary"
-            size="small"
-            style="display: block; margin: 0 auto"
-            @click="submit(1, form1)"
-          >确定</Button>
-        </Form>
-      </template>
-    </dialogBox>
-  </div>
+            <FormItem prop="cover" label="上传封面">
+              <Upload
+                :action="$config.services.upload"
+                :show-upload-list="false"
+                :format="['jpg','jpeg','png']"
+                accept="image/*"
+                :on-success="upFile"
+              >
+                <img class="logo" v-if="form1.cover" :src="form1.cover" />
+                <div v-else class="upload-icon cp">
+                  <Icon type="md-cloud-upload" />
+                </div>
+              </Upload>
+            </FormItem>
+            <div class="ar" style="border-top: 1px solid #ddd;">
+              <Button type="primary" ghost @click="isShow1 = false">取消</Button>
+              <Button type="primary" @click="submit(1, form1)">确定</Button>
+            </div>
+          </Form>
+        </template>
+      </dialogBox>
+    </div>
 </template>
 
 <script>
@@ -138,13 +131,13 @@ export default {
       ],
       list: [],
       list2: [
-        {id: '1', value: '健康类'},
-        {id: '2', value: '养老类'},
-        {id: '3', value: '教育类'},
-        {id: '4', value: '保障类'},
-        {id: '5', value: '理财类'},
-        {id: '6', value: '人寿类'},
-        {id: '7', value: '意外类'},
+        { id: "1", value: "健康类" },
+        { id: "2", value: "养老类" },
+        { id: "3", value: "教育类" },
+        { id: "4", value: "保障类" },
+        { id: "5", value: "理财类" },
+        { id: "6", value: "人寿类" },
+        { id: "7", value: "意外类" }
       ],
       rules: {
         value: [{ required: true, message: "不能为空", trigger: "blur" }],
@@ -257,13 +250,20 @@ export default {
 <style lang="less" scoped>
 .upload-icon {
   border: 1px dashed #000;
-  font-size: 36px;
-  padding: 30px;
-  line-height: 21px;
+  padding: 24px 0;
 }
 .logo {
   width: 220px;
   height: 100px;
   margin: 5px 0;
+}
+/deep/.dialog{
+  width: 350px;
+  overflow: visible;
+}
+.right{
+  position: absolute;
+  top: 5px;
+  right: 0;
 }
 </style>

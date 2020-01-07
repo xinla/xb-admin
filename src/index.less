@@ -39,6 +39,7 @@ body {
   background-color: transparent !important;
   border-radius: 0;
   height: auto;
+  vertical-align: middle;
 
   &:last-child {
     margin-right: 0;
@@ -84,8 +85,8 @@ body {
 
 /* .slide-down-leave-active for below version 2.1.8 */
   {
-  position: absolute;
-  transform: translateX(10px);
+  // position: absolute;
+  transform: translateY(-10px);
   opacity: 0;
 }
 
@@ -170,9 +171,15 @@ body {
 }
 
 // 搜索输入框
+.search-input {
+  height: 34px;
+  border-radius: 17px;
+}
+
 .search-input /deep/.ivu-input {
   height: 34px;
   border-radius: 17px;
+  background: inherit;
 }
 
 // 上传图片图标
@@ -198,4 +205,22 @@ body {
 
 .pb24 {
   padding-bottom: 24px;
+}
+
+.c-page {
+  margin-bottom: 20px;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+.ivu-tag-dot {
+  border: 0 !important;
+  background: none !important;
+}
+
+.ivu-tag-dot-inner {
+  width: 8px;
+  height: 8px;
+  margin-right: 4px;
 }

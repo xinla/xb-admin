@@ -51,7 +51,7 @@
       <Content class="main-content-con">
         <Layout class="main-layout-con" style="border-top: 1px solid #ddd;">
           <Content class="content-wrapper">
-            <transition name="slide-inside">
+            <transition name="slide-inside" mode="out-in">
             <keep-alive :include="cacheList">
               <router-view :key="$store.state.refresh" />
             </keep-alive>

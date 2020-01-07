@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <Row>
+  <div class="x-h100">
+    <Row class="bg pb24">
       <Col span="12">
         <Input
           v-model.trim="query.keyword"
@@ -8,22 +8,22 @@
           style="width:73%; margin-right: 10px;"
           @on-enter="getData(1)"
         />
-        <!-- <Button type="info" @click="getData(1)">搜索</Button> -->
+        <Button type="primary" shape="circle" @click="getData(1)"></Button>
       </Col>
       <Col span="12" class="ar">
-        <Button type="info" @click="showDialog('from')">添加</Button>
-        <!-- <Button type="info" @click="edit(0)">编辑</Button>
-        <Button type="info" @click="remove">删除</Button>
-        <Button type="info" @click="edit(1)">上移</Button>
-        <Button type="info" @click="edit(2)">下移</Button>-->
+        <Button type="primary" @click="showDialog('from')">添加</Button>
+        <!-- <Button type="primary" @click="edit(0)">编辑</Button>
+        <Button type="primary" @click="remove">删除</Button>
+        <Button type="primary" @click="edit(1)">上移</Button>
+        <Button type="primary" @click="edit(2)">下移</Button>-->
       </Col>
     </Row>
 
     <Table max-height="600" :loading="loading" :columns="column" :data="list" style="margin-top: 15px;">
       <template slot-scope="{ row }" slot="action">
-        <Button type="primary" size="small" @click="showDialog('from', row)">编辑</Button>
-        <Button type="error" size="small" @click="remove('dict', row)">删除</Button>
-        <Button type="info" size="small" @click="showDialog('item', row)">字典项</Button>
+        <span class="button-pri" @click="showDialog('from', row)">编辑</span>
+        <span class="button-pri" @click="showDialog('item', row)">字典项</span>
+        <span class="button-err" @click="remove('dict', row)">删除</span>
       </template>
     </Table>
 
@@ -31,7 +31,7 @@
       :total="total"
       show-elevator
       show-total
-      style="text-align:center;margin-top:20px;"
+      class="c-page"
       @on-change="getData"
     />
 
