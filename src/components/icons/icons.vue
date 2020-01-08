@@ -1,5 +1,5 @@
 <template>
-  <i :class="`iconfont icon-${type}`" :style="styles"></i>
+  <i :class="`iconfont ${type}`" :style="styles"></i>
   <!-- <i :class="`iconfont icon-${type}`" :style="styles"></i> -->
 </template>
 
@@ -17,7 +17,7 @@ export default {
     },
     size: {
       type: Number,
-      default: 16
+      default: 14
     }
   },
   computed: {

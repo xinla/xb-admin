@@ -124,7 +124,7 @@ export default {
       });
     },
     save() {
-      (this.form.id ? A.updateMenu(this.form) : A.addMenu(this.form)).then(
+      (this.form.menuId ? A.updateMenu(this.form) : A.addMenu(this.form)).then(
         res => {
           this.getData();
           this.$Message.success("操作成功");

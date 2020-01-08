@@ -220,10 +220,12 @@ export default {
       });
     },
     save() {
-      A.updateUser(this.form).then(res => {
-        this.getData();
-        this.$Message.success("操作成功");
-      });
+      (this.form.userId ? A.updateUser(this.form) : A.addUser(this.form)).then(
+        res => {
+          this.getData();
+          this.$Message.success("操作成功");
+        }
+      );
     },
     clickDepartment(selected, current) {
       // console.log(current)

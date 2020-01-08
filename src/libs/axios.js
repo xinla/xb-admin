@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { setToken, setUserId, getToken, getUserId, encryption } from '@/libs/util'
-import store from '@/store'
+// import store from '@/store'
 import { Spin, Message } from 'view-design'
 const addErrorLog = errorInfo => {
   const { data, statusText, status, request: { responseText, responseURL } } = errorInfo
@@ -32,7 +32,7 @@ class HttpRequest {
       baseURL: this.baseUrl,
       headers: {
         Authorization: 'Bearer ' + getToken(),
-        'TENANT-ID': '1'
+        'TENANT-ID': '1' || getUserId()
       }
     }
     return config

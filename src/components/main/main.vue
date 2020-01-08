@@ -13,7 +13,7 @@
       <side-menu
         accordion
         ref="sideMenu"
-        :active-name="$route.name"
+        :active-name="$route.path"
         :collapsed="collapsed"
         @on-select="turnToPage"
         :menu-list="menuList"
@@ -63,6 +63,7 @@
   </Layout>
 </template>
 <script>
+import { getSaaSMenu } from '@/api/permission/menu'
 import SideMenu from "./components/side-menu";
 import HeaderBar from "./components/header-bar";
 import User from "./components/user";
@@ -89,7 +90,8 @@ export default {
       collapsed: false,
       minLogo,
       maxLogo,
-      isFullscreen: false
+      isFullscreen: false,
+      menuList: []
     };
   },
   computed: {
@@ -107,12 +109,12 @@ export default {
       return this.tagNavList.length
         ? this.tagNavList
             .filter(item => !(item.meta && item.meta.notCache))
-            .map(item => item.name)
+            .map(item => item.path)
         : [];
     },
-    menuList() {
-      return this.$store.getters.menuList;
-    },
+    // menuList() {
+    //   return this.$store.getters.menuList;
+    // },
     local() {
       return this.$store.state.app.local;
     },
@@ -124,21 +126,19 @@ export default {
     ...mapMutations(["setBreadCrumb", "setTagNavList", "addTag", "setLocal"]),
     ...mapActions(["handleLogin"]),
     turnToPage(route) {
-      let { name, params, query } = {};
-      if (typeof route === "string") name = route;
+    // console.log(route)
+      let { path, query } = {};
+      if (typeof route === "string") path = route;
       else {
-        name = route.name;
-        params = route.params;
+        path = route.path;
         query = route.query;
       }
-      if (name.indexOf("isTurnByHref_") > -1) {
-        window.open(name.split("_")[1]);
-        return;
-      }
+      // if (path.indexOf("isTurnByHref_") > -1) {
+      //   window.open(path.split("_")[1]);
+      //   return;
+      // }
       this.$router.push({
-        name,
-        params,
-        query
+        path,
       });
     },
     handleCollapsedChange(state) {
@@ -161,19 +161,23 @@ export default {
   },
   watch: {
     $route(newRoute) {
-      const { name, query, params, meta } = newRoute;
+      const { name, path, query, params, meta } = newRoute;
       this.addTag({
-        route: { name, query, params, meta },
+        route: { name, path, query, params, meta },
         type: "push"
       });
       this.setBreadCrumb(newRoute);
       this.setTagNavList(getNewTagList(this.tagNavList, newRoute));
-      this.$refs.sideMenu.updateOpenName(newRoute.name);
+      this.$refs.sideMenu.updateOpenName(newRoute.path);
     }
   },
   mounted() {
-    console.log(this.$router)
-    console.log(this.$route)
+    // console.log(this.$router)
+    // console.log(this.$route)
+
+    getSaaSMenu().then(res => {
+      this.menuList = res
+    })
     /**
      * @description 初始化设置面包屑导航和标签导航
      */
@@ -185,6 +189,7 @@ export default {
     // 设置初始语言
     this.setLocal(this.$i18n.locale);
     // 如果当前打开页面不在标签栏中，跳到homeName页
+    // console.log(this.tagNavList)
     if (!this.tagNavList.find(item => item.name === this.$route.name)) {
       this.$router.push({
         name: this.$config.homeName

@@ -178,8 +178,8 @@ export default [
 
   // 基础管理
   {
-    path: '/basicManage',
-    name: 'basicManage',
+    path: '/lesseeManage',
+    name: 'lesseeManage',
     component: Main,
     meta: {
       icon: '_lessee-management',
@@ -535,7 +535,6 @@ export default [
         name: 'nationalityTable',
         meta: {
           hideInMenu: false,
-          icon: 'md-funnel',
           title: '国籍表'
         },
         component: () => import('@/view/ruleSet/database/nationality.vue')
@@ -545,7 +544,6 @@ export default [
         name: 'districtTable',
         meta: {
           hideInMenu: false,
-          icon: 'md-funnel',
           title: '行政区划表'
         },
         component: () => import('@/view/ruleSet/database/district.vue'),
@@ -595,8 +593,8 @@ export default [
   },
   // 应用管理
   {
-    path: '/functionManage',
-    name: 'functionManage',
+    path: '/applicationManage',
+    name: 'applicationManage',
     component: Main,
     meta: {
       icon: '_application-management',

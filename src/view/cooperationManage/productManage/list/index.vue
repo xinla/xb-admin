@@ -1,13 +1,14 @@
 <template>
-  <div class="bw br" style="padding: 16px;">
-    <Row style="padding-bottom: 10px;">
+  <div class="x-h100">
+    <Row class="pb24 bg">
       <Col span="8">
         <Input
           v-model="query.searchValue"
           placeholder="搜索品牌/产品名称/代码"
-          style="width:73%; margin-right: 10px;"
+          class="search-input bw"
+          style="width:73%;"
         />
-        <Button type="info" @click="search()">搜索</Button>
+        <Button type="primary" icon="ios-search" shape="circle" @click="search()"></Button>
       </Col>
       <Col span="16">
         <div class="fr">
@@ -51,7 +52,7 @@
       :total="total"
       show-elevator
       show-total
-      style="text-align:center;margin-top:20px;"
+      class="c-page"
       @on-change="getData"
     />
 

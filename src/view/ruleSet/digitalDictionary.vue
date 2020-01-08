@@ -5,7 +5,7 @@
         <Row :gutter="10">
           <Col span="6">
             <Card title="保险企业" :padding="0">
-              <CellGroup>
+              <CellGroup style="height: calc(100vh - 215px); overflow: auto;">
                 <Cell
                   v-for="(item, index) in list"
                   :key="index"
@@ -27,6 +27,7 @@
                 v-for="(item, index) in list"
                 v-if="show[0] === index"
                 :key="item.supplierId"
+                style="height: calc(100vh - 215px); overflow: auto;"
               >
                 <div v-if="!item.dictVoList || !item.dictVoList.length" class="ac">
                   <br />无字典条目，请添加
@@ -126,7 +127,7 @@
         <Row :gutter="10">
           <Col span="4">
             <Card title="保险企业" :padding="0">
-              <CellGroup>
+              <CellGroup style="height: calc(100vh - 215px); overflow: auto;">
                 <Cell
                   v-for="(item, index) in list.slice(1)"
                   :key="index"
@@ -145,6 +146,7 @@
                 v-for="(item, index) in list.slice(1)"
                 v-if="show[0] === index"
                 :key="item.supplierId"
+                style="height: calc(100vh - 215px); overflow: auto;"
               >
                 <div v-if="!item.dictVoList || !item.dictVoList.length" class="ac">
                   <br />暂无字典条目

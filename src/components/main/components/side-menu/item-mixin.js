@@ -9,7 +9,7 @@ export default {
   },
   computed: {
     parentName () {
-      return this.parentItem.name
+      return this.parentItem.path
     },
     children () {
       return this.parentItem.children

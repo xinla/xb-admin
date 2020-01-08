@@ -2,7 +2,7 @@
   <div class="bw br x-h100">
     <Row class="bg pb24">
       <Col span="8">
-        <Input v-model="query.name" class="search-input" placeholder="搜索公司" style="width:73%;background: #fff;" />
+        <Input v-model="query.name" class="search-input bw" placeholder="搜索公司" style="width:73%;" />
         <Button type="primary" icon="ios-search" shape="circle" @click="search()"></Button>
       </Col>
       <Col span="16" class="ar">
