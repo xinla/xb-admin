@@ -7,7 +7,7 @@
       :data="{productId: $route.query.id}"
       :on-success="uploadSuccess"
     >
-      <Button icon="ios-cloud-upload-outline">上传费率表</Button>
+      <Button type="primary" icon="ios-cloud-upload-outline">上传费率表</Button>
     </Upload>
     {{fileName}}
     <Table :loading="loading" :columns="columns" :data="list">
@@ -23,7 +23,7 @@
       :total="total"
       show-elevator
       show-total
-      style="text-align:center;margin-top:20px;"
+      class="c-page"
       @on-change="getData"
     />
   </div>

@@ -1,37 +1,45 @@
 <style lang="less" scoped>
-.title-wrap {
-  padding: 15px 20px;
-  background: #e0effd;
-  line-height: 25px;
-  .title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-right: 30px;
-  }
-  .button {
-    margin-right: 10px;
-    line-height: 1;
-  }
+.title-wrap{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
-.anchor {
-  display: block;
-  padding: 15px 0;
-  color: #fff;
-  margin: 0 30px 10px 0;
-  cursor: pointer;
-  background: #fff;
-  color: #444;
-}
+    .title {
+      margin-right: 30px;
+          line-height: 1;
+    display: inline-block;
+    margin-bottom: 0;
+    }
+    .button {
+      margin-right: 10px;
+      line-height: 1;
+    }
+    .line{
+          display: inline-block;
+    width: 50%;
+    border-top: 1px dashed #ddd;
+    flex: auto;
+    margin: 0 20px;
+    }
+// .anchor {
+//   display: block;
+//   padding: 15px 0;
+//   color: #fff;
+//   margin: 0 30px 10px 0;
+//   cursor: pointer;
+//   background: #fff;
+//   color: #444;
+// }
 .current {
-  background: #2d8cf0;
-  color: #fff;
+  color: #6582FF;
 }
 .ivu-select {
   width: 80%;
 }
 .ivu-input-wrapper,
 .ivu-input-number {
-  width: 100px;
+  width: 80px;
   margin: 0 10px;
 }
 .ivu-btn {
@@ -42,7 +50,7 @@
 }
 
 .box {
-  border-bottom: 20px solid #f5f7f9;
+  padding-bottom: 50px;
 }
 
 /deep/.ivu-form-item .ivu-form-item-label {
@@ -51,7 +59,7 @@
 }
 /deep/.ivu-form-item .ivu-form-item .ivu-form-item-label {
   width: 125px !important;
-  text-align: left;
+  // text-align: left;
   color: #aaa;
   font-size: 14px;
 }
@@ -63,37 +71,80 @@
   margin-right: 50px;
   // display: flex;
 }
+
+  // 自定义步骤条样式
+/deep/.ivu-steps-vertical .ivu-steps-tail {
+    right: 26px;
+    padding: 0;
+    left: initial;
+    top: 12px;
+}
+/deep/.ivu-steps-vertical .ivu-steps-head {
+    float: right;
+    position: relative;
+    top: 9px;
+    background: none;
+}
+/deep/.ivu-steps-vertical .ivu-steps-main {
+      min-height: 66px;
+  margin-top: 0;
+    text-align: right;
+    padding-right: 10px;
+    cursor: pointer;
+}
+/deep/.ivu-steps-item.ivu-steps-status-process .ivu-steps-title{
+  color: #6582FF;
+}
+/deep/.ivu-steps-item.ivu-steps-status-process .dot, /deep/.ivu-steps-item.ivu-steps-status-finish .dot{
+  background: #6582FF;
+}
+.dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ddd;
+  margin-right: 10px;
+}
+
 </style>
 <template>
   <div>
     <Row style="height: 100%;">
       <Col span="4">
-        <div class="anchor-wrap ac">
-          <span
+        <!-- <ul class="anchor-wrap ac">
+          <li
             :class="['anchor', {current: anchor == 'applicant'}]"
             @click="goPosition('applicant')"
-          >投保人规则</span>
-          <span
+          >投保人规则</li>
+          <li
             :class="['anchor', {current: anchor == 'insurance'}]"
             @click="goPosition('insurance')"
-          >被保人规则</span>
-          <span
+          >被保人规则</li>
+          <li
             :class="['anchor', {current: anchor == 'coverage'}]"
             @click="goPosition('coverage')"
-          >保额规则</span>
-          <span
+          >保额规则</li>
+          <li
             :class="['anchor', {current: anchor == 'period'}]"
             @click="goPosition('period')"
-          >保险期间规则</span>
-          <span
+          >保险期间规则</li>
+          <li
             :class="['anchor', {current: anchor == 'payment'}]"
             @click="goPosition('payment')"
-          >交费规则</span>
-          <span
+          >交费规则</li>
+          <li
             :class="['anchor', {current: anchor == 'receive'}]"
             @click="goPosition('receive')"
-          >领取规则</span>
-        </div>
+          >领取规则</li>
+        </ul> -->
+        <Steps :current="current[anchor]" direction="vertical">
+        <Step title="投保人规则" @click.native="goPosition('applicant')"><div class="dot" slot="icon"></div></Step>
+        <Step title="被保人规则"  @click.native="goPosition('insurance')"><div class="dot" slot="icon"></div></Step>
+        <Step title="保额规则"  @click.native="goPosition('coverage')"><div class="dot" slot="icon"></div></Step>
+        <Step title="保险期间规则"  @click.native="goPosition('period')"><div class="dot" slot="icon"></div></Step>
+        <Step title="交费规则"  @click.native="goPosition('payment')"><div class="dot" slot="icon"></div></Step>
+        <Step title="领取规则"  @click.native="goPosition('receive')"><div class="dot" slot="icon"></div></Step>
+    </Steps>
       </Col>
 
       <Col
@@ -105,11 +156,12 @@
         <div class="box">
           <Form ref="applicationForm" :model="applicationForm" :label-width="100">
             <div ref="applicant" class="title-wrap bfc-o">
-              <span class="title">投保人规则</span>
+              <span class="title title-row" :class="[{current: anchor == 'applicant'}]">投保人规则</span>
               <Checkbox v-model="applicationForm.confine" :true-value="0" :false-value="1">无限制</Checkbox>
+              <div class="line"></div>
               <div class="button-wrap fr">
-                <Button class="button" @click="submit('applicationForm')">保存</Button>
-                <Button class="button" @click="clear('applicationForm')">清空</Button>
+                <Button type="primary" ghost @click="clear('applicationForm')">清空</Button>
+                <Button type="primary"  @click="submit('applicationForm')">保存</Button>
               </div>
             </div>
 
@@ -147,7 +199,7 @@
                   </Row>
                   <br />
                   <Row>
-                    <Col span="10">
+                    <Col span="12">
                       <FormItem label="续保年龄限制" prop="renewalAge">
                         最大可续保至
                         <InputNumber
@@ -281,11 +333,12 @@
         <div class="box">
           <Form ref="insuranceForm" :model="insuranceForm" :label-width="100">
             <div ref="insurance" class="title-wrap bfc-o">
-              <span class="title">被保人规则</span>
+              <span class="title-row title" :class="[{current: anchor == 'insurance'}]">被保人规则</span>
               <Checkbox v-model="insuranceForm.confine" :true-value="0" :false-value="1">无限制</Checkbox>
+               <div class="line"></div>
               <div class="button-wrap fr">
-                <Button class="button" @click="submit('insuranceForm')">保存</Button>
-                <Button class="button" @click="clear('insuranceForm')">清空</Button>
+                <Button type="primary" ghost @click="clear('insuranceForm')">清空</Button>
+                <Button type="primary" @click="submit('insuranceForm')">保存</Button>
               </div>
             </div>
 
@@ -323,7 +376,7 @@
                   </Row>
                   <br />
                   <Row>
-                    <Col span="10">
+                    <Col span="12">
                       <FormItem label="续保年龄限制" prop="renewalAge">
                         最大可续保至
                         <InputNumber
@@ -454,10 +507,11 @@
         <!-- 保额规则 -->
         <div class="box">
           <div ref="coverage" class="title-wrap bfc-o">
-            <span class="title">保额规则</span>
+            <span class="title-row title" :class="[{current: anchor == 'coverage'}]">保额规则</span>
+            <div class="line"></div>
             <div class="button-wrap fr">
-              <Button class="button" @click="submit('coverageForm')">保存</Button>
-              <Button class="button" @click="clear('coverageForm')">清空</Button>
+              <Button type="primary" ghost @click="clear('coverageForm')">清空</Button>
+              <Button type="primary" @click="submit('coverageForm')">保存</Button>
             </div>
           </div>
 
@@ -691,7 +745,7 @@
         <!-- 保险期间规则 -->
         <div class="box">
           <div ref="period" class="title-wrap bfc-o">
-            <span class="title">保险期间规则</span>
+            <span class="title-row title" :class="[{current: anchor == 'period'}]">保险期间规则</span>
 
             <Button
               :class="['button', {current: periodType === 0}]"
@@ -701,14 +755,15 @@
               :class="['button', {current: periodType === 1}]"
               @click="periodType = 1"
             >按天</Button>
+            <div class="line"></div>
 
             <div class="button-wrap fr" v-show="periodType === 0">
-              <Button class="button" @click="submit('periodFormYear')">保存</Button>
-              <Button class="button" @click="clear('periodFormYear')">清空</Button>
+              <Button type="primary" ghost @click="clear('periodFormYear')">清空</Button>
+              <Button type="primary" @click="submit('periodFormYear')">保存</Button>
             </div>
             <div class="button-wrap fr" v-show="periodType === 1">
-              <Button class="button" @click="submit('periodFormDay')">保存</Button>
-              <Button class="button" @click="clear('periodFormDay')">清空</Button>
+              <Button type="primary" ghost @click="clear('periodFormDay')">清空</Button>
+              <Button type="primary" @click="submit('periodFormDay')">保存</Button>
             </div>
           </div>
 
@@ -806,10 +861,11 @@
         <!-- 交费规则 -->
         <div class="box">
           <div ref="payment" class="title-wrap bfc-o">
-            <span class="title">交费规则</span>
+            <span class="title-row title" :class="[{current: anchor == 'payment'}]">交费规则</span>
+            <div class="line"></div>
             <div class="button-wrap fr">
-              <Button class="button" @click="submit('paymentForm')">保存</Button>
-              <Button class="button" @click="clear('paymentForm')">清空</Button>
+              <Button type="primary" ghost @click="clear('paymentForm')">清空</Button>
+              <Button type="primary" @click="submit('paymentForm')">保存</Button>
             </div>
           </div>
 
@@ -987,10 +1043,11 @@
         <!-- 领取规则 -->
         <div class="box">
           <div ref="receive" class="title-wrap bfc-o">
-            <span class="title">领取规则</span>
+            <span class="title-row title" :class="[{current: anchor == 'receive'}]">领取规则</span>
+            <div class="line"></div>
             <div class="button-wrap fr">
-              <Button class="button" @click="submit('receiveForm')">保存</Button>
-              <Button class="button" @click="clear('receiveForm')">清空</Button>
+              <Button type="primary" ghost @click="clear('receiveForm')">清空</Button>
+              <Button type="primary" @click="submit('receiveForm')">保存</Button>
             </div>
           </div>
 
@@ -1231,7 +1288,15 @@ export default {
         2: '无社保',
         3: '男性',
         4: '女性'
-      })
+      }),
+      current: Object.freeze({
+        applicant: 0,
+        insurance: 1,
+        coverage: 2,
+        period: 3,
+        payment: 4,
+        receive: 5
+      }),
     };
   },
   mounted() {
@@ -1593,7 +1658,7 @@ export default {
       this[form][field].push({});
     },
     reduce(form, field, index) {
-      if (index === 0) {
+      if (this[form][field].length === 1) {
         this.$Message.error("最后一项不可删除！");
         return;
       }

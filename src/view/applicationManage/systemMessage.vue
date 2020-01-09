@@ -30,7 +30,6 @@
             <img class="logo" v-if="form.coverUrl" :src="form.coverUrl" />
             <div v-else class="upload-icon cp">
               <Icon type="md-cloud-upload" />
-              <p>上传图片</p>
             </div>
           </Upload>
         </FormItem>

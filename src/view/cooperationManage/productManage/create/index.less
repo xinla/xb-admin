@@ -11,13 +11,31 @@
 
 .button-wrap {
   position: relative;
-  padding: 20px;
   background: #fff;
   z-index: 1;
+  border-bottom: 1px solid #ddd;
+  height: 58px;
+
 }
 
 .button {
-  margin-right: 18px;
+  display: inline-block;
+  width: 12%;
+  background: #FBFBFB;
+  font-size: 16px;
+  line-height: 55px;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-top: 2px solid #FBFBFB;
+  border-bottom: 1px solid #ddd;
+  margin-left: -1px;
+  transition: all .3s;
+}
+
+.current {
+  border-top: 2px solid #6582FF;
+  background: #fff;
+  border-bottom-color: #fff;
 }
 
 .ivu-steps {
@@ -31,11 +49,12 @@
   height: 100%;
   min-width: 800px;
   overflow: auto;
-  border-radius: 8px;
+
+  // border-radius: 8px;
   .item {
-    height: ~ 'calc(100% - 77px)';
+    height: ~ 'calc(100% - 58px)';
     overflow: auto;
-    padding-top: 20px;
+    padding-top: 40px;
   }
 }
 
@@ -46,16 +65,36 @@
 }
 
 /deep/.button-circle {
+  // display: inline-block;
+  // width: 14px;
+  // height: 14px;
+  // border: 1px solid #ccc;
+  // color: #ccc;
+  // border-radius: 50%;
+  // text-align: center;
+  // line-height: 11px;
+  // cursor: pointer;
+  // font-size: 14px;
+  // margin-right: 5px;
+  // background: #fffefe;
   display: inline-block;
-  width: 14px;
-  height: 14px;
-  border: 1px solid #ccc;
-  color: #ccc;
-  border-radius: 50%;
   text-align: center;
-  line-height: 11px;
+  line-height: 20px;
   cursor: pointer;
-  font-size: 14px;
-  margin-right: 5px;
-  background: #fffefe;
+  color: #fff;
+  width: 24px;
+  background: #6581ff;
+  height: 24px;
+  font-size: 20px;
+  margin:0 5px;
+  border-radius: 50%;
+
+  &:last-child {
+    margin-right: 0px;
+  }
+
+  &:first-child {
+    margin: 0px;
+  }
+
 }

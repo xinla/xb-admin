@@ -101,6 +101,9 @@
     color: #333;
   }
 }
+.upload-icon{
+  padding: 14px 0;
+}
 </style>
 <template>
   <div class="apps-manage">

@@ -5,34 +5,42 @@
 </style>
 <style lang="less" scoped>
 .title-wrap {
-  padding: 15px 20px;
-  background: #e0effd;
-  line-height: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
   .title {
-    font-size: 16px;
-    font-weight: 600;
     margin-right: 30px;
+    line-height: 1;
+    display: inline-block;
+    margin-bottom: 0;
   }
   .button {
     margin-right: 10px;
     line-height: 1;
   }
+  .line {
+    display: inline-block;
+    width: 50%;
+    border-top: 1px dashed #ddd;
+    flex: auto;
+    margin: 0 20px;
+  }
 }
-.anchor {
-  display: block;
-  padding: 15px 0;
-  color: #fff;
-  margin: 0 30px 10px 0;
-  cursor: pointer;
-  background: #fff;
-  color: #444;
-}
+// .anchor {
+//   display: block;
+//   padding: 15px 0;
+//   color: #fff;
+//   margin: 0 30px 10px 0;
+//   cursor: pointer;
+//   background: #fff;
+//   color: #444;
+// }
 .current {
-  background: #2d8cf0;
-  color: #fff;
+  color: #6582ff;
 }
 .box {
-  border-bottom: 20px solid #f5f7f9;
+  padding-bottom: 50px;
   .box-content {
     margin: 20px;
   }
@@ -47,7 +55,10 @@
   border: 1px solid #ddd;
   height: 200px;
   margin: 0 20px;
-  max-width: 300px;
+  width: 300px;
+  /deep/.ivu-icon {
+    font-size: 48px;
+  }
 }
 .atlas {
   margin: 0 20px 20px 0;
@@ -90,19 +101,54 @@
 .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
   min-height: 300px;
 }
+
+// 自定义步骤条样式
+/deep/.ivu-steps-vertical .ivu-steps-tail {
+  right: 26px;
+  padding: 0;
+  left: initial;
+  top: 12px;
+}
+/deep/.ivu-steps-vertical .ivu-steps-head {
+  float: right;
+  position: relative;
+  top: 9px;
+  background: none;
+}
+/deep/.ivu-steps-vertical .ivu-steps-main {
+  min-height: 66px;
+  margin-top: 0;
+  text-align: right;
+  padding-right: 10px;
+  cursor: pointer;
+}
+/deep/.ivu-steps-item.ivu-steps-status-process .ivu-steps-title {
+  color: #6582ff;
+}
+/deep/.ivu-steps-item.ivu-steps-status-process .dot,
+/deep/.ivu-steps-item.ivu-steps-status-finish .dot {
+  background: #6582ff;
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ddd;
+  margin-right: 10px;
+}
 </style>
 
 <template>
   <div>
     <Row style="height: 100%;">
       <Col span="4">
-        <div class="anchor-wrap ac">
+        <!-- <div class="anchor-wrap ac">
           <span :class="['anchor', {current: anchor == 'nav'}]" @click="goPosition('nav')">产品导航</span>
           <span :class="['anchor', {current: anchor == 'cover'}]" @click="goPosition('cover')">产品封面</span>
-          <!-- <span
+          <span
             :class="['anchor', {current: anchor == 'benefit'}]"
             @click="goPosition('benefit')"
-          >保障利益</span>-->
+          >保障利益</span>
           <span
             :class="['anchor', {current: anchor == 'feature'}]"
             @click="goPosition('feature')"
@@ -115,7 +161,25 @@
             :class="['anchor', {current: anchor == 'responsibility'}]"
             @click="goPosition('responsibility')"
           >保险责任</span>
-        </div>
+        </div>-->
+
+        <Steps :current="current[anchor]" direction="vertical">
+          <Step title="产品导航" @click.native="goPosition('nav')">
+            <div class="dot" slot="icon"></div>
+          </Step>
+          <Step title="产品封面" @click.native="goPosition('cover')">
+            <div class="dot" slot="icon"></div>
+          </Step>
+          <Step title="产品特色" @click.native="goPosition('feature')">
+            <div class="dot" slot="icon"></div>
+          </Step>
+          <Step title="投保须知" @click.native="goPosition('inform')">
+            <div class="dot" slot="icon"></div>
+          </Step>
+          <Step title="保险责任" @click.native="goPosition('responsibility')">
+            <div class="dot" slot="icon"></div>
+          </Step>
+        </Steps>
       </Col>
 
       <Col
@@ -127,17 +191,18 @@
           <!-- 产品导航 -->
           <div class="box">
             <div ref="nav" class="title-wrap bfc-o">
-              <span class="title">产品导航</span>
+              <span class="title title-row" :class="[{current: anchor == 'nav'}]">产品导航</span>
+              <div class="line"></div>
               <div class="button-wrap fr">
-                <Button class="button" @click="submit()">保存</Button>
-                <Button class="button" @click="clear()">清空</Button>
+                <Button type="primary" ghost @click="clear()">清空</Button>
+                <Button type="primary" @click="submit()">保存</Button>
               </div>
             </div>
 
             <div class="box-content">
               <Row>
-                <Col span="6">
-                  <FormItem class="up-wrap">
+                <Col span="10">
+                  <FormItem label="导航图">
                     <Upload
                       :action="uploadUrl"
                       :show-upload-list="false"
@@ -146,13 +211,21 @@
                       :on-success="uploadNavigation"
                     >
                       <img class="logo" v-if="form.navigationUrl" :src="form.navigationUrl" />
-                      <div v-else class="upload-icon cp">+上传导航图片</div>
+                      <div v-else class="upload-icon cp">
+                        <Icon type="md-cloud-upload" />
+                      </div>
                     </Upload>
+                  </FormItem>
+                  <FormItem label="核心亮点" prop="d">
+                    <Input v-model="form.coreBuy" placeholder="请输入产品主要特色，不超过200字" />
+                  </FormItem>
+                  <FormItem label="典型费率" prop>
+                    <Input v-model="form.typicalPremium" placeholder="请输入产品典型费率，不超过200字" />
                   </FormItem>
                 </Col>
 
-                <Col span="8">
-                  <FormItem class="up-wrap" prop>
+                <Col span="10" offset="2">
+                  <FormItem label="banner图" prop>
                     <Upload
                       :action="uploadUrl"
                       :show-upload-list="false"
@@ -161,12 +234,39 @@
                       :on-success="uploadBanner"
                     >
                       <img class="logo" v-if="form.bannerUrl" :src="form.bannerUrl" />
-                      <div v-else class="upload-icon cp">+banner图链接地址</div>
+                      <div v-else class="upload-icon cp">
+                        <Icon type="md-cloud-upload" />
+                      </div>
                     </Upload>
+                  </FormItem>
+                  <FormItem label="产品特色">
+                    <Input
+                      type="text"
+                      v-show="productFeatureShow || !productFeature.length"
+                      v-model="form.productFeature"
+                      placeholder="产品特色，多个以英文逗号','分开"
+                      @on-enter="transLabel()"
+                      @on-blur="transLabel()"
+                    />
+
+                    <Select
+                      v-show="!productFeatureShow && productFeature.length"
+                      v-model="productFeature"
+                      multiple
+                      :max-tag-count="3"
+                      @click.native="productFeatureShow = !productFeatureShow"
+                      @on-change="selectChange()"
+                    >
+                      <Option
+                        v-for="(item, index) in productFeature"
+                        :value="item"
+                        :key="index"
+                      >{{item}}</Option>
+                    </Select>
                   </FormItem>
                 </Col>
 
-                <Col span="10">
+                <!-- <Col span="10">
                   <FormItem label="核心亮点" prop="d">
                     <Input v-model="form.coreBuy" placeholder="请输入产品主要特色，不超过200字" />
                   </FormItem>
@@ -198,20 +298,21 @@
                       >{{item}}</Option>
                     </Select>
                   </FormItem>
-                </Col>
+                </Col>-->
               </Row>
             </div>
           </div>
 
           <div class="box">
             <div ref="cover" class="title-wrap bfc-o">
-              <span class="title">产品封面</span>
+              <span class="title title-row" :class="[{current: anchor == 'cover'}]">产品封面</span>
+              <div class="line"></div>
             </div>
 
             <div class="box-content">
               <Row>
-                <Col span="6">
-                  <FormItem class="up-wrap">
+                <Col span="10">
+                  <FormItem label="产品封面">
                     <Upload
                       :action="uploadUrl"
                       :show-upload-list="false"
@@ -220,13 +321,15 @@
                       :on-success="uploadCover"
                     >
                       <img class="logo" v-if="form.coverUrl" :src="form.coverUrl" />
-                      <div v-else class="upload-icon cp">+封面图片链接地址</div>
+                      <div v-else class="upload-icon cp">
+                        <Icon type="md-cloud-upload" />
+                      </div>
                     </Upload>
                   </FormItem>
                 </Col>
 
-                <Col span="8">
-                  <FormItem class="up-wrap">
+                <Col span="10" offset="2">
+                  <FormItem label="封面视频">
                     <Upload
                       :action="uploadUrl"
                       :show-upload-list="false"
@@ -234,7 +337,9 @@
                       :on-success="uploadCoverVideo"
                     >
                       <img class="logo" v-if="form.coverVideoUrl" :src="form.pcCoverPicture" />
-                      <div v-else class="upload-icon cp">+封面视频链接地址</div>
+                      <div v-else class="upload-icon cp">
+                        <Icon type="md-cloud-upload" />
+                      </div>
                     </Upload>
                   </FormItem>
                 </Col>
@@ -282,7 +387,8 @@
 
           <div class="box">
             <div ref="feature" class="title-wrap bfc-o">
-              <span class="title">产品特色</span>
+              <span class="title title-row" :class="[{current: anchor == 'feature'}]">产品特色</span>
+              <div class="line"></div>
             </div>
             <Tabs>
               <TabPane label="图文">
@@ -303,14 +409,15 @@
                     <img v-if="item" :src="item" alt />
                   </div>
                   <Upload
-                    class="up-wrap"
                     :action="uploadUrl"
                     :show-upload-list="false"
                     :format="['jpg','jpeg','png']"
                     accept="image/*"
                     :on-success="uploadAtlas"
                   >
-                    <div class="upload-icon cp">+上传图片</div>
+                    <div class="upload-icon up-wrap cp">
+                      <Icon type="md-cloud-upload" />
+                    </div>
                   </Upload>
                 </div>
               </TabPane>
@@ -319,7 +426,8 @@
 
           <div class="box">
             <div ref="inform" class="title-wrap bfc-o">
-              <span class="title">投保须知</span>
+              <span class="title title-row" :class="[{current: anchor == 'inform'}]">投保须知</span>
+              <div class="line"></div>
             </div>
 
             <div class="box-content" style="width: 100%; max-width: 640px;">
@@ -332,7 +440,11 @@
                 :on-success="uploadRulePdf"
                 :before-upload="beforeUpload"
               >
-                <Button icon="ios-cloud-upload-outline">{{form.insuranceRulePdf ? '替换' : '上传'}}投保规则</Button>
+                <Button
+                  type="primary"
+                  ghost
+                  icon="ios-cloud-upload-outline"
+                >{{form.insuranceRulePdf ? '替换' : '上传'}}投保规则</Button>
               </Upload>
               <!-- <ckeditor
                 :editor="editor"
@@ -346,7 +458,8 @@
 
           <div class="box">
             <div ref="responsibility" class="title-wrap bfc-o">
-              <span class="title">保险责任</span>
+              <span class="title title-row" :class="[{current: anchor == 'responsibility'}]">保险责任</span>
+              <div class="line"></div>
             </div>
 
             <div class="box-content">
@@ -360,66 +473,72 @@
                 :before-upload="beforeUpload"
               >
                 <Button
+                  type="primary"
+                  ghost
                   icon="ios-cloud-upload-outline"
                 >{{form.insuranceLiabilityPdf ? '替换' : '上传'}}条款</Button>
               </Upload>
 
               <Tabs style="min-height: 300px;">
                 <TabPane label="保险责任">
-                  <Row v-for="(item, index) of form.insuranceLiability" :Key="index">
-                    <Col span="11">
-                      <div>责任类型</div>
-                      <Select
-                        v-model="item.mainClass"
-                        placeholder="请选择大类"
-                        style="width: 38%; margin-right: 4%;"
-                      >
-                        <Option
-                          v-for="(unit, index) in allClass"
-                          :value="unit.id"
-                          :key="index"
-                        >{{unit.dictName}}</Option>
-                      </Select>
-
-                      <Select v-model="item.smallClass" placeholder="请选择小类" style="width: 38%;">
-                        <template v-for="_item in allClass">
-                          <template v-if="item.mainClass === _item.id">
+                  <Form :label-width="80">
+                    <Row v-for="(item, index) of form.insuranceLiability" :Key="index">
+                      <Col span="11">
+                        <FormItem label="责任类型">
+                          <Select
+                            v-model="item.mainClass"
+                            placeholder="请选择大类"
+                            style="width: 38%; margin-right: 4%;"
+                          >
                             <Option
-                              v-for="(unit, index) in _item.childs"
+                              v-for="(unit, index) in allClass"
                               :value="unit.id"
                               :key="index"
-                            >{{unit.dataName}}</Option>
-                          </template>
-                        </template>
-                      </Select>
+                            >{{unit.dictName}}</Option>
+                          </Select>
+                          <Select v-model="item.smallClass" placeholder="请选择小类" style="width: 38%;">
+                            <template v-for="_item in allClass">
+                              <template v-if="item.mainClass === _item.id">
+                                <Option
+                                  v-for="(unit, index) in _item.childs"
+                                  :value="unit.id"
+                                  :key="index"
+                                >{{unit.dataName}}</Option>
+                              </template>
+                            </template>
+                          </Select>
+                        </FormItem>
+                        <FormItem label="算法">
+                          <Input
+                            type="textarea"
+                            v-model="item.algorithm"
+                            placeholder="请输入内容"
+                            style="width:80%;"
+                          />
+                        </FormItem>
+                      </Col>
 
-                      <div>算法</div>
-                      <Input
-                        type="textarea"
-                        v-model="item.algorithm"
-                        placeholder="请输入内容"
-                        style="width:80%;"
-                      />
-                    </Col>
+                      <Col span="11">
+                        <FormItem label="标题">
+                          <Input v-model="item.title" placeholder="请输入标题" style="width:80%;" />
+                        </FormItem>
 
-                    <Col span="11">
-                      <div>标题</div>
-                      <Input v-model="item.title" placeholder="请输入标题" style="width:80%;" />
+                        <FormItem label="对应条款">
+                          <Input
+                            type="textarea"
+                            v-model="item.provision"
+                            placeholder="请输入条款"
+                            style="width:80%;"
+                          />
+                        </FormItem>
+                      </Col>
+                      <Col span="2">
+                        <span class="button-circle" @click="reduce('insuranceLiability', index)">-</span>
+                      </Col>
+                    </Row>
+                  </Form>
 
-                      <div>对应条款</div>
-                      <Input
-                        type="textarea"
-                        v-model="item.provision"
-                        placeholder="请输入条款"
-                        style="width:80%;"
-                      />
-                    </Col>
-                    <Col span="2">
-                      <span class="button-circle" @click="reduce('insuranceLiability', index)">-</span>
-                    </Col>
-                  </Row>
-
-                  <Button class="button" type="primary" @click="addItem('insuranceLiability')">+ 添加</Button>
+                  <span class="button-circle" @click="addItem('insuranceLiability')">+</span><span>添加一条</span>
                 </TabPane>
                 <TabPane label="免除责任">
                   <Input type="textarea" v-model="form.exemptLiability" style="width: 60%;" />
@@ -554,7 +673,14 @@ export default {
       anchor: "nav",
       productFeature: [],
       productFeatureShow: false,
-      allClass: []
+      allClass: [],
+      current: Object.freeze({
+        nav: 0,
+        cover: 1,
+        feature: 2,
+        inform: 3,
+        responsibility: 4
+      })
     };
   },
   mounted() {
@@ -576,12 +702,10 @@ export default {
             return;
           }
           // 图集空值判断设置
-          data.atlas = data.atlas
-            ? data.atlas.split(",")
-            : [];
-            if (!data.atlas[0]) {
-              data.atlas.shift()
-            }
+          data.atlas = data.atlas ? data.atlas.split(",") : [];
+          if (!data.atlas[0]) {
+            data.atlas.shift();
+          }
           // 保险利益
           // data.insurableInterest = JSON.parse(data.insurableInterest);
           // 保险责任内容
@@ -691,7 +815,7 @@ export default {
       else this.$Message.error("上一条信息请填写完整，再添加下一条");
     },
     reduce(field, index) {
-      if (index === 0) {
+      if (this.form[field].length === 1) {
         this.$Message.error("最后一项不可删除！");
         return;
       }

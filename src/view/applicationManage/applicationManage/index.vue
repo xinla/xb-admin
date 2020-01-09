@@ -15,6 +15,7 @@
 .upload-icon {
   border: 1px dashed #000;
   width: 100px;
+  padding: 14px 0;
 }
 /deep/.ivu-tag .ivu-icon-ios-close {
   visibility: hidden;

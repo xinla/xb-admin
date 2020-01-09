@@ -6,12 +6,12 @@
           <Input type="text" v-model="form.productFullName" placeholder="产品全称" />
         </FormItem>
       </Col>
-      <Col span="8">
+      <Col span="8" offset='2'>
         <FormItem label="产品简称" prop="productAbbr">
           <Input type="text" v-model="form.productAbbr" placeholder="产品简称" />
         </FormItem>
       </Col>
-      <Col span="8" class="ar">
+      <Col span="6" class="ar">
       <Button class="button" @click="submit()">保存</Button>
       <Button class="button" @click="clear()">清空</Button>
     </Col>
@@ -22,7 +22,7 @@
           <Input type="text" v-model="form.productCode" placeholder="产品代码" />
         </FormItem>
       </Col>
-      <Col span="8">
+      <Col span="8" offset='2'>
         <FormItem label="所属品牌" prop="name">
           <selectSupplier :val="form.name" type="brand" @change="change" />
         </FormItem>
@@ -119,20 +119,20 @@
       <!-- <CheckboxGroup v-model="form.distributionChannel" @on-change="distChange">
         <Checkbox :label="0">传统经代</Checkbox>
       </CheckboxGroup> -->
-      <FormItem label="是否支持现保投保" prop>
+      <FormItem label="是否支持现保投保" prop style="display: inline-block; width: 300px; margin-left: 20px;">
         <RadioGroup v-model="form.vitSupport">
           <Radio :label="0">不支持</Radio>
           <Radio :label="1">支持</Radio>
         </RadioGroup>
       </FormItem>
-
+<div style="height: 20px;"></div>
       <RadioGroup v-model="form.distributionChannel" @on-change="distChange">
         <Radio label="1">互联网</Radio>
       </RadioGroup>
       <!-- <CheckboxGroup v-model="form.distributionChannel" @on-change="distChange">
         <Checkbox :label="1">互联网</Checkbox>
       </CheckboxGroup> -->
-      <FormItem label="互联网投保方式" prop>
+      <FormItem label="互联网投保方式" prop style="display: inline-block; width: 300px; margin-left: 20px;">
         <RadioGroup v-model="form.internetInsurance">
           <Radio :label="0">H5</Radio>
           <Radio :label="1">API</Radio>
@@ -157,8 +157,9 @@
           </FormItem>
         </Col>
       </Row> -->
+    </FormItem>
       <Row>
-        <Col span="10">
+        <Col span="8">
         <FormItem label="APP名称" prop="insuranceApp">
             <Input type="text" v-model="form.insuranceApp" placeholder="APP名称" />
           </FormItem>
@@ -166,7 +167,7 @@
             <Input type="text" v-model="form.insuranceH5" placeholder="H5网址" />
           </FormItem>
         </Col>
-        <Col span="10">
+        <Col span="8" offset='2'>
         <FormItem label="PC网址" prop="insurancePc">
             <Input type="text" v-model="form.insurancePc" placeholder="PC网址" />
           </FormItem>
@@ -175,7 +176,6 @@
           </FormItem>
         </Col>
       </Row>
-    </FormItem>
   </Form>
 </template>
 

@@ -1,19 +1,16 @@
 <template>
   <div ref="container" class="container">
-    <div class="button-wrap ac">
-      <Button
+    <div class="button-wrap">
+      <div
       v-for="(item, index) of listModule"
-        class="button"
-        size="large"
-        :type="current === index ? 'primary' : 'default'"
+        :class="['button ac', {'current': current === index}] "
         :key="index"
         @click="current = index"
-      >{{item.name}}</Button>
+      >{{item.name}}</div>
     </div>
 
     <baseInfo
       class="item bw br"
-      style="padding: 20px 0 1px 0;"
       ref="baseInfo"
       v-show="current === 0"
       :key="key + 1"
@@ -27,12 +24,13 @@
     <premiumCalculator
       class="item"
       ref="premiumCalculator"
+      style="padding-top: 0; border-top: 20px solid #f5f7f9;"
       v-if="current === 2"
       :key="key + 3"
     />
     <rateSheet
       class="item bw br"
-      style="padding-bottom: 18px; height: auto; max-height: 100%;"
+      style="height: auto; max-height: 100%;"
       ref="rateSheet"
       v-if="current === 3"
       :key="key + 4"
@@ -46,12 +44,14 @@
     <additionRisk
       class="item"
       ref="additionRisk"
+      style="padding-top: 0; border-top: 20px solid #f5f7f9;"
       v-if="current === 5"
       :key="key + 6"
     />
     <bundleSales
       class="item"
       ref="bundleSales"
+      style="padding-top: 0; border-top: 20px solid #f5f7f9;"
       v-if="current === 6"
       :key="key + 7"
     />

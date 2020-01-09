@@ -1,7 +1,6 @@
 <style lang="less" scoped>
 .title-wrap {
   padding: 15px 20px;
-  background: #e0effd;
   line-height: 25px;
   .title {
     font-size: 16px;

@@ -1,12 +1,10 @@
 <style lang="less" scoped>
 .title-wrap {
   padding: 15px 20px;
-  background: #e0effd;
   line-height: 25px;
   .title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-right: 30px;
+    display: inline-block;
+    margin-bottom: 0;
   }
   .button {
     margin-right: 10px;
@@ -25,16 +23,17 @@
 }
 .anchor-wrap {
   background: #fff;
-  margin-right: 10px;
-  padding: 10px;
+  border-right: 24px solid #f5f7f9;
+  padding: 20px;
   line-height: 30px;
-  li {
+  .anchor {
     padding-left: 10px;
-    margin-top: 5px;
+    margin-top: 10px;
     border-radius: 4px;
   }
   .current {
-    background: #ddd;
+    background: #f1f3fe;
+    border: 1px solid #6582ff;
   }
 }
 .card {
@@ -48,9 +47,10 @@
 </style>
 <template>
   <div>
-    <Row>
-      <Col span="4">
-        <ul class="anchor-wrap">
+    <Row class="x-h100">
+      <Col span="8" class="x-h100">
+        <ul class="anchor-wrap x-h100">
+          <li class="title-row">产品名称</li>
           <template v-for="(item, index) in additionRiskList">
             <li
               v-if="item.id !== $route.query.id"
@@ -67,16 +67,16 @@
 
       <Col
         ref="scroll"
-        span="20"
+        span="16"
         style="background: #fff; position: absolute; right: 0; overflow: auto; transition: all 1s;"
       >
         <!-- 产品导航 -->
         <div class="box" v-if="form.additionRiskId">
           <div ref="nav" class="title-wrap bfc-o">
-            <span class="title">{{form.additionRiskName}}</span>
+            <span class="title title-row">{{form.additionRiskName}}</span>
             <div class="button-wrap fr">
-              <Button class="button" @click="submit(form)">添加</Button>
-              <Button class="button" @click="clear(form)">删除</Button>
+              <Button type="primary" ghost @click="clear(form)">删除</Button>
+              <Button type="primary" @click="submit(form)">添加</Button>
             </div>
           </div>
 
@@ -366,7 +366,7 @@
 
             <!-- <FormItem label="捆绑其他产品">
               <Checkbox v-model="form.bindOtherProduct" :true-value="0" :false-value="1">无约束</Checkbox>
-            </FormItem> -->
+            </FormItem>-->
           </Form>
         </div>
       </Col>
@@ -386,7 +386,7 @@ const defaultForm = {
   priorityProductLimit: 0,
   priorityProductId: "",
   forbid_product_limit: 0,
-  forbid_product_id: '',
+  forbid_product_id: "",
   coverageLimit: 0,
   coverageDefine: 0,
   coverageDefineItem: 0,
@@ -491,7 +491,7 @@ export default {
       else this.$Message.error("上一条信息请填写完整，再添加下一条");
     },
     reduce(form, field, index) {
-      if (index === 0) {
+      if (form[field].length === 1) {
         this.$Message.error("最后一项不可删除！");
         return;
       }

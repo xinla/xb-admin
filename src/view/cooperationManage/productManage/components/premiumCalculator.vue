@@ -8,12 +8,13 @@
 }
 .title-wrap {
   padding: 15px 20px;
-  background: #e0effd;
   line-height: 25px;
   .title {
     font-size: 16px;
     font-weight: 600;
-    margin-right: 30px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 0;
   }
   .button {
     margin-right: 10px;
@@ -37,17 +38,17 @@
   }
 }
 .current {
-  background: rgba(49, 58, 195, 1);
-  color: #fff;
+  background: #f1f3fe;
+  border: 1px solid #6582FF !important;
 }
 </style>
 <template>
   <div>
     <div class="box white">
       <div ref="applicant" class="title-wrap bfc-o">
-        <span id="a1" class="title">基础规则</span>
+        <span id="a1" class="title title-row">基础规则</span>
         <div class="button-wrap fr">
-          <Button class="button" @click="submit('form')">保存</Button>
+          <Button type="primary" @click="submit('form')">保存</Button>
         </div>
       </div>
 
@@ -85,7 +86,7 @@
       <Col span="8" style="border-right: 20px solid #f5f7f9;">
         <div class="white">
           <div ref="applicant" class="title-wrap bfc-o">
-            <span id="a1" class="title">保费计算器项目</span>
+            <span id="a1" class="title title-row">保费计算器项目</span>
           </div>
 
           <div class="button-right-wrap">
@@ -109,9 +110,9 @@
             <!-- @on-change="change" -->
             <span id="a1" class="title">{{currentConfigInfo.calItemName}}</span>
             <div class="button-wrap fr">
-              <Button class="button" @click="add()">添加选项</Button>
-              <Button class="button" @click="remove()">删除选项</Button>
-              <Button class="button" @click="submit('currentConfigInfo')">保存</Button>
+              <Button type="primary" ghost @click="add()">添加选项</Button>
+              <Button type="primary" ghost @click="remove()">删除选项</Button>
+              <Button type="primary" @click="submit('currentConfigInfo')">保存</Button>
             </div>
           </div>
 
@@ -451,7 +452,10 @@ export default {
               break;
             // 13  领取期间
             case 13:
-              if (rules.vitProductReceiveRule && rules.vitProductReceiveRule.receiveAgeNum) {
+              if (
+                rules.vitProductReceiveRule &&
+                rules.vitProductReceiveRule.receiveAgeNum
+              ) {
                 let arr = rules.vitProductReceiveRule.receiveAgeNum.split(",");
                 for (const iterator of arr) {
                   configItems.push({ option: iterator });
@@ -481,7 +485,10 @@ export default {
               break;
             // 11  领取方式
             case 11:
-              if (rules.vitProductReceiveRule && rules.vitProductReceiveRule.receiveType) {
+              if (
+                rules.vitProductReceiveRule &&
+                rules.vitProductReceiveRule.receiveType
+              ) {
                 let arr = rules.vitProductReceiveRule.receiveType.split(",");
                 for (const iterator of arr) {
                   configItems.push({ option: iterator });
@@ -490,7 +497,7 @@ export default {
               break;
             // 15  交费方式
             case 15:
-                if (rules.payRule && rules.payRule.payType) {
+              if (rules.payRule && rules.payRule.payType) {
                 let arr = rules.payRule.payType.split(",");
                 for (const iterator of arr) {
                   configItems.push({ option: iterator });
@@ -574,7 +581,9 @@ export default {
       });
     },
     show(data) {
-      return data !== 2 && data !== 4 && data !== 11 && data !== 15 && data !== 6;
+      return (
+        data !== 2 && data !== 4 && data !== 11 && data !== 15 && data !== 6
+      );
     }
   }
 };
