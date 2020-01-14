@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="x-h100">
     <div style="padding-bottom: 24px; background: #f5f7f9;">
       <Input v-model="query.name" class="search-input" placeholder="请输入公司关键字搜索" style="width:280px;" />
       <Button type="primary" shape="circle" icon="ios-search" @click="search()"></Button>
@@ -35,7 +35,7 @@
       :total="total"
       show-elevator
       show-total
-      style="text-align:center;margin-top:20px;"
+      class="c-page"
       @on-change="getData"
     />
   </div>

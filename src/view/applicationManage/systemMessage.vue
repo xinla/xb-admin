@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="x-h100">
     <dialogBox v-model="modal">
       <div slot="title">{{form.id ? '编辑' : '新建'}}</div>
       <Form ref="form" :model="form" :rules="rules" :label-width="80" style="width: 520px;">
@@ -77,7 +77,7 @@
       :current="query.page"
       show-elevator
       show-total
-      style="text-align:center;margin-top:20px;"
+      class="c-page" 
       @on-change="getData"
     />
   </div>

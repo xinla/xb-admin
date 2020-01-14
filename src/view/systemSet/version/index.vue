@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="x-h100">
     <div class="bg pb24">
       <Select v-model="query.type" style="width:150px;" placeholder="请选择状态" @on-change="getData()">
         <Option value>全部</Option>
@@ -26,7 +26,7 @@
       </template>
     </Table>
 
-    <Page :total="total" show-elevator show-total @on-change="getData" />
+    <Page :total="total" show-elevator show-total class="c-page" @on-change="getData" />
 
     <!-- <Modal v-model="isModal" title="新建版本" style="width: 50%;">
       <create :form="form" :key="0" @submit="getData()"/>

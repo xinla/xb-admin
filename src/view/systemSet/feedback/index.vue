@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="x-h100">
     <div class="bg pb24">
       <Select
         v-model="query.type"
@@ -63,6 +63,7 @@
       :current="query.page"
       show-elevator
       show-total
+      class="c-page" 
       @on-change="getData"
     />
 

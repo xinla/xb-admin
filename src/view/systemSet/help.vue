@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="x-h100">
     <div class="bg pb24 ar">
       <Button type="primary" @click="$router.push({name: 'createHelp'})">新建</Button>
     </div>
@@ -21,6 +21,7 @@
       :current="query.page"
       show-elevator
       show-total
+      class="c-page" 
       @on-change="getHelpPage"
     />
   </div>
