@@ -75,7 +75,7 @@
           <div ref="nav" class="title-wrap bfc-o">
             <span class="title">{{form.additionRiskName}}</span>
             <div class="button-wrap fr">
-              <Button class="button" @click="submit(form)">添加</Button>
+              <Button class="button" @click="submit(form)">{{form.id ? '保存' : '添加'}}</Button>
               <Button class="button" @click="clear(form)">删除</Button>
             </div>
           </div>
