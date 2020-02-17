@@ -15,16 +15,16 @@ const config = {
   baseUrl: {
     // 测试服
     // dev: 'http://192.168.1.64', // 虚拟机 liusiyuan
-    dev: 'http://192.168.1.32:8118', // 本地
+    dev: 'http://289lb67237.qicp.vip:24827', // 本地
     dev2: 'http://192.168.1.150:8888', // v2.0本地 liusiyuan
     dev1: 'http://192.168.1.150:8888', // caikefu
 
-    domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8888' : 'http://192.168.1.26:8888', // wangdong
+    domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8888' : 'http://289lb67237.qicp.vip:24827', // wangdong
 
     // pro: 'http://112.31.212.46:8118', // line
     pro: 'http://192.168.1.26:8118', // ali line
     // pro1: 'http://112.31.212.46:8888' // caikefu
-    pro1: 'http://192.168.1.26:8888' // ali caikefu
+    pro1: 'http://289lb67237.qicp.vip:24827' // ali caikefu
   },
   // 正式服
   // baseUrl: {
@@ -95,6 +95,7 @@ config.servicesV2 = {
   product: '/v2/product',
   calculator: '/v2/calculator',
   rate: '/v2/rate',
+  profession: '/api/policy-service/v1/sign'
 }
 
 export default config

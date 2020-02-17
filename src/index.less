@@ -1,5 +1,235 @@
 @import '~iview/src/styles/index.less';
 
-@menu-dark-title: #001529;
-@menu-dark-active-bg: #000c17;
-@layout-sider-background: #001529;
+
+.size {
+  width: 100%;
+  height: 100%;
+}
+
+html,
+body {
+  .size;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  .size;
+}
+
+// 操作按钮
+.button-pri,
+.button-err {
+  color: @primary-color;
+  margin-right: 10px;
+  border: none;
+  border-right: 1px solid #ddd;
+  padding: 0 10px 0 0;
+  line-height: 13px;
+  display: inline-block;
+  cursor: pointer;
+  background-color: transparent !important;
+  border-radius: 0;
+  height: auto;
+  vertical-align: middle;
+
+  &:last-child {
+    margin-right: 0;
+    padding-right: 0;
+    border-right: 0;
+  }
+}
+
+.button-err {
+  color: @error-color;
+  cursor: pointer;
+}
+
+// 全屏转换动画
+.slide-enter-active {
+  transition: all 0.3s ease;
+}
+
+.slide-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-enter,
+.slide-leave-to
+
+/* .slide-down-leave-active for below version 2.1.8 */
+  {
+  transform: translateY(-100px);
+  opacity: 0;
+}
+
+// 内页转换动画
+.slide-inside-enter-active {
+  transition: all 0.3s ease;
+}
+
+.slide-inside-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-inside-enter,
+.slide-inside-leave-to
+
+/* .slide-down-leave-active for below version 2.1.8 */
+  {
+  // position: absolute;
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+/deep/.ivu-input[disabled],
+/deep/.ivu-select-disabled .ivu-select-selection {
+  background: none;
+  color: #000;
+  border: 0;
+  cursor: auto;
+}
+
+// iview 弹出确认框
+.ivu-modal-mask,
+.ivu-modal-wrap {
+  z-index: 10002 !important;
+}
+
+// 分页
+.ivu-page {
+  text-align: center;
+  margin-top: 100px;
+}
+
+// 按钮间距
+.ivu-btn,
+.ivu-select,
+.ivu-input-wrapper,
+.ivu-date-picker {
+  margin-right: 10px;
+
+  // &:first-of-type {
+  //   margin-left: 10px;
+  // }
+  // &:first-child {
+  //   margin-left: 0;
+  // }
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+// 按钮组无间距
+.ivu-btn-group .ivu-btn {
+  margin-right: 0;
+}
+
+// 重置ivu-radio-group居中对齐
+.ivu-radio-group, .ivu-radio-wrapper{
+  vertical-align: initial;
+}
+
+#app {
+  .ivu-table-wrapper {
+    border: 0;
+
+    .ivu-table {
+      line-height: 20px;
+
+      &:after {
+        width: 0;
+      }
+
+      &::before {
+        height: 0;
+      }
+
+      th {
+        background-color: #fff;
+      }
+
+      th,
+      td {
+        border-bottom: 0;
+        color: #515A6E;
+        height: 44px;
+      }
+
+      // th.ivu-table-column-left, td.ivu-table-column-left {
+      //   text-align: left;
+      // }
+      // th.ivu-table-column-right, td.ivu-table-column-right {
+      //   text-align: right;
+      // }
+    }
+  }
+
+}
+
+// 搜索输入框
+.search-input {
+  height: 34px;
+  border-radius: 17px;
+}
+
+.search-input /deep/.ivu-input {
+  height: 34px;
+  border-radius: 17px;
+  background: inherit;
+}
+
+// 上传图片图标
+.upload-icon {
+  border: 1px dashed #DCDEE2;
+  width: 72px;
+  height: 72px;
+  padding: 24px 0;
+  line-height: 20px;
+  color: #A2A8B7;
+  text-align: center;
+  border-radius: 4px;
+
+  /deep/.ivu-icon {
+    color: #6582ff;
+    font-size: 24px;
+  }
+}
+
+.bg {
+  background: #f5f7f9;
+}
+
+.pb24 {
+  padding-bottom: 24px;
+}
+
+.c-page {
+  margin-bottom: 20px;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+.ivu-tag-dot {
+  border: 0 !important;
+  background: none !important;
+}
+
+.ivu-tag-dot-inner {
+  width: 8px;
+  height: 8px;
+  margin-right: 4px;
+}
+
+.title-row{
+  font-weight: 600;
+  border-left: 3px solid #6582ff;
+  padding-left: 10px;
+  margin-bottom: 10px;
+  line-height: 1;
+  .ivu-btn-primary{
+    margin-right: 25px;
+  }
+}
