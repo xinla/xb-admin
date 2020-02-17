@@ -2,7 +2,7 @@ import axios from '@/libs/api.request'
 import config from '@/config'
 
 const service = config.services.profession
-const serviceV2 = config.servicesV2.profession
+const serviceV2 = config.baseUrl.domainV2 + config.servicesV2.profession
 
 /**
  * (未用)

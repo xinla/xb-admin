@@ -39,22 +39,17 @@
   }
 }
 .card {
+  display: flex;
+  flex-wrap: wrap;
   .item {
-    display: inline-block;
     vertical-align: top;
-    padding: 10px 5px;
-    width: 16%;
+    padding: 10px;
+    width: 160px;
     line-height: 30px;
   }
 }
 .upload-wrap {
   width: 50%;
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  margin: auto;
   .upload {
     padding: 79px 0;
     background: rgba(248, 249, 255, 1);
@@ -81,102 +76,23 @@
       </div>
     </div>
 
-    <!-- <Row>
-
-      <Col span="12">
-        <div class="fr">
-          <Form ref="form" :model="form" :label-width="40" inline>
-            <FormItem label="品牌">
-              <selectSupplier :val="form.supplierId" type="brand" @change="change1" />
-            </FormItem>
-            <FormItem :label-width="0">
-              <Upload
-                :action="uploadUrl"
-                :data="{supplierId: form.supplierId}"
-                :format="['xls','xlsx']"
-                :show-upload-list="false"
-                :before-upload="beforeUpload"
-                :on-success="uploadSuccess"
-                :on-format-error="formatError"
-              >
-                <Button  icon="ios-cloud-upload-outline" :loading="upLoading">
-                  <span v-if="!upLoading">上传表格</span>
-                  <span v-else>Loading...</span>
-                </Button>
-              </Upload>
-            </FormItem>
-          </Form>
-        </div>
-      </Col>
-    </Row>-->
-
     <Row style="height: calc(100% - 58px);">
       <Col span="6" class="x-h100" style="border-right: 24px solid #f5f7f9;">
         <div class="title-row pt">保险企业</div>
-        <Menu active-name="1-2" width="auto">
+        <Menu active-name="1-2" width="auto" style="height: calc(100% - 44px);  overflow: auto;">
           <MenuItem
             v-for="item in listBrand"
             :name="item.id"
             :key="item.id"
-            @on-select="getClass(0, item.id)"
+            @click.native="getClass(0, item.id)"
           >{{ item.name }}</MenuItem>
         </Menu>
       </Col>
       <Col span="18" class="x-h100" style="overflow: auto;">
-        <div v-if="!isUpload">
-          <div class="bw bfc-o">
-            <div class="title-row pt">
-              <template v-for="(item, index) of breadcrumb">
-                <span v-show="item.key <= currentClass" :key="index" @click="switchClass(item.key)">
-                  <em v-show="item.key > 0">/</em>
-                  {{item.value}}
-                </span>
-              </template>
-            </div>
-            <ul>
-              <li
-                class="li cp"
-                v-for="(item, index) of listClass"
-                :key="index"
-                @click="getClass(currentClass + 1, item)"
-              >
-                <span class="dot"></span>
-                {{item[['primaryCategoryName', 'secondaryCategoryName', 'minorCategoryName', 'occupationName', 'occupationName'][currentClass]]}}
-              </li>
-            </ul>
-          </div>
-
-          <div style="border-top: 24px solid #f5f7f9;" v-show="currentClass > 3">
-            <Card :padding="0" style="padding: 0 15px;">
-              <ul class="card bw">
-                <li class="item" v-for="(item, index) of columns" :key="index">
-                  <b>{{item.title}}</b>
-                  <div v-if="!item.type">
-                    <Tooltip
-                      placement="top"
-                      :content="professionInfo[item.key]"
-                      :disabled="String(professionInfo[item.key]).length < 8"
-                      style="max-width: 100%;"
-                    >
-                      <div class="oe">{{professionInfo[item.key] || '不设'}}</div>
-                    </Tooltip>
-                  </div>
-                  <div v-else>
-                    <i-switch
-                      v-model="professionInfo[item.key]"
-                      :true-value="1"
-                      :false-value="1"
-                      disabled
-                    />
-                  </div>
-                </li>
-              </ul>
-            </Card>
-          </div>
-        </div>
-
-        <div v-else class="upload-wrap">
+        <!-- 上传职业代码表 -->
+        <div v-if="isUpload" class="upload-wrap cc">
           <Upload
+            v-if="!uploadFileName"
             type="drag"
             :action="uploadUrl"
             :data="{supplierId: currentBrandId}"
@@ -192,12 +108,20 @@
                 或将文件拖拽至此区域
                 <br />仅支持xls、xlsx格式文件
               </p>
+
               <Button type="primary" :loading="upLoading">
                 <span v-if="!upLoading">选择文件</span>
-                  <span v-else>Loading...</span>
+                <span v-else>上传中</span>
               </Button>
             </div>
           </Upload>
+
+          <div v-else class="upload ac">
+            <Icon type="md-checkmark-circle" size="34" style="color: #009F55"></Icon>
+            <p style="width: 154px; margin: 25px auto;">{{uploadFileName}}</p>
+            <Button type="primary" @click="uploadFileName = ''">完成</Button>
+          </div>
+
           <div style="line-height: 35px;">
             说明：
             <p>
@@ -207,6 +131,105 @@
             <p>请将左侧对应保险公司的职业代码数据导入职业代码表模板。</p>
           </div>
         </div>
+
+        <!-- 搜索列表/常用职业 -->
+        <div v-else-if="isList" class="x-h100 bg">
+          <div v-if="list.length && !query.type" style="padding-bottom: 20px;">
+            查到{{this.total}}条与
+            <span style="padding: 0 5px; color: #6581FF;">{{query.params}}</span>有关的内容
+          </div>
+          <div
+            style="border-bottom: 24px solid #f5f7f9;"
+            v-for="(unit, unique) of list"
+            :key="unique"
+          >
+            <Card :padding="0" style="padding: 0 15px;">
+              <ul class="card bw">
+                <li class="item" v-for="(item, index) of columns" :key="index">
+                  <b>{{item.title}}</b>
+                  <div v-if="!item.type">
+                    <Tooltip
+                      placement="top"
+                      :content="unit[item.key]"
+                      :disabled="String(unit[item.key]).length < 8"
+                      style="max-width: 100%;"
+                    >
+                      <div class="oe">{{unit[item.key] || '不设'}}</div>
+                    </Tooltip>
+                  </div>
+                  <div v-else>
+                    <i-switch v-model="unit[item.key]" :true-value="1" :false-value="1" disabled />
+                  </div>
+                </li>
+              </ul>
+            </Card>
+          </div>
+
+          <div v-if="!list.length" style="padding: 150px 0;" class="bw ac">暂无相关数据</div>
+        </div>
+
+        <template v-else>
+          <div class="bw bfc-o" :style="{height: currentClass > 3 ? '60%' : '100%'}">
+            <div class="title-row pt">
+              <!-- 面包屑 -->
+              <template v-for="(item, index) of breadcrumb">
+                <span v-show="item.key <= currentClass" :key="index" @click="switchClass(item.key)">
+                  <em v-show="item.key > 0">/</em>
+                  {{item.value}}
+                </span>
+              </template>
+            </div>
+            <!-- 分类 -->
+            <ul style="height: calc(100% - 44px); overflow: auto;">
+              <li
+                class="li cp"
+                v-for="(item, index) of listClass"
+                :key="index"
+                @click="getClass(currentClass + 1, item)"
+              >
+                <span class="dot"></span>
+                {{item[['primaryCategoryName', 'secondaryCategoryName', 'minorCategoryName', 'occupationName', 'occupationName'][currentClass]]}}
+              </li>
+              <li v-if="!listClass.length" style="padding: 150px 0;" class="ac">
+                {{currentBrandId ? '暂无相关数据' : '请选择保险企业'}}
+              </li>
+            </ul>
+          </div>
+
+          <!-- 职业详情 -->
+          <Card
+            v-show="currentClass > 3"
+            :padding="0"
+            style="padding: 0 15px;
+            border-top: 24px solid #f5f7f9;
+            overflow: auto;
+            height: 40%;"
+          >
+            <ul class="card bw">
+              <li class="item" v-for="(item, index) of columns" :key="index">
+                <b>{{item.title}}</b>
+                <div v-if="!item.type">
+                  <Tooltip
+                    placement="top"
+                    :content="professionInfo[item.key]"
+                    :disabled="String(professionInfo[item.key]).length < 8"
+                    style="max-width: 100%;"
+                  >
+                    <div class="oe">{{professionInfo[item.key] || '不设'}}</div>
+                  </Tooltip>
+                </div>
+                <div v-else>
+                  <i-switch
+                    v-model="professionInfo[item.key]"
+                    :true-value="1"
+                    :false-value="1"
+                    disabled
+                  />
+                </div>
+              </li>
+            </ul>
+          </Card>
+        </template>
       </Col>
     </Row>
 
@@ -418,14 +441,16 @@ export default {
       currentClass: 0,
       currentBrandId: '',
       professionInfo: {},
-      isLoadClass: false
+      isLoadClass: false,
+      isList: false,
+      uploadFileName: ''
     };
   },
   computed: {},
   watch: {},
   mounted() {
     this.getAllBrand()
-    this.getClass(0)
+    // this.getClass(0)
 
   },
   methods: {
@@ -439,6 +464,10 @@ export default {
           case 0:
             this.query.insuranceCompanyId = args
             this.currentBrandId = args
+
+            this.isList = false
+            this.isUpload = false
+
             A.getProfessionTabs(this.currentBrandId).then((res) => {
               // console.log(res)
               this.breadcrumb = res
@@ -506,6 +535,11 @@ export default {
       }
     },
     getData(page, type) {
+      if (!this.currentBrandId) {
+        this.$Message.error("请选择品牌后进行");
+        return;
+      }
+      this.isList = true
       this.query.page = page || 1
       this.loading = true;
       this.query.type = type
@@ -513,6 +547,7 @@ export default {
       A.getProfessionPage(this.query).then(res => {
         console.log("ProfessionPage: ", res);
         this.loading = false;
+        this.isUpload = false
         this.total = res.total;
         this.list = res.list;
         // this.getPage()
@@ -543,13 +578,14 @@ export default {
     },
     uploadSuccess(response, file, fileList) {
       // console.log(response, file, fileList);
-      // this.form.rateTableUrl = file.name
+      this.uploadFileName = file.name
       if (response.code === 0) {
         this.upLoading = false;
         this.$Message.success("上传成功");
-        this.getData();
+        // this.getData();
         this.getAllBrand()
       } else {
+        this.upLoading = false;
         this.$Message.error("上传失败");
       }
     },
