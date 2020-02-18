@@ -69,10 +69,10 @@
         placeholder="请输入关键字搜索"
         style="width:280px;"
       />
-      <Button type="primary" shape="circle" icon="ios-search" @click="getData()"></Button>
+      <Button type="primary" shape="circle" icon="ios-search" @click="getData(1, 1)"></Button>
       <div class="fr">
         <Button type="primary" @click="isUpload = true">上传职业代码表</Button>
-        <Button type="primary" @click="getData(1, 1)">查看常用职业</Button>
+        <Button type="primary" @click="getData()">查看常用职业</Button>
       </div>
     </div>
 
@@ -134,7 +134,7 @@
 
         <!-- 搜索列表/常用职业 -->
         <div v-else-if="isList" class="x-h100 bg">
-          <div v-if="list.length && !query.type" style="padding-bottom: 20px;">
+          <div v-if="list.length && query.type" style="padding-bottom: 20px;">
             查到{{this.total}}条与
             <span style="padding: 0 5px; color: #6581FF;">{{query.params}}</span>有关的内容
           </div>
@@ -149,7 +149,7 @@
                   <b>{{item.title}}</b>
                   <div v-if="!item.type">
                     <Tooltip
-                      placement="top"
+                      max-width="200"
                       :content="unit[item.key]"
                       :disabled="String(unit[item.key]).length < 8"
                       style="max-width: 100%;"
@@ -158,7 +158,12 @@
                     </Tooltip>
                   </div>
                   <div v-else>
-                    <i-switch v-model="unit[item.key]" :true-value="1" :false-value="1" disabled />
+                    <i-switch
+                      v-model="unit[item.key]"
+                      true-value="1"
+                      false-value="0"
+                      @click.native="submit(unit)"
+                    />
                   </div>
                 </li>
               </ul>
@@ -169,11 +174,11 @@
         </div>
 
         <template v-else>
-          <div class="bw bfc-o" :style="{height: currentClass > 3 ? '60%' : '100%'}">
+          <div class="bw bfc-o" :style="{height: currentClass >= 3 ? '60%' : '100%'}">
             <div class="title-row pt">
               <!-- 面包屑 -->
               <template v-for="(item, index) of breadcrumb">
-                <span v-show="item.key <= currentClass" :key="index" @click="switchClass(item.key)">
+                <span v-show="item.key <= currentClass" :key="index" class="cp" @click="switchClass(item.key)">
                   <em v-show="item.key > 0">/</em>
                   {{item.value}}
                 </span>
@@ -182,23 +187,25 @@
             <!-- 分类 -->
             <ul style="height: calc(100% - 44px); overflow: auto;">
               <li
-                class="li cp"
+                class="li cp oe"
                 v-for="(item, index) of listClass"
                 :key="index"
                 @click="getClass(currentClass + 1, item)"
               >
                 <span class="dot"></span>
-                {{item[['primaryCategoryName', 'secondaryCategoryName', 'minorCategoryName', 'occupationName', 'occupationName'][currentClass]]}}
+                {{item[['primaryCategoryName', 'secondaryCategoryName', 'minorCategoryName', 'occupationName', ][currentClass]]}}
               </li>
-              <li v-if="!listClass.length" style="padding: 150px 0;" class="ac">
-                {{currentBrandId ? '暂无相关数据' : '请选择保险企业'}}
-              </li>
+              <li
+                v-if="!listClass.length"
+                style="padding: 150px 0;"
+                class="ac"
+              >{{currentBrandId ? '暂无相关数据' : '请选择保险企业'}}</li>
             </ul>
           </div>
 
           <!-- 职业详情 -->
           <Card
-            v-show="currentClass > 3"
+            v-show="currentClass >= 3"
             :padding="0"
             style="padding: 0 15px;
             border-top: 24px solid #f5f7f9;
@@ -210,7 +217,7 @@
                 <b>{{item.title}}</b>
                 <div v-if="!item.type">
                   <Tooltip
-                    placement="top"
+                    max-width="200"
                     :content="professionInfo[item.key]"
                     :disabled="String(professionInfo[item.key]).length < 8"
                     style="max-width: 100%;"
@@ -220,10 +227,11 @@
                 </div>
                 <div v-else>
                   <i-switch
+                  :key="professionInfo.id"
                     v-model="professionInfo[item.key]"
-                    :true-value="1"
-                    :false-value="1"
-                    disabled
+                    true-value="1"
+                    false-value="0"
+                    @on-change="submit(professionInfo)"
                   />
                 </div>
               </li>
@@ -492,6 +500,7 @@ export default {
 
           case 3: A.getProfessionClasses(this.currentBrandId, type, args).then(res => {
             this.listClass = this.listPro = res
+            this.professionInfo = res[0]
             this.currentClass++
           })
             break;
@@ -500,7 +509,6 @@ export default {
             //  A.getProfessionClasses(this.currentBrandId, type, args).then(res => {
             // })
             this.professionInfo = args
-            this.currentClass++
             break;
           default:
             break;
@@ -543,7 +551,7 @@ export default {
       this.query.page = page || 1
       this.loading = true;
       this.query.type = type
-      type && (this.query.params = '')
+      !type && (this.query.params = '')
       A.getProfessionPage(this.query).then(res => {
         console.log("ProfessionPage: ", res);
         this.loading = false;
@@ -598,10 +606,13 @@ export default {
     //   this.query.supplierId = item.id;
     // },
     submit(data) {
-      console.log(data);
+      // console.log(data);
+      let temp = Object.assign({}, data)
       A.updateProfession(data).then(res => {
-        this.getData();
+        // this.getData();
         this.$Message.success("设置成功");
+      }).catch(() => {
+        data = temp
       });
     },
     // getPage(page) {
