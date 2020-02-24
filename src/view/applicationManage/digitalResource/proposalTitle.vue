@@ -1,69 +1,133 @@
+<style lang="less" scoped>
+/deep/.dialog {
+  // width: 350px;
+  overflow: visible;
+}
+/deep/.ivu-checkbox-group-item {
+  display: block;
+  margin-bottom: 5px;
+}
+.checkbox-wrap {
+  max-height: 300px;
+  overflow: auto;
+}
+.pb24 {
+  margin: 0 24px;
+}
+.tag-wrap {
+  display: inline-block;
+  max-width: 400px;
+  overflow: auto;
+  vertical-align: bottom;
+}
+</style>
+
 <template>
   <div>
-    <Row>
-      <Col span="16">
-        <Button type="primary" size="small" style="margin-right:5px;" @click="edit(0)">添加分类</Button>
-        <Button type="primary" size="small" style="margin-right:5px;" @click="edit(1)">添加标题</Button>
-      </Col>
-    </Row>
-
-    <Table :loading="loading" :columns="columns" :data="list">
+    <!-- <div class="right">
+          <Button type="primary" size="small" style="margin-right:5px;" @click="edit(0)">添加分类</Button>
+          <Button type="primary" size="small" style="margin-right:5px;" @click="edit(1)">添加标题</Button>
+    </div>-->
+    <div class="pb24">
+      <Input
+        v-model="query.params"
+        class="search-input bg"
+        placeholder="请输入关键字搜索"
+        style="width:280px;"
+      />
+      <Button type="primary" shape="circle" icon="ios-search" @click="getData(1)"></Button>
+      <div class="fr">
+        <Button type="primary" @click="edit(0)">添加标题</Button>
+      </div>
+    </div>
+    <Table :loading="loading" :columns="columns" :data="list" no-data-text='暂无标题，请添加'>
+      <template slot-scope="{ row }" slot="classifyId">{{listClass[row.classifyId]}}</template>
       <template slot-scope="{ row }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="edit(1, row)">编辑</Button>
-        <Button type="error" size="small" style="margin-right: 5px" @click="remove(row.id)">删除</Button>
+        <span class="button-pri" @click="edit(0, row)">编辑</span>
+        <span class="button-err" @click="remove(row.id)">删除</span>
       </template>
     </Table>
 
-    <Page
-        :total="total"
-        show-elevator
-        show-total
-        style="text-align:center;margin-top:20px;"
-        @on-change="getData"
-      />
+    <Page :total="~~total" show-elevator show-total class="c-page" @on-change="getData" />
 
-    <dialogBox v-model="isShow">
-      <template slot="title">添加分类</template>
+    <dialogBox key="1" v-model="isShow">
+      <template slot="title">{{form.id ? '编辑' : '新建'}}标题</template>
       <template>
-        <Form ref="form" :model="form" :rules="rules">
-          <FormItem prop="value">
-            <Input type="text" v-model="form.value" placeholder="親輸入分类"></Input>
+        <Form ref="form" :model="form" :rules="rules" :label-width="80">
+          <FormItem prop="title" label="标题">
+            <Input type="text" v-model="form.title" placeholder="请输入标题"></Input>
           </FormItem>
-          <Button
-            type="primary"
-            size="small"
-            style="display: block; margin: 0 auto"
-            @click="submit(0, form)"
-          >确定</Button>
+          <FormItem prop="classifyId" label="所属分类">
+            <Select v-model="form.classifyId">
+              <Option v-for="(value, key, index) in listClass" :value="key" :key="index">{{ value }}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="关联产品">
+            <div class="tag-wrap">
+              <Tag
+                v-for="(item, index) of form.products"
+                size="medium"
+                :key="index"
+                closable
+                @on-close="cancelPro(item)"
+              >{{item}}</Tag>
+            </div>
+            <Icon type="ios-add-circle-outline" size="22" color="#6582FF" @click="edit(1)" />
+          </FormItem>
+          <div class="ar">
+            <Button type="primary" ghost @click="isShow = false">取消</Button>
+            <Button type="primary" @click="submit()">确定</Button>
+          </div>
         </Form>
       </template>
     </dialogBox>
 
-    <dialogBox v-model="isShow1">
-      <template slot="title">添加标题</template>
+    <dialogBox key="2" v-model="isShow1">
+      <template slot="title">关联产品</template>
       <template>
-        <Form ref="form1" :model="form1" :rules="rules">
-          <FormItem prop="classifyId">
-            <Select v-model="form1.classifyId">
+        <Form ref="form1" inline>
+          <FormItem>
+            <Input
+              type="text"
+              v-model="queryPro.productName"
+              class="search-input bg"
+              placeholder="请输入产品关键字搜索"
+              style="width:180px;"
+            />
+            <Button type="primary" shape="circle" icon="ios-search" @click="getProList()"></Button>
+          </FormItem>
+
+          <FormItem>
+            <Select v-model="queryPro.supplierId" placeholder="保险公司">
               <Option
-                v-for="(item, index) in list2"
+                v-for="(item, index) of listBrand"
                 :value="item.id"
                 :key="index"
-              >{{ item.value }}</Option>
+              >{{ item.name }}</Option>
             </Select>
           </FormItem>
 
-          <FormItem prop="title">
-            <Input type="text" v-model="form1.title" placeholder="親輸入标题"></Input>
+          <FormItem>
+            <Select v-model="queryPro.productType" placeholder="产品分类">
+              <Option v-for="(item, index) of listType" :value="index + ''" :key="index">{{ item }}</Option>
+            </Select>
           </FormItem>
-
-          <Button
-            type="primary"
-            size="small"
-            style="display: block; margin: 0 auto"
-            @click="submit(1, form1)"
-          >确定</Button>
         </Form>
+        <div class="checkbox-wrap">
+          <CheckboxGroup v-model="form.productIds">
+            <Checkbox
+              :label="item.id"
+              v-for="(item, index) of listPro"
+              :key="index"
+              @click.native="selectPro(item.productFullName)"
+            >{{item.productFullName}}</Checkbox>
+          </CheckboxGroup>
+        </div>
+
+        <div class="ar">
+          <Button type="primary" ghost @click="isShow1 = false">取消</Button>
+          <Button type="primary" @click="confirm">确定</Button>
+        </div>
       </template>
     </dialogBox>
   </div>
@@ -75,95 +139,107 @@ import {
   saveProposal,
   deleteProposal,
   getProposalDictPage,
-  saveProposalDict
+  saveProposalDict,
+  getProducts,
+  getClasses
 } from "@/api/proposal";
-import dialogBox from "@/components/dialogBox";
+import { getSupplierPage } from "@/api/supplier";
 
 const form = {
-  value: "",
-};
-
-const form1 = {
-  classifyId: '',
+  classifyId: "",
   title: "",
   cover: "",
   type: 0,
-  key: "",
-  value: "",
+  productIds: [],
+  products: [],
   createTime: "",
-  updateTime: "",
+  updateTime: ""
 };
 
 export default {
-  components: { dialogBox },
   data() {
     return {
       loading: true,
       query: {
         page: 1,
         size: 10,
-        type: 0,
-        classifyId: ''
+        type: 0, // * 标题
+        classifyId: "",
+        params: ''
+      },
+      queryPro: {
+        productName: "",
+        supplierId: '',
+        productType: ''
       },
       columns: [
         {
-          title: "序号",
-          type: "index",
-          align: "center"
+          title: "标题",
+          key: "title",
         },
         {
           title: "分类",
-          key: "value",
-          align: "center"
+          slot: "classifyId",
         },
         {
-          title: "标题",
-          key: "title",
-          align: "center"
+          title: "关联产品",
+          key: "products",
         },
         {
           title: "操作",
           slot: "action",
-          align: "center"
         }
       ],
       list: [],
-      list2: [
-        {id: '1', value: '健康类'},
-        {id: '2', value: '养老类'},
-        {id: '3', value: '教育类'},
-        {id: '4', value: '保障类'},
-        {id: '5', value: '理财类'},
-        {id: '6', value: '人寿类'},
-        {id: '7', value: '意外类'},
-      ],
+      // listClass: [
+      //   { dataCode: "1", dataName: "健康类" },
+      //   { dataCode: "2", dataName: "养老类" },
+      //   { dataCode: "3", dataName: "教育类" },
+      //   { dataCode: "4", dataName: "理财类" },
+      //   { dataCode: "5", dataName: "保障类" },
+      //   { dataCode: "6", dataName: "人寿类" },
+      //   { dataCode: "7", dataName: "意外类" }
+      // ],
+      listClass: {},
       rules: {
-        value: [{ required: true, message: "不能为空", trigger: "blur" }],
         title: [{ required: true, message: "不能为空", trigger: "blur" }],
         classifyId: [{ required: true, message: "不能为空", trigger: "change" }]
       },
-      form: Object.assign({}, form),
-      form1: Object.assign({}, form1),
+      form: JSON.parse(JSON.stringify(form)),
       isShow: false,
       isShow1: false,
-      total: 0
+      total: 0,
+
+      listPro: [],
+      relatePro: [],
+      listBrand: [],
+      listType: ['家庭保障', '健康医疗', '子女教育', '退休养老', '财富传承'],
     };
   },
   computed: {},
-  watch: {
-    isShow(val) {
-      if (!val) {
-        this.cancel()
-      }
-    },
-    isShow1(val) {
-      if (!val) {
-        this.cancel()
-      }
-    }
-  },
+  // watch: {
+  //   isShow(val) {
+  //     if (!val) {
+  //       this.cancel();
+  //     }
+  //   },
+  //   isShow1(val) {
+  //     if (!val) {
+  //       this.cancel();
+  //     }
+  //   }
+  // },
   mounted() {
-    this.getData();
+    getClasses().then(res => {
+      // console.log("ProposalDictPage", res);
+      // 先写死，后期获取
+      let temp = {}
+      for (const iterator of res) {
+        temp[iterator.dataCode] = iterator.dataName
+      }
+      this.listClass = temp
+      this.getData();
+    });
   },
   methods: {
     getData(page) {
@@ -175,55 +251,54 @@ export default {
         this.list = res.list;
         this.total = res.total;
       });
-      getProposalDictPage({page: 1, size: 100}).then(res => {
-        // console.log("ProposalDictPage", res);
-        // 先写死，后期获取
-        // this.list2 = res.list
-      });
     },
     edit(_type, item) {
       if (_type === 0) {
         this.isShow = true;
-        this.form = Object.assign({}, form);
+        this.form = Object.assign({}, item || JSON.parse(JSON.stringify(form)));
+
+        this.form.products = this.form.products ? this.form.products.split(',') : []
+        this.form.productIds = this.form.productIds ? this.form.productIds.split(',') : []
       } else {
+        // 显示关联产品框
         this.isShow1 = true;
-        this.form1 = Object.assign({}, form1);
-        item && (this.form1 = Object.assign({}, item));
+
+        // 获取保险企业列表
+        !this.listBrand && getSupplierPage({ page: 1, size: 100 }).then(res => {
+          this.listBrand = res.list
+        })
       }
     },
-    submit(type, item) {
-      console.log(item)
+    submit() {
+      // console.log(item);
       // 0 分类 ， 1 建议书
       // console.log('supplierForm', this.supplierForm)
       // console.log('productForm', this.productForm)
-      ;(type === 0
-        ? this.$refs.form.validate()
-        : this.$refs.form1.validate()
-      )
+      this.$refs.form.validate()
         .then(data => {
           if (data) {
-            return Promise.resolve();
+            let formData = JSON.parse(JSON.stringify(this.form))
+            formData.products += ''
+            formData.productIds += ''
+            return saveProposal(formData);
           } else {
             return Promise.reject();
-          }
-        })
-        .then(() => {
-          if (type === 0) {
-            return saveProposalDict(item);
-          } else {
-            return saveProposal(item);
           }
         })
         .then(data => {
           this.getData();
           this.$Message.success("操作成功");
-          this.cancel(type);
+          this.cancel();
         });
     },
-    cancel(type) {
-      this.$refs.form.resetFields()
-      this.$refs.form1.resetFields();
-      type === 0 ? (this.isShow = false) : (this.isShow1 = false);
+    confirm() {
+      this.isShow1 = false
+      // this.form.productIds = [...new Set(this.form.productIds.split(',').concat(this.relatePro))] + ''
+      // this.form.products = [...new Set(this.form.productIds.concat(this.relatePro))] + ''
+    },
+    cancel() {
+      this.$refs.form.resetFields();
+      this.isShow = false
     },
     remove(id) {
       this.$Modal.confirm({
@@ -237,8 +312,23 @@ export default {
         }
       });
     },
+    getProList() {
+      getProducts(this.queryPro).then(res => {
+        this.listPro = res
+      })
+    },
+    selectPro(data) {
+      let arr = this.form.products
+      if (arr.includes(data)) {
+        arr.splice(arr.indexOf(data), 1)
+      } else {
+        arr.push(data)
+      }
+      console.log(this.form.products)
+    },
+    cancelPro(data) {
+      this.form.products.splice(this.form.products.indexOf(data), 1)
+    }
   }
 };
 </script>
-<style lang="less" scoped>
-</style>

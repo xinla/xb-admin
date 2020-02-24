@@ -470,7 +470,7 @@ export default {
             // 9  领取年龄
             case 9:
               let temp9 = rules.vitProductReceiveRule
-                ? SON.parse(rules.vitProductReceiveRule.receiveAgeContent)
+                ? JSON.parse(rules.vitProductReceiveRule.receiveAgeContent)
                 : [];
               for (const iterator of temp9) {
                 configItems.push({
@@ -565,9 +565,13 @@ export default {
         title: "提示",
         content: "确定要删除吗",
         onOk: () => {
-          for (const iterator of this.selected) {
-            this.currentConfigInfo.configItems.splice(iterator, 1);
-          }
+          // for (const iterator of this.selected) {
+          //   this.currentConfigInfo.configItems.splice(iterator, 1);
+          // }
+          let temp = this.currentConfigInfo.configItems
+          this.currentConfigInfo.configItems = temp.filter((currentValue,index) => {
+            return !this.selected.includes(index)
+          })
           this.selected = [];
           this.submit("currentConfigInfo");
         }
