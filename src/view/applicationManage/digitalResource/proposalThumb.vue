@@ -27,7 +27,7 @@
   color: #aaa;
 }
 .thumb-wrap {
-  max-height: ~"calc(100% - 80px)";
+  height: ~"calc(100% - 80px)";
   overflow: auto;
   .current {
     border: 2px solid rgba(101, 130, 255, 1);
@@ -78,7 +78,7 @@
   width: 235px;
   padding: 20px;
   right: 27px;
-  top: 185px;
+  top: 220px;
 }
 </style>
 <template>
@@ -112,7 +112,7 @@
         >
           <Icon type="ios-funnel" size="16" slot="prefix" color="#C5C8CE" />
         </Input>-->
-        <Button @click="select.show = !select.show">
+        <Button @click="selectShow = !selectShow">
           <div
             style="display: flex; justify-content: space-between; justify-items: center; width: 100px;"
           >
@@ -120,28 +120,33 @@
             <Icon type="ios-arrow-down" size="16" color="#A2A8B7"></Icon>
           </div>
         </Button>
-        <div class="mask" style="background: none; left: 0;" v-show="select.show" @click.self="select.show = false">
+        <div
+          class="mask"
+          style="background: none; left: 0;"
+          v-show="selectShow"
+          @click.self="selectShow = false"
+        >
           <Card class="select-wrap" :padding="0">
             <div>
               年龄：
-              <Input v-model="select.startAge" style="width: 50px;" />-
-              <Input v-model="select.endAg" style="width: 50px;" />
+              <Input v-model="query.startAge" style="width: 50px;" @on-change="getData(1)" />-
+              <Input v-model="query.endAg" style="width: 50px;" @on-change="getData(1)" />
               <span>岁</span>
             </div>
             <div>
               性别：
-              <RadioGroup v-model="select.sex">
-                <Radio label="0">无</Radio>
-                <Radio label="1">男性</Radio>
-                <Radio label="2">女性</Radio>
+              <RadioGroup v-model="query.sex" @on-change="radioChange">
+                <Radio label="sex0">无</Radio>
+                <Radio label="sex1">男性</Radio>
+                <Radio label="sex2">女性</Radio>
               </RadioGroup>
             </div>
             <div>
               场景：
-              <RadioGroup v-model="select.scene">
-                <Radio label="0">无</Radio>
-                <Radio label="1">室内</Radio>
-                <Radio label="2">户外</Radio>
+              <RadioGroup v-model="query.scene" @on-change="radioChange">
+                <Radio label="scene0">无</Radio>
+                <Radio label="scene1">室内</Radio>
+                <Radio label="scene2">户外</Radio>
               </RadioGroup>
             </div>
           </Card>
@@ -151,24 +156,25 @@
 
     <span class="total">共{{total}}张图片</span>
 
-    <ul class="thumb-wrap" ref="scroll" @scroll="scroll">
+    <ul class="thumb-wrap" ref="scroll" @scroll.passive="scroll">
       <template v-for="(item, index) of list">
-        <li class="tm-li" v-show="showWhich(item) || isSelect" :key="index">
-          <img class="thumb" :preview="index" :src="item.cover" alt />
+        <li class="tm-li" :key="index">
+          <img class="thumb" :src="item.cover" :preview="index" @error="imgError" alt="图片加载失败" />
           <div class="text">
             <span>{{listClass[item.classifyId]}}</span>
             <div class="fr more-wrap">
               <Icon type="ios-more" class="more cp" size="28" />
               <ul class="action ac bw">
-                <li class="ac-li cp" @click="edit(0, item)">修改分类</li>
+                <li class="ac-li cp" @click="edit(0, item, index)">修改分类</li>
                 <li class="ac-li cp" @click="edit(1, item)">添加标签</li>
-                <li class="ac-li cp" @click="remove(item.id)">删除图片</li>
+                <li class="ac-li cp" @click="remove(item.id, index)">删除图片</li>
               </ul>
             </div>
           </div>
         </li>
       </template>
-      <li v-show="loading">正在加载...</li>
+      <li :style="{visibility: loading ? 'visible' : 'hidden'}" class="ac">正在加载...</li>
+      <li v-if="list.lenght === 0" class="cc">暂无数据</li>
     </ul>
 
     <!-- <Table :loading="loading" :columns="columns" :data="list">
@@ -195,30 +201,30 @@
             </Select>
           </FormItem>
 
-          <template v-else>
+          <div v-else style="line-height: 45px;">
             <div>
               年龄：
-              <Input v-model="form.labelObject.startAge" style="width: 50px;" />-
-              <Input v-model="form.labelObject.endAg" style="width: 50px;" />
+              <Input v-model="form.labelObject.startAge" size="small" style="width: 50px;" />-
+              <Input v-model="form.labelObject.endAg" size="small" style="width: 50px;" />
               <span>岁</span>
             </div>
             <div>
               性别：
               <RadioGroup v-model="form.labelObject.sex">
-                <Radio label="0">无</Radio>
-                <Radio label="1">男性</Radio>
-                <Radio label="2">女性</Radio>
+                <Radio label="sex0">无</Radio>
+                <Radio label="sex1">男性</Radio>
+                <Radio label="sex2">女性</Radio>
               </RadioGroup>
             </div>
             <div>
               场景：
               <RadioGroup v-model="form.labelObject.scene">
-                <Radio label="0">无</Radio>
-                <Radio label="1">室内</Radio>
-                <Radio label="2">户外</Radio>
+                <Radio label="scene0">无</Radio>
+                <Radio label="scene1">室内</Radio>
+                <Radio label="scene2">户外</Radio>
               </RadioGroup>
             </div>
-          </template>
+          </div>
           <div class="ar">
             <Button type="primary" ghost @click="isShow = false">取消</Button>
             <Button type="primary" @click="submit(1, form)">确定</Button>
@@ -280,7 +286,13 @@ const form = {
   title: "",
   cover: "",
   type: 1,
-  labelObject: {},
+  labelHash: "",
+  labelObject: {
+    startAge: "",
+    endAg: "",
+    sex: "",
+    scene: ""
+  },
   createTime: "",
   updateTime: ""
 };
@@ -294,7 +306,12 @@ export default {
         size: 10,
         type: 1,
         classifyId: "",
-        params: ''
+        params: "",
+        startAge: "",
+        endAg: "",
+        hash: "",
+        sex: "",
+        scene: ""
       },
       columns: [
         {
@@ -331,37 +348,31 @@ export default {
       // isShow1: false,
       total: 0,
       editType: 0,
-      select: {
-        show: false,
-        startAge: 0,
-        endAg: 0,
-        sex: 0,
-        scene: 0,
-      }
+      editObj: {},
+      selectShow: false
     };
   },
   computed: {
-    showWhich(data) {
-      // for (const key in this.select) {
-      //   if (object.hasOwnProperty(key)) {
-      //     if (data[key] === this.select[key]) {
-      //       return true
-      //     }
-      //   }
-      // }
-
-      return data.labelObject.startAge > this.select.startAge || data.labelObject.endAg < this.select.endAg || data.labelObject.sex === this.select.sex || data.labelObject.scene === this.select.scene
-    },
-    isSelect() {
-      for (const key in this.select) {
-        if (object.hasOwnProperty(key)) {
-          if (this.select[key]) {
-            return false
-          }
-        }
-      }
-      return true
-    }
+    // showWhich(data) {
+    //   // for (const key in this.select) {
+    //   //   if (object.hasOwnProperty(key)) {
+    //   //     if (data[key] === this.select[key]) {
+    //   //       return true
+    //   //     }
+    //   //   }
+    //   // }
+    //   return data.labelObject.startAge > this.select.startAge || data.labelObject.endAg < this.select.endAg || data.labelObject.sex === this.select.sex || data.labelObject.scene === this.select.scene
+    // },
+    // isSelect() {
+    //   for (const key in this.select) {
+    //     if (object.hasOwnProperty(key)) {
+    //       if (this.select[key]) {
+    //         return false
+    //       }
+    //     }
+    //   }
+    //   return true
+    // }
   },
   // watch: {
   //   isShow(val) {
@@ -379,22 +390,32 @@ export default {
     getClasses().then(res => {
       console.log("ProposalDictPage", res);
       // 先写死，后期获取
-      let temp = {}
+      let temp = {};
       for (const iterator of res) {
-        temp[iterator.dataCode] = iterator.dataName
+        temp[iterator.dataCode] = iterator.dataName;
       }
-      this.listClass = temp
+      this.listClass = temp;
+
+      // 根据屏幕大小计算单页显示数量size
+      let el = this.$refs.scroll;
+      this.query.size =
+        Math.round(el.offsetHeight / 218) * Math.floor(el.offsetWidth / 274);
+      // console.log(
+      //   Math.round(el.offsetHeight / 218),
+      //   Math.floor(el.offsetWidth / 274)
+      // );
       this.getData();
     });
-
   },
   methods: {
     getData(page) {
       this.loading = true;
       page && (this.query.page = page);
       getProposalPage(this.query).then(res => {
-        console.log('ProposalPage: ', res);
+        console.log("ProposalPage: ", res);
         this.loading = false;
+        // res.length && (this.loading = false);
+        page === 1 && (this.list = []);
         this.list = this.list.concat(res.list);
         this.total = ~~res.total;
       });
@@ -402,7 +423,8 @@ export default {
     edit(_type, item) {
       this.isShow = true;
       this.form = Object.assign({}, item || form);
-      this.editType = _type
+      this.editType = _type;
+      this.editObj = item || {};
 
       // if (_type === 0) {
       // } else {
@@ -416,37 +438,52 @@ export default {
       // console.log('supplierForm', this.supplierForm)
       // console.log('productForm', this.productForm)
       // (type === 0 ? this.$refs.form.validate() : this.$refs.form.validate())
-      this.$refs.form.validate()
-        .then(data => {
-          if (data) {
-            // if (type === 0) {
-            //   return saveProposalDict(item);
-            // } else {
-            //   }
-            return saveProposal(item);
-          } else {
-            return Promise.reject();
+      // this.$refs.form
+      //   .validate()
+      //   .then(data => {
+      //     if (data) {
+      //       // if (type === 0) {
+      //       //   return saveProposalDict(item);
+      //       // } else {
+      //       //   }
+      //       item.labelHash =
+      //         item.labelObject.sex + "," + item.labelObject.scene;
+      //       return saveProposal(item);
+      //     } else {
+      //       return Promise.reject();
+      //     }
+      //   })
+      Promise.resolve()
+        .then(() => {
+          let temp = item.labelObject
+          if (temp) {
+            item.labelHash =
+              temp.sex ? temp.sex + (temp.scene ? "," + temp.scene : '') : temp.scene || '';
           }
+          return saveProposal(item);
         })
         .then(data => {
           // this.getData();
+          this.editObj.classifyId = this.form.classifyId;
+          this.list.push();
           this.$Message.success("操作成功");
           this.cancel(type);
         });
     },
     cancel(type) {
       this.$refs.form.resetFields();
-      this.isShow = false
+      this.isShow = false;
       // this.$refs.form1.resetFields();
       // type === 1 ? (this.isShow = false) : (this.isShow1 = false);
     },
-    remove(id) {
+    remove(id, index) {
       this.$Modal.confirm({
         title: "提示",
         content: "确定要删除吗",
         onOk: () => {
           deleteProposal(id).then(data => {
-            this.getData();
+            // this.getData();
+            this.list.splice(index, 1);
             this.$Message.success("操作成功");
           });
         }
@@ -463,13 +500,21 @@ export default {
     },
     scroll() {
       if (this.loading) {
-        return
+        return;
       }
-      let el = this.$refs.scroll
-      if (el.scrollHeight <= el.scrollTop + el.offsetHeight + 5) {
-        this.query.page++
-        this.getData()
+      let el = this.$refs.scroll;
+      if (el.scrollHeight <= el.scrollTop + el.offsetHeight) {
+        this.query.page++;
+        this.getData();
       }
+    },
+    radioChange() {
+      this.query.hash = this.query.sex + "," + this.query.scene;
+      this.getData(1);
+    },
+    imgError(event) {
+      // console.log(event);
+      event.srcElement.removeAttribute("preview");
     }
   }
 };

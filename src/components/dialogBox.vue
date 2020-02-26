@@ -1,7 +1,7 @@
 <template>
   <div v-show="value" class="mask fc" @click.self="cancel">
     <div class="dialog">
-      <div class="cancel cp" @click="cancel">x</div>
+      <Icon class="cancel cp" @click="cancel" type="md-close" />
       <b class="title">
         <slot name="title" />
       </b>
@@ -49,7 +49,7 @@ export default {
 .cancel {
   position: absolute;
   right: 15px;
-  top: 5px;
+  top: 10px;
 }
 .title {
   display: inline-block;

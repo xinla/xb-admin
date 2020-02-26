@@ -40,7 +40,7 @@
         <Button type="primary" @click="edit(0)">添加标题</Button>
       </div>
     </div>
-    <Table :loading="loading" :columns="columns" :data="list" no-data-text='暂无标题，请添加'>
+    <Table :loading="loading" :columns="columns" :data="list" no-data-text="暂无标题，请添加">
       <template slot-scope="{ row }" slot="classifyId">{{listClass[row.classifyId]}}</template>
       <template slot-scope="{ row }" slot="action">
         <span class="button-pri" @click="edit(0, row)">编辑</span>
@@ -165,29 +165,29 @@ export default {
         size: 10,
         type: 0, // * 标题
         classifyId: "",
-        params: ''
+        params: ""
       },
       queryPro: {
         productName: "",
-        supplierId: '',
-        productType: ''
+        supplierId: "",
+        productType: ""
       },
       columns: [
         {
           title: "标题",
-          key: "title",
+          key: "title"
         },
         {
           title: "分类",
-          slot: "classifyId",
+          slot: "classifyId"
         },
         {
           title: "关联产品",
-          key: "products",
+          key: "products"
         },
         {
           title: "操作",
-          slot: "action",
+          slot: "action"
         }
       ],
       list: [],
@@ -213,7 +213,7 @@ export default {
       listPro: [],
       relatePro: [],
       listBrand: [],
-      listType: ['家庭保障', '健康医疗', '子女教育', '退休养老', '财富传承'],
+      listType: ["家庭保障", "健康医疗", "子女教育", "退休养老", "财富传承"]
     };
   },
   computed: {},
@@ -233,11 +233,11 @@ export default {
     getClasses().then(res => {
       // console.log("ProposalDictPage", res);
       // 先写死，后期获取
-      let temp = {}
+      let temp = {};
       for (const iterator of res) {
-        temp[iterator.dataCode] = iterator.dataName
+        temp[iterator.dataCode] = iterator.dataName;
       }
-      this.listClass = temp
+      this.listClass = temp;
       this.getData();
     });
   },
@@ -254,19 +254,27 @@ export default {
     },
     edit(_type, item) {
       if (_type === 0) {
-        this.isShow = true;
         this.form = Object.assign({}, item || JSON.parse(JSON.stringify(form)));
-
-        this.form.products = this.form.products ? this.form.products.split(',') : []
-        this.form.productIds = this.form.productIds ? this.form.productIds.split(',') : []
+        // console.log(this.form)
+        if (item) {
+          this.form.products = this.form.products
+            ? this.form.products.split(",")
+            : [];
+          this.form.productIds = this.form.productIds
+            ? this.form.productIds.split(",")
+            : [];
+        }
+        this.isShow = true;
+        this.$refs.form.resetFields();
       } else {
         // 显示关联产品框
         this.isShow1 = true;
 
         // 获取保险企业列表
-        !this.listBrand && getSupplierPage({ page: 1, size: 100 }).then(res => {
-          this.listBrand = res.list
-        })
+        !this.listBrand &&
+          getSupplierPage({ page: 1, size: 100 }).then(res => {
+            this.listBrand = res.list;
+          });
       }
     },
     submit() {
@@ -274,31 +282,37 @@ export default {
       // 0 分类 ， 1 建议书
       // console.log('supplierForm', this.supplierForm)
       // console.log('productForm', this.productForm)
-      this.$refs.form.validate()
+      this.$refs.form
+        .validate()
         .then(data => {
           if (data) {
-            let formData = JSON.parse(JSON.stringify(this.form))
-            formData.products += ''
-            formData.productIds += ''
+            let formData = JSON.parse(JSON.stringify(this.form));
+            formData.products += "";
+            formData.productIds += "";
             return saveProposal(formData);
           } else {
             return Promise.reject();
           }
         })
         .then(data => {
+          // 判读是否为添加操作
+          if (this.form.id) {
+            this.query.params = ''
+          }
+          
           this.getData();
           this.$Message.success("操作成功");
           this.cancel();
         });
     },
     confirm() {
-      this.isShow1 = false
+      this.isShow1 = false;
       // this.form.productIds = [...new Set(this.form.productIds.split(',').concat(this.relatePro))] + ''
       // this.form.products = [...new Set(this.form.productIds.concat(this.relatePro))] + ''
     },
     cancel() {
       this.$refs.form.resetFields();
-      this.isShow = false
+      this.isShow = false;
     },
     remove(id) {
       this.$Modal.confirm({
@@ -314,20 +328,20 @@ export default {
     },
     getProList() {
       getProducts(this.queryPro).then(res => {
-        this.listPro = res
-      })
+        this.listPro = res;
+      });
     },
     selectPro(data) {
-      let arr = this.form.products
+      let arr = this.form.products;
       if (arr.includes(data)) {
-        arr.splice(arr.indexOf(data), 1)
+        arr.splice(arr.indexOf(data), 1);
       } else {
-        arr.push(data)
+        arr.push(data);
       }
-      console.log(this.form.products)
+      console.log(this.form.products);
     },
     cancelPro(data) {
-      this.form.products.splice(this.form.products.indexOf(data), 1)
+      this.form.products.splice(this.form.products.indexOf(data), 1);
     }
   }
 };

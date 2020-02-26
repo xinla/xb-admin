@@ -9,11 +9,11 @@ const service = config.services.proposal
  * @param {*} classifyId 否   分类id 
  * @param {*} param0 
  */
-export const getProposalPage = ({page, size, type, classifyId, params}) => {
+export const getProposalPage = ({page, size, type, classifyId, params, startAge, endAg, hash}) => {
   return axios.request({
     url: service + `/findAll/${page}/${size}`,
     params: {
-      type, classifyId, params
+      type, classifyId, params, startAge, endAg, hash
     },
     method: 'get'
   })
