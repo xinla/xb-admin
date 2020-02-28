@@ -6,16 +6,46 @@
       <Row>
         <Col span="14">
           <FormItem label="品牌名称" prop="name">
-            <selectSupplier
+            <Input type="text" :disabled="disabled" v-model.trim="form.name" placeholder="品牌名称" />
+            <!-- <selectSupplier
               :disabled="disabled"
               :val="form.name"
               type="insurance"
               @change="change"
-            />
+            />-->
           </FormItem>
 
           <FormItem label="品牌简称" prop="nameForShort">
-            <Input type="text" :disabled="disabled" v-model="form.nameForShort" placeholder="品牌简称" />
+            <Input
+              type="text"
+              :disabled="disabled"
+              v-model.trim="form.nameForShort"
+              placeholder="品牌简称"
+            />
+          </FormItem>
+
+          <FormItem label="曾用名">
+            <Input
+              type="text"
+              v-show="formerNameShow || !formerName.length"
+              v-model.trim="form.formerName"
+              placeholder="曾用名，多个以英文逗号（,）分开"
+              @on-blur="transCode"
+            />
+            <Select
+              v-show="!formerNameShow && formerName.length"
+              v-model="formerName"
+              multiple
+              :max-tag-count="3"
+              @click.native="formerNameShow = !formerNameShow"
+              @on-change="selectChange"
+            >
+              <Option
+                v-for="(item, index) in formerName"
+                :value="item"
+                :key="index"
+              >{{item}}</Option>
+            </Select>
           </FormItem>
 
           <FormItem label="品牌成立日期" prop="foundingTime">
@@ -98,13 +128,18 @@
             <Input
               type="text"
               :disabled="disabled"
-              v-model="form.companyAddress"
+              v-model.trim="form.companyAddress"
               placeholder="公司地址"
             />
           </FormItem>
 
           <FormItem label="联系电话" prop="contactPhone">
-            <Input type="text" :disabled="disabled" v-model="form.contactPhone" placeholder="联系电话" />
+            <Input
+              type="text"
+              :disabled="disabled"
+              v-model.trim="form.contactPhone"
+              placeholder="联系电话"
+            />
           </FormItem>
         </Col>
         <Col span="10">
@@ -112,7 +147,7 @@
             <Input
               type="text"
               :disabled="disabled"
-              v-model="form.companyWebsite"
+              v-model.trim="form.companyWebsite"
               placeholder="公司网址"
             />
           </FormItem>
@@ -121,7 +156,7 @@
             <Input
               type="text"
               :disabled="disabled"
-              v-model="form.nationalServicePhone"
+              v-model.trim="form.nationalServicePhone"
               placeholder="全国统一服务电话"
             />
           </FormItem>
@@ -310,10 +345,11 @@ export default {
   },
   data() {
     return {
-      insuranceId: 0, // 保险公司id
+      // insuranceId: 0, // 保险公司id
       form: {
         name: "",
         nameForShort: "",
+        formerName: "",
         typeRule: 0, // 0寿险,1财险
         logo: "",
         companyAddress: "",
@@ -331,9 +367,7 @@ export default {
       formChild: Object.assign({}, defaultFormChild),
       formChild1: Object.assign({}, defaultFormChild1),
       rules: {
-        // name: [
-        //     { required: true, message: '不能为空', trigger: 'change' }
-        // ],
+        name: [{ required: true, message: "不能为空", trigger: "blur" }],
         nameForShort: [
           { required: true, message: "不能为空", trigger: "blur" }
         ],
@@ -394,11 +428,13 @@ export default {
         },
         {
           title: "操作",
-          slot: "action",
+          slot: "action"
           // width: '16%',
         }
       ],
-      uploadIndex: 0
+      uploadIndex: 0,
+      formerNameShow: false,
+      formerName: []
     };
   },
   computed: {
@@ -425,7 +461,11 @@ export default {
           // console.log("SupplierDetail", data);
           if (data) {
             this.form = data.xbSupplier;
-            this.insuranceId = data.xbSupplier.relationId
+            data.xbSupplier.formerName === null && (data.xbSupplier.formerName = '')
+            this.formerName = data.xbSupplier.formerName.split(',')
+
+            // this.insuranceId = data.xbSupplier.relationId
+
             // let vitDictProvinceId = data.xbSupplier.vitDictProvinceId
             // if (vitDictProvinceId) {
             //   vitDictProvinceId = vitDictProvinceId.split(',')
@@ -448,7 +488,8 @@ export default {
           if (data) {
             // console.log('form:', this.form)
             // this.form.vitDictProvinceId = this.form.vitDictProvinceId.join()
-            return saveSupplier(this.insuranceId, this.form);
+            // return saveSupplier(this.insuranceId, this.form);
+            return saveSupplier(this.form);
           } else {
             return new Promise((resolve, reject) => {});
           }
@@ -484,11 +525,11 @@ export default {
         this.form.xbCompanyCard[this.uploadIndex].url = response.result.fileUrl;
       }
     },
-    change(val) {
-      this.form.name = val.name;
-      this.insuranceId = val.id;
-      // console.log(val)
-    },
+    // change(val) {
+    //   this.form.name = val.name;
+    //   this.insuranceId = val.id;
+    //   // console.log(val)
+    // },
     handleChange(html, text) {
       // console.log(html, text);
       this.form.supplierDescription = html;
@@ -530,6 +571,18 @@ export default {
     formatError() {
       this.$Message.error("文件格式错误，仅限'jpg','jpeg','png'格式的文件");
     },
+    transCode(type) {
+      if (this.form.formerName) {
+        this.formerName = this.form.formerName.split(",");
+      } else {
+        this.formerName = []
+      }
+      this.formerNameShow = false;
+    },
+    selectChange(data) {
+      this.form.formerName = data.join(",");
+      // console.log(this.form.specialProfessionalLimit)
+    }
   }
 };
 </script>

@@ -12,6 +12,11 @@ import TreeTable from 'tree-table-vue'
 import Tool from '@/libs/tools'
 Vue.use(TreeTable)
 Vue.use(OrgTree)
+
+import preview from 'vue-photo-preview'
+import 'vue-photo-preview/dist/skin.css'
+Vue.use(preview)
+
 Vue.use(Tool)
 
 import dialogBox from '@/components/dialogBox'

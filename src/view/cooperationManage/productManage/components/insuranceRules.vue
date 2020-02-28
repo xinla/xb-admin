@@ -1640,6 +1640,8 @@ export default {
         this.specialProfessionalLimit[type] = this[
           type
         ].specialProfessionalLimit.split(",");
+      } else {
+        this.specialProfessionalLimit[type] = []
       }
       this.codeShow[type] = false;
     },

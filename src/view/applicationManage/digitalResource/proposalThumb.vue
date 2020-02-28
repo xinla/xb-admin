@@ -1,11 +1,183 @@
+<style lang="less" scoped>
+.upload-icon {
+  border: 1px dashed #000;
+  padding: 24px 0;
+}
+.logo {
+  width: 220px;
+  height: 100px;
+  margin: 5px 0;
+}
+/deep/.dialog {
+  width: 350px;
+  overflow: visible;
+}
+.classify {
+  margin: 0 20px;
+}
+.pb24 {
+  line-height: 2;
+  padding-left: 24px;
+}
+.current {
+  color: #6582ff;
+}
+.total {
+  padding-left: 24px;
+  color: #aaa;
+}
+.thumb-wrap {
+  height: ~"calc(100% - 80px)";
+  overflow: auto;
+  .current {
+    border: 2px solid rgba(101, 130, 255, 1);
+    box-shadow: 0px 2px 6px rgba(76, 79, 156, 0.14);
+  }
+  .tm-li {
+    padding: 10px;
+    display: inline-block;
+    margin: 0 70px 30px 0;
+    border: 2px solid #fff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.12);
+    vertical-align: top;
+    &:hover {
+      .current;
+    }
+    .thumb {
+      width: 180px;
+      height: 120px;
+    }
+    .text {
+      padding: 15px 5px 10px;
+    }
+  }
+}
+.more-wrap {
+  &:hover .action {
+    height: auto;
+    padding: 12px 0;
+    // opacity: 1;
+  }
+}
+.action {
+  // opacity: 0;
+  height: 0;
+  position: absolute;
+  transform: translateX(-35%);
+  box-shadow: 0px 3px 4px rgba(58, 64, 74, 0.37);
+  border-radius: 5px;
+  transition: 0.3s;
+  overflow: hidden;
+  .ac-li {
+    width: 96px;
+    padding: 12px 0;
+  }
+}
+.select-wrap {
+  position: absolute;
+  width: 235px;
+  padding: 20px;
+  right: 27px;
+  top: 220px;
+}
+</style>
 <template>
-    <div>
-      <div class="right">
+  <div style="height: calc(100% - 100px)">
+    <!-- <div class="right">
           <Button type="primary" size="small" style="margin-right:5px;" @click="edit(0)">添加分类</Button>
           <Button type="primary" size="small" style="margin-right:5px;" @click="edit(1)">添加标题</Button>
-      </div>
+    </div>-->
 
-      <Table :loading="loading" :columns="columns" :data="list">
+    <div class="pb24">
+      <span>分类：</span>
+      <span
+        :class="['classify cp', !query.classifyId && 'current']"
+        key="a"
+        @click="query.classifyId = '', getData(1)"
+      >全部</span>
+      <span
+        v-for="(value, key, index) of listClass"
+        :class="['classify cp', query.classifyId === key && 'current']"
+        :key="index"
+        @click="query.classifyId = key, getData(1)"
+      >{{ value }}</span>
+
+      <div class="fr">
+        <!-- <Input
+          prefix="ios-funnel"
+          suffix="ios-arrow-down"
+          v-model="query.classifyId"
+          placeholde="图片筛选"
+          style="width: 150px;"
+        >
+          <Icon type="ios-funnel" size="16" slot="prefix" color="#C5C8CE" />
+        </Input>-->
+        <Button @click="selectShow = !selectShow">
+          <div
+            style="display: flex; justify-content: space-between; justify-items: center; width: 100px;"
+          >
+            <Icon type="ios-funnel" size="16" color="#C5C8CE"></Icon>图片筛选
+            <Icon type="ios-arrow-down" size="16" color="#A2A8B7"></Icon>
+          </div>
+        </Button>
+        <div
+          class="mask"
+          style="background: none; left: 0;"
+          v-show="selectShow"
+          @click.self="selectShow = false"
+        >
+          <Card class="select-wrap" :padding="0">
+            <div>
+              年龄：
+              <Input v-model="query.startAge" style="width: 50px;" @on-change="getData(1)" />-
+              <Input v-model="query.endAg" style="width: 50px;" @on-change="getData(1)" />
+              <span>岁</span>
+            </div>
+            <div>
+              性别：
+              <RadioGroup v-model="query.sex" @on-change="radioChange">
+                <Radio label="sex0">无</Radio>
+                <Radio label="sex1">男性</Radio>
+                <Radio label="sex2">女性</Radio>
+              </RadioGroup>
+            </div>
+            <div>
+              场景：
+              <RadioGroup v-model="query.scene" @on-change="radioChange">
+                <Radio label="scene0">无</Radio>
+                <Radio label="scene1">室内</Radio>
+                <Radio label="scene2">户外</Radio>
+              </RadioGroup>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+
+    <span class="total">共{{total}}张图片</span>
+
+    <ul class="thumb-wrap" ref="scroll" @scroll.passive="scroll">
+      <template v-for="(item, index) of list">
+        <li class="tm-li" :key="index">
+          <img class="thumb" :src="item.cover" :preview="index" @error="imgError" alt="图片加载失败" />
+          <div class="text">
+            <span>{{listClass[item.classifyId]}}</span>
+            <div class="fr more-wrap">
+              <Icon type="ios-more" class="more cp" size="28" />
+              <ul class="action ac bw">
+                <li class="ac-li cp" @click="edit(0, item, index)">修改分类</li>
+                <li class="ac-li cp" @click="edit(1, item)">添加标签</li>
+                <li class="ac-li cp" @click="remove(item.id, index)">删除图片</li>
+              </ul>
+            </div>
+          </div>
+        </li>
+      </template>
+      <li :style="{visibility: loading ? 'visible' : 'hidden'}" class="ac">正在加载...</li>
+      <li v-if="list.lenght === 0" class="cc">暂无数据</li>
+    </ul>
+
+    <!-- <Table :loading="loading" :columns="columns" :data="list">
         <template slot-scope="{ row }" slot="cover">
           <img :src="row.cover" class="logo" />
         </template>
@@ -14,61 +186,85 @@
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(1, row)">编辑</Button>
           <Button type="error" size="small" style="margin-right: 5px" @click="remove(row.id)">删除</Button>
         </template>
-      </Table>
+    </Table>-->
 
-      <Page :total="total" show-elevator show-total class="c-page" @on-change="getData" />
+    <!-- <Page :total="total" show-elevator show-total class="c-page" @on-change="getData" /> -->
 
-      <dialogBox v-model="isShow">
-        <template slot="title">添加分类</template>
-        <template>
-          <Form ref="form" :model="form" :rules="rules">
-            <FormItem prop="value">
-              <Input type="text" v-model="form.value" placeholder="请输入分类"></Input>
-            </FormItem>
-            <div class="ar">
-              <Button type="primary" ghost @click="isShow = false">取消</Button>
-              <Button type="primary" @click="submit(0, form)">确定</Button>
+    <dialogBox v-model="isShow">
+      <template slot="title">{{editType === 0 ? '修改分类' : '添加标签'}}</template>
+      <template>
+        <Form ref="form" :model="form" :rules="rules">
+          <FormItem prop="classifyId" v-if="editType === 0">
+            <!-- <Input type="text" v-model="form.value" placeholder="请输入分类"></Input> -->
+            <Select v-model="form.classifyId">
+              <Option v-for="(value, key, index) in listClass" :value="key" :key="index">{{ value }}</Option>
+            </Select>
+          </FormItem>
+
+          <div v-else style="line-height: 45px;">
+            <div>
+              年龄：
+              <Input v-model="form.labelObject.startAge" size="small" style="width: 50px;" />-
+              <Input v-model="form.labelObject.endAg" size="small" style="width: 50px;" />
+              <span>岁</span>
             </div>
-          </Form>
-        </template>
-      </dialogBox>
-
-      <dialogBox v-model="isShow1">
-        <template slot="title">添加标题</template>
-        <template>
-          <Form ref="form1" :model="form1" :rules="rules">
-            <FormItem prop="classifyId">
-              <Select v-model="form1.classifyId">
-                <Option
-                  v-for="(item, index) in list2"
-                  :value="item.id"
-                  :key="index"
-                >{{ item.value }}</Option>
-              </Select>
-            </FormItem>
-
-            <FormItem prop="cover" label="上传封面">
-              <Upload
-                :action="$config.services.upload"
-                :show-upload-list="false"
-                :format="['jpg','jpeg','png']"
-                accept="image/*"
-                :on-success="upFile"
-              >
-                <img class="logo" v-if="form1.cover" :src="form1.cover" />
-                <div v-else class="upload-icon cp">
-                  <Icon type="md-cloud-upload" />
-                </div>
-              </Upload>
-            </FormItem>
-            <div class="ar" style="border-top: 1px solid #ddd;">
-              <Button type="primary" ghost @click="isShow1 = false">取消</Button>
-              <Button type="primary" @click="submit(1, form1)">确定</Button>
+            <div>
+              性别：
+              <RadioGroup v-model="form.labelObject.sex">
+                <Radio label="sex0">无</Radio>
+                <Radio label="sex1">男性</Radio>
+                <Radio label="sex2">女性</Radio>
+              </RadioGroup>
             </div>
-          </Form>
-        </template>
-      </dialogBox>
-    </div>
+            <div>
+              场景：
+              <RadioGroup v-model="form.labelObject.scene">
+                <Radio label="scene0">无</Radio>
+                <Radio label="scene1">室内</Radio>
+                <Radio label="scene2">户外</Radio>
+              </RadioGroup>
+            </div>
+          </div>
+          <div class="ar">
+            <Button type="primary" ghost @click="isShow = false">取消</Button>
+            <Button type="primary" @click="submit(1, form)">确定</Button>
+          </div>
+        </Form>
+      </template>
+    </dialogBox>
+
+    <!-- <dialogBox v-model="isShow1">
+      <template slot="title">添加标题</template>
+      <template>
+        <Form ref="form1" :model="form1" :rules="rules">
+          <FormItem prop="classifyId">
+            <Select v-model="form1.classifyId">
+              <Option v-for="(value, key, index) in listClass" :value="key" :key="index">{{ value }}</Option>
+            </Select>
+          </FormItem>
+
+          <FormItem prop="cover" label="上传封面">
+            <Upload
+              :action="$config.services.upload"
+              :show-upload-list="false"
+              :format="['jpg','jpeg','png']"
+              accept="image/*"
+              :on-success="upFile"
+            >
+              <img class="logo" v-if="form1.cover" :src="form1.cover" />
+              <div v-else class="upload-icon cp">
+                <Icon type="md-cloud-upload" />
+              </div>
+            </Upload>
+          </FormItem>
+          <div class="ar">
+            <Button type="primary" ghost @click="isShow1 = false">取消</Button>
+            <Button type="primary" @click="submit(1, form1)">确定</Button>
+          </div>
+        </Form>
+      </template>
+    </dialogBox>-->
+  </div>
 </template>
 
 <script>
@@ -77,27 +273,31 @@ import {
   saveProposal,
   deleteProposal,
   getProposalDictPage,
-  saveProposalDict
+  saveProposalDict,
+  getClasses
 } from "@/api/proposal";
-import dialogBox from "@/components/dialogBox";
+
+// const form = {
+//   value: ""
+// };
 
 const form = {
-  value: ""
-};
-
-const form1 = {
   classifyId: "",
   title: "",
   cover: "",
   type: 1,
-  key: "",
-  value: "",
+  labelHash: "",
+  labelObject: {
+    startAge: "",
+    endAg: "",
+    sex: "",
+    scene: ""
+  },
   createTime: "",
   updateTime: ""
 };
 
 export default {
-  components: { dialogBox },
   data() {
     return {
       loading: true,
@@ -105,7 +305,13 @@ export default {
         page: 1,
         size: 10,
         type: 1,
-        classifyId: ""
+        classifyId: "",
+        params: "",
+        startAge: "",
+        endAg: "",
+        hash: "",
+        sex: "",
+        scene: ""
       },
       columns: [
         {
@@ -130,106 +336,154 @@ export default {
         }
       ],
       list: [],
-      list2: [
-        { id: "1", value: "健康类" },
-        { id: "2", value: "养老类" },
-        { id: "3", value: "教育类" },
-        { id: "4", value: "保障类" },
-        { id: "5", value: "理财类" },
-        { id: "6", value: "人寿类" },
-        { id: "7", value: "意外类" }
-      ],
+      listClass: {},
       rules: {
         value: [{ required: true, message: "不能为空", trigger: "blur" }],
         cover: [{ required: true, message: "不能为空", trigger: "change" }],
         classifyId: [{ required: true, message: "不能为空", trigger: "change" }]
       },
       form: Object.assign({}, form),
-      form1: Object.assign({}, form1),
+      // form1: Object.assign({}, form1),
       isShow: false,
-      isShow1: false,
-      total: 0
+      // isShow1: false,
+      total: 0,
+      editType: 0,
+      editObj: {},
+      selectShow: false
     };
   },
-  computed: {},
-  watch: {
-    isShow(val) {
-      if (!val) {
-        this.cancel();
-      }
-    },
-    isShow1(val) {
-      if (!val) {
-        this.cancel();
-      }
-    }
+  computed: {
+    // showWhich(data) {
+    //   // for (const key in this.select) {
+    //   //   if (object.hasOwnProperty(key)) {
+    //   //     if (data[key] === this.select[key]) {
+    //   //       return true
+    //   //     }
+    //   //   }
+    //   // }
+    //   return data.labelObject.startAge > this.select.startAge || data.labelObject.endAg < this.select.endAg || data.labelObject.sex === this.select.sex || data.labelObject.scene === this.select.scene
+    // },
+    // isSelect() {
+    //   for (const key in this.select) {
+    //     if (object.hasOwnProperty(key)) {
+    //       if (this.select[key]) {
+    //         return false
+    //       }
+    //     }
+    //   }
+    //   return true
+    // }
   },
+  // watch: {
+  //   isShow(val) {
+  //     if (!val) {
+  //       this.cancel();
+  //     }
+  //   },
+  //   isShow1(val) {
+  //     if (!val) {
+  //       this.cancel();
+  //     }
+  //   }
+  // },
   mounted() {
-    this.getData();
+    getClasses().then(res => {
+      console.log("ProposalDictPage", res);
+      // 先写死，后期获取
+      let temp = {};
+      for (const iterator of res) {
+        temp[iterator.dataCode] = iterator.dataName;
+      }
+      this.listClass = temp;
+
+      // 根据屏幕大小计算单页显示数量size
+      let el = this.$refs.scroll;
+      this.query.size =
+        Math.round(el.offsetHeight / 218) * Math.floor(el.offsetWidth / 274);
+      // console.log(
+      //   Math.round(el.offsetHeight / 218),
+      //   Math.floor(el.offsetWidth / 274)
+      // );
+      this.getData();
+    });
   },
   methods: {
     getData(page) {
       this.loading = true;
       page && (this.query.page = page);
       getProposalPage(this.query).then(res => {
-        // console.log('ProposalPage: ', res);
+        console.log("ProposalPage: ", res);
         this.loading = false;
-        this.list = res.list;
-        this.total = res.total;
-      });
-      getProposalDictPage(this.query).then(res => {
-        // console.log("ProposalDictPage", res);
-        // 先写死，后期获取
-        // this.list2 = res.list;
+        // res.length && (this.loading = false);
+        page === 1 && (this.list = []);
+        this.list = this.list.concat(res.list);
+        this.total = ~~res.total;
       });
     },
     edit(_type, item) {
-      if (_type === 0) {
-        this.isShow = true;
-        this.form = Object.assign({}, form);
-      } else {
-        this.isShow1 = true;
-        this.form1 = Object.assign({}, form1);
-        item && (this.form1 = Object.assign({}, item));
-      }
+      this.isShow = true;
+      this.form = Object.assign({}, item || form);
+      this.editType = _type;
+      this.editObj = item || {};
+
+      // if (_type === 0) {
+      // } else {
+      //   this.isShow1 = true;
+      //   this.form1 = Object.assign({}, form1);
+      //   item && (this.form1 = Object.assign({}, item));
+      // }
     },
     submit(type, item) {
       // 0 分类 ， 1 建议书
       // console.log('supplierForm', this.supplierForm)
       // console.log('productForm', this.productForm)
-      (type === 0 ? this.$refs.form.validate() : this.$refs.form1.validate())
-        .then(data => {
-          if (data) {
-            return Promise.resolve();
-          } else {
-            return Promise.reject();
-          }
-        })
+      // (type === 0 ? this.$refs.form.validate() : this.$refs.form.validate())
+      // this.$refs.form
+      //   .validate()
+      //   .then(data => {
+      //     if (data) {
+      //       // if (type === 0) {
+      //       //   return saveProposalDict(item);
+      //       // } else {
+      //       //   }
+      //       item.labelHash =
+      //         item.labelObject.sex + "," + item.labelObject.scene;
+      //       return saveProposal(item);
+      //     } else {
+      //       return Promise.reject();
+      //     }
+      //   })
+      Promise.resolve()
         .then(() => {
-          if (type === 0) {
-            return saveProposalDict(item);
-          } else {
-            return saveProposal(item);
+          let temp = item.labelObject
+          if (temp) {
+            item.labelHash =
+              temp.sex ? temp.sex + (temp.scene ? "," + temp.scene : '') : temp.scene || '';
           }
+          return saveProposal(item);
         })
         .then(data => {
-          this.getData();
+          // this.getData();
+          this.editObj.classifyId = this.form.classifyId;
+          this.list.push();
           this.$Message.success("操作成功");
           this.cancel(type);
         });
     },
     cancel(type) {
       this.$refs.form.resetFields();
-      this.$refs.form1.resetFields();
-      type === 0 ? (this.isShow = false) : (this.isShow1 = false);
+      this.isShow = false;
+      // this.$refs.form1.resetFields();
+      // type === 1 ? (this.isShow = false) : (this.isShow1 = false);
     },
-    remove(id) {
+    remove(id, index) {
       this.$Modal.confirm({
         title: "提示",
         content: "确定要删除吗",
         onOk: () => {
           deleteProposal(id).then(data => {
-            this.getData();
+            // this.getData();
+            this.list.splice(index, 1);
             this.$Message.success("操作成功");
           });
         }
@@ -243,27 +497,25 @@ export default {
       }
       // console.log(response, file, fileList)
       // console.log(response.result.fileUrl)
+    },
+    scroll() {
+      if (this.loading) {
+        return;
+      }
+      let el = this.$refs.scroll;
+      if (el.scrollHeight <= el.scrollTop + el.offsetHeight) {
+        this.query.page++;
+        this.getData();
+      }
+    },
+    radioChange() {
+      this.query.hash = this.query.sex + "," + this.query.scene;
+      this.getData(1);
+    },
+    imgError(event) {
+      // console.log(event);
+      event.srcElement.removeAttribute("preview");
     }
   }
 };
 </script>
-<style lang="less" scoped>
-.upload-icon {
-  border: 1px dashed #000;
-  padding: 24px 0;
-}
-.logo {
-  width: 220px;
-  height: 100px;
-  margin: 5px 0;
-}
-/deep/.dialog{
-  width: 350px;
-  overflow: visible;
-}
-.right{
-  position: absolute;
-  top: 5px;
-  right: 0;
-}
-</style>

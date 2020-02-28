@@ -49,9 +49,9 @@ export const getSupplierDetail = (id) => {
  * @param {*} id 保险公司id
  * @param {*} data 
  */
-export const saveSupplier = (id, data) => {
+export const saveSupplier = (data) => {
   return axios.request({
-    url: service + `/${id}`,
+    url: service,
     data,
     method: 'post'
   })

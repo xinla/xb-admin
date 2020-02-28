@@ -9,11 +9,11 @@ const service = config.services.proposal
  * @param {*} classifyId 否   分类id 
  * @param {*} param0 
  */
-export const getProposalPage = ({page, size, type, classifyId}) => {
+export const getProposalPage = ({page, size, type, classifyId, params, startAge, endAg, hash}) => {
   return axios.request({
     url: service + `/findAll/${page}/${size}`,
     params: {
-      type, classifyId
+      type, classifyId, params, startAge, endAg, hash
     },
     method: 'get'
   })
@@ -62,5 +62,27 @@ export const deleteProposal = (id) => {
   return axios.request({
     url: service + `/delete/${id}`,
     method: 'post'
+  })
+}
+
+/**
+ * 根据产品名称,公司名称,产品分类查询产品
+ * @param {*} params 
+ */
+export const getProducts = (params) => {
+  return axios.request({
+    url: service + `/findProducts`,
+    params,
+    method: 'get'
+  })
+}
+
+/**
+ * 查看字典表建议书
+ */
+export const getClasses = () => {
+  return axios.request({
+    url: service + `/findNumDict`,
+    method: 'get'
   })
 }

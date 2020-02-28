@@ -19,7 +19,13 @@
       </Col>
     </Row>
 
-    <Table max-height="600" :loading="loading" :columns="column" :data="list" style="margin-top: 15px;">
+    <Table
+      max-height="600"
+      :loading="loading"
+      :columns="column"
+      :data="list"
+      style="margin-top: 15px;"
+    >
       <template slot-scope="{ row }" slot="action">
         <span class="button-pri" @click="showDialog('from', row)">编辑</span>
         <span class="button-pri" @click="showDialog('item', row)">字典项</span>
@@ -102,7 +108,12 @@
             </FormItem>
 
             <FormItem label="关连租户">
-              <selectSupplier :val="form.companyName" type="lessee" @change="changeCompany" :key="form.relationCompanyId"/>
+              <selectSupplier
+                :val="form.companyName"
+                type="lessee"
+                @change="changeCompany"
+                :key="form.relationCompanyId"
+              />
             </FormItem>
           </Col>
           <Col span="8">
@@ -111,7 +122,12 @@
             </FormItem>
 
             <FormItem label="关连供应商品牌">
-              <selectSupplier :val="form.supplierName" type="brand" @change="changeSupplier" :key="form.relationSupplierId" />
+              <selectSupplier
+                :val="form.supplierName"
+                type="brand"
+                @change="changeSupplier"
+                :key="form.relationSupplierId"
+              />
             </FormItem>
           </Col>
         </Row>
@@ -127,7 +143,7 @@
           <th>数据代码</th>
           <th>标签名称</th>
           <th>备注</th>
-        </tr> -->
+        </tr>-->
         <tr>
           <!-- <td>
               <Checkbox v-model="item.choice" @on-change="choice"></Checkbox>
@@ -182,7 +198,7 @@
       </table>-->
 
       <!-- </div> -->
-        <!-- :show-header="false" -->
+      <!-- :show-header="false" -->
       <Table
         height="500"
         :columns="columnItem"
@@ -205,7 +221,12 @@
             <Icon type="ios-create" v-if="!row.isEdit" @click="$set(row, 'isEdit', true)" />
             <Icon type="md-done-all" v-else @click="save('item', row)" />
           </Button>
-          <Button style="color: #ed4014; font-size: 18px;" size="small" type="text" @click="remove('item', row.id)">
+          <Button
+            style="color: #ed4014; font-size: 18px;"
+            size="small"
+            type="text"
+            @click="remove('item', row.id)"
+          >
             <Icon type="ios-trash" />
           </Button>
         </template>
@@ -514,6 +535,13 @@ export default {
             this.getData();
           });
         } else {
+          if (!data.dataCode || !data.dataName) {
+            this.$Modal.warning({
+              title: '提示',
+              content: '数据代码和标签名称不可为空'
+            })
+            return
+          }
           data.dictId || (data.dictId = this.editDictionary.id);
           return Agency.saveDitionaryItem(data).then(res => {
             this.$Message.success("操作成功");
@@ -647,7 +675,7 @@ export default {
       move.tag = '0'
       let terget = this.itemList[index2]
       terget.tag = '1'
-      
+
       let sort = move.sort;
       move.sort = terget.sort;
       terget.sort = sort;
@@ -703,8 +731,8 @@ table {
   min-width: 600px;
   width: 60% !important;
 }
-/deep/.ivu-btn-text{
-  &:hover{
+/deep/.ivu-btn-text {
+  &:hover {
     background: none;
   }
 }

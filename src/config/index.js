@@ -19,7 +19,7 @@ const config = {
     dev2: 'http://192.168.1.150:8888', // v2.0本地 liusiyuan
     dev1: 'http://192.168.1.150:8888', // caikefu
 
-    domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.35:8888' : 'http://192.168.1.26:8888', // wangdong
+    domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.32:8888' : 'http://192.168.1.26:8888', // wangdong
 
     domainPs: process.env.NODE_ENV === 'development' ? 'http://192.168.1.91:9999' : 'http://192.168.1.26:8888', // wangdong
 
@@ -97,6 +97,7 @@ config.servicesV2 = {
   product: '/vitadmin/v2/product',
   calculator: '/vitadmin/v2/calculator',
   rate: '/vitadmin/v2/rate',
+  profession: '/vitadmin/api/policy-service/v1/sign'
 }
 
 config.servicesPs = {

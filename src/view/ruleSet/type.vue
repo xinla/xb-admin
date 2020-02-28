@@ -113,7 +113,6 @@ import {
   updateTypeRule,
   addTypeRule
 } from "@/api/rulesSet/type";
-import dialogBox from "@/components/dialogBox";
 
 const productForm = {
   type: 1,
@@ -128,7 +127,6 @@ const supplierForm = {
 };
 
 export default {
-  components: { dialogBox },
   props: {},
   data() {
     return {
