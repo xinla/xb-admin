@@ -16,10 +16,10 @@ const config = {
     // 测试服
     // dev: 'http://192.168.1.64', // 虚拟机 liusiyuan
     dev: 'http://192.168.1.91:9999', // 本地
-    dev2: 'http://192.168.1.150:8888', // v2.0本地 liusiyuan
-    dev1: 'http://192.168.1.150:8888', // caikefu
+    dev2: 'http://192.168.1.91:9999', // v2.0本地 liusiyuan
+    dev1: 'http://192.168.1.91:9999', // caikefu
 
-    domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.32:8888' : 'http://192.168.1.26:8888', // wangdong
+    domainV2: process.env.NODE_ENV === 'development' ? 'http://192.168.1.91:9999' : 'http://192.168.1.26:8888', // wangdong
 
     domainPs: process.env.NODE_ENV === 'development' ? 'http://192.168.1.91:9999' : 'http://192.168.1.26:8888', // wangdong
 

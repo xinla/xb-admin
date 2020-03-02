@@ -42,7 +42,7 @@ module.exports = {
   devServer: {
     // proxy: 'localhost:3000',
     // host: '192.168.1.58',
-    port: 8081,
+    port: 8082
   },
   configureWebpack: {
     plugins: [

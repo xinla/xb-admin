@@ -67,7 +67,7 @@ import * as A from "@/api/permission/menu";
 
 const defaultForm = {
   parentId: "",
-  menuId: "",
+  menuId: -1,
   name: "",
   type: "0", // 0:菜单 1:按钮
   path: "",
@@ -133,7 +133,7 @@ export default {
     },
     add() {
       this.form = Object.assign({}, defaultForm, {
-        parentId: this.form.parentId
+        parentId: this.form.menuId
       });
       this.disabled = false;
     },

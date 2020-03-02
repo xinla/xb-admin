@@ -78,8 +78,8 @@
 
         <FormItem label="状态" prop="lockFlag">
           <RadioGroup v-model="form.lockFlag">
-            <Radio label="0">锁定</Radio>
-            <Radio label="1">正常</Radio>
+            <Radio label="0">正常</Radio>
+            <Radio label="1">锁定</Radio>
           </RadioGroup>
         </FormItem>
       </Form>

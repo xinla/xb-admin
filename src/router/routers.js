@@ -690,7 +690,7 @@ export default [
           title: '保险建议书',
         },
         component: () => import('@/view/applicationManage/digitalResource/index'),
-        redirect: '/functionManage/digitalResource/proposalTitle',
+        redirect: '/applicationManage/digitalResource/proposalTitle',
         children: [
           {
             path: 'proposalTitle',

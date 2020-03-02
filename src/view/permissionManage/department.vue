@@ -43,7 +43,7 @@ import * as A from "@/api/permission/department";
 const defaultForm = {
   name: "",
   parentId: "",
-  deptId: "",
+  deptId: 0,
   sort: ""
 };
 
@@ -91,7 +91,7 @@ export default {
     },
     add() {
       this.form = Object.assign({}, defaultForm, {
-        parentId: this.form.parentId
+        parentId: this.form.deptId
       });
       this.disabled = false;
     },
